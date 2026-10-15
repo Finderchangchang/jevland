@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Choice（选择题） · JevLand</title>
+<meta name="description" content="Choice 是 System One 的题型（question type），用于从一组预定义选项中选出一个。答案包含所选选项、每个选项的概率以及置信度。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/choice/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="Choice（选择题）">
+<meta property="og:description" content="Choice 是 System One 的题型（question type），用于从一组预定义选项中选出一个。答案包含所选选项、每个选项的概率以及置信度。">
+<meta property="og:url" content="https://jevland.com/docs/choice/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Choice（选择题）">
+<meta name="twitter:description" content="Choice 是 System One 的题型（question type），用于从一组预定义选项中选出一个。答案包含所选选项、每个选项的概率以及置信度。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"Choice（选择题）","url":"https://jevland.com/docs/choice/","inLanguage":"zh-CN","description":"Choice 是 System One 的题型（question type），用于从一组预定义选项中选出一个。答案包含所选选项、每个选项的概率以及置信度。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link is-current" href="/docs/choice/" aria-current="page">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link is-current" href="/docs/choice/" aria-current="page">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 题型</p>
+        <h1>Choice（选择题）</h1>
+        <p class="lead">Choice 是 System One 的题型（question type），用于从一组预定义选项中选出一个。答案包含所选选项、每个选项的概率以及置信度。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/primitives/choice" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>使用 Choice（选择题）来回答某个答案是一组固定选项之一的问题。例如，工单由哪个团队处理、产品属于哪个类别，或者代码片段是用哪种语言写的。如果答案是一个连续区间上的位置，使用 <a href="../score/">Score</a>。如果答案是「是」或「否」，使用 <a href="../noul/">Noul</a>。<a href="../primitives/#choose-a-question-type">怎样选题型</a> 对三种题型做了对比。</p>
+<p>Choice 答案中的 <code>choice</code> 是所选选项。模型还会返回 <code>probabilities</code> 中每个选项的概率，以及一个 <code>confidence</code>（置信度）值，表示对所选选项的置信度。</p>
+<p>示例问题：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">&quot;What programming language is this code written in&quot;
+  → options: python, javascript, typescript, go, rust, other
+
+&quot;What type of meeting is this based on the title and description&quot;
+  → options: standup, planning, retrospective, one on one, brainstorm, none of the above
+
+&quot;Which product category does this item belong to&quot;
+  → options: electronics, clothing, home garden, food and beverage</code></pre></div>
+<h2 id="request-structure">请求结构</h2>
+<p>向 <a href="../api/">TypeSafe API</a> 发出的 POST 请求体有特定结构。顶层有三个字段：<code>state</code>（上下文状态），它是待评估的内容；<code>model</code>；以及 <code>questions</code>，它是从 question id（你自己选择）到 question 对象的映射。每个 Choice 问题包含以下字段：</p>
+<ul>
+<li><code>type</code>：始终为 <code>&quot;choice&quot;</code>。</li>
+<li><code>instructions</code>（指令）：模型要回答的问题。</li>
+<li><code>criteria</code>（判定标准）：答案选项，作为一个映射。每个 key 是一个选项名，每个 value 是该选项的描述。</li>
+</ul>
+<p>下面是一个请求，其中 state 是一张来自在线鞋店的客服工单，question 是应该由哪个团队处理：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;My running shoes arrived in the wrong size. Can I swap them for a size 10?&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Which team should handle this?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;returns&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Exchanges, wrong or damaged items&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;shipping&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Delivery status, delays, lost packages&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;billing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Charges, invoices, payment problems&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>question id 由你决定，本例中是 <code>department</code>。答案会放在同一个 id 下返回。模型看不到 question id。选项名以及它们各自的描述都会发给模型，所以要让这些描述把各选项区分开。</p>
+<p>我们的<a href="../sdk/">客户端 SDK</a> 提供了带类型的 questions。在 Python 中，同样的问题是一个 <code>Choice</code>：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, TypeSafeClient
+
+<span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+    response = client.system_one(
+        state=<span class="hljs-string">&quot;My running shoes arrived in the wrong size. Can I swap them for a size 10?&quot;</span>,
+        questions={
+            <span class="hljs-string">&quot;department&quot;</span>: Choice(
+                instructions=<span class="hljs-string">&quot;Which team should handle this?&quot;</span>,
+                criteria={
+                    <span class="hljs-string">&quot;returns&quot;</span>: <span class="hljs-string">&quot;Exchanges, wrong or damaged items&quot;</span>,
+                    <span class="hljs-string">&quot;shipping&quot;</span>: <span class="hljs-string">&quot;Delivery status, delays, lost packages&quot;</span>,
+                    <span class="hljs-string">&quot;billing&quot;</span>: <span class="hljs-string">&quot;Charges, invoices, payment problems&quot;</span>,
+                },
+            ),
+        },
+    )
+
+    <span class="hljs-built_in">print</span>(response.answers[<span class="hljs-string">&quot;department&quot;</span>].choice)</code></pre></div>
+<p>使用 <code>system_one</code> 方法或 <code>https://api.typesafe.ai/v1/systemone</code> 接口（endpoint）调用 System One 模型。<code>model</code> 字段指定由哪个模型处理请求。<a href="../how-to-build/">如何使用 TypeSafe 构建</a> 介绍了在代码中的什么位置调用它。</p>
+<p>使用我们的<a href="../sdk/">客户端 SDK</a> 之一，或者直接调用 <a href="../api/">HTTP API</a>。如果由编程智能体（coding agent）为你编写集成代码，请先安装 <a href="https://docs.typesafe.ai/agent-skill#installation" target="_blank" rel="noopener noreferrer">TypeSafe 智能体技能</a>，让它了解请求和响应的结构。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong> <code>instructions</code> 和 <code>criteria</code> 中的每一项可以是字符串、对象或数组。先从字符串开始。当某个选项的描述需要多种引导时（例如它覆盖什么、不覆盖什么、以及一些示例），可使用对象形式。详见下面的<a href="#structured-instructions-and-criteria">结构化 instructions 和 criteria</a> 以及 <a href="../api/#param-instructions-1">API 参考</a>。</p>
+</aside>
+<h2 id="response-structure">响应结构</h2>
+<p>响应的 <code>answers</code> 中每个 question 对应一项，question id 与请求中保持一致。这是对上面示例请求的响应：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;returns&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;shipping&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;returns&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;billing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">328</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">34</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>除了 <code>type</code> 之外，每个 Choice 答案包含三个值：</p>
+<ul>
+<li><code>choice</code>：概率最高的选项。</li>
+<li><code>probabilities</code>：每个选项的完整概率分布。所有值之和为 1。</li>
+<li><code>confidence</code>：一个介于 0 到 1 之间的数，根据 <code>probabilities</code> 的分布形状计算。分布平坦、概率分散在多个选项上表示置信度低；只有一个尖峰集中在某个选项上表示置信度高。</li>
+</ul>
+<p>这张工单是个简单的情况，所以所有概率都集中在 <code>returns</code> 上，置信度为 1.0。如果一张工单同时提到尺寸不对和退款未到账，<code>probabilities</code> 就会在 <code>returns</code> 和 <code>billing</code> 之间分散，置信度也会下降。</p>
+<h2 id="good-practice-ask-more-than-one-question-per-call">最佳实践：每次调用多问几个问题</h2>
+<p>尽量把所有可能用到的 Choice 问题在同一次请求中发出，而不是一个问题发一次请求。多个问题并行评估。增加问题几乎不会改变响应时间，代码可以忽略不需要的答案。额外的问题仍然要消耗 token。<a href="../primitives/#ask-multiple-questions-together">一次性问多个问题</a> 详细解释这一点；下一节会在一次调用中展示五个 Choice 问题。</p>
+<p>同样的逻辑也适用于单个 Choice 问题内部的选项。一个 Choice 问题最多支持 255 个选项，每加一个选项会多消耗少量 token，因此应该把完整的团队、品类或产品列表都提供给模型，而不是只给一个候选清单。当列表可能无法覆盖所有输入时，加一个 <code>other</code> 或 <code>none of the above</code> 选项，让模型能够说「都不匹配」。</p>
+<p>要通过深层级或大分类体系对文档进行分类，可以逐层链接 Choice 问题。<a href="../cookbook-hierarchical-classification/">层级分类实战示例</a> 演示了如何在 Choice 概率上做 beam search：在每一层保留最佳的 <code>K</code> 条候选路径，而不是只走单一的贪心路径。</p>
+<h2 id="a-more-complex-example">一个更复杂的示例</h2>
+<p>上面的基础示例把工单分配给一个团队。更大的客服系统可能还需要知道退货原因、配送问题、客户诉求和客户语气。</p>
+<p>下面的请求对一张比第一张更含糊的工单提出五个 Choice 问题：该工单涉及三个团队，且没有说明客户想要什么。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Shoes arrived two weeks late and in the wrong size. Also I see two charges of $120 on my card. What are you going to do about this?&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Which team should handle this?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;returns&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Exchanges, wrong or damaged items&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;shipping&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Delivery status, delays, lost packages&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;billing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Charges, invoices, payment problems&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;return_reason&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;If the customer wants to return something, why?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;wrong_size&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The item doesn&#x27;t fit&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;wrong_item&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;A different product was delivered&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;damaged&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The item arrived broken or faulty&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;changed_mind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The item is fine, the customer no longer wants it&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;other&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;A return reason that fits none of the above&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;shipping_issue&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;If this is a shipping problem, which kind is it?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;not_delivered&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The package never arrived&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;delayed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The package is late but still on its way&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;wrong_address&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The package went to the wrong place&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;damaged_in_transit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The package arrived damaged&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;other&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;A shipping problem that fits none of the above&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;requested_resolution&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;What does the customer want to happen?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;exchange&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Swap the item for a different one&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;refund&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Money back&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;replacement&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The same item sent again&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;information&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Just an answer, no action needed&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;tone&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;What is the customer&#x27;s tone?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;calm&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;frustrated&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;angry&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>其中两个 Choice 问题是推测式的：<code>return_reason</code> 只有在 <code>department</code> 为 <code>returns</code> 时才有意义，<code>shipping_issue</code> 只有在为 <code>shipping</code> 时才有意义。<code>tone</code> 问题使用 <code>null</code> 作为描述，因为选项名本身就足够清楚。</p>
+<p>TypeSafe 响应：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;returns&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.42</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;shipping&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.04</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;billing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.35</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;returns&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.61</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;return_reason&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;wrong_size&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;other&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;wrong_size&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;changed_mind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;damaged&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;wrong_item&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;shipping_issue&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;delayed&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.67</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;wrong_address&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;other&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.26</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;not_delivered&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;damaged_in_transit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;delayed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.74</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;requested_resolution&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;refund&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.2</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;replacement&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.34</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;refund&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.4</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;information&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.02</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;exchange&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.24</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;tone&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;frustrated&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.76</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;frustrated&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.84</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;angry&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.16</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;calm&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">589</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">212</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>每个问题都基于工单独立作答：</p>
+<ul>
+<li><code>department</code> 的答案是 <code>returns</code>，概率 0.61，但因为出现重复扣款，<code>billing</code> 也有 0.35。这张工单同时属于两个团队，分散的置信度 0.42 反映了这一点。</li>
+<li><code>return_reason</code> 是 <code>wrong_size</code>，置信度为 1.0，这在意料之中，因为工单里说得很清楚。</li>
+<li><code>shipping_issue</code> 的答案在 <code>delayed</code> 和 <code>other</code> 之间分散。它是一个推测式问题，且 <code>department</code> 的结果不是 shipping，因此代码可以忽略它，如下面的代码示例所示。</li>
+<li><code>requested_resolution</code> 倾向于 <code>refund</code>，概率 0.40，<code>replacement</code> 和 <code>exchange</code> 分走了剩下的大部分，置信度为 0.20。重复扣款暗示要退款，尺寸不对又暗示要换货，客户却没有明说要哪一个。</li>
+<li><code>tone</code> 的答案是 <code>frustrated</code>，概率 0.84，置信度 0.76。</li>
+</ul>
+<p>下面的示例代码读取它需要的答案，忽略其余部分，并把低置信度的答案视为「去询问」的理由，而非「直接采取行动」的理由：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, TypeSafeClient
+
+TRIAGE_QUESTIONS = {
+    <span class="hljs-string">&quot;department&quot;</span>: Choice(
+        instructions=<span class="hljs-string">&quot;Which team should handle this?&quot;</span>,
+        criteria={
+            <span class="hljs-string">&quot;returns&quot;</span>: <span class="hljs-string">&quot;Exchanges, wrong or damaged items&quot;</span>,
+            <span class="hljs-string">&quot;shipping&quot;</span>: <span class="hljs-string">&quot;Delivery status, delays, lost packages&quot;</span>,
+            <span class="hljs-string">&quot;billing&quot;</span>: <span class="hljs-string">&quot;Charges, invoices, payment problems&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;return_reason&quot;</span>: Choice(
+        instructions=<span class="hljs-string">&quot;If the customer wants to return something, why?&quot;</span>,
+        criteria={
+            <span class="hljs-string">&quot;wrong_size&quot;</span>: <span class="hljs-string">&quot;The item doesn&#x27;t fit&quot;</span>,
+            <span class="hljs-string">&quot;wrong_item&quot;</span>: <span class="hljs-string">&quot;A different product was delivered&quot;</span>,
+            <span class="hljs-string">&quot;damaged&quot;</span>: <span class="hljs-string">&quot;The item arrived broken or faulty&quot;</span>,
+            <span class="hljs-string">&quot;changed_mind&quot;</span>: <span class="hljs-string">&quot;The item is fine, the customer no longer wants it&quot;</span>,
+            <span class="hljs-string">&quot;other&quot;</span>: <span class="hljs-string">&quot;A return reason that fits none of the above&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;shipping_issue&quot;</span>: Choice(
+        instructions=<span class="hljs-string">&quot;If this is a shipping problem, which kind is it?&quot;</span>,
+        criteria={
+            <span class="hljs-string">&quot;not_delivered&quot;</span>: <span class="hljs-string">&quot;The package never arrived&quot;</span>,
+            <span class="hljs-string">&quot;delayed&quot;</span>: <span class="hljs-string">&quot;The package is late but still on its way&quot;</span>,
+            <span class="hljs-string">&quot;wrong_address&quot;</span>: <span class="hljs-string">&quot;The package went to the wrong place&quot;</span>,
+            <span class="hljs-string">&quot;damaged_in_transit&quot;</span>: <span class="hljs-string">&quot;The package arrived damaged&quot;</span>,
+            <span class="hljs-string">&quot;other&quot;</span>: <span class="hljs-string">&quot;A shipping problem that fits none of the above&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;requested_resolution&quot;</span>: Choice(
+        instructions=<span class="hljs-string">&quot;What does the customer want to happen?&quot;</span>,
+        criteria={
+            <span class="hljs-string">&quot;exchange&quot;</span>: <span class="hljs-string">&quot;Swap the item for a different one&quot;</span>,
+            <span class="hljs-string">&quot;refund&quot;</span>: <span class="hljs-string">&quot;Money back&quot;</span>,
+            <span class="hljs-string">&quot;replacement&quot;</span>: <span class="hljs-string">&quot;The same item sent again&quot;</span>,
+            <span class="hljs-string">&quot;information&quot;</span>: <span class="hljs-string">&quot;Just an answer, no action needed&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;tone&quot;</span>: Choice(
+        instructions=<span class="hljs-string">&quot;What is the customer&#x27;s tone?&quot;</span>,
+        criteria={<span class="hljs-string">&quot;calm&quot;</span>: <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;frustrated&quot;</span>: <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;angry&quot;</span>: <span class="hljs-literal">None</span>},
+    ),
+}
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">triage</span>(<span class="hljs-params">ticket: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
+    <span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+        response = client.system_one(
+            state=ticket,
+            questions=TRIAGE_QUESTIONS,
+        )
+    answers = response.answers
+
+    department = answers[<span class="hljs-string">&quot;department&quot;</span>]
+    <span class="hljs-keyword">if</span> department.confidence &lt; <span class="hljs-number">0.3</span>:
+        <span class="hljs-comment"># Not clear which team to send to. Let a person decide.</span>
+        send_to_manual_triage(ticket)
+        <span class="hljs-keyword">return</span>
+
+    <span class="hljs-keyword">if</span> department.choice == <span class="hljs-string">&quot;returns&quot;</span>:
+        <span class="hljs-comment"># return_reason answer is only used here</span>
+        assign(ticket, team=<span class="hljs-string">&quot;returns&quot;</span>, issue=answers[<span class="hljs-string">&quot;return_reason&quot;</span>].choice)
+    <span class="hljs-keyword">elif</span> department.choice == <span class="hljs-string">&quot;shipping&quot;</span>:
+        <span class="hljs-comment"># shipping_issue answer is only used here</span>
+        assign(ticket, team=<span class="hljs-string">&quot;shipping&quot;</span>, issue=answers[<span class="hljs-string">&quot;shipping_issue&quot;</span>].choice)
+    <span class="hljs-keyword">else</span>:
+        assign(ticket, team=<span class="hljs-string">&quot;billing&quot;</span>)
+
+    <span class="hljs-comment"># A second team with a real share of the probability gets a copy</span>
+    <span class="hljs-keyword">for</span> team, probability <span class="hljs-keyword">in</span> department.probabilities.items():
+        <span class="hljs-keyword">if</span> team != department.choice <span class="hljs-keyword">and</span> probability &gt; <span class="hljs-number">0.25</span>:
+            notify(ticket, team=team)
+
+    resolution = answers[<span class="hljs-string">&quot;requested_resolution&quot;</span>]
+    <span class="hljs-keyword">if</span> resolution.confidence &lt; <span class="hljs-number">0.5</span>:
+        <span class="hljs-comment"># The customer hasn&#x27;t said what they want. Ask, don&#x27;t guess.</span>
+        ask_customer_what_they_want(ticket)
+    <span class="hljs-keyword">elif</span> resolution.choice == <span class="hljs-string">&quot;refund&quot;</span>:
+        flag_for_refund_approval(ticket)
+
+    <span class="hljs-keyword">if</span> answers[<span class="hljs-string">&quot;tone&quot;</span>].choice == <span class="hljs-string">&quot;angry&quot;</span>:
+        flag_for_senior_agent(ticket)</code></pre></div>
+<p>对于上面的工单，这段代码会把工单分给 returns 团队，问题为 <code>wrong_size</code>；因为 billing 团队 0.35 的份额超过了 0.25 的阈值，会向其抄送一份；又因为 resolution 置信度 0.20 低于 0.5，会去询问客户真正想要什么。代码没有使用 <code>shipping_issue</code> 这个答案。</p>
+<p>一次请求，五个答案，路由逻辑就是普通的 <code>if</code> 语句。如果之后还想知道客户的语言，或者工单涉及哪个产品，只需再往 <code>TRIAGE_QUESTIONS</code> 里加一个 Choice 问题即可；请求次数仍然是一次。</p>
+<p><a href="https://docs.typesafe.ai/demos/smart-home" target="_blank" rel="noopener noreferrer">智能家居助手演示</a> 在一次调用中针对每个用户请求评估一长串 Choice 问题：请求类别、房间、设备和动作。其中大部分问题对某一次具体请求来说并不相关，代码会直接忽略。</p>
+<h1 id="structured-instructions-and-criteria">结构化的 instructions（指令）与 criteria（判定标准）</h1>
+<p>每个选项先用一句话描述。当两个选项很相似、模型总是分不清时，不要用字符串，改用对象来描述。给对象设置几个字段：选项覆盖什么、相邻选项覆盖什么、以及几条示例输入。</p>
+<p>下面的两个 answer（答案）选项 <code>return_policy</code> 和 <code>return_status</code> 很容易混淆。哪怕是关于其中任一选项的工单，都可能提到退货和退款，所以每个选项都要明确写出自己不覆盖什么。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;I sent the shoes back a week ago. When do I get my money?&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;return_topic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Which returns topic is the customer asking about?&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;focus&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Classify the information the customer wants.&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;return_policy&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Whether and how an item can be returned&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;not_for&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Progress of a return already sent&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Can I return shoes I&#x27;ve worn once?&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;How long do I have to return an order?&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;return_status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Progress of a return already sent&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;not_for&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Whether and how an item can be returned&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Has my return arrived yet?&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;When will my refund be paid?&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p><code>return_status</code> 的响应，置信度 1.0：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;return_topic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;return_status&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;return_policy&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;return_status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">407</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">32</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>字段名 <code>question</code>、<code>focus</code>、<code>what</code>、<code>not_for</code> 和 <code>examples</code> 都不属于 API，也都不是保留字段。你可以自己取名，就像取选项名一样。模型会把字段名和值一起看到，所以要取简短、能说明后面内容的名字。</p>
+<hr>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建和托管，它是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/primitives/"><span>上一篇</span><strong>题型总览</strong></a>
+    <a class="pager-link is-next" href="/docs/score/"><span>下一篇</span><strong>Score（打分题）</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#request-structure">请求结构</a><a class="toc-link depth-2" href="#response-structure">响应结构</a><a class="toc-link depth-2" href="#good-practice-ask-more-than-one-question-per-call">最佳实践：每次调用多问几个问题</a><a class="toc-link depth-2" href="#a-more-complex-example">一个更复杂的示例</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

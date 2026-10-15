@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>跑通第一个 Jev 请求：两条路都能走 · JevLand</title>
+<meta name="description" content="只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/guides/first-request/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="跑通第一个 Jev 请求：两条路都能走">
+<meta property="og:description" content="只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。">
+<meta property="og:url" content="https://jevland.com/guides/first-request/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="跑通第一个 Jev 请求：两条路都能走">
+<meta name="twitter:description" content="只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"跑通第一个 Jev 请求：两条路都能走","url":"https://jevland.com/guides/first-request/","inLanguage":"zh-CN","description":"只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/guides/" aria-current="page">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="guide-shell">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/guides/">教程</a> / 入门</p>
+        <h1>跑通第一个 Jev 请求：两条路都能走</h1>
+        <p class="lead">只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。</p>
+        <div class="reading-meta">
+          <time datetime="2026-10-15">2026-10-15</time>
+          <span>6 分钟阅读</span>
+          <span class="chip">快速开始</span><span class="chip">OpenRouter</span><span class="chip">API</span>
+        </div>
+        <div class="prose"><h2 id="先给结论">先给结论</h2>
+<p>只做文字判断，官方接口和 OpenRouter 都能跑通，效果一致。看图只能走官方接口，那条路另写一篇。</p>
+<h2 id="官方接口三字段搞定">官方接口三字段搞定</h2>
+<p>接口地址 <code>POST https://api.typesafe.ai/v1/systemone</code>，请求头带 <code>Authorization: Bearer &lt;key&gt;</code>。key 在 <a href="https://console.typesafe.ai/keys" target="_blank" rel="noopener noreferrer">https://console.typesafe.ai/keys</a> 申请。</p>
+<p>请求体三个字段：</p>
+<ul>
+<li><code>model</code>：写 <code>&quot;jev-latest&quot;</code> 拿最新版本。</li>
+<li><code>state（上下文状态）</code>：要判断的内容，可以是字符串、JSON 对象或数组。</li>
+<li><code>questions</code>：题目表，键名自己起，答案按同样的键名返回。</li>
+</ul>
+<p>用下面这段 curl 试一下，题目里一道 Noul（是非题）、一道 Choice（选择题）：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">curl https://api.typesafe.ai/v1/systemone \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$TYPESAFE_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  -d <span class="hljs-string">&#x27;{
+    &quot;model&quot;: &quot;jev-latest&quot;,
+    &quot;state&quot;: &quot;这个订单能今天发货吗？我明天一早出差。&quot;,
+    &quot;questions&quot;: {
+      &quot;is_urging&quot;: {
+        &quot;type&quot;: &quot;noul&quot;,
+        &quot;instructions&quot;: &quot;Is the customer asking us to ship faster?&quot;
+      },
+      &quot;department&quot;: {
+        &quot;type&quot;: &quot;choice&quot;,
+        &quot;instructions&quot;: &quot;Which team should handle this message?&quot;,
+        &quot;criteria&quot;: {
+          &quot;shipping&quot;: &quot;Delivery status, delays, shipping speed&quot;,
+          &quot;returns&quot;: &quot;Exchanges, wrong or damaged items&quot;,
+          &quot;billing&quot;: &quot;Charges, invoices, payment problems&quot;
+        }
+      }
+    }
+  }&#x27;</span></code></pre></div>
+<p>返回长这样，是官方文档里的样例：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;returns&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;shipping&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;returns&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;billing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">328</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">34</span> <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>几个关键字段：<code>choice</code> 是选中的项，<code>probabilities</code> 是每个选项的概率，<code>confidence</code> 是置信度（概率分布有多集中），<code>usage</code> 是 token 用量。</p>
+<h2 id="Python-用-SDK-跑一次">Python 用 SDK 跑一次</h2>
+<p>先装包：<code>pip install typesafe-sdk</code>。SDK 自动读环境变量 <code>TYPESAFE_API_KEY</code>，代码里不用写 key。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, TypeSafeClient
+
+<span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+    response = client.system_one(
+        state=<span class="hljs-string">&quot;这个订单能今天发货吗？我明天一早出差。&quot;</span>,
+        questions={
+            <span class="hljs-string">&quot;department&quot;</span>: Choice(
+                instructions=<span class="hljs-string">&quot;Which team should handle this message?&quot;</span>,
+                criteria={
+                    <span class="hljs-string">&quot;shipping&quot;</span>: <span class="hljs-string">&quot;Delivery status, delays, shipping speed&quot;</span>,
+                    <span class="hljs-string">&quot;returns&quot;</span>: <span class="hljs-string">&quot;Exchanges, wrong or damaged items&quot;</span>,
+                    <span class="hljs-string">&quot;billing&quot;</span>: <span class="hljs-string">&quot;Charges, invoices, payment problems&quot;</span>,
+                },
+            )
+        },
+    )
+    <span class="hljs-built_in">print</span>(response)</code></pre></div>
+<h2 id="OpenRouter-同样能跑通">OpenRouter 同样能跑通</h2>
+<p>地址换一下：<code>POST https://openrouter.ai/api/alpha/decisions</code>。用 OpenRouter 的 key，模型名写 <code>typesafe/jev-1.14</code>，也可以用别名 <code>~typesafe/jev-latest</code>。请求体和官方一样。</p>
+<p>返回会多两个字段：<code>usage.cost</code>（这次花了多少美元）和 <code>provider</code>（值固定是 TypeSafe）。</p>
+<p>我 9 月用 OpenRouter 实测：一次约 1000 个输入 token，花费约 0.00004 美元，耗时 890 到 1040 毫秒。</p>
+<h2 id="价格长度限流心里有数">价格、长度、限流心里有数</h2>
+<p>输入 0.042 美元 / 百万 token，输出不收钱。</p>
+<p>单次请求上下文 64k、单题 32k。需要更长就加请求头 <code>TypeSafe-Danger-Zone-Long-Context: true</code>，可以到 262k，但会更慢、准确率也低一些。限流按组织设置，在开发者控制台查看。</p>
+<h2 id="报错码对号入座就行">报错码对号入座就行</h2>
+<p>401 是 key 不对。422 是请求体格式不对，按报错信息修字段名或结构。429 是限流，529 是服务繁忙，这两个按指数退避重试就行。</p>
+<hr>
+<p>下一步看这些：题型细节看 <a href="../../docs/choice/">Choice</a>、<a href="../../docs/noul/">Noul</a>、<a href="../../docs/score/">Score</a>；置信度怎么用看 <a href="../../docs/confidence/">置信度</a>。</p>
+</div>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block">
+          <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+          <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+        </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#%E5%85%88%E7%BB%99%E7%BB%93%E8%AE%BA">先给结论</a><a class="toc-link depth-2" href="#%E5%AE%98%E6%96%B9%E6%8E%A5%E5%8F%A3%E4%B8%89%E5%AD%97%E6%AE%B5%E6%90%9E%E5%AE%9A">官方接口三字段搞定</a><a class="toc-link depth-2" href="#Python-%E7%94%A8-SDK-%E8%B7%91%E4%B8%80%E6%AC%A1">Python 用 SDK 跑一次</a><a class="toc-link depth-2" href="#OpenRouter-%E5%90%8C%E6%A0%B7%E8%83%BD%E8%B7%91%E9%80%9A">OpenRouter 同样能跑通</a><a class="toc-link depth-2" href="#%E4%BB%B7%E6%A0%BC%E9%95%BF%E5%BA%A6%E9%99%90%E6%B5%81%E5%BF%83%E9%87%8C%E6%9C%89%E6%95%B0">价格、长度、限流心里有数</a><a class="toc-link depth-2" href="#%E6%8A%A5%E9%94%99%E7%A0%81%E5%AF%B9%E5%8F%B7%E5%85%A5%E5%BA%A7%E5%B0%B1%E8%A1%8C">报错码对号入座就行</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

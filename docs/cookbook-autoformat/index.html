@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>结构恢复 · JevLand</title>
+<meta name="description" content="用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-autoformat/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="结构恢复">
+<meta property="og:description" content="用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-autoformat/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="结构恢复">
+<meta name="twitter:description" content="用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"结构恢复","url":"https://jevland.com/docs/cookbook-autoformat/","inLanguage":"zh-CN","description":"用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link is-current" href="/docs/cookbook-autoformat/" aria-current="page">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link is-current" href="/docs/cookbook-autoformat/" aria-current="page">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>结构恢复</h1>
+        <p class="lead">用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/autoformat" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>本实战示例接收的输入是一份标记被剥除的纯文本（行在句子中间硬换行切断，没有标题标记、没有列表项目符号），并把它的结构重建为 Markdown：标题、段落、列表、引用、代码块、提示框。输入是一份恰好处于这种状态的团队备忘录。</p>
+<p>文本生成模型可以把文本改写成 Markdown，但改写也会改动措辞。这里的模型从不生成文本：它只回答关于文档的窄义问题（<em>这一行是不是接着上一句？这个块是什么类型的内容？</em>），渲染由代码完成，因此输出中的每一个字符都来自输入，每一次判断都带有一个概率。</p>
+<p>整个流水线对每个文档执行两轮 API 请求，按顺序进行：</p>
+<ul>
+<li><strong>Pass 1，拼接：</strong> 对每一对相邻行提一个 <code>Noul</code>（是非题）问题（其答案就是&quot;是&quot;为正确的概率），问这两行之间的换行是否把一个句子撕成了两段。所有这些对都放进同一次请求中，那些承接断句的行会被合并回同一个块。</li>
+<li><strong>Pass 2，分类：</strong> 对每个合并后的块提一个 <code>Choice</code>（选择题）问题（从一个列表中选一个，并对每个选项给出一个概率），从标题、段落、列表项、引用、代码块或提示框（脱离正文的一条注释、提示或警告）中选一。这些块只有在 Pass 1 完成之后才存在，所以这是第二次请求；它同时为每个块附带一些陪问题（标题档位、步骤顺序、提示框种类），答案只有在块的类型让它们有意义时才读取。</li>
+<li><strong>直接证据由代码读取。</strong> 空行和显式标记（<code>- </code>、<code>1.</code>、<code>#</code>）在代码里读取，绝不发回给模型让它重新判断；这份备忘录保留了空行，但丢失了所有标记。模型只拿到代码无法从文本中回答的那些问题。</li>
+</ul>
+<p>所有行为都规定在 Pass 2 的问题判定标准里：三组一行一句的描述字典，外加放在 <code>classify_questions</code> 里步骤题的对/错判定标准。其余代码都是围绕这些的管道。开销和延迟数据见附录：本备忘录两轮往返，10,211 tokens，0.8 秒，$0.0015。</p>
+<h2 id="setup">安装与配置</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install ipython <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<p>然后设置 <code>TYPESAFE_API_KEY</code>。每次 API 调用都会缓存在 <code>json_cache.json</code> 中，该文件随本实战示例一起发布，因此重新渲染会直接复用已发布的数据，无需再次调用 API。删除该文件即可重新实时执行全部流程。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> re
+<span class="hljs-keyword">import</span> urllib.request
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+<span class="hljs-keyword">from</span> time <span class="hljs-keyword">import</span> perf_counter
+
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, Noul, NoulCriteria, TypeSafeClient
+
+TYPESAFE_MODEL = <span class="hljs-string">&quot;jev-1.12&quot;</span>
+PRICE = (<span class="hljs-number">0.042</span>, <span class="hljs-number">0.00</span>)  <span class="hljs-comment"># $ per 1M tokens (input, output); TypeSafe jev-1.12 as of 2026-09</span>
+client = TypeSafeClient(api_key=os.environ[<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>], timeout=<span class="hljs-number">120.0</span>)
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))</code></pre></div>
+<h2 id="the-document-a-team-memo-that-lost-its-formatting">测试文档：一份丢失格式的团队备忘录</h2>
+<p>测试文档是一份关于构建系统迁移的备忘录，正好处于到达纯文本收件箱时的状态：段落被硬换行打断，一句 shell 命令单独成行，两段列表既没有项目符号也没有编号，一段警告没有任何标记表明它是警告。文本从一个固定版本的 gist 拉取，以保证本实战示例的数据可复现。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">GIST = (
+    <span class="hljs-string">&quot;https://gist.githubusercontent.com/eugene-shvarts/6df7daf97233bf92bcdd6b386a0fa561&quot;</span>
+    <span class="hljs-string">&quot;/raw/5da03690611fb6ddcbaabdb91fb9f91d9751b113/build-memo.txt&quot;</span>
+)
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">fetch_document</span>(<span class="hljs-params">url: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    request = urllib.request.Request(url, headers={<span class="hljs-string">&quot;User-Agent&quot;</span>: <span class="hljs-string">&quot;typesafe-cookbook/1.0&quot;</span>})
+    <span class="hljs-keyword">with</span> urllib.request.urlopen(request) <span class="hljs-keyword">as</span> response:
+        <span class="hljs-keyword">return</span> response.read().decode()
+
+
+RAW = fetch_document(GIST)
+<span class="hljs-built_in">print</span>(RAW[:<span class="hljs-number">560</span>])</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">Migration to the new build system
+
+Hi everyone, quick heads up about the build system migration that is
+happening next week. We have been running the new pipeline in shadow
+mode for three weeks and the results look solid, so it is time to
+make the switch for real.
+
+What changes for you
+
+The old make targets keep working until the end of the month. The new
+entrypoint is a single command that wraps everything, including the
+docs build that used to be separate.
+
+bun run build
+
+Generated artifacts no longer need to be committed. The new pipeline
+uploads them</code></pre></div>
+<p>切行、追踪空行、为每行打 id 都在代码里完成，不涉及模型。每行得到一个短 id（<code>L014| </code>）；这些 id 是普通文本，模型作为上下文的一部分读取它们，问题与答案都通过这些 id 引用各行（与<a href="../cookbook-semantic-find/">语义搜索实战示例</a>使用同一套方案）。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">to_lines</span>(<span class="hljs-params">text: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]:
+    lines, gap = [], <span class="hljs-literal">False</span>
+    <span class="hljs-keyword">for</span> raw <span class="hljs-keyword">in</span> text.split(<span class="hljs-string">&quot;\n&quot;</span>):
+        stripped = re.sub(<span class="hljs-string">r&quot;[\t ]+&quot;</span>, <span class="hljs-string">&quot; &quot;</span>, raw).strip()
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> stripped:
+            gap = <span class="hljs-built_in">bool</span>(lines)  <span class="hljs-comment"># a leading blank is not a break</span>
+            <span class="hljs-keyword">continue</span>
+        lines.append({<span class="hljs-string">&quot;text&quot;</span>: stripped, <span class="hljs-string">&quot;gap&quot;</span>: gap})
+        gap = <span class="hljs-literal">False</span>
+    <span class="hljs-keyword">return</span> lines
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">tag</span>(<span class="hljs-params">items: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>], prefix: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;\n&quot;</span>.join(
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">chr</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">if</span> item[<span class="hljs-string">&#x27;gap&#x27;</span>] <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;&#x27;</span>}</span><span class="hljs-subst">{prefix}</span><span class="hljs-subst">{i:03d}</span>| <span class="hljs-subst">{item[<span class="hljs-string">&#x27;text&#x27;</span>]}</span>&quot;</span>
+        <span class="hljs-keyword">for</span> i, item <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(items)
+    )
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">line_id</span>(<span class="hljs-params">i: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;L<span class="hljs-subst">{i:03d}</span>&quot;</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">block_id</span>(<span class="hljs-params">i: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;B<span class="hljs-subst">{i:03d}</span>&quot;</span>
+
+
+LINES = to_lines(RAW)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(LINES)}</span> non-blank lines. The model sees, e.g.:&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n&quot;</span>.join(tag(LINES, <span class="hljs-string">&quot;L&quot;</span>).splitlines()[<span class="hljs-number">19</span>:<span class="hljs-number">24</span>]))</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">28 non-blank lines. The model sees, e.g.:
+L013| The cutover touches three teams, so check whether you are on this
+L014| list before you plan anything for Monday:
+L015| The platform team
+L016| The web client team
+L017| Whoever still owns the release tooling</code></pre></div>
+<h2 id="pass-1-stitching-split-sentences">Pass 1：拼接断句</h2>
+<p>每一对相邻行问一个 Noul（是非题）问题，全部放进同一次请求；中间隔有空行的相邻行对会被跳过。问题被刻意设计得很窄（&quot;这一行是不是接着上一句？&quot;），它接近文本本身的一个客观事实。措辞的选择以及合并阈值的推导过程都放在附录中。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">join_question</span>(<span class="hljs-params">i: <span class="hljs-built_in">int</span></span>) -&gt; Noul:
+    <span class="hljs-keyword">return</span> Noul(
+        instructions=<span class="hljs-string">f&quot;Does line <span class="hljs-subst">{line_id(i)}</span> pick up mid-sentence, continuing a sentence left unfinished at the end of line <span class="hljs-subst">{line_id(i - <span class="hljs-number">1</span>)}</span>?&quot;</span>,
+        criteria=NoulCriteria(
+            true=<span class="hljs-string">&quot;The line starts in the middle of a sentence that began on the previous line - the line break tore the sentence apart&quot;</span>,
+            false=<span class="hljs-string">&quot;The line begins a new sentence, item, heading, or thought of its own&quot;</span>,
+        ),
+    )
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">stitch</span>(<span class="hljs-params">wording: <span class="hljs-built_in">str</span> = <span class="hljs-string">&quot;mid-sentence&quot;</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    make = join_question <span class="hljs-keyword">if</span> wording == <span class="hljs-string">&quot;mid-sentence&quot;</span> <span class="hljs-keyword">else</span> naive_join_question
+    questions = {line_id(i): make(i) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(LINES)) <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> LINES[i][<span class="hljs-string">&quot;gap&quot;</span>]}
+    started = perf_counter()
+    response = client.system_one(
+        state=tag(LINES, <span class="hljs-string">&quot;L&quot;</span>), questions=questions, model=TYPESAFE_MODEL
+    )
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;joins&quot;</span>: [
+            response.answers[line_id(i)].noul <span class="hljs-keyword">if</span> line_id(i) <span class="hljs-keyword">in</span> response.answers <span class="hljs-keyword">else</span> <span class="hljs-number">0.0</span>
+            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(LINES))
+        ],
+        <span class="hljs-string">&quot;seconds&quot;</span>: <span class="hljs-built_in">round</span>(perf_counter() - started, <span class="hljs-number">2</span>),
+        <span class="hljs-string">&quot;usage&quot;</span>: [response.usage.input_tokens, response.usage.output_tokens],
+    }
+
+
+result = stitch()
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">sum</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> LINES <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> l[<span class="hljs-string">&#x27;gap&#x27;</span>]) - <span class="hljs-number">1</span>}</span> pair questions, one request, &quot;</span>
+      <span class="hljs-string">f&quot;<span class="hljs-subst">{result[<span class="hljs-string">&#x27;seconds&#x27;</span>]}</span>s&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">16 pair questions, one request, 0.32s</code></pre></div>
+<p>合并的阈值取决于上一行是如何结尾的。在未结束的行（行末没有句末标点）之后，合并概率 ≥ 0.2 就把这两行合并；在出现终止标点（<code>.</code> <code>!</code> <code>?</code> <code>:</code> <code>;</code>）之后，阈值上调到 0.5。附录会逐步展示这两个数字背后的概率分布。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">JOIN_AFTER_DANGLING, JOIN_AFTER_TERMINAL = <span class="hljs-number">0.2</span>, <span class="hljs-number">0.5</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">ends_terminal</span>(<span class="hljs-params">text: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:
+    <span class="hljs-keyword">return</span> re.search(<span class="hljs-string">r&#x27;[.!?:;…][&quot;\&#x27;)\]]*$&#x27;</span>, text) <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">merge</span>(<span class="hljs-params">joins: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">float</span>]</span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]:
+    blocks = []
+    <span class="hljs-keyword">for</span> i, line <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(LINES):
+        bar = (
+            JOIN_AFTER_TERMINAL
+            <span class="hljs-keyword">if</span> i <span class="hljs-keyword">and</span> ends_terminal(LINES[i - <span class="hljs-number">1</span>][<span class="hljs-string">&quot;text&quot;</span>])
+            <span class="hljs-keyword">else</span> JOIN_AFTER_DANGLING
+        )
+        <span class="hljs-keyword">if</span> blocks <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> line[<span class="hljs-string">&quot;gap&quot;</span>] <span class="hljs-keyword">and</span> joins[i] &gt;= bar:
+            blocks[-<span class="hljs-number">1</span>][<span class="hljs-string">&quot;text&quot;</span>] += <span class="hljs-string">&quot; &quot;</span> + line[<span class="hljs-string">&quot;text&quot;</span>]
+            blocks[-<span class="hljs-number">1</span>][<span class="hljs-string">&quot;lines&quot;</span>].append(i)
+        <span class="hljs-keyword">else</span>:
+            blocks.append({<span class="hljs-string">&quot;text&quot;</span>: line[<span class="hljs-string">&quot;text&quot;</span>], <span class="hljs-string">&quot;lines&quot;</span>: [i], <span class="hljs-string">&quot;gap&quot;</span>: line[<span class="hljs-string">&quot;gap&quot;</span>]})
+    <span class="hljs-keyword">return</span> blocks
+
+
+blocks = merge(result[<span class="hljs-string">&quot;joins&quot;</span>])
+healed = <span class="hljs-built_in">len</span>(LINES) - <span class="hljs-built_in">len</span>(blocks)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(LINES)}</span> lines -&gt; <span class="hljs-subst">{<span class="hljs-built_in">len</span>(blocks)}</span> blocks (<span class="hljs-subst">{healed}</span> line breaks healed)&quot;</span>)
+<span class="hljs-keyword">for</span> i, block <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(blocks):
+    n = <span class="hljs-built_in">len</span>(block[<span class="hljs-string">&quot;lines&quot;</span>])
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{block_id(i)}</span>  <span class="hljs-subst">{n}</span> line<span class="hljs-subst">{<span class="hljs-string">&#x27;s&#x27;</span> <span class="hljs-keyword">if</span> n &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27; &#x27;</span>}</span>  <span class="hljs-subst">{block[<span class="hljs-string">&#x27;text&#x27;</span>][:<span class="hljs-number">62</span>]}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">28 lines -&gt; 17 blocks (11 line breaks healed)
+B000  1 line   Migration to the new build system
+B001  4 lines  Hi everyone, quick heads up about the build system migration t
+B002  1 line   What changes for you
+B003  3 lines  The old make targets keep working until the end of the month. 
+B004  1 line   bun run build
+B005  3 lines  Generated artifacts no longer need to be committed. The new pi
+B006  2 lines  The cutover touches three teams, so check whether you are on t
+B007  1 line   The platform team
+B008  1 line   The web client team
+B009  1 line   Whoever still owns the release tooling
+B010  1 line   Things to do before Monday
+B011  1 line   Update your local toolchain to version 2.4 or later
+B012  1 line   Delete the old build cache directory
+B013  1 line   Run the doctor script and fix anything it flags
+B014  3 lines  If the doctor script reports a red result on the toolchain che
+B015  2 lines  As Dana put it in the kickoff, &quot;a migration nobody notices is 
+B016  1 line   Thanks, and shout if anything looks off.</code></pre></div>
+<h2 id="pass-2-classifying-blocks">Pass 2：块的分类</h2>
+<p>每个拼接块都会收到一个 Choice 问题：<em>这段内容属于什么类型？</em>。这三份字典，外加下面 <code>classify_questions</code> 中 step 问题的真假判定标准，就是分类器的全部规格说明。没有别的逻辑。想把这条流水线适配到自己的文档上，就去改这几段描述。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">TYPE_CRITERIA = {
+    <span class="hljs-string">&quot;heading&quot;</span>: <span class="hljs-string">&quot;A short label or title that names the document or the section that follows it - not a full sentence of content&quot;</span>,
+    <span class="hljs-string">&quot;paragraph&quot;</span>: <span class="hljs-string">&quot;Running prose: one or more complete sentences of explanatory or narrative text&quot;</span>,
+    <span class="hljs-string">&quot;list_item&quot;</span>: <span class="hljs-string">&quot;One entry in a list of parallel items - an ingredient, a feature, a task, an attendee; reads as one of several sibling entries&quot;</span>,
+    <span class="hljs-string">&quot;quote&quot;</span>: <span class="hljs-string">&quot;Words attributed to a person or source - quoted speech, a citation, an excerpt someone else wrote&quot;</span>,
+    <span class="hljs-string">&quot;code&quot;</span>: <span class="hljs-string">&quot;Computer code, a shell command, terminal output, or a config snippet meant to be read verbatim&quot;</span>,
+    <span class="hljs-string">&quot;callout&quot;</span>: <span class="hljs-string">&quot;A warning, tip, or important note that interrupts the flow to flag something the reader must not miss&quot;</span>,
+}
+HLEVEL_CRITERIA = {
+    <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">&quot;The title of the whole document&quot;</span>,
+    <span class="hljs-string">&quot;section&quot;</span>: <span class="hljs-string">&quot;A major section heading within the document&quot;</span>,
+    <span class="hljs-string">&quot;subsection&quot;</span>: <span class="hljs-string">&quot;A minor heading nested under a section&quot;</span>,
+}
+CALLOUT_CRITERIA = {
+    <span class="hljs-string">&quot;note&quot;</span>: <span class="hljs-string">&quot;Neutral extra information the reader should be aware of&quot;</span>,
+    <span class="hljs-string">&quot;tip&quot;</span>: <span class="hljs-string">&quot;A helpful suggestion or shortcut that makes things easier&quot;</span>,
+    <span class="hljs-string">&quot;warning&quot;</span>: <span class="hljs-string">&quot;A caution about something that can go wrong or cause harm&quot;</span>,
+}</code></pre></div>
+<p>下面全是胶水代码：构造问题，发一次请求，把答案读回来。如果 type 字段返回 <code>heading</code>，渲染器就需要一个标题层级；如果返回 <code>list_item</code>，就要知道顺序是否重要；如果返回 <code>callout</code>，就要知道是哪一种。类型在请求时尚不可知，等类型结果回来再问就意味着第三轮往返，所以配套问题在同一请求里一并提前问出。不过大部分答案最终用不上：段落（paragraph）这种类型的 step 概率毫无意义，被直接忽略。多加一个问题几乎没什么代价，因为 state 占了请求里绝大部分 token，反正无论如何都要发一次；而多走一次往返则要额外增加整整一次请求的延迟。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">HEADING_MAX_CHARS = <span class="hljs-number">90</span>  <span class="hljs-comment"># longer blocks can&#x27;t render as headings, so don&#x27;t ask</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">classify_questions</span>(<span class="hljs-params">texts: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    questions = {}
+    <span class="hljs-keyword">for</span> i, text <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(texts):
+        bid = block_id(i)
+        questions[<span class="hljs-string">f&quot;type_<span class="hljs-subst">{bid}</span>&quot;</span>] = Choice(
+            instructions=<span class="hljs-string">f&quot;What kind of content is block <span class="hljs-subst">{bid}</span>?&quot;</span>, criteria=TYPE_CRITERIA
+        )
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(text) &lt;= HEADING_MAX_CHARS:
+            questions[<span class="hljs-string">f&quot;hlevel_<span class="hljs-subst">{bid}</span>&quot;</span>] = Choice(
+                instructions=<span class="hljs-string">f&quot;As a heading, what level would block <span class="hljs-subst">{bid}</span> occupy in this document&#x27;s structure?&quot;</span>,
+                criteria=HLEVEL_CRITERIA,
+            )
+        questions[<span class="hljs-string">f&quot;step_<span class="hljs-subst">{bid}</span>&quot;</span>] = Noul(
+            instructions=<span class="hljs-string">f&quot;Is block <span class="hljs-subst">{bid}</span> an instruction in a sequence where the order of the items matters?&quot;</span>,
+            criteria=NoulCriteria(
+                true=<span class="hljs-string">&quot;It is one step of a procedure - the items around it must happen in order&quot;</span>,
+                false=<span class="hljs-string">&quot;Order is irrelevant - it is a loose collection, or not a list item at all&quot;</span>,
+            ),
+        )
+        questions[<span class="hljs-string">f&quot;callout_<span class="hljs-subst">{bid}</span>&quot;</span>] = Choice(
+            instructions=<span class="hljs-string">f&quot;What kind of aside is block <span class="hljs-subst">{bid}</span>?&quot;</span>, criteria=CALLOUT_CRITERIA
+        )
+    <span class="hljs-keyword">return</span> questions
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">classify</span>(<span class="hljs-params">texts: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>], gaps: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">bool</span>]</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    tagged = tag([{<span class="hljs-string">&quot;text&quot;</span>: t, <span class="hljs-string">&quot;gap&quot;</span>: g} <span class="hljs-keyword">for</span> t, g <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(texts, gaps)], <span class="hljs-string">&quot;B&quot;</span>)
+    questions = classify_questions(texts)
+    started = perf_counter()
+    response = client.system_one(state=tagged, questions=questions, model=TYPESAFE_MODEL)
+    judgments = []
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(texts)):
+        bid = block_id(i)
+        type_answer = response.answers[<span class="hljs-string">f&quot;type_<span class="hljs-subst">{bid}</span>&quot;</span>]
+        hlevel = response.answers.get(<span class="hljs-string">f&quot;hlevel_<span class="hljs-subst">{bid}</span>&quot;</span>)
+        judgments.append(
+            {
+                <span class="hljs-string">&quot;type&quot;</span>: type_answer.choice,
+                <span class="hljs-string">&quot;confidence&quot;</span>: type_answer.confidence,
+                <span class="hljs-string">&quot;probabilities&quot;</span>: type_answer.probabilities,
+                <span class="hljs-string">&quot;hlevel&quot;</span>: hlevel.choice <span class="hljs-keyword">if</span> hlevel <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;section&quot;</span>,
+                <span class="hljs-string">&quot;step&quot;</span>: response.answers[<span class="hljs-string">f&quot;step_<span class="hljs-subst">{bid}</span>&quot;</span>].noul,
+                <span class="hljs-string">&quot;callout&quot;</span>: response.answers[<span class="hljs-string">f&quot;callout_<span class="hljs-subst">{bid}</span>&quot;</span>].choice,
+            }
+        )
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;judgments&quot;</span>: judgments,
+        <span class="hljs-string">&quot;n_questions&quot;</span>: <span class="hljs-built_in">len</span>(questions),
+        <span class="hljs-string">&quot;seconds&quot;</span>: <span class="hljs-built_in">round</span>(perf_counter() - started, <span class="hljs-number">2</span>),
+        <span class="hljs-string">&quot;usage&quot;</span>: [response.usage.input_tokens, response.usage.output_tokens],
+    }
+
+
+classified = classify([b[<span class="hljs-string">&quot;text&quot;</span>] <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> blocks], [b[<span class="hljs-string">&quot;gap&quot;</span>] <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> blocks])
+<span class="hljs-keyword">for</span> block, judgment <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(blocks, classified[<span class="hljs-string">&quot;judgments&quot;</span>]):
+    block.update(judgment)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{classified[<span class="hljs-string">&#x27;n_questions&#x27;</span>]}</span> questions about <span class="hljs-subst">{<span class="hljs-built_in">len</span>(blocks)}</span> blocks, one request, &quot;</span>
+      <span class="hljs-string">f&quot;<span class="hljs-subst">{classified[<span class="hljs-string">&#x27;seconds&#x27;</span>]}</span>s\n&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;block&#x27;</span>:&lt;<span class="hljs-number">6</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;type&#x27;</span>:&lt;<span class="hljs-number">11</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;conf&#x27;</span>:&lt;<span class="hljs-number">6</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;companion used&#x27;</span>:&lt;<span class="hljs-number">18</span>}</span>text&quot;</span>)
+<span class="hljs-keyword">for</span> i, b <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(blocks):
+    companion = {
+        <span class="hljs-string">&quot;heading&quot;</span>: <span class="hljs-string">f&quot;level=<span class="hljs-subst">{b[<span class="hljs-string">&#x27;hlevel&#x27;</span>]}</span>&quot;</span>,
+        <span class="hljs-string">&quot;list_item&quot;</span>: <span class="hljs-string">f&quot;step=<span class="hljs-subst">{b[<span class="hljs-string">&#x27;step&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>&quot;</span>,
+        <span class="hljs-string">&quot;callout&quot;</span>: <span class="hljs-string">f&quot;kind=<span class="hljs-subst">{b[<span class="hljs-string">&#x27;callout&#x27;</span>]}</span>&quot;</span>,
+    }.get(b[<span class="hljs-string">&quot;type&quot;</span>], <span class="hljs-string">&quot;-&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{block_id(i):&lt;<span class="hljs-number">6</span>}</span><span class="hljs-subst">{b[<span class="hljs-string">&#x27;type&#x27;</span>]:&lt;<span class="hljs-number">11</span>}</span><span class="hljs-subst">{b[<span class="hljs-string">&#x27;confidence&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>  <span class="hljs-subst">{companion:&lt;<span class="hljs-number">18</span>}</span>&quot;</span>
+          <span class="hljs-string">f&quot;<span class="hljs-subst">{b[<span class="hljs-string">&#x27;text&#x27;</span>][:<span class="hljs-number">46</span>]}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">62 questions about 17 blocks, one request, 0.51s
+
+block type       conf  companion used    text
+B000  heading    0.99  level=title       Migration to the new build system
+B001  paragraph  0.98  -                 Hi everyone, quick heads up about the build sy
+B002  heading    0.75  level=section     What changes for you
+B003  paragraph  0.89  -                 The old make targets keep working until the en
+B004  code       1.00  -                 bun run build
+B005  paragraph  0.90  -                 Generated artifacts no longer need to be commi
+B006  paragraph  0.43  -                 The cutover touches three teams, so check whet
+B007  list_item  0.99  step=0.15         The platform team
+B008  list_item  1.00  step=0.16         The web client team
+B009  list_item  0.99  step=0.12         Whoever still owns the release tooling
+B010  heading    0.96  level=section     Things to do before Monday
+B011  list_item  0.98  step=0.86         Update your local toolchain to version 2.4 or 
+B012  list_item  0.99  step=0.87         Delete the old build cache directory
+B013  list_item  0.92  step=0.90         Run the doctor script and fix anything it flag
+B014  callout    0.65  kind=warning      If the doctor script reports a red result on t
+B015  quote      0.99  -                 As Dana put it in the kickoff, &quot;a migration no
+B016  paragraph  0.92  -                 Thanks, and shout if anything looks off.</code></pre></div>
+<p>每个块的判定都列在那张表里，companion 列展示了提前问出的答案各自派上了什么用场：「Things to do before Monday」下面三行的 step 概率都在 0.9 附近（最终渲染成有序列表），那三行介绍 team 的项 step 落在 0.1 附近（用项目符号），而那段没有额外标记、只提到 doctor script 的警告被归为 kind 为 <code>warning</code> 的 callout。附录会去分析模型信心不足的那个块。</p>
+<h2 id="rendering">Rendering</h2>
+<p>代码根据这些判定把页面拼出来。相邻的列表项会合并成一个列表，当这些项的 step 概率均值不低于 0.5 时，就用有序编号。这个阈值是组一级的决策，没有任何单一问题会直接问到它。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">STEP_THRESHOLD = <span class="hljs-number">0.5</span>
+HEADING_MARK = {<span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">&quot;#&quot;</span>, <span class="hljs-string">&quot;section&quot;</span>: <span class="hljs-string">&quot;##&quot;</span>, <span class="hljs-string">&quot;subsection&quot;</span>: <span class="hljs-string">&quot;###&quot;</span>}
+CALLOUT_MARK = {<span class="hljs-string">&quot;note&quot;</span>: <span class="hljs-string">&quot;NOTE&quot;</span>, <span class="hljs-string">&quot;tip&quot;</span>: <span class="hljs-string">&quot;TIP&quot;</span>, <span class="hljs-string">&quot;warning&quot;</span>: <span class="hljs-string">&quot;WARNING&quot;</span>}
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">to_markdown</span>(<span class="hljs-params">blocks: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-built_in">str</span>:
+    groups = []
+    <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> blocks:
+        <span class="hljs-keyword">if</span> b[<span class="hljs-string">&quot;type&quot;</span>] <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;list_item&quot;</span>, <span class="hljs-string">&quot;code&quot;</span>) <span class="hljs-keyword">and</span> groups <span class="hljs-keyword">and</span> groups[-<span class="hljs-number">1</span>][<span class="hljs-number">0</span>] == b[<span class="hljs-string">&quot;type&quot;</span>]:
+            groups[-<span class="hljs-number">1</span>][<span class="hljs-number">1</span>].append(b)
+        <span class="hljs-keyword">else</span>:
+            groups.append((b[<span class="hljs-string">&quot;type&quot;</span>], [b]))
+    parts = []
+    <span class="hljs-keyword">for</span> kind, items <span class="hljs-keyword">in</span> groups:
+        <span class="hljs-keyword">if</span> kind == <span class="hljs-string">&quot;list_item&quot;</span>:
+            ordered = <span class="hljs-built_in">sum</span>(b[<span class="hljs-string">&quot;step&quot;</span>] <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> items) / <span class="hljs-built_in">len</span>(items) &gt;= STEP_THRESHOLD
+            parts.append(<span class="hljs-string">&quot;\n&quot;</span>.join(
+                <span class="hljs-string">f&quot;<span class="hljs-subst">{n + <span class="hljs-number">1</span>}</span>. <span class="hljs-subst">{b[<span class="hljs-string">&#x27;text&#x27;</span>]}</span>&quot;</span> <span class="hljs-keyword">if</span> ordered <span class="hljs-keyword">else</span> <span class="hljs-string">f&quot;- <span class="hljs-subst">{b[<span class="hljs-string">&#x27;text&#x27;</span>]}</span>&quot;</span>
+                <span class="hljs-keyword">for</span> n, b <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(items)
+            ))
+        <span class="hljs-keyword">elif</span> kind == <span class="hljs-string">&quot;code&quot;</span>:
+            parts.append(<span class="hljs-string">&quot;```\n&quot;</span> + <span class="hljs-string">&quot;\n&quot;</span>.join(b[<span class="hljs-string">&quot;text&quot;</span>] <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> items) + <span class="hljs-string">&quot;\n```&quot;</span>)
+        <span class="hljs-keyword">elif</span> kind == <span class="hljs-string">&quot;heading&quot;</span>:
+            parts.append(<span class="hljs-string">f&quot;<span class="hljs-subst">{HEADING_MARK[items[<span class="hljs-number">0</span>][<span class="hljs-string">&#x27;hlevel&#x27;</span>]]}</span> <span class="hljs-subst">{items[<span class="hljs-number">0</span>][<span class="hljs-string">&#x27;text&#x27;</span>]}</span>&quot;</span>)
+        <span class="hljs-keyword">elif</span> kind == <span class="hljs-string">&quot;quote&quot;</span>:
+            parts.append(<span class="hljs-string">f&quot;&gt; <span class="hljs-subst">{items[<span class="hljs-number">0</span>][<span class="hljs-string">&#x27;text&#x27;</span>]}</span>&quot;</span>)
+        <span class="hljs-keyword">elif</span> kind == <span class="hljs-string">&quot;callout&quot;</span>:
+            parts.append(<span class="hljs-string">f&quot;&gt; [!<span class="hljs-subst">{CALLOUT_MARK[items[<span class="hljs-number">0</span>][<span class="hljs-string">&#x27;callout&#x27;</span>]]}</span>]\n&gt; <span class="hljs-subst">{items[<span class="hljs-number">0</span>][<span class="hljs-string">&#x27;text&#x27;</span>]}</span>&quot;</span>)
+        <span class="hljs-keyword">else</span>:
+            parts.append(items[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;text&quot;</span>])
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;\n\n&quot;</span>.join(parts) + <span class="hljs-string">&quot;\n&quot;</span>
+
+
+markdown = to_markdown(blocks)
+<span class="hljs-built_in">print</span>(markdown)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"># Migration to the new build system
+
+Hi everyone, quick heads up about the build system migration that is happening next week. We have been running the new pipeline in shadow mode for three weeks and the results look solid, so it is time to make the switch for real.
+
+## What changes for you
+
+The old make targets keep working until the end of the month. The new entrypoint is a single command that wraps everything, including the docs build that used to be separate.
+
+```
+bun run build
+```
+
+Generated artifacts no longer need to be committed. The new pipeline uploads them to the registry automatically, and checking them in just creates merge conflicts.
+
+The cutover touches three teams, so check whether you are on this list before you plan anything for Monday:
+
+- The platform team
+- The web client team
+- Whoever still owns the release tooling
+
+## Things to do before Monday
+
+1. Update your local toolchain to version 2.4 or later
+2. Delete the old build cache directory
+3. Run the doctor script and fix anything it flags
+
+&gt; [!WARNING]
+&gt; If the doctor script reports a red result on the toolchain check, do not proceed with the migration. Ping the infra channel first and we will sort it out together.
+
+&gt; As Dana put it in the kickoff, &quot;a migration nobody notices is the only kind worth shipping.&quot;
+
+Thanks, and shout if anything looks off.</code></pre></div>
+<p>上面每个字都来自输入。流水线所决定的，仅是边界、类型和标记。</p>
+<h1 id="open-it-in-the-playground">在 playground 中打开</h1>
+<p>此分享链接包含拼接后的 blocks 以及完整的 pass-2 问题 (question) 集。打开它即可实时重新运行分类。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">playground_link = make_playground_link(
+    tag(blocks, <span class="hljs-string">&quot;B&quot;</span>),
+    classify_questions([b[<span class="hljs-string">&quot;text&quot;</span>] <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> blocks]),
+    models=[TYPESAFE_MODEL],
+)
+display(Markdown(<span class="hljs-string">f&quot;🔗 [Open the stitched memo + questions in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>))</code></pre></div>
+<p><a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIAQgAxkA++AsgJYDmATgIYo0RL4oScAWC+SBAHd8AIxg0ANmHwBnAJ6yUCOAB0k60iQCMlABI18CAG4IG89ggA0+AI4SoAa3x8mYWfhgAHfE1EQYFF5+cSkZBSUVfDh6ZlZ2XhZ8Gg8eJi8vZBokOgEsIKEEBEcAOnwAdX400zEijgYYJCRs3JQ+PJEvGkzJbP5suTTIETgIMH4AMwgGXgYi-ELijyYkGTb+OdkYSRQPSQgIZ1kIXrAbY+SglM4aRE5uOCZHfnW5IRoUKB58KZm5pkkJXUmjIACZKOU0kEvis6AgPL98BYYMCkFoAMyUNDtE4yR7PThMBhw3b4Z4IHxCaaOFqeVBSYJGVb4CATRmjVA8MrY-iCETIFDmLwQbJXZZyFqSfhQCBwR7MtpJITMLweExmeRtFo2bJQSQwMC016QKAeULSRJBGCyBBrbiifg2rxElgIIEaNFkAAslHE9UaYgk0lRWgArJQAOLIMyumRE1gTJhQUlIbj7HJmPK2+61fAyuUfZRgbntPn4Lo9PqeLz7NwedZwHOvOZ0FKC+S+QKylg0KAAyTyGwrGRfBBOI18RsDABW1uh-2UHkQxOl7AmvWTsndIJIADYse1YFxTDMuDBR-WeHMXggmHBZOduKOnAs+OsZsjfHMWRwtXs27Uvz8J+NYrL4SCajwtKIlQ7BgEw8i4DuADsB78KBKC-I2yh3juAAcaELAgoh5r0AqcLeaieiQACcEI8BA6ozEoUiSCyQhIJeGwIFKTA2vcJwtCGOgkAeLT1twkCAdM-CwasCHCdouj4AAql48HKEiAQzPsfZsVwJwwgMXD4CeshsBwoIlF6LI6a6DAgto4L4AAIjxCCaa8uKBmEeZJu0hpzMm0zyI5mL4AASgGxrQFwzFQAw3RBMOPw0Jg4GQbSHw-JITB0LIik+vgACSbIxcF8WJV4QRzMKDCkkw+BzDImzbEECSvAZkhGRwz6ODYUmpkEXgMNARQyO8bTsrEPbsGUAAKE79EgEzMHmaRNDxqUMEo4ETfw7ySGxxz1ZcLKBPcJJ8Aw26eto4b4AAgh4LkrI1XgXdlxntDSTishMNiqCAjUxIws0cKm-hgB2Q29vCyRcT+A5ktkE3TFNshQRkLRAiAin7vg2IrI4D57YMARXGyKyZTk+D7IcHj-SUIA2CAI2ytVsgYNgeCEMAQMoPImQAPpaCQQMEPzICC5kEv4EDXwilACBA4DIDZEoDTJhZBW80DkJJDSzKsnm7DKKgCNiLpzhiwA-Kr8sgAlHxmDQTBy1LriGjkctA895OnblDpsdMNwoFKloCHe8PlfA5Gh68Nrax1UI-Cc+xCB42UALQCBAyU-Nsx0CsgyssmyMqoAKDtA86zBg14PC+yAUVNLS7M2gQli2dEMmm3ANYeY6JdIMrjNslgoFICwIU99PDBxDQNTKNgNcgL0SjCy7ah6yAADyghMu2yQcI1G-tWydf9lt28eLnYEtM1NACkOPy3igMBzK-KB8f14G+Cgc24wEAAG4mq3ncL4Rmh8TY2hPACCUohei0wFIleEa97D5xVrvco0xIEsEFDQcQRYczvTMMcDgodjifzLrnTBJDZCZDHDwV+UAPjgyHBwLAysGDVTkLKBA3ceL8WVFgteMpxjNwAMIc0CJmCR1hfCDB4mxfM8ozgUQYDEaeIdAgfRQDYUOjVK4THoHIZoGQPLRFvBbEyDpwFuFMmYUQPYd5qz0vsQIzd-ZCCJM0HINhWBeEMTMW4dUf4WyGi8VOoozANE5oydcEARAmXXHlfhiAtS02bBAzMcA5x5yCDEWQusAC+pS1Y8ClKYSQosyDi15lLGW2CCAKwYnDNeGtBTnniJxbx4ovbalfEkapW0qTbBkEg6ANt6ksigLALwHZvrXBNHHVAAByDwmsemfwQPbFmjtnbKESu7RpAsPhSmbjyMOEcTavCEAxCOqzECoDXknXp3johMGnFQscvSXAQNpJNKCv4ArQDWSgN5MBRDvIsp87RodBm00EJEGQjRxgzEarC9gQNylq0iF4OpZAPYCyFi0x2qZtidM4t05OfTd7FTNNbfAYt-5dK1v8gYWKED2FLgda60T+B4MzHc9ot8vmAPIfs9xiVjluxJdLBo5KgbFTFD+R0ygfAm3eqNZWYBdn4Fzq8cVRIAjMmyvk3aaRLEcAGMKhyBygaJkkDaZue8GAYstjQBe7ljArCCLnL64p6b8RlEdP5FkQmFKUefS4UQkj9lxRUw5-YKZEoaZLUlstd6Kw6Y69WNKOU62bgbIIRsZDavMuMS2UyXx23EbK12pzM0gCic3AAcggQIzA2L5DWtkLC4NGT-E9ZjAIFp7FMF8d+Vka8gmfL4JILwExthyBgHQOELEEhUIYvVI8kd8QxxBflIwfFn4OrVtO-xdBPl9kCBZXw-gLrHEyceyOfYOB0G4KI2moc738TSFopNatmlEu0Aq5pzdc3K2pdsulutWkgFLSjY2FczbkWuLWmZOhpWHMbSchVSKb2739mOwOfgtoJwudEpI09ECI2efHU87RsWgqSFMI6ySs4BujY1FdR05AjzLibSu5tIX5qvg3Juu9W7XvLKNTu6qe6jG-PmQemkbRV1HvDE2k9crTzih2UO89F7L3yGvc+W9lA70QwffgqClmnzpgBE2V9w1sXFffW1OQn4vyURMd+uzv6-04QAoBRQwEjuWNAoVbI4ExmOkQ5BuRUHP11mrehyqkN4OWIAxKxDswmTITtbdzFtK0LsDALB4QmFfFYew3poXuFmD4S+wRh9hEHVGsocRYwssyIHnImYCjX6YxUf3dRgSzDaIQRTfRUbjFrjMbICxmQik2KCHY7ijiTwuNYG4lNnGvEkYWH4oZQSo1hPRv6wpNGrhVwXt4UkrwkkpO4Gk3IbWsmtHaCOvJBShrRBSGU5NQMCVgYg2S5ulLJCwdpb0hDjtGVW2mSysg2g2WFp6Q+rlgneXadfGYQVtlPWiv6NZpcBCpUNpdgRs5iqYBZdVZbbuBLy5KPZnqg1RqxUU6-GamQFqCnWsyN5knZg17Otdbvd1nrrjermNUm7ga1VnwOKG9OEb2BRsB2fAC28AG+COsBw7niUAQ-p5BnN7SYP5vZdj9giP9ap3Lezs91bMPMq0NoXDCt8Pyvp223enbu0IL7Y1Ad0xHj-JyW4TMY6Jm5inUSWLc7ugLp4su1dWwN3wn+Tu9G+7FRFKeEe8Sp7zIS-zVeoSJ273-L8BTDJHk33F78p+79o1f3DaYNaKoRId54sdqBrQoJIfZsQ9B7Bat7fwZLS71G7PRMYaZaj0fvunb++bfgT2gKfYnbI0EIOlHTzUcjnRo9-BGMWwTixrXbGggcYztxw1vHC4Cc0+bYTaGtPibVpJlUaTRDWTduBTBALuGBGYFTVcAeKUDTITHTCeTAKeGecwOeIkUzG8VefNSzbeN1DrVANA3HWNVzF0dzONe8V-B+HzW0Z+VAV+ALFgILJRH+WQP+MCKnVYCLBxfBGLdneLHtRBZLI+NBdLR2TLEtHLMLfLORO0DnchUrfhGhfgOhKrBhWrFhJRNhH+Rrf+ZrXhIINrIRF1LrMRfNBRaRWRY5U2cYUbRdVRWUSbTRGbXRFAebHuRbFaZbVbKxRAG7LbHgpxBgPbW4cRVNY7RDHxM7AJG4YJHuK7eqG7KJSOWJR7BJF7DOHMD7Zvb7YdXJKAgHfOIHEpE3IGKpdUWpUfcfLLKfOHItR3fpJRIjGwB5EZCohYcdSZL3MEOZBZRzXgFZcFF5FATZOQeHXZDfI5JtCDajK5doVgcOWLRkB5E4K-IY6ufNVjeFb5X5OlAFNwIFD4EFRka-P-R2LYGFe-eFbIRFPfXIFFEhdFTMblOlUokAcHKoy3KHXeGHOoh3elRDZHLDNHEgUETHODTlJzG0fHMuB5InRke1dnY1PnaPY5WQSYrfCDJVZuZna4VnTVN3eTMafVb8HncnFQZYUadFM6S1IIEXZAE+cXC9R2KXLLWXTMeXH1JXC2FXS2NXCADXcNOlHXIovXXaA3BNY3EAIfBWcI83T4ltK3SfG3afR2WfBHefQ2RfStGgD3VfOtMEDE2nAPFtIPRDEPQUMPbAftFaKPIdWPUdBiRPSdadVPfNedE7RdLPY6ddTdfPZiXdT4C6NvQ9S8cvW8SvZkoGGvffSIvye9BIRvZ9ARXItvD9fAL9BYLvXIP9XvADAfN4kfMgdEaoqDFUv4ufHBBfVDU2X-GtbokgdEI0uVbfXfA42Mx2UjQMumCjEOU-RY8-aOBjdYm-ZjYePYtvJ-LjM6XOXXd-YuLTb-WssTNeAA9IIAx2EA2mDucApTUOaA-udTYeRcxAowZA-TVAozGYEzHsMzbAtWXA6zfA+zQg-osUi+csMgqUDzPnLzE+RgWgvzPjQLL+FgkLf+Tg4BSLCBaLPcuLJiBBcyJBWkVLdBfNCQnBKQghGQkhIrcsBQyhMrZQ1-TLGrIoOrLQhrSNPQzAHhVrARYwkRbrVUhWPrSwwbawkbJRMbATNRYcKbLRbIWbPRQIBbWs0xT7Hw9bfw+0bbGQXbVxMIo7cTOMmMugQJboS7Aea7SJLBFIh7eJZ7doV7LI3KT7FM1vX7fI6IQoopYHN4j44s0sn48dCsjUhlfU7DdEcE+HHHKEnlRnAnOE78LyD1EVMqXnCkiVNE5s6Yy3bEhlNVfEikQkznW0bnRkE1Kk81IpYXdIUXRk+1SXAEaXWzMK0JLOLkkwZXM6a4fkwUqUYUueUU5zcU6zQ3RNaU0HJ2OUolEsr4ifQ5csu3LHSsxDZDV3HUvUlHA0xs2KunU0sw80rtS03ta0iPW0rRe0qyuPAMzopPV08uNPLwDPJdfjNdXPLdQigOIMzbVOUMgYnINUM9KvS9aI4jOM+vB9JMwwiyicJIdMzMn9HMnvPvFwAsrqkDMlIlL0Zy5UpWFigtCE4tKsrUms5fC2T3Nfb0eak0nfMou4z5Q-Hs4OHuBYiONvC-Yc2AYYsmu-Cc1OKczOGct-fjBcr-JYjGs42uF0KTZuLc3IHciAoVKAvuNTOA48jm8eM8lAwzdAheW8rA7m9eNsKzFQZ8kQt81qj8tzb8igu+THACw0ICt+Jg0CxqVg9g0+SVLg0BHg2C7uWBBCxLZClBQgtLDBNQrLXBD1XLQhArOQ4rChHuahBgCrUiuQDQ+rHQ6isCfQ+ixARi0wnrcwti3eAbfReRPrOw8bPi1YASlw86Nw0Sjw8S7w7oNbaxGS3MEdIIkIg7WU5Sz5NSjSuI0OBIiJIIZItvVIwyxGEy1JMynIyyuS-7XaQHYpEHSpUZSo70OGoahGtylGyIgZO4lo1OGejo50hsmyaAPoxkv8fAU40YiEiYmnFsmYxYuYl4M-MnV8VYo+kc5WrYk7R4H5Zie-fY72XIYFb6NYmmjY-FaFF+uMhFGYIjPIVFOkT1F4j5SG84zVGG+eoGX4ka5Ghojyma7DGyag9BsXblGE-leE0K0nCK8kyg1E6ncwzE+KxnHEpKw+NnbVIkrnUkzKvnU1akoXK1fKhku1cq4qkwt1cqr1Kqv1Hk2q4NdXVcIU3Q4zFq2NCU5KKUmUnq5SpBgamo4amfUa9y8a6sitKmKtfoTykEr0XG1slBpax2C0wQ8PE+QdGPHax0-al0lPI6909PT0zPc6nPP0h9AvPdYM+60vMMp6ivc9NeNS29XvBvJ9X619f66EMCIG7Mnuf9fvIDeBrNBAIlUMZBp2bRtU3R5ex2Ca7Un-MTes7GkgUMCxwjQmg-bs4-Psm5O7KOejE4p+um8cpx9jdOacnOVmouQTE8pfdDV5CTXmwA-mxoOTIWvc0W1TDmCW0ZqW9nPTN6OW4zDAxWiie8x2R89WmXAg4+YglzS+L8m+X8w23zeg-zECxRC28Cjgm2qC+2qBOCwTeBF24Q1CsQoGDC8arCvLIhWQ0hfCkra60O8Or2si5haOjhGiuihJ9rezEwrMsw9xNOxDDOobGwp55RXixw-i5woS1w9woxMuySiu3wjbHMexWuhS-bJSs3Zu961urS8JJIvSnugyp7fuzIwe9JL7EengseruooyehyxBsMAp1BnRvBp3EAIEhs0MHy+o-BvHQK2EgVBEkRu+8VShnaep2hpnBhjVFK5htKkklQ9hqKzhnKmynhm1QqgR-NVk4RuXSqxXaqiRoNGNaR02WR6i+RguRR9qyU2HbJtRs3PJgp2otB3yjB-RtGwxqBXUkxrBkEup8+uKxalO5a0PNay0hxu0px0eva50-gZPGdCYY60670i6-xxQw-IvEJ54MJk9CMyJ6vd6mJhM0+eJ4epJ9vDMzvdgEG+M-MrJ1RosvcBNopoGdU0p53NN8ZusrG2a3cU1ltIjIm5p3ssms-SmocrpgB0cxkVjSOJml-WclqtmtZvlDdlcqZ+uGZmTOZ0AgU3cx2pZmAo8p97TaWzZgzWeHZhW1gO85Wo5mzR2OzTWxk989nXW65qKv8x+QC+54Cs2wly20LSC7gqLT5x2+Cn5oQlC92tCjLL2yQ326QsF3C7gIO1t8rO1iOxhcizQ4xKi7XZFlrVFpOzFlO7FyRdOqwrO2w7i+wibUl45QuubEuqlkxcuyxaS2xWSwI5l0I8wuU9lhga9Tl+I7SxI3SzyGJfl9I4yoV97Ie0VpacVgo8eqV+ymNxyhdzR6HVypNzV5V1Vmp3cDV-4pD7V594K4nREw1lEqnE1vNha-Ghnc1lnRhgk613VdKth5Eh17KwXXKl1gq-hjFQR0q+DkRzk318RnjAN+qmRxquR68hR-XSN5R6N1RjxNNLQXcRdxenz-45V8pms93LN4Ezr3dhLs0mxlaux9astraitxz8mat3wQ62dTxk67xs67PX0vPAJvaoJu6pIB677Z6yMqJ-tuvWJ764d+z7JVOQGid7vadzJwfbq+d5CbrvNRV5NgEspgxl9lfbNrQZCMbts7+g99GEmk-Npwczp2OWm2-Xph9ScgZ5moZucx9z-Z9kTCZ5WtcxuWZtubcsA4W5TMWlZoeIDseDZ88rZ8D683ZqDpWizVWvAk5l8s5pzEgy5ntPWzzW5rDgxB53D4LNggjt5ojmCkjmBMjhLCjt2whaj8Q2jzC+j7CxjwrZjyF4OqhNjkiuFyOrjxF3QuO2igT5vIT0RETw5HFx2PFzi7O6T3Okl-OslnRIuylzFal8xWl9TzbTTpl5xRS3Tpuk7Fu2IrlnSyV8zpIXugVxJGznKEVv627yt51qP4oqex2compIld7zz63Hrr73zxoxqZo4ZI-do8ZCdBs5CXo7wfow+4+rZcYuYEH85K+3ea5cmpY+5R5f+iFN5K41+nYj+vYiB3+0Ffv4YqFS4141+m48Bu4yBx4rgz3l+1R9zvPxU74xDBV4ppVnE0xoHoLvY3HaEnVohkKnEA1sh-W6KqhmVY0yxxL+h5Ly1rVKmFhjLu1rLygx13LtPuDVdaFdXqLJEqmyTK4+tfUNVarnTCDZho6uobBruGya7xoWubxdroEFz4fdbcRfPrpqTLQVMM201EbmQGB5xc8aUsCbkDFsZWlS2keObkj2cbx4nSE6Gtit3rZrdG2vjbbldRDqBl22h3UJo9W7YvUoyIAaJhd0HaPom8N3H7ADRSYPcp2GTcGrO1e7Q0tAeEHAYjRXYptfu67bHpuyP5kA8IbfEAPuyaYQ8Wmx7Acqe1h5goL27UMcoJgZrNOMqPHjOjxGaY8Cchg19v-mmbrkCe8zYnos17jLNYCFPHwVT10w08wOaBCDpgX2YwcWeT5Nnoh3Oa7RSCPPNDpQQw40Fja2HU2h-HNqEhReEFcXnbWI58QvmAhRCklko4K8AWIAIFmUxBb+1wWeFTIFCxDq69VC1WA3gi0oox0+OJvFFubw6wYtLeiNCwuJw4qSdCWPFBwnKDk7TZyW7vJTp7xU40s1OVdDTjXQgR10g+7iPTqHw5bh9jO3LMzu01j5WdJgCfbInILyK7VABE9Vzqo2z48QiUWg-PvDU+779vuyrZ6E0TXrl86YlfVxg2Twh19FkB9KCB4Cb5jEOUZ9ahk-0vqXJO+8xW+rfxWJPIn6g-OfqAxH4uD-k4-I4n-UfqOCZ+IDTskDlTCL92y9xPPNmCeJr8h+G-WViYPlbec8BY1JHMYJIDQjcG33ELufzC56sSG4Ve1hQxi7okKBz-bpElzxIpcrWn-G1hlV-6UkBcNJPKsAMIpFcPW4Ar1hySgHckququOAT+2DaIC+OYbGNKgMbBRsMBvVTQdoKXp6C12hAwbsY2qazVTB8ohVNQJAC0CS2NpRxkwNT4J42By3dxqtxAxeM4yXpHgZdX9I3VBBJeTtiIJO69s3qBnWvJ9Uu6JlruyfeQckw7yYtHuKgwDC9yhoiwtANEN0b1z5GeiUM6bLmr6Oww0QzBFguMsTWsFUZbBqcKmuewhQ9MSRTAtwc-hZpeCP8CBf7pMwCHvsghn7QnoLVCF-twhAHVZtENPKgdLy8tJISvBSGbxWetmU5kQU54XNPyOQn8uh356FDBeOHEoXhxebW1wsVQyXjUNI7fNZeSFP5lR2aGtD9Y7QnChr3kI9CdexFfoeoUN7DCkWYws3kYUmFMUsW1vMTriwk7DYHeWKGTnnQ0Tyd1hinQXspyWw7DK6fhfYYy0OHacG6sbCmPp0M4XD26JnTurdn0rHI+68fZJKZST6JMU+C3WktGmlYxtPhs9WiI2N5F6NOyq9RkevTaI1It61fGpjRBhEN94RlIiFCfRb57IAxluWYpiJvoDk76uIqfoA3OJD8iR79ccQkDJFZIRx0-TYsAwsm0iwGX9WkA8RZGr9uK7I7qu5wbG-CKUPIgEcX0wakDaIJ-SEt5MIaE4r+ItUhtKMpySpYuqIi+ma1f7Kj3+qVdLra1fyaj+cXDPLnSV4Zi4iqhooRjLkgHJAxGMAi0SGlq734RSKAtqmgKNytduqmA+UmQH8nb9BqbSQvsFPwGo0vR6bIbh2JBJdjdJBbLLCGLPL0DNq0eCMQtyjGTJ2BsYzgfGPW6JifGW3FMbtzTHBMhBmY47hE1AHRlzuBY6QT9RHa3cFB5Y4GukzzLPdCyGgkSBJIGnNikMf3PwQD1IHaASA3Yxpr2MPak0BxFNIcWezh5MYr2n9ZHu4LvbDNZxYzb6QuMdh48NyQMAWkSUUwbiDy4tKIQgRA5xD9xiQvZkeOZ4ni0hZ49nhePtFZDue18W8XkPvF0FHxxQ5gs83KGvN3x0FOsFLyWJ1DfmjQ0Qp7WsbATVeoLAOhC26Ha8iKYddjvr045DCeOIwpAE1lN4GEJh6LFCVb1YroTbemEgljnWJYrCXeBEt3kRLErbDveuwiiX7wOE7ZA+LLYPmyzOF5iYiF2S4ZHzYl8sOJcfDItxOFbmU+JP2VPoJLeElERJM9OpH9LenLsSmHokAMCNL6gjWiFfBSVXy6LY0-pqkuEYMUcFaTkRrfSaQl277X1oexkvvhpIcn4pnJfsL5FZOva2TjikMlGWDicmEiXJC-NycimZFoovJsDOFG505ExyApVjKlE2KkkqpjB2c4UZq1FEBVxRxDa-vFLynGs5RKU-NiXISqAkLWYxVURzmykajIqf-HLjqPy58N9Rp0kAJ6wqnesqpFXGqXyUtENUGpzVJqVcGa6tTnR6jUgCPJ6laN+pccg-kNNbFu4fRW7GZH9LMFBiZp9jBgQtJTiRjWBK0mMXWwbYbcm2fjHbq2wEEHSMxZecJj2yvmSCLpcTWQSWPfSKCKxygx6aoJrHD4XpSkWOUjUBEEDQFyMtVL9J9zFzQe+Y2kX2KPagz2mw4luU4OhmuDH8KPeGTOPZpY9KmZknmkuPx4riQhP7EnvuTJ6RD4CJ5QmbLTp5RxIOS8JnjgVSHHMqZGQy8XTOvEMy7++Qo2izIYKPMReVtMLMgHebVC+CTtcjn+KFke10KyvYFuLI6FMdwJMspQnLL14DDFZFFZWfBK4TqyE6aLIwFMOYq9Y9ZQMO3gsKNnLCnCZs4SsXWIlbDSJ1s8ifSwCIB9gixw03PRNdmMSPZzEq4VHxuGWcjK9wgObZ14kt4HOf2Jzun2EkfCo5v88DKPMKaAKWFIUleiCNklgjN6GcwHjoAxx716+uchEU-QLk7Ii5G8+Lk0n0mIYu+2I5YpXNOIEi4Glk3YqSKX4T97JCi94u3NOWdz6R3cpkVA1ZHeS5+HIikNHOGX-yvO48ySauxVbTyMcs84LmfwXlBUJRy8qUavNlFmDFR6UvgkwzVGHzMux8rUQVMAH0kSp7rNWDfLKp3yFc0A-1rVPgGa4mqdo5Dkoy-kxsOpXy5hboJ+4tjJqRjTNmNKGXQLRZwYqbnQLDHltFpPSxbtGNrZukNp3AnaS22ha4KDu+CrttmOIXnTaRX1IseQuDmUK7paTXMmDWrHPS6xOgMfCMsTb-KE5A3NsTjzZV6qAZjI8HuRhBn9kwZtGCGQ4NHEI9rJD+NOHDOnEPtvBc4jhauUCHKLgCX7InmorCG4zye2i9ZrEL0UJD6ehi6DuTPNynj4O54rWlz2sXkE+e1BexSbUYLPjnFYvbmR8y-HS8fxghHxfL2Fn+LOVPtfBBLM6Ga9pZrHKCZViiVR04JxveJeMKQlazk6Mwm3hkoNlcUcJTvE2fhLWHmyRKhSrQsUpWw+89hdsqiQ7MqVOyThIfVSucPqWhIWJPLaPvdl9l3Cco7SxPkHK6X8SBVYclzhHIGUVFo5+qn5QX3+FALWFJGGSd-TklpyxkkIrOWCSWWwjlkqy-Oc30Lk6StllA9vhiL2VYijJOIo5fiM2K1zE59c85Q+ibkUjjljk2fvcrrmuSIGHkvuTA1dUytPlv8u9SXJ36BS-l70yeYCvmVOQIpflKKRfxikRcb+CU+-slMf6pTFS28pHLvKRUHziSR88huiqdaCSsVbrA0biqNG3yTR98oleaKfl1TrRr8ildrQoIdUVG7Ul0XqvpXxzGVn0gwSypIHdEnIHKwtpN2LazTeVjAxBUtOQUHU1p6CraZtx9K7ScFhePBV8iOnHo5V4gkhYqsLFDsVVp60sWO1SaTsHpWqiGnO0YX9V71fw3AVRoBUmr5xnCkzU2R4UE0rVlgm1VD274w9L8VcqGYnBhmM0pFnqguBjx9XyLW5bMf1ejJbhBq1xIanGZosA47jdFF5bZrGsPHmYTFFMsxcmupmpqrxqHRmQbSzV3NWZua9mWUJcWEcPxvM4tfzOdpy8UsAEkWeZrFm1rglYEljtCz6EtqYJSsvMLx1Vn8cNZ3a5JdrL7XpKQAmSrCVJ2HXGzcl46-JR72nVeEyJdLauouvkqOydOq6l2eurdnqUmJW6xpd7Is77rWlh6t7MeuukhyBJtlDPm8VEnRy4tZG3qaMsfXjLBpky5OdMtTngj05X6g0toG8q-q1JeczSUBo2UgbONm8nZR30g2GTbkMGh+uhprkdzsNxIxuZcvJGT8ittWi4jSOw1dzcNvc6Bs8UI1DziNOgTHU0nI1jzo2Rq-Tf53J3eUQVp-fytFPC76sV5aK9jevMZ3bKBYPGlVHxtS7IrBNqK4TflNE26iCul88QXitK4ErqpxKxTaSpDa2jkBtMj+S1M6ptdtNFO3TcAtTbDSwFrKiBWjgp1mbpp3K0MRtXDG2aBVy0hzWgq4EYLkxEq-gR5ulVeaCFog07n21B0DsyFyZVVWmSoX3TNVM7ehTk2jmw0DVS7PHR9JS0cLzV2gcxplvMGAz+FwMvLSe3Bn2DTJl7ErRIvdVTi0eXqxGRzVS1+qlFDWzGQs1a0RD2tBM6ntGqvIGLetBzIGLBw1oOYQuaasbbYuZk5qnFYFTmW+LcUS8ltnimXmWoaEVq-FNHatSBPV6B0teTaiJdBOzDRLuOp2lWWrK7UMVkJvatJf1kHXYSiWOS1YYJQnUFLLZM6qSvOoZZyUjhK66pREVpFh9N1yQbddcPYlxI-Z1nI9Y8IoUOkJWQk94b5OHkt74tFG1XUloTka7IFODbzHg3nl67IVcU6FUbrXlwqLdKrK3fvJ1S26f+Ru--mfKKl6imSxXCAR7ofle66qz8+qeSv92UrP5werTT-J0BMGsdAC3HQyv65fSjNw3Ezb3tA3P8YFSeqzSnr5Vp7rKGetxlntFU57xV2CyVQXoPTCDjpRCvzQqrrlKqgtVekLWqvHbULItDenVbk1-n5NW9Yysw2wuZXLkfpJm3NrYYabZagZVgwRXauEWOrx9YiyfX00kUerZ9lW71UjJq2496twQ79tjMgKbjDy24rfVGq636KbyjPZIQmrVpwcgYCHE-ZkJ1pXNxtVBbzNmqKEzbSh+HCoYWo8W1DVt5a9bU0M23e0v9ksroQRV6HNqOOba2JR2rPLgHE6kB4TrdpgPzDHtiw3Cc7zHVIH3tmwz7RJRKU-bKJWBmiayxqUg66lmlT2aZyaWkG0isOgeh0pPWplmBvSug1eoYPy77o3IyjU+omX8jaN6rbXZFIIZMb9dkomYFFyirCG+98KxKm-z3kf8BNrDaQ-btkPcN5DzuxQ2VJK7DHKphKs0a-lgFKaEBKm7Q2pqpV6GgdHXHQEkeYN9TTDem8w4ZuIFWGs52R03WBtbScrYFM3eBdtSQWuNVpHh4fAmNpFJjvDfAwJrdX8PebwyYgs7uXqkGV7UWUJ26dEbr2g04jMbIstoC67JHxTEe-QVHq72x7f5O7PvT2MH0FHbV0POwYVtOJjjr2sMmfZ4Ln2yLfB9RpfXlA-aBrVxWM39q0bDVaLJafKTrbTxjV77SZfWh8qYqGP7wU1p+0bRMYv2TaBeji4Xjfvm2VCeZvBFY94tf3rHK1H+rbdliCWgSf9jag7QcYVlHGQDcS044hIgM9rLj0B9ipnVuPZLZOpst7RSxeOeE3js6m2WUv97USAdtEjqQxPOwAmGlXs7utDrIMHrwTCOp4TQZhPhzM+ZRQZToFdOimcdiWlE-juklTK31MyiEdvSzmBcqdKy4XSMTp3JgUR8phUbssdj7LoNhyznXBu51YbENb9ZDTZIF12TRF1IhDf7Bw1L88N0utke8vhOEpfTSJ1g++Y+kcG49gXTEwxuxOLzYpTJJEkIdhXEnRDuJRFdbspPf9cpMh0+XSaAEMnSpUm8qfitk1sm-WCm9Q1ybJX1c38EbIPZpsFNYDSLbpt8+3uo2d7LD3ev0zkcDxKmHDcC+aWqbs0anUFIq7U5tN1PbTXNeew0+mKL2yqTpwRi06Qqu7BabTZYu0xqodNPSuqpSA5MDC6AAA1chBZF5ggBjA2gQKzaDq62hYI4wF1LzAADaIAacCYGzjaASgTkEAAAF1SkQAA" target="_blank" rel="noreferrer noopener noreferrer" className="text-primary">在 TypeSafe playground 中打开拼接后的 memo + 问题 →</a></p>
+<hr>
+<h1 id="附录">附录</h1>
+<h2 id="cost-and-latency">成本与延迟</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">tokens = [result[<span class="hljs-string">&quot;usage&quot;</span>], classified[<span class="hljs-string">&quot;usage&quot;</span>]]
+total_in, total_out = <span class="hljs-built_in">sum</span>(t[<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> tokens), <span class="hljs-built_in">sum</span>(t[<span class="hljs-number">1</span>] <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> tokens)
+cost = total_in / <span class="hljs-number">1e6</span> * PRICE[<span class="hljs-number">0</span>] + total_out / <span class="hljs-number">1e6</span> * PRICE[<span class="hljs-number">1</span>]
+n_joins = <span class="hljs-built_in">sum</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> LINES <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> l[<span class="hljs-string">&quot;gap&quot;</span>]) - <span class="hljs-number">1</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;pass 1  <span class="hljs-subst">{n_joins}</span> questions  <span class="hljs-subst">{result[<span class="hljs-string">&#x27;seconds&#x27;</span>]}</span>s&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;pass 2  <span class="hljs-subst">{classified[<span class="hljs-string">&#x27;n_questions&#x27;</span>]}</span> questions  <span class="hljs-subst">{classified[<span class="hljs-string">&#x27;seconds&#x27;</span>]}</span>s&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;total   <span class="hljs-subst">{total_in + total_out:,}</span> tokens  &quot;</span>
+      <span class="hljs-string">f&quot;<span class="hljs-subst">{result[<span class="hljs-string">&#x27;seconds&#x27;</span>] + classified[<span class="hljs-string">&#x27;seconds&#x27;</span>]:<span class="hljs-number">.1</span>f}</span>s  $<span class="hljs-subst">{cost:<span class="hljs-number">.4</span>f}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pass 1  16 questions  0.32s
+pass 2  62 questions  0.51s
+total   10,211 tokens  0.8s  $0.0003</code></pre></div>
+<p>两轮往返，10,211 token，0.8s，$0.0015。</p>
+<h2 id="where-the-join-thresholds-come-from">join 阈值的来源</h2>
+<p>pass 1 的逐行 join 概率：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;join  line&quot;</span>)
+<span class="hljs-keyword">for</span> i, line <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(LINES[:<span class="hljs-number">18</span>]):
+    join = <span class="hljs-string">&quot;    &quot;</span> <span class="hljs-keyword">if</span> i == <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> line[<span class="hljs-string">&quot;gap&quot;</span>] <span class="hljs-keyword">else</span> <span class="hljs-string">f&quot;<span class="hljs-subst">{result[<span class="hljs-string">&#x27;joins&#x27;</span>][i]:<span class="hljs-number">.2</span>f}</span>&quot;</span>
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{join}</span>  <span class="hljs-subst">{line_id(i)}</span>| <span class="hljs-subst">{line[<span class="hljs-string">&#x27;text&#x27;</span>][:<span class="hljs-number">66</span>]}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">join  line
+      L000| Migration to the new build system
+      L001| Hi everyone, quick heads up about the build system migration that 
+0.77  L002| happening next week. We have been running the new pipeline in shad
+0.62  L003| mode for three weeks and the results look solid, so it is time to
+0.39  L004| make the switch for real.
+      L005| What changes for you
+      L006| The old make targets keep working until the end of the month. The 
+0.42  L007| entrypoint is a single command that wraps everything, including th
+0.59  L008| docs build that used to be separate.
+      L009| bun run build
+      L010| Generated artifacts no longer need to be committed. The new pipeli
+0.48  L011| uploads them to the registry automatically, and checking them in
+0.40  L012| just creates merge conflicts.
+      L013| The cutover touches three teams, so check whether you are on this
+0.50  L014| list before you plan anything for Monday:
+0.22  L015| The platform team
+0.11  L016| The web client team
+0.12  L017| Whoever still owns the release tooling</code></pre></div>
+<p>这些概率落在两个彼此分开的区间：会切断句子的换行得分在 0.39 及以上，而作者本意保留的换行得分接近零。但区间之间的分界点该划在哪里，取决于<strong>上一行是如何结尾的</strong>，这一信息代码可以直接读出来：</p>
+<ul>
+<li><p>在一个 dangling 行（没有句末标点的行）之后，得分在 0.2 及以上就算作延续。这里真正的延续得分低到 0.39（<code>L004| make the switch for real.</code>），所以一个统一的 0.5 阈值会把本该连成一段的段落拆散。</p>
+</li>
+<li><p>在终止性标点（结束句子或分句的字符：<code>.</code> <code>!</code> <code>?</code> <code>:</code> <code>;</code>）之后，阈值上升到 0.5。备忘录中的团队列表说明了原因：<code>L015| The platform team</code> 紧跟在冒号后面，得分 0.22。这是一个较低但非零的&quot;延续此句&quot;信号，会通过 0.2 阈值并把列表合并到引入它的句子中。没有哪个单一阈值能同时兼顾这两种情形；只要代码先检查标点，两个区间就能分开。</p>
+</li>
+</ul>
+<h2 id="why-the-question-is-mid-sentence-and-not-same-paragraph">为什么问的是&quot;mid-sentence&quot;而不是&quot;same paragraph&quot;</h2>
+<p>这个流水线的第一个版本问了一个最直观的问题：&quot;这两行属于同一段落吗？&quot;它以特定的方式失败了。标题下的一连串短行（一个不带项目符号的列表）在宽松意义上<em>确实</em>算一个段落：这些行排列在一起，共享一个主题。一旦用段落来问，模型会对每一对都回答 yes，stitch 阶段于是把整个列表合并成一个长块。</p>
+<p>同一份文档、同一种请求结构，只是措辞发生了变化：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">naive_join_question</span>(<span class="hljs-params">i: <span class="hljs-built_in">int</span></span>) -&gt; Noul:
+    <span class="hljs-keyword">return</span> Noul(
+        instructions=<span class="hljs-string">f&quot;Are lines <span class="hljs-subst">{line_id(i - <span class="hljs-number">1</span>)}</span> and <span class="hljs-subst">{line_id(i)}</span> part of the same paragraph?&quot;</span>,
+        criteria=NoulCriteria(
+            true=<span class="hljs-string">&quot;The two lines belong to the same paragraph of running text&quot;</span>,
+            false=<span class="hljs-string">&quot;The two lines belong to different paragraphs or different pieces of content&quot;</span>,
+        ),
+    )
+
+
+naive = stitch(<span class="hljs-string">&quot;same-paragraph&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;&#x27;</span>:<span class="hljs-number">14</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;mid-sentence&#x27;</span>:&gt;<span class="hljs-number">13</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;same paragraph&#x27;</span>:&gt;<span class="hljs-number">16</span>}</span>&quot;</span>)
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> (<span class="hljs-number">15</span>, <span class="hljs-number">16</span>, <span class="hljs-number">17</span>, <span class="hljs-number">20</span>, <span class="hljs-number">21</span>):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{line_id(i)}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;&#x27;</span>:<span class="hljs-number">2</span>}</span><span class="hljs-subst">{LINES[i][<span class="hljs-string">&#x27;text&#x27;</span>][:<span class="hljs-number">36</span>]:&lt;<span class="hljs-number">38</span>}</span>&quot;</span>
+          <span class="hljs-string">f&quot;<span class="hljs-subst">{result[<span class="hljs-string">&#x27;joins&#x27;</span>][i]:&gt;<span class="hljs-number">7.2</span>f}</span><span class="hljs-subst">{naive[<span class="hljs-string">&#x27;joins&#x27;</span>][i]:&gt;<span class="hljs-number">13.2</span>f}</span>&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\nblocks after merge: <span class="hljs-subst">{<span class="hljs-built_in">len</span>(blocks)}</span> (mid-sentence) vs &quot;</span>
+      <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(merge(naive[<span class="hljs-string">&#x27;joins&#x27;</span>]))}</span> (same paragraph)&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">               mid-sentence  same paragraph
+L015  The platform team                        0.22         0.77
+L016  The web client team                      0.11         0.81
+L017  Whoever still owns the release tooli     0.12         0.78
+L020  Delete the old build cache directory     0.08         0.88
+L021  Run the doctor script and fix anythi     0.05         0.91
+
+blocks after merge: 17 (mid-sentence) vs 12 (same paragraph)</code></pre></div>
+<p>换成段落的措辞后，每个无标记的列表项得分都高于 0.75，两个列表都被压扁了。备忘录合并成了几块连绵的长段。&quot;Same paragraph&quot; 让模型判断主题是否延续，而列表项之间主题确实是延续的。&quot;Picks up mid-sentence&quot; 问的是文本本身。当一个判断结果要喂给阈值时，问题应该点到那个起决定作用的最小事实。这里的措辞，就是 17 个块和 12 个块之间的差距。</p>
+<h2 id="the-lowest-confidence-block">置信度最低的块</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">uncertain = <span class="hljs-built_in">min</span>(blocks, key=<span class="hljs-keyword">lambda</span> b: b[<span class="hljs-string">&quot;confidence&quot;</span>])
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;&quot;<span class="hljs-subst">{uncertain[<span class="hljs-string">&quot;text&quot;</span>]}</span>&quot;&#x27;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;confidence <span class="hljs-subst">{uncertain[<span class="hljs-string">&#x27;confidence&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>: &quot;</span>, end=<span class="hljs-string">&quot;&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;, &quot;</span>.join(<span class="hljs-string">f&quot;<span class="hljs-subst">{k}</span> <span class="hljs-subst">{v:<span class="hljs-number">.2</span>f}</span>&quot;</span> <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span>
+                <span class="hljs-built_in">sorted</span>(uncertain[<span class="hljs-string">&quot;probabilities&quot;</span>].items(), key=<span class="hljs-keyword">lambda</span> kv: -kv[<span class="hljs-number">1</span>])[:<span class="hljs-number">3</span>]))</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">&quot;The cutover touches three teams, so check whether you are on this list before you plan anything for Monday:&quot;
+confidence 0.43: paragraph 0.53, list_item 0.24, callout 0.19</code></pre></div>
+<p>引入团队列表的那句话本身确实是模棱两可的——它点出接下来会出现的内容（像标题），自身又是一个完整句子（像段落），所处的位置也正是 callout 通常出现的地方。概率因此分散开来（paragraph 0.53，list_item 0.24，callout 0.19），UI 可以把这种情形呈现出来——例如，把类型置信度（即获胜选项背后的概率）低于 0.55 的块加上下划线，提示人工复核。</p>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建和托管。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-pre-parsed-value-extraction/"><span>上一篇</span><strong>预先解析的值抽取</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-rerank-typesafe/"><span>下一篇</span><strong>重排序</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">安装与配置</a><a class="toc-link depth-2" href="#the-document-a-team-memo-that-lost-its-formatting">测试文档：一份丢失格式的团队备忘录</a><a class="toc-link depth-2" href="#pass-1-stitching-split-sentences">Pass 1：拼接断句</a><a class="toc-link depth-2" href="#pass-2-classifying-blocks">Pass 2：块的分类</a><a class="toc-link depth-2" href="#rendering">Rendering</a><a class="toc-link depth-2" href="#cost-and-latency">成本与延迟</a><a class="toc-link depth-2" href="#where-the-join-thresholds-come-from">join 阈值的来源</a><a class="toc-link depth-2" href="#why-the-question-is-mid-sentence-and-not-same-paragraph">为什么问的是&quot;mid-sentence&quot;而不是&quot;same paragraph&quot;</a><a class="toc-link depth-2" href="#the-lowest-confidence-block">置信度最低的块</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

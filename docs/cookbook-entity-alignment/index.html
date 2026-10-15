@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>知识图谱实体对齐 · JevLand</title>
+<meta name="description" content="用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-entity-alignment/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="知识图谱实体对齐">
+<meta property="og:description" content="用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-entity-alignment/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="知识图谱实体对齐">
+<meta name="twitter:description" content="用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"知识图谱实体对齐","url":"https://jevland.com/docs/cookbook-entity-alignment/","inLanguage":"zh-CN","description":"用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link is-current" href="/docs/cookbook-entity-alignment/" aria-current="page">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link is-current" href="/docs/cookbook-entity-alignment/" aria-current="page">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>知识图谱实体对齐</h1>
+        <p class="lead">用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/entity_alignment" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p><em>知识图谱中的一个核心问题是判断一个待接入的实体（entity）是否与现有实体重复，尤其是在只能拿到来自不同来源的自然语言描述时。给定一批疑似重复的实体对后，单次 TypeSafe <code>Score</code> 调用就能判定每对是真正的重复，还是值得交由复核员（curator）仔细审查。</em></p>
+<p>假设两份数据源各自描述了一组相互重叠的事物，你需要知道一侧的哪条记录与另一侧的哪条记录是同一个事物。在知识图谱中，这些记录被称为<em>实体</em>，每条记录各自保存着与之相关的事实。一轮粗略但廉价的初筛已经比对了两个来源，并挑出了 450 对值得进一步查看的配对。剩下要做的，就是对每一对做出判断。</p>
+<p>错误地合并两个实体是代价更高的错误，因为原本属于任一实体的每一条事实现在都会变成合并后实体的描述，与之关联的任何内容也会一并带过来。之后再想拆开，就得重新梳理每条事实原本来自哪一侧。漏掉一对匹配只会留下一个重复项，因此判断需要一个第三选项——既不适合放心合并、也不适合放心丢弃的那类配对。</p>
+<p>判断本身是一个 <code>Score</code> 题型，对应三种结果各设一个档位（level）：</p>
+<ul>
+<li><strong>different product</strong> —— 保持两个实体不关联</li>
+<li><strong>related, but possibly not the same</strong> —— 交给复核员决定</li>
+<li><strong>same product</strong> —— 将其合并</li>
+</ul>
+<p>选用 Score 题型，是因为我们希望给每一种结果都直接挂上一段语义标签——即该档对应的判定标准（criteria），中间那一档也不例外。改用 Noul 题型也能借助对其输出做阈值化来达到同样目的，而 Choice 题型则会丢失三种结果之间的有序关系。</p>
+<p>接下来，对实体中我们关心的每一个字段，都可以附带一个 <code>Noul</code> 题型来询问这些字段是否一致，并搭载在同一次请求中。当 score 既未落入 <em>same product</em> 也未落入 <em>different product</em> 时，这些 Noul 的答案会为复核员提供更详细的信息。</p>
+<p>最终的 <code>route()</code> 接受一对候选配对，并返回三种结果之一，全程不需要你为自家数据去拟合任何阈值。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">mermaid</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">flowchart LR
+    PAIR[&quot;one candidate pair&lt;br/&gt;&lt;i&gt;both entities, one state&lt;/i&gt;&quot;] --&gt; CALL
+
+    subgraph CALL[&quot;one request, four questions&quot;]
+        direction TB
+        S[&quot;&lt;b&gt;Score:&lt;/b&gt; how do the two relate?&lt;br/&gt;· different product&lt;br/&gt;· related, but possibly not the same&lt;br/&gt;· same product&quot;]
+        N[&quot;&lt;b&gt;Nouls:&lt;/b&gt; one per compared field&lt;br/&gt;· same name?&lt;br/&gt;· same brewery?&lt;br/&gt;· same style?&quot;]
+        %% invisible link: without an edge these two share a rank, which in a TB
+        %% subgraph puts them side by side instead of stacked
+        S ~~~ N
+    end
+
+    S --&gt; R{&quot;round to the&lt;br/&gt;nearest level&quot;}
+    R purple_diff@--&gt;|&quot;different&quot;| DROP[&quot;leave unlinked&quot;]
+    R green_same@--&gt;|&quot;same&quot;| M[&quot;assert sameAs&quot;]
+    %% the queue is last so the dotted edge below reaches it without crossing
+    %% the arrow into `assert sameAs`
+    R blue_related@--&gt;|&quot;related&quot;| Q[&quot;curator queue&quot;]
+    N blue_field@-.-&gt;|&quot;which field&lt;br/&gt;they disagree on&quot;| Q
+    %% Branch colours (styles.css): node classes and green_/blue_/purple_/orange_ edge ids.
+    class M neonGreen
+    class Q neonBlue
+    class DROP neonPurple</code></pre></div>
+<h2 id="setup">Setup</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install matplotlib ipython <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<p>然后设置 <code>TYPESAFE_API_KEY</code>。每次调用都会被缓存到 <code>json_cache.json</code>，该文件随 cookbook 一同发布，因此重新渲染会直接重放已发布的数字，而无需访问 API。删除该文件即可重新在线跑一遍。</p>
+<p>以下数字来自 <code>jev-1.12</code> 模型在 2026-08-11 时的结果。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+
+<span class="hljs-keyword">import</span> matplotlib
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Noul, Score, TypeSafeClient
+
+matplotlib.use(<span class="hljs-string">&quot;Agg&quot;</span>)  <span class="hljs-comment"># headless render</span>
+
+TYPESAFE_MODEL = <span class="hljs-string">&quot;jev-1.12&quot;</span>
+MAX_WORKERS = <span class="hljs-number">6</span>  <span class="hljs-comment"># small pool; the public endpoint rate-limits above roughly eight</span>
+
+client = TypeSafeClient(
+    api_key=os.environ.get(
+        <span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>, <span class="hljs-string">&quot;cache-only&quot;</span>
+    ),  <span class="hljs-comment"># keyless kernels replay the cache</span>
+    base_url=os.environ.get(<span class="hljs-string">&quot;TYPESAFE_ENDPOINT&quot;</span>),
+    timeout=<span class="hljs-number">120.0</span>,
+)
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))</code></pre></div>
+<h2 id="load-the-candidate-pairs">Load the candidate pairs</h2>
+<p>这些配对来自一个公开的基准数据集——Magellan 集合中的 Beer 数据：从两个不同网站抓取的两份啤酒目录，已经被前述的粗筛缩减为 450 对。每个实体带有四个字段：name、brewery、style 和 abv（酒精度数）。每一对还带有一个 <code>known_same_as</code> 字段，即基准自带的标注答案。</p>
+<p>文本完全按发布时的原样保留，不做任何预处理：包括从未被还原回字符的 HTML 实体、被拆成独立单词的撇号，以及少量错误解码的字符。</p>
+<p>每一对发一次请求，因此你消耗的资源取决于你拿到手多少对候选配对，而不是任一来源的规模。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">PAIRS = json.loads(Path(<span class="hljs-string">&quot;candidate_pairs.json&quot;</span>).read_text(encoding=<span class="hljs-string">&quot;utf-8&quot;</span>))
+BY_ID = {pair[<span class="hljs-string">&quot;id&quot;</span>]: pair <span class="hljs-keyword">for</span> pair <span class="hljs-keyword">in</span> PAIRS}
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(PAIRS)}</span> candidate pairs. The first one, as the model will see it:&quot;</span>)
+<span class="hljs-built_in">print</span>(json.dumps({k: PAIRS[<span class="hljs-number">0</span>][k] <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;entity_a&quot;</span>, <span class="hljs-string">&quot;entity_b&quot;</span>)}, indent=<span class="hljs-number">2</span>)[:<span class="hljs-number">420</span>])</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">450 candidate pairs. The first one, as the model will see it:
+{
+  &quot;entity_a&quot;: {
+    &quot;name&quot;: &quot;C N Red Imperial Red Ale&quot;,
+    &quot;brewery&quot;: &quot;Redwood Lodge&quot;,
+    &quot;style&quot;: &quot;American Amber / Red Ale&quot;,
+    &quot;abv&quot;: &quot;8.10 %&quot;
+  },
+  &quot;entity_b&quot;: {
+    &quot;name&quot;: &quot;Kinetic Infrared Imperial Red Ale&quot;,
+    &quot;brewery&quot;: &quot;Kinetic Brewing Company&quot;,
+    &quot;style&quot;: &quot;American Strong Ale&quot;,
+    &quot;abv&quot;: &quot;9.30 %&quot;
+  }
+}</code></pre></div>
+<h2 id="ask-one-score-question-and-three-noul-questions-per-candidate-pair">Ask one Score question and three Noul questions per candidate pair</h2>
+<p>两个实体一起放进同一个 state（上下文状态），分别记作 <code>entity_a</code> 和 <code>entity_b</code>，因此问题问的是<em>这一对</em>，而不是单独某一侧。四个问题搭载在同一次请求中。</p>
+<p>下面的三档描述构成了完整的决策：每一档对应一种结果。本文件中没有任何阈值常量。并且你可以在看到任何一次打分之前就把这些描述写好——这一点对于需要拟合的数字来说是不可能的。</p>
+<p>中间这一档值得仔细措辞。此处它涵盖了变种、特别版，以及那些名称本身可能指代其中任何一款的产品——这些情况会交给复核员，而不是被合并或丢弃。</p>
+<p><code>OUTCOME</code> 字典给出了三种结果的名称。合并结果被命名为 <code>assert sameAs</code>，因为 <code>sameAs</code> 是用来记录两个实体同一关系的标准方式，而写出一条这样的关系就等同于完成合并。</p>
+<p>四个字段中有三个配有 <code>Noul</code> 题型：name、brewery 和 style。abv 没有对应的 Noul，因为比较两个数字只是算术；如果你想要这条信息，在代码里算即可。要把这套方案用到另一类数据上，只需重写 <code>QUESTIONS</code> 和 <code>LEVELS</code>。其余唯一与啤酒相关的代码就是两个用于打印结果的函数，它们会引用字段名。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">LEVELS = [
+    <span class="hljs-string">&quot;They describe two different products.&quot;</span>,
+    <span class="hljs-string">&quot;They describe closely related products that may or may not be the same one: &quot;</span>
+    <span class="hljs-string">&quot;a variant, a special edition, or a name that could plausibly refer to either.&quot;</span>,
+    <span class="hljs-string">&quot;They describe one and the same product.&quot;</span>,
+]
+OUTCOME = {<span class="hljs-number">0</span>: <span class="hljs-string">&quot;leave unlinked&quot;</span>, <span class="hljs-number">1</span>: <span class="hljs-string">&quot;curator queue&quot;</span>, <span class="hljs-number">2</span>: <span class="hljs-string">&quot;assert sameAs&quot;</span>}
+
+QUESTIONS = {
+    <span class="hljs-string">&quot;link_state&quot;</span>: Score(
+        instructions=<span class="hljs-string">&quot;How do the two entity descriptions relate as products?&quot;</span>,
+        criteria=LEVELS,
+    ),
+    <span class="hljs-string">&quot;same_name&quot;</span>: Noul(
+        instructions=<span class="hljs-string">&quot;Do the two entities state the same beer name?&quot;</span>,
+    ),
+    <span class="hljs-string">&quot;same_brewery&quot;</span>: Noul(
+        instructions=<span class="hljs-string">&quot;Are the two entities from the same brewery?&quot;</span>,
+    ),
+    <span class="hljs-string">&quot;same_style&quot;</span>: Noul(
+        instructions=<span class="hljs-string">&quot;Do the two entities describe the same beer style?&quot;</span>,
+    ),
+}
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">score</span>(<span class="hljs-params">pair_id: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;One request about one candidate pair -&gt; the score plus the three noul answers.&quot;&quot;&quot;</span>
+    pair = BY_ID[pair_id]
+    response = client.system_one(
+        state={<span class="hljs-string">&quot;entity_a&quot;</span>: pair[<span class="hljs-string">&quot;entity_a&quot;</span>], <span class="hljs-string">&quot;entity_b&quot;</span>: pair[<span class="hljs-string">&quot;entity_b&quot;</span>]},
+        questions=QUESTIONS,
+        model=TYPESAFE_MODEL,
+    )
+    link = response.answers[<span class="hljs-string">&quot;link_state&quot;</span>]
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;score&quot;</span>: link.score,
+        <span class="hljs-string">&quot;probabilities&quot;</span>: link.probabilities,
+        <span class="hljs-string">&quot;confidence&quot;</span>: link.confidence,
+        <span class="hljs-string">&quot;properties&quot;</span>: {
+            k: response.answers[k].noul <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> QUESTIONS <span class="hljs-keyword">if</span> k != <span class="hljs-string">&quot;link_state&quot;</span>
+        },
+        <span class="hljs-comment"># tokens and requests are the durable units; don&#x27;t cache a derived cost</span>
+        <span class="hljs-string">&quot;input_tokens&quot;</span>: response.usage.input_tokens <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>,
+        <span class="hljs-string">&quot;output_tokens&quot;</span>: response.usage.output_tokens <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>,
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">route</span>(<span class="hljs-params">score_value: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-string">&quot;&quot;&quot;The whole decision rule: the nearest level names the outcome.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> OUTCOME[<span class="hljs-built_in">min</span>(<span class="hljs-built_in">int</span>(score_value + <span class="hljs-number">0.5</span>), <span class="hljs-built_in">len</span>(LEVELS) - <span class="hljs-number">1</span>)]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">show</span>(<span class="hljs-params">pair_id: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
+    pair, result = BY_ID[pair_id], score(pair_id)
+    <span class="hljs-built_in">print</span>(
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{pair_id}</span>  score <span class="hljs-subst">{result[<span class="hljs-string">&#x27;score&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>  confidence <span class="hljs-subst">{result[<span class="hljs-string">&#x27;confidence&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>&quot;</span>
+        <span class="hljs-string">f&quot;  -&gt;  <span class="hljs-subst">{route(result[<span class="hljs-string">&#x27;score&#x27;</span>])}</span>&quot;</span>
+    )
+    <span class="hljs-keyword">for</span> side <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;entity_a&quot;</span>, <span class="hljs-string">&quot;entity_b&quot;</span>):
+        e = pair[side]
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;    <span class="hljs-subst">{e[<span class="hljs-string">&#x27;name&#x27;</span>][:<span class="hljs-number">44</span>]:&lt;<span class="hljs-number">46</span>}</span><span class="hljs-subst">{e[<span class="hljs-string">&#x27;brewery&#x27;</span>][:<span class="hljs-number">30</span>]:&lt;<span class="hljs-number">32</span>}</span><span class="hljs-subst">{e[<span class="hljs-string">&#x27;style&#x27;</span>][:<span class="hljs-number">22</span>]}</span>&quot;</span>)
+    nouls = result[<span class="hljs-string">&quot;properties&quot;</span>]
+    <span class="hljs-built_in">print</span>(
+        <span class="hljs-string">f&quot;    name <span class="hljs-subst">{nouls[<span class="hljs-string">&#x27;same_name&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>   brewery <span class="hljs-subst">{nouls[<span class="hljs-string">&#x27;same_brewery&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>   &quot;</span>
+        <span class="hljs-string">f&quot;style <span class="hljs-subst">{nouls[<span class="hljs-string">&#x27;same_style&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>&quot;</span>
+    )</code></pre></div>
+<p>下面看四对。<code>c446</code> 描述的是同一款产品，<code>c427</code> 是两款不同的产品。另外两对则出于不同原因落到了中间档：<code>c100</code> 的 name 和 brewery 一致，但两个来源对 style 的措辞不同；而 <code>c428</code> 把一款啤酒与它的水果啤酒花变种配成了一对。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">for</span> pair_id <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;c446&quot;</span>, <span class="hljs-string">&quot;c427&quot;</span>, <span class="hljs-string">&quot;c100&quot;</span>, <span class="hljs-string">&quot;c428&quot;</span>):
+    show(pair_id)
+    <span class="hljs-built_in">print</span>()</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">c446  score 1.94  confidence 0.92  -&gt;  assert sameAs
+    Thomas Hooker Old Marley Barleywine           Thomas Hooker Brewing Company   American Barleywine
+    Thomas Hooker Old Marley Barleywine           Thomas Hooker Brewing Company   Barley Wine
+    name 0.97   brewery 0.99   style 0.81
+
+c427  score 0.03  confidence 0.95  -&gt;  leave unlinked
+    Frost Quake Bourbon Barrel Aged Barley Wine   Wellington County Brewery       American Barleywine
+    Lompoc Bourbon Barrel Aged Proletariat Red A  Lompoc Brewing                  Amber Ale
+    name 0.02   brewery 0.09   style 0.08
+
+c100  score 1.30  confidence 0.27  -&gt;  curator queue
+    Belle Gueule Rousse                           Brasseurs R.J.                  American Amber / Red A
+    Belle Gueule Rousse                           Brasseurs RJ                    Amber Lager/Vienna
+    name 0.95   brewery 0.94   style 0.35
+
+c428  score 1.10  confidence 0.77  -&gt;  curator queue
+    Ambleside Amber Ale                           Bridge Brewing Company          American Amber / Red A
+    Bridge Ambleside Amber Ale - Pomegranate &amp; G  Bridge Brewing Company          Amber Ale
+    name 0.63   brewery 0.98   style 0.74</code></pre></div>
+<h2 id="route-every-candidate-pair">路由每一对候选</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-comment"># 450 candidate pairs, one request each; a small pool keeps a live run to a few minutes.</span>
+<span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=MAX_WORKERS) <span class="hljs-keyword">as</span> pool:
+    scored = <span class="hljs-built_in">list</span>(pool.<span class="hljs-built_in">map</span>(<span class="hljs-keyword">lambda</span> pair: score(pair[<span class="hljs-string">&quot;id&quot;</span>]), PAIRS))
+
+scores = [result[<span class="hljs-string">&quot;score&quot;</span>] <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> scored]
+by_outcome: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]] = {name: [] <span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> OUTCOME.values()}
+<span class="hljs-keyword">for</span> pair, s <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(PAIRS, scores):
+    by_outcome[route(s)].append(pair[<span class="hljs-string">&quot;id&quot;</span>])
+
+SURFACE, INK, INK2, MUTED = <span class="hljs-string">&quot;#fcfcfb&quot;</span>, <span class="hljs-string">&quot;#0b0b0b&quot;</span>, <span class="hljs-string">&quot;#52514e&quot;</span>, <span class="hljs-string">&quot;#898781&quot;</span>
+GRID, AXIS, BLUE, ORANGE = <span class="hljs-string">&quot;#e1e0d9&quot;</span>, <span class="hljs-string">&quot;#c3c2b7&quot;</span>, <span class="hljs-string">&quot;#2a78d6&quot;</span>, <span class="hljs-string">&quot;#eb6834&quot;</span>
+
+BINS, TOP = <span class="hljs-number">20</span>, <span class="hljs-built_in">len</span>(LEVELS) - <span class="hljs-number">1</span>
+counts = [<span class="hljs-number">0</span>] * BINS
+<span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> scores:
+    counts[<span class="hljs-built_in">min</span>(<span class="hljs-built_in">int</span>(s / TOP * BINS), BINS - <span class="hljs-number">1</span>)] += <span class="hljs-number">1</span>
+centers = [(i + <span class="hljs-number">0.5</span>) / BINS * TOP <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(BINS)]
+queued = [c <span class="hljs-keyword">if</span> route(x) == <span class="hljs-string">&quot;curator queue&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-keyword">for</span> c, x <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(counts, centers)]
+settled = [c <span class="hljs-keyword">if</span> route(x) != <span class="hljs-string">&quot;curator queue&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-keyword">for</span> c, x <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(counts, centers)]
+
+fig, ax = plt.subplots(figsize=(<span class="hljs-number">7.2</span>, <span class="hljs-number">3.6</span>), facecolor=SURFACE)
+ax.set_facecolor(SURFACE)
+<span class="hljs-keyword">for</span> side <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;top&quot;</span>, <span class="hljs-string">&quot;right&quot;</span>):
+    ax.spines[side].set_visible(<span class="hljs-literal">False</span>)
+<span class="hljs-keyword">for</span> side <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;left&quot;</span>, <span class="hljs-string">&quot;bottom&quot;</span>):
+    ax.spines[side].set_color(AXIS)
+ax.tick_params(colors=MUTED, labelcolor=INK2, labelsize=<span class="hljs-number">9</span>)
+ax.set_axisbelow(<span class="hljs-literal">True</span>)
+ax.grid(axis=<span class="hljs-string">&quot;y&quot;</span>, color=GRID, linewidth=<span class="hljs-number">0.8</span>)
+ax.bar(
+    centers, settled, width=TOP / BINS * <span class="hljs-number">0.9</span>, color=BLUE, label=<span class="hljs-string">&quot;settled automatically&quot;</span>
+)
+ax.bar(
+    centers, queued, width=TOP / BINS * <span class="hljs-number">0.9</span>, color=ORANGE, label=<span class="hljs-string">&quot;sent to the curator&quot;</span>
+)
+<span class="hljs-keyword">for</span> edge <span class="hljs-keyword">in</span> (<span class="hljs-number">0.5</span>, <span class="hljs-number">1.5</span>):
+    ax.axvline(edge, color=INK2, linewidth=<span class="hljs-number">1</span>, linestyle=<span class="hljs-string">&quot;--&quot;</span>)
+ax.set_xticks([<span class="hljs-number">0</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1.5</span>, <span class="hljs-number">2</span>])
+ax.set_xticklabels([<span class="hljs-string">&quot;0\ndifferent&quot;</span>, <span class="hljs-string">&quot;0.5&quot;</span>, <span class="hljs-string">&quot;1\nrelated&quot;</span>, <span class="hljs-string">&quot;1.5&quot;</span>, <span class="hljs-string">&quot;2\nsame&quot;</span>])
+ax.set_xlabel(<span class="hljs-string">&quot;score for the pair&quot;</span>, color=INK2, fontsize=<span class="hljs-number">9</span>)
+ax.set_ylabel(<span class="hljs-string">&quot;candidate pairs&quot;</span>, color=INK2, fontsize=<span class="hljs-number">9</span>)
+ax.set_title(
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(PAIRS)}</span> candidate pairs, scored once each&quot;</span>,
+    loc=<span class="hljs-string">&quot;left&quot;</span>,
+    color=INK,
+    fontsize=<span class="hljs-number">11</span>,
+)
+ax.legend(frameon=<span class="hljs-literal">False</span>, labelcolor=INK2, fontsize=<span class="hljs-number">9</span>)
+display(fig)
+plt.close(fig)
+
+<span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;assert sameAs&quot;</span>, <span class="hljs-string">&quot;curator queue&quot;</span>, <span class="hljs-string">&quot;leave unlinked&quot;</span>):
+    n = <span class="hljs-built_in">len</span>(by_outcome[name])
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{name:&lt;<span class="hljs-number">16</span>}</span><span class="hljs-subst">{n:&gt;<span class="hljs-number">5</span>}</span>  (<span class="hljs-subst">{n / <span class="hljs-built_in">len</span>(PAIRS):&gt;<span class="hljs-number">5.1</span>%}</span>)&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">assert sameAs      40  ( 8.9%)
+curator queue      50  (11.1%)
+leave unlinked    360  (80.0%)</code></pre></div>
+<p><img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/entity_alignment/entity_alignment.executed.1.png?fit=max&amp;auto=format&amp;n=2NirYCl-v96cw05F&amp;q=85&amp;s=0a5cc0e7eb280ca54d6bd823fb5d2a43" alt="输出结果"></p>
+<p><code>route()</code> 改变结果的两个分值就是切分点。大多数 pair 都能直接落定：360 个得分低于下切分点，40 个高于上切分点，剩下的 50 个交给策展人。</p>
+<p>在这批数据上，得分并不会整齐地落在整数上。大多集中在 0.25 附近。两款啤酒即便没有任何共同点，也可能共用一个风格名称，并且酒厂名字看起来也很相近，因此模型不会完全把中间档位的概率归零，而是会保留一部分。决定一个 pair 去向的，是它落在切分点的哪一侧，距离某个档位有多近并不起作用。</p>
+<p>两个切分点的密集程度不同。9 个 pair 落在上切分点（1.5）附近 0.1 的范围内，这个切分点决定哪些会被合并到图谱中。47 个 pair 距离下切分点（0.5）这么近，这个切分点只决定策展人是否能看到这个 pair。这两个数字都不是你需要调参的对象，它们都取决于你如何措辞各档位，而中间档位的措辞决定了 pair 是被送到策展人那里，还是留作不关联。</p>
+<h2 id="open-it-in-the-playground">在 playground 中打开</h2>
+<p>下面的 playground 链接会打开 <code>c428</code>，它得了 1.10 分，被送到了策展人那里。它把 <em>Ambleside Amber Ale</em> 和 <em>Bridge Ambleside Amber Ale - Pomegranate &amp; Galena Hops</em> 配成了一对：同一家酒厂，酒精含量相同。随附全部四个问题。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">playground_link = make_playground_link(
+    {<span class="hljs-string">&quot;entity_a&quot;</span>: BY_ID[<span class="hljs-string">&quot;c428&quot;</span>][<span class="hljs-string">&quot;entity_a&quot;</span>], <span class="hljs-string">&quot;entity_b&quot;</span>: BY_ID[<span class="hljs-string">&quot;c428&quot;</span>][<span class="hljs-string">&quot;entity_b&quot;</span>]},
+    QUESTIONS,
+    models=[TYPESAFE_MODEL],
+)
+display(
+    Markdown(
+        <span class="hljs-string">f&quot;🔗 [Open this pair + questions in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>
+    )
+)</code></pre></div>
+<p><a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIwAOiMigJYoCeA+gIakEkhL2JP6kCCcARgBsEAZwpgE+XnwQAnSUNIAaLiD4yEAd1nVOpAEIyxAcwkHNFJEfwBhCHAAO9JDpDLSwmgrwresilCdJfll8AHp8ACUEMHkEJRV6PgA3XRAAVgA6AGYABnwAUlIAXzcyVCo6Pk4WNg5vfUMwEyDBETEJKRDuIXwAWnwABTsEIxknehQJADJ8AHF6ITZ8AAkIe2F40jVNbVSDY1N1DQsrWwcnF1KPai8CHmC5brjXBOTUzNyC4qKXkHsZOz2FDCDDYbxEUgCCwAa1oHgmz2YpBo9kRKmEUAg6k2IAsHhkMCglAgSA29RAqw0+Eg+BQAAsJCgNBB8OQKtSRFBDECKCThPh1AIEfh6Pz-hAwITgQB+HFcqh+RjeADapDQDOoHIxhmktOZ1IoADNDbJyPhxZKicIMjj1QhNeJtRRdVABBBhAgBJrBQiYhapfz6RN8HB6JqsSGw-gkBAUPhdfSJMJ2BISQgCPR8El6IYnChlJnhKioBQFqywFReUhlBHM7VGXTg5iYAI-UKYKJBN6ECa5CgWQgqAyZDaXmqNVr5bq0yKkDFE-hk4hzQDLShRwBdErolO0evVZHUVGpGMtnF4lAEolVsl3EAAERZC6ZA-KlBEi5QwoXS4k0hC9ayiA27uLu2xaDILhIiAKJoqQp4COepKXlKN6pNw6i0gyeqvpQ778oaAJwFhSYpvGRzaEBIEgL+cKeGiLCwSeEBnmOuLIVexKkqkj4kThrJvhQH6OlODakcu-5yNcQhUT8yggPQ9gUAAarIogkuCSQAIy-B6QhEtEACyEqesIKogAAVggSS9FpGRaQATCAW5AA" target="_blank" rel="noopener noreferrer">在 TypeSafe playground 中打开这个 pair 和问题 →</a></p>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建和托管，这是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-semantic-find/"><span>上一篇</span><strong>逐行搜索</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-consistency-choice/"><span>下一篇</span><strong>自一致性：Choice</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">Setup</a><a class="toc-link depth-2" href="#load-the-candidate-pairs">Load the candidate pairs</a><a class="toc-link depth-2" href="#ask-one-score-question-and-three-noul-questions-per-candidate-pair">Ask one Score question and three Noul questions per candidate pair</a><a class="toc-link depth-2" href="#route-every-candidate-pair">路由每一对候选</a><a class="toc-link depth-2" href="#open-it-in-the-playground">在 playground 中打开</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

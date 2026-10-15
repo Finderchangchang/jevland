@@ -1,0 +1,1438 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>自动研究：特征发现 · JevLand</title>
+<meta name="description" content="运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-autoresearch-feature-discovery/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="自动研究：特征发现">
+<meta property="og:description" content="运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-autoresearch-feature-discovery/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="自动研究：特征发现">
+<meta name="twitter:description" content="运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"自动研究：特征发现","url":"https://jevland.com/docs/cookbook-autoresearch-feature-discovery/","inLanguage":"zh-CN","description":"运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link is-current" href="/docs/cookbook-autoresearch-feature-discovery/" aria-current="page">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link is-current" href="/docs/cookbook-autoresearch-feature-discovery/" aria-current="page">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>自动研究：特征发现</h1>
+        <p class="lead">运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/autoresearch_feature_discovery" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p><em>TypeSafe 问题把自由文本转换成有监督 CatBoost 模型的数值特征；用 autoresearch 循环去发现它们。</em></p>
+<p>CatBoost 需要一张数字表，而一份品鉴笔记并不算。这份实战示例把表搭成围绕笔记的一系列问题，且没有一道是手写的。一个 LLM 负责提出这些问题，TypeSafe 对每一行作答，CatBoost 用这些回答来训练。接下来就是 autoresearch 部分：CatBoost 报告它用了哪些问题、哪些行仍然答错，下一次的提议调用读取这份报告，循环再次启动。</p>
+<p>到最后你会得到一个可以指向你自己带标签文本的循环、一条每轮的留置误差曲线，以及一张最终模型最常用问题的表格。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">tasting note
+    |
+    v
+38 TypeSafe answers
+    |-- 29 score questions x 2 columns = 58
+    |     expected rubric level + answer uncertainty
+    `--  9 noul questions  x 1 column  =  9
+          probability true
+    |
+    v
+67 numeric columns --&gt; CatBoost --&gt; predicted critic score
+                                     held-out RMSE: 1.77 points</code></pre></div>
+<p>一个 Score（打分题）答案会变成两列：答案指向的平均评分档位，以及围绕该平均值的离散程度。一个 Noul（是非题）答案就是一个概率，所以是一列。</p>
+<p>数据是 2,000 条酒评：输入是品鉴笔记，输出是评论家在 80–100 分制上给出的分数。RMSE 用评论家分数点来衡量预测误差，偏差越大权重越高，越低越好。下表里的所有数字都来自模型和循环都从未见过的 800 条评论。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>笔记如何变成一个分数</th>
+<th>RMSE</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>预测训练行的平均分数</td>
+<td>3.09</td>
+</tr>
+<tr>
+<td>同一个 CatBoost，把品鉴笔记读为词频</td>
+<td>2.47</td>
+</tr>
+<tr>
+<td>直接向 TypeSafe 问出分数，再做缩放平移</td>
+<td>2.15</td>
+</tr>
+<tr>
+<td>一次提议调用生成的 18 个问题，没有循环</td>
+<td>1.87</td>
+</tr>
+<tr>
+<td><strong>五轮循环之后的 38 个问题</strong></td>
+<td><strong>1.77</strong></td>
+</tr>
+</tbody></table></div>
+<p>最后两行就是循环。一次提议调用、在还毫无线索时，就能跑到 1.87。再读四轮自己的最差预测，能跑到 1.77。增益大部分发生在那第一次调用，而它之后的四轮又贡献了多少，下面会继续衡量。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong>
+想把这份 notebook 进一步推进，或把它用到另一个问题上？请见 <a href="#next-steps">Next steps</a>。</p>
+</aside>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> __future__ <span class="hljs-keyword">import</span> annotations
+
+<span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> random
+<span class="hljs-keyword">import</span> textwrap
+<span class="hljs-keyword">import</span> urllib.request
+<span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+<span class="hljs-keyword">from</span> time <span class="hljs-keyword">import</span> perf_counter
+<span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> NamedTuple
+
+<span class="hljs-keyword">import</span> matplotlib
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">from</span> catboost <span class="hljs-keyword">import</span> CatBoostRegressor
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Noul, NoulCriteria, Score, TypeSafeClient
+
+matplotlib.use(<span class="hljs-string">&quot;Agg&quot;</span>)  <span class="hljs-comment"># headless render</span>
+
+TYPESAFE_MODEL = <span class="hljs-string">&quot;jev-1.12&quot;</span>
+FOLDS, REPEATS = <span class="hljs-number">5</span>, <span class="hljs-number">3</span>  <span class="hljs-comment"># repeats steady the error at this sample size</span>
+CATBOOST = <span class="hljs-built_in">dict</span>(
+    iterations=<span class="hljs-number">400</span>,
+    depth=<span class="hljs-number">4</span>,
+    learning_rate=<span class="hljs-number">0.05</span>,
+    loss_function=<span class="hljs-string">&quot;RMSE&quot;</span>,
+    verbose=<span class="hljs-number">0</span>,
+    random_seed=<span class="hljs-number">0</span>,
+    thread_count=<span class="hljs-number">1</span>,
+    allow_writing_files=<span class="hljs-literal">False</span>,
+)
+
+client = TypeSafeClient(
+    <span class="hljs-comment"># keyless kernels replay the cache</span>
+    api_key=os.environ.get(<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>, <span class="hljs-string">&quot;cache-only&quot;</span>),
+    base_url=os.environ.get(<span class="hljs-string">&quot;TYPESAFE_ENDPOINT&quot;</span>),
+    timeout=<span class="hljs-number">120.0</span>,
+)
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))
+
+<span class="hljs-comment"># ----------------------------------------------------------------- the specification</span>
+
+INTENSITY_LEVELS = [
+    <span class="hljs-string">&quot;Not present in this note at all&quot;</span>,
+    <span class="hljs-string">&quot;Barely present - mentioned once, in passing&quot;</span>,
+    <span class="hljs-string">&quot;Present at a moderate level&quot;</span>,
+    <span class="hljs-string">&quot;Present strongly - the note dwells on it&quot;</span>,
+    <span class="hljs-string">&quot;Dominant - the note is largely about this&quot;</span>,
+]
+PRESENCE_CRITERIA = NoulCriteria(
+    true=<span class="hljs-string">&quot;The note states this or clearly implies it&quot;</span>,
+    false=<span class="hljs-string">&quot;The note gives no indication of this&quot;</span>,
+)
+
+<span class="hljs-comment"># Asking for the score outright: ten quality bands, rescaled onto the 80-100 critic scale.</span>
+SCORE_LEVELS = [
+    <span class="hljs-string">&quot;Faulty or unpleasant - the note is mostly criticism&quot;</span>,
+    <span class="hljs-string">&quot;Barely acceptable - drinkable, with nothing to recommend it&quot;</span>,
+    <span class="hljs-string">&quot;Simple and sound - correct, plain, forgettable&quot;</span>,
+    <span class="hljs-string">&quot;Pleasant everyday wine - some appeal, little depth&quot;</span>,
+    <span class="hljs-string">&quot;Good - clear varietal character, well made&quot;</span>,
+    <span class="hljs-string">&quot;Very good - balanced, with something to say&quot;</span>,
+    <span class="hljs-string">&quot;Excellent - complex and structured&quot;</span>,
+    <span class="hljs-string">&quot;Outstanding - depth and length, built to age&quot;</span>,
+    <span class="hljs-string">&quot;Superb - among the best of its type&quot;</span>,
+    <span class="hljs-string">&quot;Profound - the note treats it as exceptional&quot;</span>,
+]
+
+<span class="hljs-comment"># Structured output requires every property in `required`, so unused fields come back empty.</span>
+PROPOSAL_SCHEMA = {
+    <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;object&quot;</span>,
+    <span class="hljs-string">&quot;properties&quot;</span>: {
+        <span class="hljs-string">&quot;actions&quot;</span>: {
+            <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
+            <span class="hljs-string">&quot;items&quot;</span>: {
+                <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;object&quot;</span>,
+                <span class="hljs-string">&quot;properties&quot;</span>: {
+                    <span class="hljs-string">&quot;op&quot;</span>: {<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>, <span class="hljs-string">&quot;enum&quot;</span>: [<span class="hljs-string">&quot;add&quot;</span>, <span class="hljs-string">&quot;revise&quot;</span>, <span class="hljs-string">&quot;drop&quot;</span>]},
+                    <span class="hljs-string">&quot;target&quot;</span>: {<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>},
+                    <span class="hljs-string">&quot;name&quot;</span>: {<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>},
+                    <span class="hljs-string">&quot;kind&quot;</span>: {<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>, <span class="hljs-string">&quot;enum&quot;</span>: [<span class="hljs-string">&quot;intensity&quot;</span>, <span class="hljs-string">&quot;presence&quot;</span>]},
+                    <span class="hljs-string">&quot;question&quot;</span>: {<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>},
+                },
+                <span class="hljs-string">&quot;required&quot;</span>: [<span class="hljs-string">&quot;op&quot;</span>, <span class="hljs-string">&quot;target&quot;</span>, <span class="hljs-string">&quot;name&quot;</span>, <span class="hljs-string">&quot;kind&quot;</span>, <span class="hljs-string">&quot;question&quot;</span>],
+                <span class="hljs-string">&quot;additionalProperties&quot;</span>: <span class="hljs-literal">False</span>,
+            },
+        }
+    },
+    <span class="hljs-string">&quot;required&quot;</span>: [<span class="hljs-string">&quot;actions&quot;</span>],
+    <span class="hljs-string">&quot;additionalProperties&quot;</span>: <span class="hljs-literal">False</span>,
+}
+
+PROPOSALS = <span class="hljs-number">18</span>  <span class="hljs-comment"># actions the proposer may return per round</span>
+
+<span class="hljs-comment"># The one string that knows this is about wine. Point it at your own label and text.</span>
+PROPOSER_TASK = <span class="hljs-string">f&quot;&quot;&quot;You are designing numeric features for a gradient-boosting model that
+predicts the score a wine critic gave (an integer from 80 to 100) from the tasting note alone.
+The model sees nothing but the features you design.
+
+Return up to <span class="hljs-subst">{PROPOSALS}</span> actions. Each action is one of:
+
+- {{&quot;op&quot;: &quot;add&quot;, &quot;target&quot;: &quot;&quot;, &quot;name&quot;: ..., &quot;kind&quot;: ..., &quot;question&quot;: ...}}
+  A new feature.
+- {{&quot;op&quot;: &quot;revise&quot;, &quot;target&quot;: &lt;name of an existing feature&gt;, &quot;name&quot;: ..., &quot;kind&quot;: ...,
+  &quot;question&quot;: ...}}
+  Replace that feature&#x27;s question with better wording. Use this when a feature measures the
+  right thing badly: too narrow, too vague, or worded so nearly every note answers the same.
+- {{&quot;op&quot;: &quot;drop&quot;, &quot;target&quot;: &lt;name of an existing feature&gt;, &quot;name&quot;: &quot;&quot;, &quot;kind&quot;: &quot;intensity&quot;,
+  &quot;question&quot;: &quot;&quot;}}
+  Remove a feature that is not earning its place.
+
+`kind` is &quot;intensity&quot; for something with a degree, or &quot;presence&quot; for a yes/no fact.
+`question` is what gets asked about one tasting note.
+
+An &quot;intensity&quot; question is graded against this fixed five-level rubric, so word it so that the
+levels make sense:
+<span class="hljs-subst">{<span class="hljs-built_in">chr</span>(<span class="hljs-number">10</span>).join(<span class="hljs-string">f&quot;  <span class="hljs-subst">{i}</span>. <span class="hljs-subst">{level}</span>&quot;</span> <span class="hljs-keyword">for</span> i, level <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(INTENSITY_LEVELS))}</span>
+
+A &quot;presence&quot; question is answered as the probability that it is true of the note.
+
+Good features can be judged from the note&#x27;s own words, vary from note to note, and carry
+information about quality that the other features do not. Reviewers describe structure, fruit,
+oak, length, complexity, and drinkability, and they also signal quality through word choice.&quot;&quot;&quot;</span>
+
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Split</span>(<span class="hljs-title class_ inherited__">NamedTuple</span>):
+    <span class="hljs-string">&quot;&quot;&quot;The rows, their labels, and which half the loop is allowed to read.&quot;&quot;&quot;</span>
+
+    notes: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]
+    scores: np.ndarray
+    dev: np.ndarray
+    test: np.ndarray
+
+
+<span class="hljs-comment"># ----------------------------------------------------------------- the data</span>
+
+WINEMAG_CSV = (
+    <span class="hljs-string">&quot;https://huggingface.co/datasets/GroNLP/ik-nlp-22_winemag/resolve/&quot;</span>
+    <span class="hljs-string">&quot;90eb39f35fc64e556fc17f06d4137a4a69ec3297/train.csv&quot;</span>
+)
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">load_slice</span>(<span class="hljs-params">n_dev: <span class="hljs-built_in">int</span>, n_test: <span class="hljs-built_in">int</span>, seed: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Fetch the pinned CSV and take a seeded sample of note + score, one row per note.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">import</span> csv
+    <span class="hljs-keyword">import</span> io
+
+    request = urllib.request.Request(
+        WINEMAG_CSV, headers={<span class="hljs-string">&quot;User-Agent&quot;</span>: <span class="hljs-string">&quot;typesafe-cookbook/1.0&quot;</span>}
+    )
+    <span class="hljs-keyword">with</span> urllib.request.urlopen(request, timeout=<span class="hljs-number">300</span>) <span class="hljs-keyword">as</span> response:
+        text = response.read().decode()
+    rows, seen = [], <span class="hljs-built_in">set</span>()
+    <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> csv.DictReader(io.StringIO(text)):  <span class="hljs-comment"># a few notes repeat verbatim</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> row[<span class="hljs-string">&quot;description&quot;</span>] <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span> row[<span class="hljs-string">&quot;points&quot;</span>] <span class="hljs-keyword">or</span> row[<span class="hljs-string">&quot;description&quot;</span>] <span class="hljs-keyword">in</span> seen:
+            <span class="hljs-keyword">continue</span>
+        seen.add(row[<span class="hljs-string">&quot;description&quot;</span>])
+        rows.append((row[<span class="hljs-string">&quot;description&quot;</span>], <span class="hljs-built_in">float</span>(row[<span class="hljs-string">&quot;points&quot;</span>])))
+    random.Random(seed).shuffle(rows)
+    picked = rows[: n_dev + n_test]
+    <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;notes&quot;</span>: [r[<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> picked], <span class="hljs-string">&quot;points&quot;</span>: [r[<span class="hljs-number">1</span>] <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> picked]}
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">example_rows</span>(<span class="hljs-params">split: Split, out_of_fold: np.ndarray | <span class="hljs-literal">None</span>, n: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">int</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Select representative dev rows for a proposer round.&quot;&quot;&quot;</span>
+    dev = split.dev
+    <span class="hljs-keyword">if</span> out_of_fold <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+        ranked = dev[np.argsort(split.scores[dev], kind=<span class="hljs-string">&quot;stable&quot;</span>)]
+        <span class="hljs-keyword">return</span> [<span class="hljs-built_in">int</span>(ranked[<span class="hljs-built_in">round</span>(q * (<span class="hljs-built_in">len</span>(ranked) - <span class="hljs-number">1</span>))]) <span class="hljs-keyword">for</span> q <span class="hljs-keyword">in</span> np.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, n)]
+    error = np.<span class="hljs-built_in">abs</span>(split.scores[dev] - out_of_fold)
+    order = np.argsort(-error, kind=<span class="hljs-string">&quot;stable&quot;</span>)
+    worst = [<span class="hljs-built_in">int</span>(dev[i]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> order[: n // <span class="hljs-number">2</span>]]
+    best = [<span class="hljs-built_in">int</span>(dev[i]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> order[<span class="hljs-built_in">len</span>(order) - (n - n // <span class="hljs-number">2</span>) :]]
+    <span class="hljs-keyword">return</span> worst + best
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">example_block</span>(<span class="hljs-params">
+    rows: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">int</span>],
+    split: Split,
+    out_of_fold: np.ndarray | <span class="hljs-literal">None</span>,
+    previous: np.ndarray | <span class="hljs-literal">None</span> = <span class="hljs-literal">None</span>,
+</span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Format selected rows for the proposer.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> out_of_fold <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+        head = <span class="hljs-string">&quot;Example notes, with the score each one was given:&quot;</span>
+        body = [<span class="hljs-string">f&quot;- scored <span class="hljs-subst">{split.scores[r]:<span class="hljs-number">.0</span>f}</span>: <span class="hljs-subst">{split.notes[r]}</span>&quot;</span> <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> rows]
+        <span class="hljs-keyword">return</span> head + <span class="hljs-string">&quot;\n&quot;</span> + <span class="hljs-string">&quot;\n&quot;</span>.join(body)
+
+    head = (
+        <span class="hljs-string">&quot;Dev notes, worst-predicted first. The first half is where your current questions &quot;</span>
+        <span class="hljs-string">&quot;miss by the most and the second half is where they are already right, so what &quot;</span>
+        <span class="hljs-string">&quot;separates the halves is what the questions have not captured.&quot;</span>
+    )
+    <span class="hljs-keyword">if</span> previous <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+        head += (
+            <span class="hljs-string">&quot; Each line also carries what the previous round predicted, so you can see which &quot;</span>
+            <span class="hljs-string">&quot;notes your last batch of questions moved.&quot;</span>
+        )
+    body = []
+    <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> rows:
+        line = <span class="hljs-string">f&quot;- scored <span class="hljs-subst">{split.scores[r]:<span class="hljs-number">.0</span>f}</span>, predicted <span class="hljs-subst">{out_of_fold[r]:<span class="hljs-number">.1</span>f}</span>&quot;</span>
+        <span class="hljs-keyword">if</span> previous <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+            line += <span class="hljs-string">f&quot; (last round <span class="hljs-subst">{previous[r]:<span class="hljs-number">.1</span>f}</span>)&quot;</span>
+        body.append(<span class="hljs-string">f&quot;<span class="hljs-subst">{line}</span>: <span class="hljs-subst">{split.notes[r]}</span>&quot;</span>)
+    <span class="hljs-keyword">return</span> head + <span class="hljs-string">&quot;\n&quot;</span> + <span class="hljs-string">&quot;\n&quot;</span>.join(body)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">load_split</span>(<span class="hljs-params">n_dev: <span class="hljs-built_in">int</span>, n_test: <span class="hljs-built_in">int</span>, seed: <span class="hljs-built_in">int</span> = <span class="hljs-number">0</span></span>) -&gt; Split:
+    <span class="hljs-comment"># keyword, because the cache key is the function name plus how each argument was spelled</span>
+    data = load_slice(n_dev, n_test, seed=seed)
+    <span class="hljs-keyword">return</span> Split(
+        notes=data[<span class="hljs-string">&quot;notes&quot;</span>],
+        scores=np.array(data[<span class="hljs-string">&quot;points&quot;</span>]),
+        dev=np.arange(n_dev),
+        test=np.arange(n_dev, n_dev + n_test),
+    )
+
+
+<span class="hljs-comment"># ----------------------------------------------------------------- step 1: propose</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">proposal_prompt</span>(<span class="hljs-params">examples: <span class="hljs-built_in">str</span>, feedback: <span class="hljs-built_in">str</span>, accepted: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-built_in">str</span>:
+    parts = [PROPOSER_TASK, <span class="hljs-string">&quot;\n&quot;</span> + examples]
+    <span class="hljs-keyword">if</span> accepted:
+        parts.append(
+            <span class="hljs-string">&quot;\nThe features you have now. `add` must not duplicate one of these; `revise` and &quot;</span>
+            <span class="hljs-string">&quot;`drop` refer to one by name:\n&quot;</span>
+            + <span class="hljs-string">&quot;\n&quot;</span>.join(
+                <span class="hljs-string">f&quot;- <span class="hljs-subst">{f[<span class="hljs-string">&#x27;name&#x27;</span>]}</span> (<span class="hljs-subst">{f[<span class="hljs-string">&#x27;kind&#x27;</span>]}</span>): <span class="hljs-subst">{f[<span class="hljs-string">&#x27;question&#x27;</span>]}</span>&quot;</span> <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> accepted
+            )
+        )
+    <span class="hljs-keyword">if</span> feedback:
+        parts.append(<span class="hljs-string">&quot;\nHow the model did with those features:\n&quot;</span> + feedback)
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;\n&quot;</span>.join(parts)
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">propose</span>(<span class="hljs-params">model: <span class="hljs-built_in">str</span>, round_index: <span class="hljs-built_in">int</span>, prompt: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;One proposal call. Every number in `prompt` is rounded so a replay hits the cache.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> model.startswith(<span class="hljs-string">&quot;claude&quot;</span>):
+        <span class="hljs-keyword">import</span> anthropic
+
+        response = anthropic.Anthropic(
+            api_key=os.environ.get(<span class="hljs-string">&quot;ANTHROPIC_API_KEY&quot;</span>, <span class="hljs-string">&quot;cache-only&quot;</span>)
+        ).messages.create(
+            model=model,
+            max_tokens=<span class="hljs-number">16000</span>,
+            output_config={
+                <span class="hljs-string">&quot;effort&quot;</span>: <span class="hljs-string">&quot;medium&quot;</span>,
+                <span class="hljs-string">&quot;format&quot;</span>: {<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;json_schema&quot;</span>, <span class="hljs-string">&quot;schema&quot;</span>: PROPOSAL_SCHEMA},
+            },
+            messages=[{<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: prompt}],
+        )
+        body = <span class="hljs-built_in">next</span>(block.text <span class="hljs-keyword">for</span> block <span class="hljs-keyword">in</span> response.content <span class="hljs-keyword">if</span> block.<span class="hljs-built_in">type</span> == <span class="hljs-string">&quot;text&quot;</span>)
+        usage = [response.usage.input_tokens <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>, response.usage.output_tokens <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>]
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
+
+        response = OpenAI(
+            api_key=os.environ.get(<span class="hljs-string">&quot;OPENAI_API_KEY&quot;</span>, <span class="hljs-string">&quot;cache-only&quot;</span>)
+        ).chat.completions.create(
+            model=model,
+            reasoning_effort=<span class="hljs-string">&quot;high&quot;</span>,
+            max_completion_tokens=<span class="hljs-number">16000</span>,
+            response_format={<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;json_object&quot;</span>},
+            messages=[
+                {
+                    <span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>,
+                    <span class="hljs-string">&quot;content&quot;</span>: prompt
+                    + <span class="hljs-string">&quot;\n\nReply with JSON matching this schema:\n&quot;</span>
+                    + json.dumps(PROPOSAL_SCHEMA),
+                }
+            ],
+        )
+        body = response.choices[<span class="hljs-number">0</span>].message.content
+        usage = [response.usage.prompt_tokens, response.usage.completion_tokens]
+    <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;actions&quot;</span>: json.loads(body)[<span class="hljs-string">&quot;actions&quot;</span>][:PROPOSALS], <span class="hljs-string">&quot;usage&quot;</span>: usage}
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">slug</span>(<span class="hljs-params">name: <span class="hljs-built_in">str</span>, taken: <span class="hljs-built_in">set</span>[<span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Names become question ids and column labels, so keep them plain and unique.&quot;&quot;&quot;</span>
+    base = (
+        <span class="hljs-string">&quot;&quot;</span>.join(c <span class="hljs-keyword">if</span> c.isalnum() <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;_&quot;</span> <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> name.lower()).strip(<span class="hljs-string">&quot;_&quot;</span>) <span class="hljs-keyword">or</span> <span class="hljs-string">&quot;feature&quot;</span>
+    )
+    candidate, n = base, <span class="hljs-number">2</span>
+    <span class="hljs-keyword">while</span> candidate <span class="hljs-keyword">in</span> taken:
+        candidate, n = <span class="hljs-string">f&quot;<span class="hljs-subst">{base}</span>_<span class="hljs-subst">{n}</span>&quot;</span>, n + <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> candidate
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">to_candidates</span>(<span class="hljs-params">actions: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>], accepted: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>], round_index: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">tuple</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Split a round&#x27;s actions into screenable candidates and a list of names to drop.&quot;&quot;&quot;</span>
+    live = {f[<span class="hljs-string">&quot;name&quot;</span>] <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> accepted}
+    drops = [a[<span class="hljs-string">&quot;target&quot;</span>] <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> actions <span class="hljs-keyword">if</span> a[<span class="hljs-string">&quot;op&quot;</span>] == <span class="hljs-string">&quot;drop&quot;</span> <span class="hljs-keyword">and</span> a[<span class="hljs-string">&quot;target&quot;</span>] <span class="hljs-keyword">in</span> live]
+    replacing = {
+        a[<span class="hljs-string">&quot;target&quot;</span>] <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> actions <span class="hljs-keyword">if</span> a[<span class="hljs-string">&quot;op&quot;</span>] == <span class="hljs-string">&quot;revise&quot;</span> <span class="hljs-keyword">and</span> a[<span class="hljs-string">&quot;target&quot;</span>] <span class="hljs-keyword">in</span> live
+    }
+    <span class="hljs-comment"># a revision may keep the name it replaces, since that feature is on its way out</span>
+    taken, candidates = live - replacing, []
+    <span class="hljs-keyword">for</span> action <span class="hljs-keyword">in</span> actions:
+        <span class="hljs-keyword">if</span> action[<span class="hljs-string">&quot;op&quot;</span>] == <span class="hljs-string">&quot;drop&quot;</span>:
+            <span class="hljs-keyword">continue</span>
+        <span class="hljs-keyword">if</span> action[<span class="hljs-string">&quot;op&quot;</span>] == <span class="hljs-string">&quot;revise&quot;</span> <span class="hljs-keyword">and</span> action[<span class="hljs-string">&quot;target&quot;</span>] <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> live:
+            <span class="hljs-keyword">continue</span>  <span class="hljs-comment"># a revision of something that is not there</span>
+        name = slug(action[<span class="hljs-string">&quot;name&quot;</span>], taken)
+        taken.add(name)
+        candidates.append(
+            {
+                <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{name}</span>@<span class="hljs-subst">{round_index}</span>&quot;</span>,  <span class="hljs-comment"># unique, so earlier rounds keep their columns</span>
+                <span class="hljs-string">&quot;name&quot;</span>: name,
+                <span class="hljs-string">&quot;kind&quot;</span>: action[<span class="hljs-string">&quot;kind&quot;</span>],
+                <span class="hljs-string">&quot;question&quot;</span>: action[<span class="hljs-string">&quot;question&quot;</span>],
+                <span class="hljs-string">&quot;replaces&quot;</span>: action[<span class="hljs-string">&quot;target&quot;</span>] <span class="hljs-keyword">if</span> action[<span class="hljs-string">&quot;op&quot;</span>] == <span class="hljs-string">&quot;revise&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;&quot;</span>,
+            }
+        )
+    <span class="hljs-keyword">return</span> candidates, drops
+
+
+<span class="hljs-comment"># ----------------------------------------------------------------- step 2: answer</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">feature_questions</span>(<span class="hljs-params">features: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    questions = {}
+    <span class="hljs-keyword">for</span> feature <span class="hljs-keyword">in</span> features:
+        <span class="hljs-keyword">if</span> feature[<span class="hljs-string">&quot;kind&quot;</span>] == <span class="hljs-string">&quot;intensity&quot;</span>:
+            questions[feature[<span class="hljs-string">&quot;name&quot;</span>]] = Score(
+                instructions=feature[<span class="hljs-string">&quot;question&quot;</span>], criteria=INTENSITY_LEVELS
+            )
+        <span class="hljs-keyword">else</span>:
+            questions[feature[<span class="hljs-string">&quot;name&quot;</span>]] = Noul(
+                instructions=feature[<span class="hljs-string">&quot;question&quot;</span>], criteria=PRESENCE_CRITERIA
+            )
+    <span class="hljs-keyword">return</span> questions
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">answer</span>(<span class="hljs-params">model: <span class="hljs-built_in">str</span>, note: <span class="hljs-built_in">str</span>, features_json: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;One request per note; every question of the round rides it. Keeps every probability.&quot;&quot;&quot;</span>
+    features = json.loads(features_json)
+    started = perf_counter()
+    response = client.system_one(
+        state=note, questions=feature_questions(features), model=model
+    )
+    raw = {}
+    <span class="hljs-keyword">for</span> feature <span class="hljs-keyword">in</span> features:
+        got = response.answers[feature[<span class="hljs-string">&quot;name&quot;</span>]]
+        <span class="hljs-keyword">if</span> feature[<span class="hljs-string">&quot;kind&quot;</span>] == <span class="hljs-string">&quot;intensity&quot;</span>:
+            raw[feature[<span class="hljs-string">&quot;name&quot;</span>]] = [
+                got.probabilities.get(i, <span class="hljs-number">0.0</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(INTENSITY_LEVELS))
+            ]
+        <span class="hljs-keyword">else</span>:
+            raw[feature[<span class="hljs-string">&quot;name&quot;</span>]] = [got.noul]
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;raw&quot;</span>: raw,
+        <span class="hljs-string">&quot;seconds&quot;</span>: <span class="hljs-built_in">round</span>(perf_counter() - started, <span class="hljs-number">2</span>),
+        <span class="hljs-string">&quot;input_tokens&quot;</span>: response.usage.input_tokens <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>,
+        <span class="hljs-string">&quot;output_tokens&quot;</span>: response.usage.output_tokens <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>,
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">featurize</span>(<span class="hljs-params">notes: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>], features: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Answer one question set for many notes: one request each, eight in flight.&quot;&quot;&quot;</span>
+    payload = json.dumps(features, sort_keys=<span class="hljs-literal">True</span>)
+    <span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-number">8</span>) <span class="hljs-keyword">as</span> pool:
+        results = <span class="hljs-built_in">list</span>(
+            pool.<span class="hljs-built_in">map</span>(<span class="hljs-keyword">lambda</span> note: answer(TYPESAFE_MODEL, note, payload), notes)
+        )
+    <span class="hljs-keyword">return</span> {
+        f[<span class="hljs-string">&quot;name&quot;</span>]: np.array([r[<span class="hljs-string">&quot;raw&quot;</span>][f[<span class="hljs-string">&quot;name&quot;</span>]] <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> results], dtype=<span class="hljs-built_in">float</span>)
+        <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> features
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">encode</span>(<span class="hljs-params">feature: <span class="hljs-built_in">dict</span>, probabilities: np.ndarray, mode: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">tuple</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Turn one question&#x27;s probabilities into named columns.&quot;&quot;&quot;</span>
+    name = feature[<span class="hljs-string">&quot;name&quot;</span>]
+    <span class="hljs-keyword">if</span> feature[<span class="hljs-string">&quot;kind&quot;</span>] == <span class="hljs-string">&quot;presence&quot;</span>:
+        <span class="hljs-keyword">return</span> [(name, probabilities[:, <span class="hljs-number">0</span>])]  <span class="hljs-comment"># one number is all there is</span>
+    levels = np.arange(probabilities.shape[<span class="hljs-number">1</span>])
+    mean = probabilities @ levels
+    <span class="hljs-keyword">if</span> mode == <span class="hljs-string">&quot;mean&quot;</span>:
+        <span class="hljs-keyword">return</span> [(name, mean)]
+    <span class="hljs-keyword">if</span> mode == <span class="hljs-string">&quot;mean_spread&quot;</span>:
+        variance = probabilities @ (levels**<span class="hljs-number">2</span>) - mean**<span class="hljs-number">2</span>
+        <span class="hljs-keyword">return</span> [(name, mean), (<span class="hljs-string">f&quot;<span class="hljs-subst">{name}</span>_sd&quot;</span>, np.sqrt(np.clip(variance, <span class="hljs-number">0</span>, <span class="hljs-literal">None</span>)))]
+    <span class="hljs-keyword">return</span> [(<span class="hljs-string">f&quot;<span class="hljs-subst">{name}</span>_p<span class="hljs-subst">{i}</span>&quot;</span>, probabilities[:, i]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> levels]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">design</span>(<span class="hljs-params">features: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>], answers_for: <span class="hljs-built_in">dict</span>, mode: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">tuple</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Stack every feature&#x27;s columns into one matrix, plus a label per column.&quot;&quot;&quot;</span>
+    columns, labels = [], []
+    <span class="hljs-keyword">for</span> feature <span class="hljs-keyword">in</span> features:
+        <span class="hljs-keyword">for</span> label, column <span class="hljs-keyword">in</span> encode(feature, answers_for[feature[<span class="hljs-string">&quot;id&quot;</span>]], mode):
+            columns.append(column)
+            labels.append(label)
+    <span class="hljs-keyword">return</span> np.column_stack(columns), labels
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">plain</span>(<span class="hljs-params">features: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;What goes on the wire and into the cache key: no id, no bookkeeping.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> [
+        {<span class="hljs-string">&quot;name&quot;</span>: f[<span class="hljs-string">&quot;name&quot;</span>], <span class="hljs-string">&quot;kind&quot;</span>: f[<span class="hljs-string">&quot;kind&quot;</span>], <span class="hljs-string">&quot;question&quot;</span>: f[<span class="hljs-string">&quot;question&quot;</span>]}
+        <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> features
+    ]
+
+
+<span class="hljs-comment"># ----------------------------------------------------------------- step 3: fit</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">rmse</span>(<span class="hljs-params">y: np.ndarray, p: np.ndarray</span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">float</span>(np.sqrt(np.mean((y - p) ** <span class="hljs-number">2</span>)))
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">spearman</span>(<span class="hljs-params">a: np.ndarray, b: np.ndarray</span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Rank correlation: does the model order the wines the way the critic did?&quot;&quot;&quot;</span>
+    ranks = (
+        np.argsort(np.argsort(a)).astype(<span class="hljs-built_in">float</span>),
+        np.argsort(np.argsort(b)).astype(<span class="hljs-built_in">float</span>),
+    )
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">float</span>(np.corrcoef(*ranks)[<span class="hljs-number">0</span>, <span class="hljs-number">1</span>])
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">folds</span>(<span class="hljs-params">y: np.ndarray, k: <span class="hljs-built_in">int</span>, seed: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">list</span>[np.ndarray]:
+    <span class="hljs-string">&quot;&quot;&quot;Label-stratified k-fold: sort by the label with a seeded tiebreak, then deal off the top.&quot;&quot;&quot;</span>
+    rng = np.random.default_rng(seed)
+    order = np.lexsort((rng.random(<span class="hljs-built_in">len</span>(y)), y))
+    <span class="hljs-keyword">return</span> [np.sort(order[i::k]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(k)]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">cross_validate</span>(<span class="hljs-params">X: np.ndarray, y: np.ndarray</span>) -&gt; <span class="hljs-built_in">tuple</span>[np.ndarray, <span class="hljs-built_in">float</span>]:
+    out_of_fold = np.zeros((REPEATS, <span class="hljs-built_in">len</span>(y)))
+    <span class="hljs-keyword">for</span> repeat <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(REPEATS):
+        <span class="hljs-keyword">for</span> fold <span class="hljs-keyword">in</span> folds(y, FOLDS, seed=repeat):
+            train = np.setdiff1d(np.arange(<span class="hljs-built_in">len</span>(y)), fold)
+            model = CatBoostRegressor(**CATBOOST).fit(X[train], y[train])
+            out_of_fold[repeat, fold] = model.predict(X[fold])
+    scores = [rmse(y, out_of_fold[repeat]) <span class="hljs-keyword">for</span> repeat <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(REPEATS)]
+    <span class="hljs-keyword">return</span> out_of_fold.mean(axis=<span class="hljs-number">0</span>), <span class="hljs-built_in">float</span>(np.mean(scores))
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">importances</span>(<span class="hljs-params">X: np.ndarray, y: np.ndarray</span>) -&gt; np.ndarray:
+    <span class="hljs-keyword">return</span> CatBoostRegressor(**CATBOOST).fit(X, y).get_feature_importance()
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">paired_gain</span>(<span class="hljs-params">y: np.ndarray, before: np.ndarray, after: np.ndarray</span>) -&gt; <span class="hljs-built_in">tuple</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Bootstrap the paired held-out RMSE change.&quot;&quot;&quot;</span>
+    squared = ((y - before) ** <span class="hljs-number">2</span>, (y - after) ** <span class="hljs-number">2</span>)
+    rng = np.random.default_rng(<span class="hljs-number">0</span>)
+    drawn = []
+    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2000</span>):
+        rows = rng.integers(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(y), <span class="hljs-built_in">len</span>(y))
+        drawn.append(
+            np.sqrt(squared[<span class="hljs-number">1</span>][rows].mean()) - np.sqrt(squared[<span class="hljs-number">0</span>][rows].mean())
+        )
+    drawn = np.array(drawn)
+    <span class="hljs-keyword">return</span> (
+        rmse(y, after) - rmse(y, before),
+        <span class="hljs-built_in">float</span>(np.percentile(drawn, <span class="hljs-number">2.5</span>)),
+        <span class="hljs-built_in">float</span>(np.percentile(drawn, <span class="hljs-number">97.5</span>)),
+    )
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">fit_predict</span>(<span class="hljs-params">X: np.ndarray, split: Split</span>) -&gt; np.ndarray:
+    model = CatBoostRegressor(**CATBOOST).fit(X[split.dev], split.scores[split.dev])
+    <span class="hljs-keyword">return</span> model.predict(X[split.test])
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">fit_predict_text</span>(<span class="hljs-params">split: Split</span>) -&gt; np.ndarray:
+    <span class="hljs-string">&quot;&quot;&quot;The reference arm: the same model, handed the note instead of the columns.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">from</span> catboost <span class="hljs-keyword">import</span> Pool
+
+    raw = np.array([[note] <span class="hljs-keyword">for</span> note <span class="hljs-keyword">in</span> split.notes], dtype=<span class="hljs-built_in">object</span>)
+    model = CatBoostRegressor(**CATBOOST).fit(
+        Pool(raw[split.dev], split.scores[split.dev], text_features=[<span class="hljs-number">0</span>])
+    )
+    <span class="hljs-keyword">return</span> model.predict(Pool(raw[split.test], text_features=[<span class="hljs-number">0</span>]))
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">evaluate</span>(<span class="hljs-params">
+    features: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>], answers_for: <span class="hljs-built_in">dict</span>, split: Split, mode: <span class="hljs-built_in">str</span>
+</span>) -&gt; <span class="hljs-built_in">tuple</span>[np.ndarray, <span class="hljs-built_in">float</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Cross-validated error on the dev rows for one candidate question set.&quot;&quot;&quot;</span>
+    X, _ = design(features, answers_for, mode)
+    <span class="hljs-keyword">return</span> cross_validate(X[split.dev], split.scores[split.dev])
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">swap_in</span>(<span class="hljs-params">accepted: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>], feature: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>] | <span class="hljs-literal">None</span>:
+    <span class="hljs-string">&quot;&quot;&quot;The accepted set with `feature` in place of the one it revises, or None if it is gone.&quot;&quot;&quot;</span>
+    at = <span class="hljs-built_in">next</span>(
+        (i <span class="hljs-keyword">for</span> i, f <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(accepted) <span class="hljs-keyword">if</span> f[<span class="hljs-string">&quot;name&quot;</span>] == feature[<span class="hljs-string">&quot;replaces&quot;</span>]), <span class="hljs-literal">None</span>
+    )
+    <span class="hljs-keyword">if</span> at <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
+    trial = <span class="hljs-built_in">list</span>(accepted)
+    trial[at] = {k: feature[k] <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;id&quot;</span>, <span class="hljs-string">&quot;name&quot;</span>, <span class="hljs-string">&quot;kind&quot;</span>, <span class="hljs-string">&quot;question&quot;</span>)}
+    <span class="hljs-keyword">return</span> trial
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">try_change</span>(<span class="hljs-params">
+    trial: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>],
+    accepted: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>],
+    cv: <span class="hljs-built_in">float</span>,
+    answers_for: <span class="hljs-built_in">dict</span>,
+    split: Split,
+    mode: <span class="hljs-built_in">str</span>,
+    tolerance: <span class="hljs-built_in">float</span>,
+</span>) -&gt; <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>], <span class="hljs-built_in">float</span>, <span class="hljs-built_in">str</span>, <span class="hljs-built_in">bool</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Refit with the change and keep it only if the dev error improves. No API calls.&quot;&quot;&quot;</span>
+    _, cv_trial = evaluate(trial, answers_for, split, mode)
+    <span class="hljs-keyword">if</span> cv_trial &lt;= cv + tolerance:
+        <span class="hljs-keyword">return</span> trial, cv_trial, <span class="hljs-string">f&quot;CV <span class="hljs-subst">{cv:<span class="hljs-number">.3</span>f}</span> -&gt; <span class="hljs-subst">{cv_trial:<span class="hljs-number">.3</span>f}</span>&quot;</span>, <span class="hljs-literal">True</span>
+    <span class="hljs-keyword">return</span> accepted, cv, <span class="hljs-string">f&quot;would cost <span class="hljs-subst">{cv_trial - cv:+<span class="hljs-number">.3</span>f}</span>&quot;</span>, <span class="hljs-literal">False</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">owner_of</span>(<span class="hljs-params">label: <span class="hljs-built_in">str</span>, features: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Which feature a column label belongs to - encodings suffix the name.&quot;&quot;&quot;</span>
+    exact = <span class="hljs-built_in">next</span>((f <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> features <span class="hljs-keyword">if</span> f[<span class="hljs-string">&quot;name&quot;</span>] == label), <span class="hljs-literal">None</span>)
+    <span class="hljs-keyword">if</span> exact:
+        <span class="hljs-keyword">return</span> exact
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">next</span>(f <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> features <span class="hljs-keyword">if</span> label.startswith(f[<span class="hljs-string">&quot;name&quot;</span>] + <span class="hljs-string">&quot;_&quot;</span>))
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">importance_per_feature</span>(<span class="hljs-params">
+    features: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>], labels: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>], column_importances: np.ndarray
+</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Sum each question&#x27;s CatBoost column importances.
+
+    Intensity questions can produce multiple model columns. Combining their normalized
+    importances gives one percentage share per question.
+    &quot;&quot;&quot;</span>
+    total = {f[<span class="hljs-string">&quot;name&quot;</span>]: <span class="hljs-number">0.0</span> <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> features}
+    <span class="hljs-keyword">for</span> label, column_importance <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(labels, column_importances):
+        total[owner_of(label, features)[<span class="hljs-string">&quot;name&quot;</span>]] += <span class="hljs-built_in">float</span>(column_importance)
+    <span class="hljs-keyword">return</span> total
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">feedback_for</span>(<span class="hljs-params">
+    history: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">float</span>],
+    accepted: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>],
+    answers_for: <span class="hljs-built_in">dict</span>,
+    split: Split,
+    mode: <span class="hljs-built_in">str</span>,
+    out_of_fold: np.ndarray,
+    previous: np.ndarray | <span class="hljs-literal">None</span>,
+</span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-string">&quot;&quot;&quot;The scoreboard the next proposal call reads. The notes themselves arrive separately,
+    through `example_block`. Numbers are rounded before they enter the prompt.&quot;&quot;&quot;</span>
+    X, labels = design(accepted, answers_for, mode)
+    dev, scores = split.dev, split.scores
+    by_name = importance_per_feature(accepted, labels, importances(X[dev], scores[dev]))
+
+    lines = [<span class="hljs-string">&quot;Cross-validated RMSE in points so far, lower is better:&quot;</span>]
+    lines += [<span class="hljs-string">f&quot;  round <span class="hljs-subst">{i + <span class="hljs-number">1</span>}</span>: <span class="hljs-subst">{v:<span class="hljs-number">.2</span>f}</span>&quot;</span> <span class="hljs-keyword">for</span> i, v <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(history)]
+    <span class="hljs-keyword">if</span> previous <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+        now, before = np.<span class="hljs-built_in">abs</span>(scores[dev] - out_of_fold), np.<span class="hljs-built_in">abs</span>(scores[dev] - previous)
+        better, worse = <span class="hljs-built_in">int</span>((now &lt; before - <span class="hljs-number">0.1</span>).<span class="hljs-built_in">sum</span>()), <span class="hljs-built_in">int</span>((now &gt; before + <span class="hljs-number">0.1</span>).<span class="hljs-built_in">sum</span>())
+        lines.append(
+            <span class="hljs-string">f&quot;\nAgainst the previous round, <span class="hljs-subst">{better}</span> of the <span class="hljs-subst">{<span class="hljs-built_in">len</span>(dev)}</span> dev notes are now &quot;</span>
+            <span class="hljs-string">f&quot;predicted better by more than 0.1 points and <span class="hljs-subst">{worse}</span> are predicted worse.&quot;</span>
+        )
+    lines.append(
+        <span class="hljs-string">&quot;\nYour features, with importance as a percentage of the total and the spread of the &quot;</span>
+        <span class="hljs-string">&quot;column across the dev rows. Low importance or low spread means the question is not &quot;</span>
+        <span class="hljs-string">&quot;doing much; revise or drop it.&quot;</span>
+    )
+    <span class="hljs-keyword">for</span> feature <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(accepted, key=<span class="hljs-keyword">lambda</span> f: -by_name.get(f[<span class="hljs-string">&quot;name&quot;</span>], <span class="hljs-number">0.0</span>)):
+        column = encode(feature, answers_for[feature[<span class="hljs-string">&quot;id&quot;</span>]], mode)[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]
+        lines.append(
+            <span class="hljs-string">f&quot;  <span class="hljs-subst">{feature[<span class="hljs-string">&#x27;name&#x27;</span>]}</span> (<span class="hljs-subst">{feature[<span class="hljs-string">&#x27;kind&#x27;</span>]}</span>): &quot;</span>
+            <span class="hljs-string">f&quot;<span class="hljs-subst">{by_name.get(feature[<span class="hljs-string">&#x27;name&#x27;</span>], <span class="hljs-number">0.0</span>):<span class="hljs-number">.1</span>f}</span>% importance, &quot;</span>
+            <span class="hljs-string">f&quot;spread <span class="hljs-subst">{column[dev].std():<span class="hljs-number">.2</span>f}</span>&quot;</span>
+        )
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;\n&quot;</span>.join(lines)
+
+
+<span class="hljs-comment"># ----------------------------------------------------------------- the loop itself</span>
+
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Discovery</span>(<span class="hljs-title class_ inherited__">NamedTuple</span>):
+    <span class="hljs-string">&quot;&quot;&quot;Artifacts returned by the discovery loop.&quot;&quot;&quot;</span>
+
+    accepted: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]  <span class="hljs-comment"># the question set it ended with</span>
+    answers_for: <span class="hljs-built_in">dict</span>  <span class="hljs-comment"># feature id -&gt; (rows x levels) probabilities</span>
+    snapshots: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]]  <span class="hljs-comment"># the set as it stood at the end of each round</span>
+    history: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">float</span>]  <span class="hljs-comment"># dev CV error after each round</span>
+    batches: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">tuple</span>]  <span class="hljs-comment"># what each round sent, for the request table</span>
+    journal: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">tuple</span>]  <span class="hljs-comment"># every action and what became of it</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">run_loop</span>(<span class="hljs-params">
+    split: Split,
+    proposer: <span class="hljs-built_in">str</span>,
+    rounds: <span class="hljs-built_in">int</span>,
+    examples: <span class="hljs-built_in">int</span>,
+    mode: <span class="hljs-built_in">str</span>,
+    min_spread: <span class="hljs-built_in">float</span>,
+    tolerance: <span class="hljs-built_in">float</span>,
+</span>) -&gt; Discovery:
+    <span class="hljs-string">&quot;&quot;&quot;Run the propose, answer, fit, and feedback loop.&quot;&quot;&quot;</span>
+    shown = example_rows(split, <span class="hljs-literal">None</span>, examples)  <span class="hljs-comment"># round 1 has nothing predicted yet</span>
+    out_of_fold = previous = <span class="hljs-literal">None</span>
+    got_from = Discovery([], {}, [], [], [], [])
+    accepted, answers_for = got_from.accepted, got_from.answers_for
+    snapshots, history = got_from.snapshots, got_from.history
+    batches, journal = got_from.batches, got_from.journal
+    feedback = <span class="hljs-string">&quot;&quot;</span>
+
+    <span class="hljs-keyword">for</span> round_index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, rounds + <span class="hljs-number">1</span>):
+        block = example_block(shown, split, out_of_fold, previous)
+        actions = propose(
+            proposer, round_index, proposal_prompt(block, feedback, accepted)
+        )[<span class="hljs-string">&quot;actions&quot;</span>]
+        keep, drops = to_candidates(actions, accepted, round_index)
+
+        <span class="hljs-keyword">if</span> keep:  <span class="hljs-comment"># one request per row, carrying every question this round proposed</span>
+            batches.append((round_index, plain(keep)))
+            answers = featurize(split.notes, plain(keep))
+            <span class="hljs-keyword">for</span> feature <span class="hljs-keyword">in</span> keep:
+                answers_for[feature[<span class="hljs-string">&quot;id&quot;</span>]] = answers[feature[<span class="hljs-string">&quot;name&quot;</span>]]
+
+        <span class="hljs-keyword">for</span> (
+            feature
+        ) <span class="hljs-keyword">in</span> keep:  <span class="hljs-comment"># an add goes in; importance says later whether it earned it</span>
+            <span class="hljs-keyword">if</span> feature[<span class="hljs-string">&quot;replaces&quot;</span>]:
+                <span class="hljs-keyword">continue</span>
+            column = encode(feature, answers_for[feature[<span class="hljs-string">&quot;id&quot;</span>]], mode)[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]
+            flat = <span class="hljs-built_in">float</span>(column[split.dev].std()) &lt; min_spread
+            journal.append(
+                (round_index, <span class="hljs-string">&quot;flat&quot;</span> <span class="hljs-keyword">if</span> flat <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;add&quot;</span>, feature[<span class="hljs-string">&quot;name&quot;</span>], <span class="hljs-string">&quot;&quot;</span>)
+            )
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> flat:
+                accepted.append(
+                    {k: feature[k] <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;id&quot;</span>, <span class="hljs-string">&quot;name&quot;</span>, <span class="hljs-string">&quot;kind&quot;</span>, <span class="hljs-string">&quot;question&quot;</span>)}
+                )
+
+        _, cv = evaluate(accepted, answers_for, split, mode)
+        trial_args = (answers_for, split, mode, tolerance)
+
+        <span class="hljs-keyword">for</span> feature <span class="hljs-keyword">in</span> [f <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> keep <span class="hljs-keyword">if</span> f[<span class="hljs-string">&quot;replaces&quot;</span>]]:  <span class="hljs-comment"># every revision is tried</span>
+            trial = swap_in(accepted, feature)
+            <span class="hljs-keyword">if</span> trial <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:  <span class="hljs-comment"># it revises something an earlier round already dropped</span>
+                journal.append(
+                    (round_index, <span class="hljs-string">&quot;stale&quot;</span>, feature[<span class="hljs-string">&quot;name&quot;</span>], <span class="hljs-string">&quot;target is gone&quot;</span>)
+                )
+                <span class="hljs-keyword">continue</span>
+            accepted[:], cv, note, took = try_change(trial, accepted, cv, *trial_args)
+            what = <span class="hljs-string">&quot;revise&quot;</span> <span class="hljs-keyword">if</span> took <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;reject&quot;</span>
+            journal.append(
+                (
+                    round_index,
+                    what,
+                    feature[<span class="hljs-string">&quot;name&quot;</span>],
+                    <span class="hljs-string">f&quot;was <span class="hljs-subst">{feature[<span class="hljs-string">&#x27;replaces&#x27;</span>]}</span>, <span class="hljs-subst">{note}</span>&quot;</span>,
+                )
+            )
+
+        <span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> drops:  <span class="hljs-comment"># and so is every drop</span>
+            trial = [f <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> accepted <span class="hljs-keyword">if</span> f[<span class="hljs-string">&quot;name&quot;</span>] != name]
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> trial:
+                <span class="hljs-keyword">continue</span>
+            accepted[:], cv, note, took = try_change(trial, accepted, cv, *trial_args)
+            journal.append((round_index, <span class="hljs-string">&quot;drop&quot;</span> <span class="hljs-keyword">if</span> took <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;keep&quot;</span>, name, note))
+
+        previous, (out_of_fold, cv) = (
+            out_of_fold,
+            evaluate(accepted, answers_for, split, mode),
+        )
+        history.append(cv)
+        snapshots.append(<span class="hljs-built_in">list</span>(accepted))
+        feedback = feedback_for(
+            history, accepted, answers_for, split, mode, out_of_fold, previous
+        )
+        <span class="hljs-comment"># next round reads the rows these questions get most wrong, and as many they get right</span>
+        shown = example_rows(split, out_of_fold, examples)
+        report(round_index, keep, drops, journal, accepted, cv)
+
+    <span class="hljs-keyword">return</span> got_from
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">report</span>(<span class="hljs-params">
+    round_index: <span class="hljs-built_in">int</span>,
+    keep: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>],
+    drops: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>],
+    journal: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">tuple</span>],
+    accepted: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>],
+    cv: <span class="hljs-built_in">float</span>,
+</span>) -&gt; <span class="hljs-literal">None</span>:
+    <span class="hljs-string">&quot;&quot;&quot;One block per round: the counts, the names it added, then everything with a number.&quot;&quot;&quot;</span>
+    revised = <span class="hljs-built_in">sum</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> keep <span class="hljs-keyword">if</span> f[<span class="hljs-string">&quot;replaces&quot;</span>])
+    <span class="hljs-built_in">print</span>(
+        <span class="hljs-string">f&quot;round <span class="hljs-subst">{round_index}</span>: <span class="hljs-subst">{<span class="hljs-built_in">len</span>(keep) - revised}</span> add, <span class="hljs-subst">{revised}</span> revise, &quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(drops)}</span> drop&quot;</span>
+    )
+    this_round = [j <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> journal <span class="hljs-keyword">if</span> j[<span class="hljs-number">0</span>] == round_index]
+    added = [name <span class="hljs-keyword">for</span> _, what, name, _ <span class="hljs-keyword">in</span> this_round <span class="hljs-keyword">if</span> what == <span class="hljs-string">&quot;add&quot;</span>]
+    <span class="hljs-keyword">if</span> added:
+        <span class="hljs-built_in">print</span>(
+            textwrap.fill(
+                <span class="hljs-string">&quot;, &quot;</span>.join(added),
+                <span class="hljs-number">88</span>,
+                initial_indent=<span class="hljs-string">&quot;  added  &quot;</span>,
+                subsequent_indent=<span class="hljs-string">&quot; &quot;</span> * <span class="hljs-number">10</span>,
+            )
+        )
+    <span class="hljs-keyword">for</span> _, what, name, note <span class="hljs-keyword">in</span> this_round:  <span class="hljs-comment"># everything carrying a number of its own</span>
+        <span class="hljs-keyword">if</span> what != <span class="hljs-string">&quot;add&quot;</span>:
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  <span class="hljs-subst">{what:&lt;<span class="hljs-number">7</span>}</span><span class="hljs-subst">{name:&lt;<span class="hljs-number">34</span>}</span><span class="hljs-subst">{note}</span>&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  -&gt; <span class="hljs-subst">{<span class="hljs-built_in">len</span>(accepted)}</span> features, dev CV RMSE <span class="hljs-subst">{cv:<span class="hljs-number">.3</span>f}</span>\n&quot;</span>)
+
+
+<span class="hljs-comment"># ----------------------------------------------------------------- asking for the score</span>
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">ask_score</span>(<span class="hljs-params">model: <span class="hljs-built_in">str</span>, note: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;One `Score` over ten quality bands, read as a level and rescaled to 80-100.&quot;&quot;&quot;</span>
+    response = client.system_one(
+        state=note,
+        questions={
+            <span class="hljs-string">&quot;quality&quot;</span>: Score(
+                instructions=(
+                    <span class="hljs-string">&quot;Judging only by what this tasting note says, how good is the wine?&quot;</span>
+                ),
+                criteria=SCORE_LEVELS,
+            )
+        },
+        model=model,
+    )
+    got = response.answers[<span class="hljs-string">&quot;quality&quot;</span>]
+    top = <span class="hljs-built_in">len</span>(SCORE_LEVELS) - <span class="hljs-number">1</span>
+    expected = <span class="hljs-built_in">sum</span>(k * v <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> got.probabilities.items())
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-comment"># level 0 is the bottom of the critic&#x27;s scale, level 9 the top</span>
+        <span class="hljs-string">&quot;expected&quot;</span>: <span class="hljs-number">80.0</span> + <span class="hljs-number">20.0</span> * expected / top,
+        <span class="hljs-string">&quot;picked&quot;</span>: <span class="hljs-number">80.0</span> + <span class="hljs-number">20.0</span> * got.score / top,
+        <span class="hljs-string">&quot;input_tokens&quot;</span>: response.usage.input_tokens <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>,
+        <span class="hljs-string">&quot;output_tokens&quot;</span>: response.usage.output_tokens <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>,
+    }
+
+
+<span class="hljs-comment"># ----------------------------------------------------------------- charts</span>
+
+SURFACE, INK, INK2, MUTED = <span class="hljs-string">&quot;#fcfcfb&quot;</span>, <span class="hljs-string">&quot;#0b0b0b&quot;</span>, <span class="hljs-string">&quot;#52514e&quot;</span>, <span class="hljs-string">&quot;#898781&quot;</span>
+GRID, AXIS, BLUE, ORANGE = <span class="hljs-string">&quot;#e1e0d9&quot;</span>, <span class="hljs-string">&quot;#c3c2b7&quot;</span>, <span class="hljs-string">&quot;#2a78d6&quot;</span>, <span class="hljs-string">&quot;#eb6834&quot;</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">style</span>(<span class="hljs-params">ax</span>) -&gt; <span class="hljs-literal">None</span>:
+    ax.set_facecolor(SURFACE)
+    <span class="hljs-keyword">for</span> side <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;top&quot;</span>, <span class="hljs-string">&quot;right&quot;</span>):
+        ax.spines[side].set_visible(<span class="hljs-literal">False</span>)
+    <span class="hljs-keyword">for</span> side <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;left&quot;</span>, <span class="hljs-string">&quot;bottom&quot;</span>):
+        ax.spines[side].set_color(AXIS)
+    ax.tick_params(colors=MUTED, labelcolor=INK2, labelsize=<span class="hljs-number">9</span>)
+    ax.set_axisbelow(<span class="hljs-literal">True</span>)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">polarity</span>(<span class="hljs-params">feature: <span class="hljs-built_in">dict</span>, answers_for: <span class="hljs-built_in">dict</span>, split: Split</span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Rank correlation between a question&#x27;s answer and the critic score, on the dev rows.
+
+    Positive means a higher answer goes with a better review, negative the opposite. It is
+    what orders the rows of the feature map, so the map reads as a gradient that flips.
+    &quot;&quot;&quot;</span>
+    column = encode(feature, answers_for[feature[<span class="hljs-string">&quot;id&quot;</span>]], <span class="hljs-string">&quot;mean&quot;</span>)[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]
+    <span class="hljs-keyword">return</span> spearman(column[split.dev], split.scores[split.dev])
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">reviews_heatmap</span>(<span class="hljs-params">
+    plt,
+    questions: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>],
+    answers_for: <span class="hljs-built_in">dict</span>,
+    split: Split,
+    rows: <span class="hljs-built_in">tuple</span>,
+</span>):
+    <span class="hljs-string">&quot;&quot;&quot;Compare held-out reviews across the discovered questions, best-signal first.
+
+    Rows arrive sorted from the questions that rise with the score to the ones that fall with
+    it, so a row above the divider shades left to right and a row below it shades right to
+    left.
+    &quot;&quot;&quot;</span>
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">value_of</span>(<span class="hljs-params">feature: <span class="hljs-built_in">dict</span>, row: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">float</span>(encode(feature, answers_for[feature[<span class="hljs-string">&quot;id&quot;</span>]], <span class="hljs-string">&quot;mean&quot;</span>)[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>][row])
+
+    signs = [polarity(question, answers_for, split) <span class="hljs-keyword">for</span> question <span class="hljs-keyword">in</span> questions]
+    flip = <span class="hljs-built_in">next</span>((i <span class="hljs-keyword">for</span> i, s <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(signs) <span class="hljs-keyword">if</span> s &lt; <span class="hljs-number">0</span>), <span class="hljs-built_in">len</span>(questions))
+
+    raw = np.array(
+        [[value_of(question, row) <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> rows] <span class="hljs-keyword">for</span> question <span class="hljs-keyword">in</span> questions]
+    )
+    normalized = np.array(
+        [
+            values / (<span class="hljs-number">4</span> <span class="hljs-keyword">if</span> question[<span class="hljs-string">&quot;kind&quot;</span>] == <span class="hljs-string">&quot;intensity&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-number">1</span>)
+            <span class="hljs-keyword">for</span> question, values <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(questions, raw)
+        ]
+    )
+    cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        <span class="hljs-string">&quot;typesafe_heat&quot;</span>, [SURFACE, <span class="hljs-string">&quot;#f7c7ad&quot;</span>, ORANGE]
+    )
+    fig, ax = plt.subplots(
+        figsize=(<span class="hljs-number">9.5</span>, <span class="hljs-number">1.8</span> + <span class="hljs-number">0.58</span> * <span class="hljs-built_in">len</span>(questions)), facecolor=SURFACE
+    )
+    image = ax.imshow(normalized, aspect=<span class="hljs-string">&quot;auto&quot;</span>, cmap=cmap, vmin=<span class="hljs-number">0</span>, vmax=<span class="hljs-number">1</span>)
+    row_labels = []
+    <span class="hljs-keyword">for</span> question, sign <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(questions, signs):
+        kind = <span class="hljs-string">&quot;score&quot;</span> <span class="hljs-keyword">if</span> question[<span class="hljs-string">&quot;kind&quot;</span>] == <span class="hljs-string">&quot;intensity&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;noul&quot;</span>
+        prefix = <span class="hljs-string">f&quot;<span class="hljs-subst">{sign:+<span class="hljs-number">.2</span>f}</span> (<span class="hljs-subst">{kind}</span>) &quot;</span>
+        lines = textwrap.wrap(
+            <span class="hljs-string">&quot; &quot;</span>.join(question[<span class="hljs-string">&quot;question&quot;</span>].split()),
+            width=<span class="hljs-number">52</span>,
+            max_lines=<span class="hljs-number">2</span>,
+            placeholder=<span class="hljs-string">&quot;...&quot;</span>,
+            break_long_words=<span class="hljs-literal">False</span>,
+            break_on_hyphens=<span class="hljs-literal">False</span>,
+        )
+        row_labels.append(prefix + (<span class="hljs-string">f&quot;\n<span class="hljs-subst">{<span class="hljs-string">&#x27; &#x27;</span> * <span class="hljs-built_in">len</span>(prefix)}</span>&quot;</span>).join(lines))
+    column_labels = [
+        <span class="hljs-string">f&quot;#<span class="hljs-subst">{i}</span>\n<span class="hljs-subst">{split.scores[row]:<span class="hljs-number">.0</span>f}</span> points\n<span class="hljs-subst">{<span class="hljs-string">&#x27; &#x27;</span>.join(split.notes[row].split())[:<span class="hljs-number">15</span>]}</span>...&quot;</span>
+        <span class="hljs-keyword">for</span> i, row <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(rows, <span class="hljs-number">1</span>)
+    ]
+    ax.set_yticks(np.arange(<span class="hljs-built_in">len</span>(questions)), row_labels)
+    ax.set_xticks(np.arange(<span class="hljs-built_in">len</span>(rows)), column_labels)
+    ax.tick_params(
+        axis=<span class="hljs-string">&quot;x&quot;</span>, top=<span class="hljs-literal">True</span>, labeltop=<span class="hljs-literal">True</span>, bottom=<span class="hljs-literal">False</span>, labelbottom=<span class="hljs-literal">False</span>, pad=<span class="hljs-number">8</span>
+    )
+    ax.tick_params(axis=<span class="hljs-string">&quot;y&quot;</span>, labelsize=<span class="hljs-number">8.5</span>)
+    <span class="hljs-keyword">for</span> side <span class="hljs-keyword">in</span> ax.spines.values():
+        side.set_visible(<span class="hljs-literal">False</span>)
+    ax.set_xticks(np.arange(-<span class="hljs-number">0.5</span>, <span class="hljs-built_in">len</span>(rows), <span class="hljs-number">1</span>), minor=<span class="hljs-literal">True</span>)
+    ax.set_yticks(np.arange(-<span class="hljs-number">0.5</span>, <span class="hljs-built_in">len</span>(questions), <span class="hljs-number">1</span>), minor=<span class="hljs-literal">True</span>)
+    ax.grid(which=<span class="hljs-string">&quot;minor&quot;</span>, color=SURFACE, linewidth=<span class="hljs-number">2</span>)
+    ax.tick_params(which=<span class="hljs-string">&quot;minor&quot;</span>, bottom=<span class="hljs-literal">False</span>, left=<span class="hljs-literal">False</span>)
+    <span class="hljs-keyword">for</span> i, question <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(questions):
+        <span class="hljs-keyword">for</span> j, value <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(raw[i]):
+            label = (
+                <span class="hljs-string">f&quot;<span class="hljs-subst">{value:<span class="hljs-number">.1</span>f}</span>&quot;</span> <span class="hljs-keyword">if</span> question[<span class="hljs-string">&quot;kind&quot;</span>] == <span class="hljs-string">&quot;intensity&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-string">f&quot;<span class="hljs-subst">{value:<span class="hljs-number">.2</span>f}</span>&quot;</span>
+            )
+            color = SURFACE <span class="hljs-keyword">if</span> normalized[i, j] &gt; <span class="hljs-number">0.58</span> <span class="hljs-keyword">else</span> INK2
+            ax.text(j, i, label, ha=<span class="hljs-string">&quot;center&quot;</span>, va=<span class="hljs-string">&quot;center&quot;</span>, color=color, fontsize=<span class="hljs-number">8</span>)
+    <span class="hljs-comment"># the line where the questions stop rising with the score and start falling with it</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-number">0</span> &lt; flip &lt; <span class="hljs-built_in">len</span>(questions):
+        ax.axhline(flip - <span class="hljs-number">0.5</span>, color=INK, linewidth=<span class="hljs-number">1.2</span>)
+        ax.annotate(
+            <span class="hljs-string">&quot;a higher answer means a worse review, below this line&quot;</span>,
+            (<span class="hljs-built_in">len</span>(rows) - <span class="hljs-number">0.5</span>, flip - <span class="hljs-number">0.5</span>),
+            xytext=(-<span class="hljs-number">4</span>, <span class="hljs-number">5</span>),
+            textcoords=<span class="hljs-string">&quot;offset points&quot;</span>,
+            va=<span class="hljs-string">&quot;bottom&quot;</span>,
+            ha=<span class="hljs-string">&quot;right&quot;</span>,
+            color=INK2,
+            fontsize=<span class="hljs-number">8.5</span>,
+        )
+    colorbar = fig.colorbar(image, ax=ax, fraction=<span class="hljs-number">0.025</span>, pad=<span class="hljs-number">0.025</span>)
+    colorbar.set_ticks([<span class="hljs-number">0</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">1</span>])
+    colorbar.set_label(<span class="hljs-string">&quot;normalized answer&quot;</span>, color=INK2, fontsize=<span class="hljs-number">8.5</span>)
+    colorbar.ax.tick_params(labelsize=<span class="hljs-number">8</span>, colors=INK2)
+    fig.suptitle(
+        <span class="hljs-string">&quot;Every question, on five held-out reviews from worst to best&quot;</span>,
+        x=<span class="hljs-number">0.01</span>,
+        y=<span class="hljs-number">0.995</span>,
+        ha=<span class="hljs-string">&quot;left&quot;</span>,
+        color=INK,
+        fontsize=<span class="hljs-number">11</span>,
+    )
+    fig.text(
+        <span class="hljs-number">0.01</span>,
+        <span class="hljs-number">0.972</span>,
+        <span class="hljs-string">&quot;sorted by how the answer moves with the score, so each row above the line shades &quot;</span>
+        <span class="hljs-string">&quot;left to right and each row below it shades the other way&quot;</span>,
+        color=MUTED,
+        fontsize=<span class="hljs-number">9</span>,
+    )
+    fig.text(
+        <span class="hljs-number">0.01</span>,
+        <span class="hljs-number">0.005</span>,
+        <span class="hljs-string">&quot;Row labels lead with the rank correlation between that question&#x27;s answer and the &quot;</span>
+        <span class="hljs-string">&quot;critic score. Cell text is each question&#x27;s native scale: score 0-4, noul 0-1.&quot;</span>,
+        color=MUTED,
+        fontsize=<span class="hljs-number">8.5</span>,
+    )
+    <span class="hljs-keyword">return</span> fig
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">rounds_chart</span>(<span class="hljs-params">
+    plt, curve: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">tuple</span>], history: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">float</span>], n_test: <span class="hljs-built_in">int</span>, gain: <span class="hljs-built_in">tuple</span>
+</span>):
+    <span class="hljs-string">&quot;&quot;&quot;Dev error and held-out error per round. The trend is the point, not the gap.&quot;&quot;&quot;</span>
+    rounds = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(curve) + <span class="hljs-number">1</span>))
+    values = [v <span class="hljs-keyword">for</span> _, v <span class="hljs-keyword">in</span> curve]
+
+    fig, ax = plt.subplots(figsize=(<span class="hljs-number">7</span>, <span class="hljs-number">3.9</span>), facecolor=SURFACE)
+    style(ax)
+    ax.grid(axis=<span class="hljs-string">&quot;y&quot;</span>, color=GRID, linewidth=<span class="hljs-number">0.8</span>)
+    <span class="hljs-comment"># each dev fold trains on four fifths of the rows, so the dev line sits the higher of the two</span>
+    ax.fill_between(rounds, history, values, color=GRID, alpha=<span class="hljs-number">0.75</span>, linewidth=<span class="hljs-number">0</span>)
+    ax.plot(
+        rounds,
+        history,
+        marker=<span class="hljs-string">&quot;o&quot;</span>,
+        color=BLUE,
+        linewidth=<span class="hljs-number">2</span>,
+        linestyle=<span class="hljs-string">&quot;--&quot;</span>,
+        label=<span class="hljs-string">&quot;dev, cross-validated - what the loop optimises&quot;</span>,
+    )
+    ax.plot(
+        rounds,
+        values,
+        marker=<span class="hljs-string">&quot;o&quot;</span>,
+        color=ORANGE,
+        linewidth=<span class="hljs-number">2</span>,
+        label=<span class="hljs-string">&quot;held out - what that actually buys&quot;</span>,
+    )
+    <span class="hljs-comment"># label each point on the outside of the pair, so neither line crowds its own numbers</span>
+    <span class="hljs-keyword">for</span> x, dev_value, test_value <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(rounds, history, values):
+        <span class="hljs-keyword">for</span> value, other <span class="hljs-keyword">in</span> ((dev_value, test_value), (test_value, dev_value)):
+            ax.annotate(
+                <span class="hljs-string">f&quot;<span class="hljs-subst">{value:<span class="hljs-number">.2</span>f}</span>&quot;</span>,
+                (x, value),
+                textcoords=<span class="hljs-string">&quot;offset points&quot;</span>,
+                xytext=(<span class="hljs-number">0</span>, <span class="hljs-number">8</span> <span class="hljs-keyword">if</span> value &gt;= other <span class="hljs-keyword">else</span> -<span class="hljs-number">16</span>),
+                ha=<span class="hljs-string">&quot;center&quot;</span>,
+                color=INK2,
+                fontsize=<span class="hljs-number">8.5</span>,
+            )
+    ax.set_xticks(
+        rounds, [<span class="hljs-string">f&quot;round <span class="hljs-subst">{x}</span>\n<span class="hljs-subst">{n}</span> features&quot;</span> <span class="hljs-keyword">for</span> x, (n, _) <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(rounds, curve)]
+    )
+    ax.set_ylabel(<span class="hljs-string">&quot;RMSE in points (lower is better)&quot;</span>, color=INK2, fontsize=<span class="hljs-number">9</span>)
+    <span class="hljs-comment"># tight around the two lines: the whole finding lives inside 0.15 of a point</span>
+    low, high = <span class="hljs-built_in">min</span>(values + history), <span class="hljs-built_in">max</span>(values + history)
+    ax.set_ylim(low - <span class="hljs-number">0.10</span>, high + <span class="hljs-number">0.05</span>)
+    difference, low_ci, high_ci = gain
+    ax.set_title(
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(rounds)}</span> rounds of the loop, scored on <span class="hljs-subst">{n_test}</span> held-out reviews&quot;</span>,
+        loc=<span class="hljs-string">&quot;left&quot;</span>,
+        color=INK,
+        fontsize=<span class="hljs-number">11</span>,
+        pad=<span class="hljs-number">20</span>,
+    )
+    <span class="hljs-comment"># the number the chart is really about: is the held-out move bigger than the noise?</span>
+    ax.text(
+        <span class="hljs-number">0</span>,
+        <span class="hljs-number">1.015</span>,
+        <span class="hljs-string">f&quot;round 1 to round <span class="hljs-subst">{<span class="hljs-built_in">len</span>(rounds)}</span>, held out: <span class="hljs-subst">{difference:+<span class="hljs-number">.3</span>f}</span> points, &quot;</span>
+        <span class="hljs-string">f&quot;95% CI [<span class="hljs-subst">{low_ci:+<span class="hljs-number">.3</span>f}</span>, <span class="hljs-subst">{high_ci:+<span class="hljs-number">.3</span>f}</span>]&quot;</span>,
+        transform=ax.transAxes,
+        color=MUTED,
+        fontsize=<span class="hljs-number">9</span>,
+    )
+    ax.legend(frameon=<span class="hljs-literal">False</span>, labelcolor=INK2, fontsize=<span class="hljs-number">9</span>, loc=<span class="hljs-string">&quot;lower left&quot;</span>)
+    <span class="hljs-keyword">return</span> fig</code></pre></div>
+<h2 id="setup">配置</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install anthropic openai catboost numpy matplotlib ipython <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<p>然后设置 <code>TYPESAFE_API_KEY</code> 与 <code>ANTHROPIC_API_KEY</code>。每一次 API 调用都会被缓存到 <code>json_cache.json</code>，该文件随实战示例一同发布，因此重新渲染会重放这些数字，而不会真正调用任何接口。如需重新执行实时调用，请删除该文件。这些数字来自 TypeSafe <code>jev-1.12</code> 与 <code>claude-sonnet-5</code>，时间为 2026-08-03。<code>propose()</code> 还有针对 <code>gpt-5.6-luna</code> 的另一条分支，但本次并未运行。</p>
+<p>第一个代码单元格就是完整的实现：API 调用、编码、指标和图表样式。把它放在这里是为了让本文件可以独立运行，而文档站点会把它折叠起来。初次阅读时可先跳过——具体做法从它下面开始。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">N_DEV, N_TEST = <span class="hljs-number">1200</span>, <span class="hljs-number">800</span>  <span class="hljs-comment"># the loop reads dev labels only; test is scored once</span>
+ROUNDS = <span class="hljs-number">5</span>  <span class="hljs-comment"># a round answers questions for all 2,000 rows: 2,000 requests</span>
+PROPOSER = <span class="hljs-string">&quot;claude-sonnet-5&quot;</span>  <span class="hljs-comment"># or &quot;gpt-5.6-luna&quot;; the cache holds the Anthropic run</span>
+EXAMPLES = <span class="hljs-number">60</span>  <span class="hljs-comment"># dev notes the proposer reads per round, half of them its worst misses</span>
+MIN_SPREAD = <span class="hljs-number">0.05</span>  <span class="hljs-comment"># a column this flat cannot separate anything, so it is not kept</span>
+CHANGE_TOLERANCE = <span class="hljs-number">0.0</span>  <span class="hljs-comment"># a revision or drop has to improve dev error, not just not hurt</span>
+ENCODING = <span class="hljs-string">&quot;mean_spread&quot;</span>  <span class="hljs-comment"># a score answer becomes two columns: its mean and spread</span>
+
+split = load_split(N_DEV, N_TEST, seed=<span class="hljs-number">0</span>)
+NOTES, SCORES, DEV, TEST = split.notes, split.scores, split.dev, split.test
+
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(DEV)}</span> dev rows, <span class="hljs-subst">{<span class="hljs-built_in">len</span>(TEST)}</span> held out; scores run &quot;</span>
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{SCORES.<span class="hljs-built_in">min</span>():<span class="hljs-number">.0</span>f}</span>-<span class="hljs-subst">{SCORES.<span class="hljs-built_in">max</span>():<span class="hljs-number">.0</span>f}</span>, mean <span class="hljs-subst">{SCORES.mean():<span class="hljs-number">.2</span>f}</span>, sd <span class="hljs-subst">{SCORES.std():<span class="hljs-number">.2</span>f}</span>&quot;</span>
+)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\none of the notes:\n<span class="hljs-subst">{NOTES[<span class="hljs-number">0</span>]}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">1200 dev rows, 800 held out; scores run 80-98, mean 88.73, sd 3.17
+
+one of the notes:
+A Champagne that is very much wine. The structure and the richness are just right for a food wine, showing ripe acidity, flavors of plums and apricots, and balancing these primary fruits with a dense, complex structure that takes in yeast, maturity and a tight apple skin finish.</code></pre></div>
+<p>循环会反复读取这 2,000 行中相同的 1,200 行（即 dev 行），并在某个问题有助于预测这 1,200 行的分数时将其保留。在同一批行上评分，主要衡量的只会是循环对自身的拟合程度，所以另外 800 行被留出，仅在末尾评分一次。</p>
+<h2 id="two-question-types">两种题型</h2>
+<p>被提出来的问题有两种，它们决定了最终返回的是什么样的数字：</p>
+<ul>
+<li><strong><code>intensity</code></strong> 会转成 Score（打分题），适用于任何以程度表达的内容。其五个档位（level）如下方所列，得到的列就是各档位的平均值，所以一条介于 &quot;moderate&quot; 与 &quot;strongly&quot; 之间的描述，会得到介于二者之间的取值。</li>
+<li><strong><code>presence</code></strong> 会转成 Noul（是非题），用于像&quot;是否点名了某种缺陷&quot;这样的是非事实。该列就是这唯一的概率（probability）。</li>
+</ul>
+<h2 id="the-method">方法</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">questions &lt;- {}
+repeat for each round:
+    notes  &lt;- round 1 ? 60 dev notes across the score range
+                      : the 30 worst-predicted dev notes + the 30 best,
+                        each with its score, this prediction and the last
+    actions &lt;- LLM(brief, questions, notes, importance and error so far)
+    answers[q] &lt;- TypeSafe(note, all new questions of this round) for every row
+    for each added q:      keep it unless its column is flat
+    for each revised q:    refit; keep the change only if dev error drops
+    for each dropped q:    refit; drop it only if dev error drops
+    out_of_fold &lt;- k-fold CatBoost on the columns   # judges, and picks next round&#39;s notes</code></pre></div>
+<p>在被回答之前，问题不会被过滤。一轮内的所有问题都通过同一次请求发出，因此再多一个问题也不会带来额外的请求数。一个仅在一成的行上才会相关的问题，在提议者所阅读的 60 条酒评中看似无用，却仍可能是整组特征中最有用的一列。</p>
+<p>所谓 k-fold，是指把 dev 行分成 k 份，用其余部分训练的模型对每一份进行预测。这些预测承担三项工作：评判每一次修订与丢弃、为下一轮挑选要阅读的酒评，并向提议者反馈它提出的问题中哪些起到了作用——具体体现在它相对上一轮推进了多少。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;every intensity question is graded on these five levels:\n&quot;</span>)
+<span class="hljs-keyword">for</span> i, level <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(INTENSITY_LEVELS):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  <span class="hljs-subst">{i}</span>. <span class="hljs-subst">{level}</span>&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nevery presence question is judged true or false against these:\n&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  true:  <span class="hljs-subst">{PRESENCE_CRITERIA[<span class="hljs-string">&#x27;true&#x27;</span>]}</span>&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  false: <span class="hljs-subst">{PRESENCE_CRITERIA[<span class="hljs-string">&#x27;false&#x27;</span>]}</span>&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nthe brief the proposer works from:\n&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n&quot;</span>.join(PROPOSER_TASK.splitlines()[:<span class="hljs-number">6</span>]) + <span class="hljs-string">&quot;\n  ...&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">every intensity question is graded on these five levels:
+
+  0. Not present in this note at all
+  1. Barely present - mentioned once, in passing
+  2. Present at a moderate level
+  3. Present strongly - the note dwells on it
+  4. Dominant - the note is largely about this
+
+every presence question is judged true or false against these:
+
+  true:  The note states this or clearly implies it
+  false: The note gives no indication of this
+
+the brief the proposer works from:
+
+You are designing numeric features for a gradient-boosting model that
+predicts the score a wine critic gave (an integer from 80 to 100) from the tasting note alone.
+The model sees nothing but the features you design.
+
+Return up to 18 actions. Each action is one of:
+
+  ...</code></pre></div>
+<h2 id="the-autoresearch-loop">自主研究循环</h2>
+<p><code>run_loop</code> 会跑完所有五轮，并为每轮打印一个块。新增的问题直接加入：它的答案已经取回，而它的重要性会在之后表明它是否值得一问。修订或丢弃会移走模型正在使用的一列，所以每条变更都要先试用：按变更重新拟合，仅当 dev 误差下降时才保留。一次重拟合不产生 API 调用，因此尝试一条变更再否决掉是零成本的。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">run = run_loop(
+    split, PROPOSER, ROUNDS, EXAMPLES, ENCODING, MIN_SPREAD, CHANGE_TOLERANCE
+)
+accepted, answers_for = run.accepted, run.answers_for
+snapshots, history = run.snapshots, run.history</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">round 1: 18 add, 0 revise, 0 drop
+  added  complexity, fruit_intensity, tannin_structure, acidity_intensity,
+          oak_intensity, finish_length, balance_harmony, aging_potential,
+          positive_superlative_language, negative_critical_language,
+          drinkability_easiness, body_richness, sweetness_level, texture_descriptors,
+          earthy_savory_notes, flaw_or_defect_mentioned,
+          single_vineyard_or_prestige_signal, varietal_blend_detail
+  -&gt; 18 features, dev CV RMSE 1.903
+
+round 2: 5 add, 3 revise, 3 drop
+  added  power_concentration_language, flavor_distinctiveness, generic_fruit_language,
+          candied_artificial_flavor, rustic_authentic_character
+  reject oak_dominance                     was oak_intensity, would cost +0.005
+  revise negative_critical_language        was negative_critical_language, CV 1.897 -&gt; 1.894
+  revise single_vineyard_or_prestige_signalwas single_vineyard_or_prestige_signal, CV 1.894 -&gt; 1.881
+  keep   finish_length                     would cost +0.009
+  keep   texture_descriptors               would cost +0.001
+  keep   varietal_blend_detail             would cost +0.023
+  -&gt; 23 features, dev CV RMSE 1.881
+
+round 3: 7 add, 2 revise, 1 drop
+  added  elegance_finesse_language, minerality_precision_language,
+          hedged_qualified_praise, underripe_green_character,
+          reviewer_overall_verdict_strength, unusual_or_funky_descriptor_valence,
+          botrytis_or_special_winemaking_signal
+  revise negative_critical_language        was negative_critical_language, CV 1.868 -&gt; 1.864
+  revise finish_quality                    was finish_length, CV 1.864 -&gt; 1.861
+  keep   candied_artificial_flavor         would cost +0.014
+  -&gt; 30 features, dev CV RMSE 1.861
+
+round 4: 5 add, 2 revise, 3 drop
+  added  excess_or_imbalance_signal, descriptive_detail_density,
+          critic_enthusiasm_confidence, savory_food_wine_seriousness,
+          note_overall_tone_positivity
+  revise rustic_authentic_character        was rustic_authentic_character, CV 1.843 -&gt; 1.838
+  reject hedged_qualified_praise           was hedged_qualified_praise, would cost +0.014
+  keep   botrytis_or_special_winemaking_signalwould cost +0.011
+  keep   candied_artificial_flavor         would cost +0.009
+  keep   unusual_or_funky_descriptor_valencewould cost +0.010
+  -&gt; 35 features, dev CV RMSE 1.838
+
+round 5: 4 add, 2 revise, 8 drop
+  added  structural_seriousness, youthful_tension_signal, surface_prettiness_vs_depth,
+          price_value_signal
+  reject unconventional_character_as_virtuewas rustic_authentic_character, would cost +0.010
+  revise flavor_distinctiveness            was flavor_distinctiveness, CV 1.849 -&gt; 1.843
+  keep   candied_artificial_flavor         would cost +0.002
+  keep   botrytis_or_special_winemaking_signalwould cost +0.003
+  keep   hedged_qualified_praise           would cost +0.006
+  keep   excess_or_imbalance_signal        would cost +0.005
+  drop   underripe_green_character         CV 1.843 -&gt; 1.840
+  keep   unusual_or_funky_descriptor_valencewould cost +0.002
+  keep   texture_descriptors               would cost +0.001
+  keep   generic_fruit_language            would cost +0.000
+  -&gt; 38 features, dev CV RMSE 1.840</code></pre></div>
+<h2 id="pointing-it-at-your-own-data">指向你自己的数据</h2>
+<p><code>PROPOSER_TASK</code> 是唯一提到葡萄酒的字符串，而 <code>featurize()</code> 接受任意字符串列表。修改这段说明会改变 proposal prompt，而 prompt 又是缓存键的一部分，所以下一次运行会为每一轮重新调用 API。</p>
+<p>请求数量随行数增长，而不是随问题数量增长：每轮每行一次请求，所以 100,000 行就是每轮 100,000 次请求。revision 算作一道新问题，因此需要对每行再扫一遍。缓慢上调 worker 池大小。8 个 worker 已经足以在共享密钥上触发限流。</p>
+<h2 id="what-the-questions-see">问题看到的是什么</h2>
+<p>五段 held-out 评价，分布在评分范围的每个四分位上，对照 38 道题中的 15 道：按 importance 排名前 8 的 Score（打分题），加上前 7 道 Noul（是非题）。</p>
+<p>这 15 行随后按照答案随评论家评分如何变化来排序。答案随评分上升的问题排在前面，答案随评分下降的问题排在分隔线之后。所以从左到右、从最差评价到最佳评价，分隔线以上的答案应当上升，分隔线以下的答案应当回落。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">X, labels = design(accepted, answers_for, ENCODING)
+column_importances = importances(X[DEV], SCORES[DEV])
+<span class="hljs-comment"># an encoding gives a feature more than one column, so add a feature&#x27;s columns back up</span>
+feature_importances = importance_per_feature(accepted, labels, column_importances)
+ranked = <span class="hljs-built_in">sorted</span>(accepted, key=<span class="hljs-keyword">lambda</span> f: -feature_importances[f[<span class="hljs-string">&quot;name&quot;</span>]])
+score_questions = [f <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> ranked <span class="hljs-keyword">if</span> f[<span class="hljs-string">&quot;kind&quot;</span>] == <span class="hljs-string">&quot;intensity&quot;</span>][:<span class="hljs-number">8</span>]
+noul_questions = [f <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> ranked <span class="hljs-keyword">if</span> f[<span class="hljs-string">&quot;kind&quot;</span>] == <span class="hljs-string">&quot;presence&quot;</span>][:<span class="hljs-number">7</span>]
+<span class="hljs-comment"># ordered by which way the answer moves with the score, so the map flips halfway down</span>
+heatmap_questions = <span class="hljs-built_in">sorted</span>(
+    score_questions + noul_questions,
+    key=<span class="hljs-keyword">lambda</span> f: -polarity(f, answers_for, split),
+)
+ordered_test = TEST[np.argsort(SCORES[TEST], kind=<span class="hljs-string">&quot;stable&quot;</span>)]
+positions = np.linspace(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(ordered_test) - <span class="hljs-number">1</span>, <span class="hljs-number">5</span>).<span class="hljs-built_in">round</span>().astype(<span class="hljs-built_in">int</span>)
+review_rows = <span class="hljs-built_in">tuple</span>(ordered_test[positions])
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;the five held-out heatmap columns:\n&quot;</span>)
+<span class="hljs-keyword">for</span> i, row <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(review_rows, <span class="hljs-number">1</span>):
+    excerpt = <span class="hljs-string">&quot; &quot;</span>.join(NOTES[row].split())
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  <span class="hljs-subst">{i}</span>. <span class="hljs-subst">{SCORES[row]:<span class="hljs-number">.0</span>f}</span> points: <span class="hljs-subst">{excerpt[:<span class="hljs-number">100</span>]}</span>...&quot;</span>)
+
+fig = reviews_heatmap(plt, heatmap_questions, answers_for, split, review_rows)
+display(fig)
+plt.close(fig)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">the five held-out heatmap columns:
+
+  1. 80 points: Raw cherry and plum aromas are resiny and suggest wet cement. This is shearing and so jacked up with...
+  2. 86 points: A slight spritz brightens the mouthfeel of this lemony wine. Aromas are a bit musky, but flavors of ...
+  3. 89 points: This is a European-style Syrah, cofermented with 2% Viognier. It&#39;s soft and round, medium in body, a...
+  4. 91 points: From the producer&#39;s dry-farmed estate vineyard, and supported by small amounts of Merlot and Caberne...
+  5. 97 points: A thoroughly elegant, serious and yet immensely enjoyable wine that stays lively many days after ope...</code></pre></div>
+<img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/autoresearch_feature_discovery/autoresearch_feature_discovery.executed.1.png?fit=max&auto=format&n=2NirYCl-v96cw05F&q=85&s=9a9c9e88ad39b5cc6ae00db22d38b9d5" alt="输出" width="1882" height="1593" data-path="cookbooks/autoresearch_feature_discovery/autoresearch_feature_discovery.executed.1.png" />
+
+<p>页面顶部的表格已经算好。五个 arm 在同一批 800 行 held-out 数据上各打分一次，前三个跳过 feature discovery。一个预测 dev 评分行的均值，根本不读评价文本。一个把评价交给同一个 CatBoost，通过其 <code>text_features</code> 处理变成词频统计。一个直接让 TypeSafe 来给出评分本身。</p>
+<p>第三个是每行一道 <code>Score</code>，跨越十个档位（level），从「faulty or unpleasant」一直到「profound」。十个档位，因为十档已经是 <code>Score</code> 题型能接受的上限——十一个会返回服务端错误。Level 0 对应 80 分，level 9 对应 100 分。仅沿评分刻度这样铺开档位本身还不够，因为题目里没有任何信息说明这份出版物的评分实际落在哪个位置。因此每个答案随后再统一平移一个偏移量，这个偏移量在 dev 评分上测得。该偏移量打印在行标签中，也是这条捷径唯一从评分中学到的东西。</p>
+<p>Spearman 是秩相关系数，1.0 表示 held-out 葡萄酒的排序恰好就是评论家的顺序。词频那一行是 CatBoost 自带的文本处理，不是经过调优的文本回归管线。所有这些都是同一份数据集上同一次循环运行的结果。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">predicted = fit_predict(X, split)
+text_predicted = fit_predict_text(split)
+
+<span class="hljs-comment"># ask TypeSafe for the score itself, one request per row</span>
+<span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-number">8</span>) <span class="hljs-keyword">as</span> pool:
+    direct = <span class="hljs-built_in">list</span>(pool.<span class="hljs-built_in">map</span>(<span class="hljs-keyword">lambda</span> note: ask_score(TYPESAFE_MODEL, note), NOTES))
+asked = np.array([d[<span class="hljs-string">&quot;expected&quot;</span>] <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> direct])
+shift = <span class="hljs-built_in">float</span>(SCORES[DEV].mean() - asked[DEV].mean())  <span class="hljs-comment"># one number, from the dev labels</span>
+
+<span class="hljs-comment"># what one proposal call gets you, before any feedback: the set round 1 ended with</span>
+first_round, _ = design(snapshots[<span class="hljs-number">0</span>], answers_for, ENCODING)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;arm&#x27;</span>:&lt;<span class="hljs-number">46</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;RMSE&#x27;</span>:&gt;<span class="hljs-number">7</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;spearman&#x27;</span>:&gt;<span class="hljs-number">10</span>}</span>&quot;</span>)
+<span class="hljs-keyword">for</span> label, p <span class="hljs-keyword">in</span> (
+    (<span class="hljs-string">&quot;predict the mean of the dev rows&quot;</span>, np.full(<span class="hljs-built_in">len</span>(TEST), SCORES[DEV].mean())),
+    (<span class="hljs-string">&quot;the note as word counts, same CatBoost&quot;</span>, text_predicted),
+    (<span class="hljs-string">f&quot;ask for the score itself, shifted <span class="hljs-subst">{shift:+<span class="hljs-number">.2</span>f}</span>&quot;</span>, asked[TEST] + shift),
+    (
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(snapshots[<span class="hljs-number">0</span>])}</span> questions from round 1, no loop&quot;</span>,
+        fit_predict(first_round, split),
+    ),
+    (<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(accepted)}</span> questions after all <span class="hljs-subst">{ROUNDS}</span> rounds&quot;</span>, predicted),
+):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{label:&lt;<span class="hljs-number">46</span>}</span><span class="hljs-subst">{rmse(SCORES[TEST], p):&gt;<span class="hljs-number">7.3</span>f}</span><span class="hljs-subst">{spearman(SCORES[TEST], p):&gt;<span class="hljs-number">10.3</span>f}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">arm                                              RMSE  spearman
+predict the mean of the dev rows                3.088    -0.014
+the note as word counts, same CatBoost          2.466     0.605
+ask for the score itself, shifted -1.71         2.145     0.761
+18 questions from round 1, no loop              1.869     0.778
+38 questions after all 5 rounds                 1.772     0.799</code></pre></div>
+<h2 id="did-the-autoresearch-rounds-help">自动研究的几轮有帮助吗？</h2>
+<p>两条线都绘制了每轮结束时问题集的误差，从第一次 proposal 开始。虚线是交叉验证的 dev 误差，是每次接受和拒绝决策的依据。实线在循环从未读过的同一批 held-out 行上对同一问题集打分。每个点代表该轮收官时问题集的状态，因此即使一轮只做了 revision 或 drop，两条线仍会一起移动。feature map 说明了问题度量什么；误差才能说明第一轮 proposal 之后的轮次是否让预测更准。</p>
+<p>坐标轴范围很紧：图上发生的一切都在 0.2 分以内，上面表格里的所有捷径都远远位于图顶之外。dev 线全程位于 held-out 线之上，这是一种训练数据量效应。每个 dev 折叠只用四分之五的 dev 行训练，而 held-out 数字来自一个用上全部 1,200 行的模型。两条线一起移动，因此循环所依据的 dev 数字能跟随它从未见过的 held-out 数字。标题下的区间通过对 held-out 行重采样得到，因此它回答的是「第 1 轮到第 5 轮的提升是否大于 800 行的噪声」。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">curve, per_round = [], []
+<span class="hljs-keyword">for</span> features <span class="hljs-keyword">in</span> snapshots:
+    X_round, _ = design(features, answers_for, ENCODING)
+    per_round.append(fit_predict(X_round, split))
+    curve.append((<span class="hljs-built_in">len</span>(features), rmse(SCORES[TEST], per_round[-<span class="hljs-number">1</span>])))
+
+<span class="hljs-comment"># the same held-out rows resampled 2,000 times, both arms scored on each resample</span>
+gain = paired_gain(SCORES[TEST], per_round[<span class="hljs-number">0</span>], per_round[-<span class="hljs-number">1</span>])
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;round 1 -&gt; round <span class="hljs-subst">{ROUNDS}</span> on the held-out rows: <span class="hljs-subst">{gain[<span class="hljs-number">0</span>]:+<span class="hljs-number">.3</span>f}</span> points, &quot;</span>
+    <span class="hljs-string">f&quot;95% CI [<span class="hljs-subst">{gain[<span class="hljs-number">1</span>]:+<span class="hljs-number">.3</span>f}</span>, <span class="hljs-subst">{gain[<span class="hljs-number">2</span>]:+<span class="hljs-number">.3</span>f}</span>]&quot;</span>
+)
+
+fig = rounds_chart(plt, curve, history, <span class="hljs-built_in">len</span>(TEST), gain)
+display(fig)
+plt.close(fig)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">round 1 -&gt; round 5 on the held-out rows: -0.097 points, 95% CI [-0.147, -0.050]</code></pre></div>
+<img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/autoresearch_feature_discovery/autoresearch_feature_discovery.executed.2.png?fit=max&auto=format&n=2NirYCl-v96cw05F&q=85&s=8e122e0435a22f9f18f4a3d780f06e69" alt="输出" width="945" height="599" data-path="cookbooks/autoresearch_feature_discovery/autoresearch_feature_discovery.executed.2.png" />
+
+<p>held-out 线比 dev 线跌得更深。第 1 轮在没有反馈的情况下写出了它的问题，之后四轮在 held-out 行上值 0.10 分，95% 置信区间 [-0.147, -0.050]。</p>
+<p>第 5 轮提出了 4 个 add、2 个 reword 和 8 个 drop，并给出了第一个没有改善的 dev 数字。一段 245 个字符的评价能问的东西就这么多，到第 5 轮时，proposal 已经从「加问题」转向「删问题」。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">kinds = {f[<span class="hljs-string">&quot;name&quot;</span>]: f[<span class="hljs-string">&quot;kind&quot;</span>] <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> accepted}
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;feature importance share: % of total CatBoost importance across all questions&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;feature&#x27;</span>:&lt;<span class="hljs-number">38</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;asked as&#x27;</span>:&lt;<span class="hljs-number">10</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;importance share&#x27;</span>:&gt;<span class="hljs-number">16</span>}</span>&quot;</span>)
+<span class="hljs-keyword">for</span> name, importance_share <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(feature_importances.items(), key=<span class="hljs-keyword">lambda</span> p: -p[<span class="hljs-number">1</span>])[
+    :<span class="hljs-number">12</span>
+]:
+    kind = <span class="hljs-string">&quot;score&quot;</span> <span class="hljs-keyword">if</span> kinds[name] == <span class="hljs-string">&quot;intensity&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;noul&quot;</span>
+    <span class="hljs-built_in">print</span>(
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{name[:<span class="hljs-number">36</span>]:&lt;<span class="hljs-number">38</span>}</span><span class="hljs-subst">{kind:&lt;<span class="hljs-number">10</span>}</span><span class="hljs-subst">{importance_share:&gt;<span class="hljs-number">8.1</span>f}</span>%  &quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;#&#x27;</span> * <span class="hljs-built_in">round</span>(importance_share)}</span>&quot;</span>
+    )
+counts = <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">sum</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> kinds.values() <span class="hljs-keyword">if</span> k == <span class="hljs-string">&#x27;intensity&#x27;</span>)}</span> score&quot;</span>
+counts += <span class="hljs-string">f&quot;, <span class="hljs-subst">{<span class="hljs-built_in">sum</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> kinds.values() <span class="hljs-keyword">if</span> k == <span class="hljs-string">&#x27;presence&#x27;</span>)}</span> noul&quot;</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\nthe <span class="hljs-subst">{<span class="hljs-built_in">len</span>(accepted)}</span> questions the loop kept: <span class="hljs-subst">{counts}</span>&quot;</span>)
+top = <span class="hljs-built_in">max</span>(feature_importances, key=feature_importances.get)
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&#x27;the question behind the top row:\n  <span class="hljs-subst">{top}</span>: &quot;<span class="hljs-subst">{owner_of(top, accepted)[<span class="hljs-string">&quot;question&quot;</span>]}</span>&quot;&#x27;</span>
+)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">feature importance share: % of total CatBoost importance across all questions
+feature                               asked as  importance share
+note_overall_tone_positivity          score         17.4%  #################
+savory_food_wine_seriousness          score          8.7%  #########
+positive_superlative_language         score          8.4%  ########
+single_vineyard_or_prestige_signal    noul           7.2%  #######
+descriptive_detail_density            score          5.7%  ######
+elegance_finesse_language             score          5.0%  #####
+complexity                            score          5.0%  #####
+aging_potential                       score          5.0%  #####
+balance_harmony                       score          2.9%  ###
+drinkability_easiness                 score          2.9%  ###
+critic_enthusiasm_confidence          score          2.7%  ###
+flavor_distinctiveness                score          2.6%  ###
+
+the 38 questions the loop kept: 29 score, 9 noul
+the question behind the top row:
+  note_overall_tone_positivity: &quot;Setting aside specific descriptors, how positive is the overall emotional tone and word choice of the note taken as a whole (warm, admiring language throughout vs. flat, neutral, or lukewarm phrasing)?&quot;</code></pre></div>
+<p><code>importance share</code> 是 CatBoost 的特征重要性（feature importance），归一化后所有 38 道题之和为 100%。它不是行数、问题数或预测准确率的占比。一道 Score 题占两列，一个均值和一个离散度，因此打印百分比前要把这两列的重要性加起来。<code>note_overall_tone_positivity</code> 占总量的 17.4%。第四行是一道 Noul：评价是否点名了单一葡萄园或其他声望信号，是一道是非类事实，因此被作为一道题提出。</p>
+<h2 id="next-steps">下一步</h2>
+<p>这次运行把循环控制得很小。可以直接扩展的方向：</p>
+<ul>
+<li>在花钱回答某个候选问题之前先筛掉一部分。把候选问题本身当作 state（上下文状态），针对它提 Noul（是非题）：能否从源文本中作答、在其 criteria（判定标准）下是否只有一种含义、是否适用于大多数行、是否在不同行之间有变化。只把四项全部通过且置信度（confidence）足够高的问题发出去。</li>
+<li>剪枝相关特征。在开发行上测量编码后列之间的相关性，把近似重复的聚成一类，从每类里保留最清晰或最重要的问题。</li>
+<li>加入简单基线。单独对比 TF-IDF、字符数以及其他结构特征，然后把它们拼到发现出来的列之后，衡量各自贡献了多少。</li>
+<li>混合提案模型族。用 Anthropic、OpenAI、Google Gemini 以及开源模型各自生成一批候选，在它们到达 TypeSafe 之前合并去重。不同模型族带来的搜索空间扩展，应该大于对同一个提案模型的重复调用。</li>
+<li>比较不同的预测模型和方法。尝试线性回归或弹性网络回归、支持向量回归、随机森林，以及在下游输出是概率（probability）时进行再校准。看看这些发现的特征在 CatBoost 之外是否也有帮助。</li>
+<li>加入 embedding 基线。embedding 把一条品鉴笔记变成几百个不带问题的数字：<code>sentence-transformers/all-MiniLM-L6-v2</code> 可以本地运行，OpenAI 的 <code>text-embedding-3-small</code> 是托管调用。把其中一个拼到发现出来的列之后，衡量它是否携带了这些列没有的信息。</li>
+<li>让验证方式贴近部署。预测未来时用按时间切分，相关行必须在一起时用分组切分，并保留一份最终测试集，让它既不被特征发现过程碰到，也不被模型选择过程碰到。</li>
+<li>在平台上停止。当交叉验证的 RMSE 连续若干轮不再提升，或者达到问题数或请求数预算时，结束循环。</li>
+<li>在智能体（agent）的 Goal 模式下跑更长时间的搜索。给它一个明确的指标、预算和停止规则，然后让它多轮地提案、评估、打磨。</li>
+<li>检查稳定性。跨多个随机种子或数据切片重复做特征发现，保留一直有用的那些问题，而不是只在某一次切分上显得重要的。</li>
+</ul>
+<h2 id="open-it-in-the-playground">在 playground 中打开</h2>
+<p>这个分享链接中包含一条品鉴笔记以及循环最终留下的所有问题。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">playground_link = make_playground_link(
+    NOTES[<span class="hljs-number">0</span>], feature_questions(accepted), models=[TYPESAFE_MODEL]
+)
+display(
+    Markdown(
+        <span class="hljs-string">f&quot;🔗 [Open the note + questions in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>
+    )
+)</code></pre></div>
+<p><a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIAgvgMIAWAhnAA6UDmSC+KVK+AlgM74BuCAJwCe+ODCjl8Adw5MAdPjTlmXFAPEoYA5pSRgWy-AI4SmXHpW34AVjFVGO9cuwBmEAfkr43EfTKYANPhc5BD+9A40OlAcYBwoQkEuADaUvO48EC74NMnwFnqeNMZQEChcQbr6AEaUqUgxSBGsCFzMxRxwliIu6vE8Mqye+GDI+sumltMlYwWoaWsyslOwolADWrZxI+EIIlKpBXZrGCZ6FXiiOzkW5Kmuy3rLc5HIgQSDFELTlGNh4hMAADogSa3TDxITAghAkAJKJQ-DArilbTAoLAqAnQQcSgIgDawIAcmUcto2qgtgZuPgkGUdOw6sk0YiQAAhSwIZIiYqtZDsAC0oj5HAgTH0oqgCCCDzo5lk9GZwIACmS+Z4GaJfIJlsxpvwmW8WSreRTVAJRfQufhBS0aXSRlJOclMtt4oqQAARL6yXQCgzMWkoZjU1ICeickSUaoQGArcjcYEAXXRIFkZo0IqQXARwIAEmFZuamlbIJtbYHmAhaFQuBwAF6LQz+BAAch4oOm4ISQVSu20+hSaQyQXcohgyUutxG3EuDQZ5q6XAA9IP0gIBu57k0WBBwy0BAB+YEAXxTvRg8QA+rIg1mIQiYXCEDmQMj3M-DRiscZcf8CSBiXYHlyXYB5WGpCt1U8ZIDRTdltCtYC1UFRBUEzBBxQaKVKVlWsmndY0QKgrw4C1AQdXwPVOQI1VTTUC0rRtQxILAR0YJdTgUHdL04B9CkmIDe0Q0scMrSjGM4wTEBkxZNM5igS5RWzf48wLM0GMjQpeA4bSwBLCAy2Y+1RmRYxqmYc94nwCRLEoBTBHwAAKBA5HoOQgmMKIzAqYIohiFwTG8Pp2BMzEOBoFBhwcUxWkybJLNcVI1wASiPEBTxZVYkCQWRL3TBSFgfYEnxfN9UU+EFvxxfEiRJJCKTA+MeEg5ZoNgll4IjUkTT9VDFLFfAJWwmV9jwhUKsItVWpIsiKKo9rlVo9h1OLEQBLtIMHSdDi3Qqni+L9cshJ4UNRMjaNYypZSZOBOT1AUzNlIIVSpELDSRgMngjs2uJkTsL7dBy7Z8uOZhRwgfhyJgwt5ihx4BDgbyl1qKA1mjJg0oy4E7NiCFr1QMZ73+R8hHhFTXxRD8UzCoMfxqgC6qWylwOa+1ppg91OsQpmUOFUUMMGrDpW2XD5RonriM1UZyM2+bxaIlbLTW-0NuYVjtsFzjuO9JBfWtFXIOEsMuvEy6WaTFM7ozJSX3zV7Ff0wzBJ+7hYHMTwYjibtrOMLgaG8kcPFWAQUG8zGUwgdZ8dvWsEiK2FSY-Z6Kffd0aexX8CH-QDuqIxqILZhkOYqrnuR5oU0P5zDJWFnJRrFiamemqXtVlhB9XltUHeV761bY51Nd2lN9t1-iDeOyiRJNi7JOuy2s3k-qnpZO23tWj6ndViv+sG9YgikCBfE8eh5SCWoBAQoJIv2FBA74XQOBgyglz9kxnbLUmTEZHoF13tZw5ZAFHKIRLwAEcYB1CJtCYqidSqUzTlVTO+Bs6MwlvnVmm12YLTZBybmEteaVwGkNWuot8KNwls3Ui0s5rt2ouQhW9F17rRYv3HaXE9o6z1swiep1p4SSuhbWSC97pL1tmpRhSsN5fSMptYolBuCNmYOAyBpwsgqyAc8TibRkguCCIGGwdhQLlEosgegQxnKuXcvgFsyR5SCB4OZSgsYOAuHHFyFsQQWyWliK0Dx1jShYVQDLAWGiQh+JsRaDyCAgEhKeGE5KfB7F2HwCfbS25bShMkLSDaUZpg5AgLHHSixtDLD6gA4EtR6iSkvFQBGopITExgWTZOZUqYsnTnTP8tUgJM3QVvLBnNcFl3wdvdC1dhoi3rmQlMk0KSUNmm3Du9Cu4SMYuPH6rDB7sOHpwsevdOAnSnmJGeAjpLzxBo9MR9tVkiFLNI9+pJ5FtBVs2Ns+BKm6BrvgWppEkCJEGh4G8CB6Ay0zINbI-RrJfBoPzVAXBykgAYPKS8MLbyXDqPHEq5NWkIPiBnemOd6qgW2CzfpRdsGl1zshUZVdBZfJGnKaZRom4aioa3XUtDsGzOWjc-W+z1bsS2drXio9DoyODIc42xz+HmzOUIi5Ntyar27lI9ZKgYD0HDPYUlzZvn7GPvKfJaKcTJABdIR+prOifH4EuUY+oIA0G8Fofc5qhiXEQMzQwkon6HhPCmGFhT+B5RgFEAQqRLhBvqPQCB4ZMWwOxfAiqHTqpdIZj0tBJKmpkraoMhCwyiIEP6gLYhOEpnjRmSy4YbLgkmKWRWiWKruEbI1qKLWHCRVcLVQcyeUrzoyqaoI26wjrZZiuWvSRdyu12HVaG8NRSzXxicIhAp8R53tzqBAiNupdDRoYMwCxblPH0HcOGGMXBwnUEoHWeU4SQV7GWuISU5hwltGoNMZ9njHHONcckFsCTIqPIUS82QYNIaMgRUwegywimXhpl-ZIl4o0xqTvgEmzSWQ4qTYgglqC86ZoLpg8luaupEv1n1MZdKJl10ZeW5lFDWULI5XWujDCiySKbX3FtrptkshHp2-ZRszqeBObKm6qZh0PUVcnZVvLJ29zeRDbU0NIpMGCBqrV7BwxIAvKp36lAaAwpvH1M1XhIZxAUgYVqtpdUuEZDwEI7h2AHqsS2R06xWgoHCXp1Qghwn6J-VaAJaTGj0D-ZUTIBmCkCwA14MaeTeLJH0FANI96aUDQZWNV18Zti6EGvuGQzyA2rv4EYduHAEBSARWAYwSA1hRkfnjPYeFYpxvQ0iRN1NsOpsJb0-DGD6Q5pLkMqlY9yO0pLRlhu9aiLzOoYsuh02VlsbWfyzZrah68d2WKh5gm+FmwHXKodCrR1KvEct25n0u29GoIo81qn9VNaEPyarsgtz0CCLWKY2EYANGhbY5LQYwB3xKWAEQAGXu1btK9QYoRLquJDsoDwdrOQOrKX6lk0ZQeXhKOQbyrWUPtdTlhvFnSs7dJG8Sq62bGTEbwSrValpo53OZDG5tMYWyxpb70ONbUFetnjwI+N7PFd23h0r9tSTE1bSTJ3pNnfenJsXoUzK3deQ43w-zHRXFvtFXHsU74BMlEE6DrbnOeIC-yTH5WwDhJx15sYrZPHG75MEu3qV0dIkdAgUOsVEOcvx3AonnWScprJ2minnqCMDZp0NvNUfC0UYm5Mlnyy2dVsY7Wrni0G28r5wKgegvhUHT5WL3bkvZ6DvE8d5eL1x2O3uVvVXHBzLBB93792o4uAau6NZWpdlaaeuYM2BFQZsALEvC3iKGQg8JpD+0rrEeesZqpy1Ij8eSPlzG0Qpnk2mW55m+z9l2euVM0bV2wvbCS+irLztyVQnTZV8OzXxelzTvXPO6q-lrQwpt9WA9HkuPqDGaqRLGOQC4AgJyE5C5IetYlwKRGUOQOEvqPwAkC+o-GsEIOEpiHsHANgZ4jClINLNgZ7ulCmHsAjkIHlEOMIJeBWMvGhgTinOVKHrTOHsguTqRn0uvoNnBMNqRknuNnvqnmNKzgyMfjWnLOnjyl-gXmttxjfvxuXg-nts-jLhJqIh-g3hdpvCxL-mrvgJQawP8lwLQf8qOLSEgPyAlP3rZPZB4D3hIJ4CdPeojlfBACjKUEED9tLNUOoCEIcCBlDHfIjtUKrPCl7iAIOFIJeO4FPtEggApJeDvhhHPsnLSOOO6LLlocnF6HofaDvsMDEWaqMJARZo1CPiBh9uIJIPquZIav2OIBhEkD9lgYcLGC0XquuOQB9jGAIHfEgYIAVmDC4C4PyDQLGLOPQGlGwfio0rCOoMwUoA8qoDqNItSKOFANMJYFaFarYpsBtsCLZs6MsWLqkpsNkrIOZmbtsGorKseFjK+PKNMJeGkggEIJYGAHEQICimSJcOGHlI4LrAaNAgnG1iAJkdgjke-nkZdvsrWIwHUL5EkSarnACWDB4FEHEHeo2OaBqpIEUWorFn5C4oFO8Z8QIEDkYWsZtNoJMasP1D2J0HivoJ8GACOiOIlnwCBj5LZmAQMCBl0BsAMWaoGLkswORCcEIEuHZNsfInALMYvmHkgo+EsS+CsVvLSYZJsR4NsZQXsVMOVjwEcdEXUG0BqecUUqzFsDcTvPcQdo8SmLwJYOVqsAhtUNMHoAkasI-OkSyFCdkZobCZtgUZtH7KiS4GDoYCCvpswC6cYL7iIKOJ6cgGyYICbqsFqpSKML6ckEqV+CqZiuqeTJqZBNqRsZkHqTsWGiIPscaW2meOaWcQ8hcTadcV-PadkA8U8UQYILBkNKbv1Ihjushv6YTqwcqewUgigumnhmvoXHwR1AIdvnzLvvSqIVNtzhnjNBzqfuIToXfs3goY2Zth2qLvfj2o-iJgdhobXmOiqsrg8tOpPE0MhuCiMITN7H2aKa7kOZmHfECneKcBbtYqMFmM7tYuQBqpBS2H+WoDqHbp4mme+uep4m0FWC8SIChbFOEtUI4H+juJ+aZK3uriBgpmBtDFaoPgiquPEb9LOA9PwHjgsVii0h1lOfMcvrhmqDwYuXHvwQnoIQzuMiQmWgebNiftIYtnRHIZfieaaSLttlvBXn2lLnPPKm-lJivAWD9nYBAskEEFgGUCYHfBGf5IFNSLaIplDKanRQILKQuKZtAFGOOH3tOvoHxZtKBUQF0OaGfGUMIJcD5LGTQPGEGB9pQGMUWEEKijCloMYAkqCByPoDFlvHmoaq2pML8kZZDEIGAJQD-BeCgEuJHGsMRWFDPuuPrDWgAAycDZDCgJ5abYhQBBAAAsDVKs6QyW1QblwgWinIEK9magHAb2Zw+gelPeyJrA+JTgEkCKLVJQl4CUI5b5e645kJMY0JwZ2lwu8JYuCeXQsgVoraS1plUKcAvyuQdkFkwUFVnkkU1VjktiGw+eggwgZ8H1-yuQ8AlQBm0wCSMO-CugtyM4sgTFmJ+AU1Bldh5EDhERBZlURZrFJZycZZ9oFZVOWxNZhpuQDZppJxFppZVp-A7ZegnZYKDpUkTp7SVQtul4lglwAUMQdQK1SU7gm1gZFUMJe1noB1DyLebeyWFNXRTNZJrNhlwQQgqAyglwbVZqXAvglA-Ir1FkHNz1sBViAAyh0BFdZLoOqlBqKbZjAJgEFMVRMFUEIAkj3pqh5oal4KkKjB+brMcMiaOE4i0GhFAHDYPoIEjcmqqcVGjSyBjeGYyTqVWdZLjXWUaYcULmaacZaa2daXaLaZTa2tTcpLTcCAEfLYzeAcKFALBgPg4ZtZhnMaTpwZHtwX1tTsXIJVviMqkaJczmITIZLNWjQsxofjzkwvJVxqefteecpYbKoZXqcneVpfLjpZ-krgLVvNdh6vnRda4rVv8ufH8l8YMYlvyAfL4EuK5o-Hbn7Qjfql4AxRDVupUEXT7TySHDAKMcBqpo5DLIjpZjlhYN4KkK9EsMSnMCZKUb7vDeUMlFEsbXpLFB+VIHLR-f-WfUPtSOaRAD7KujEA2PoJyG0LA4IMGJmu-AipyMCp8ggCtbyW0GtburGqxfGuxQvoWdOThnObxfXbwQJcuUJauYQozhudRh3TJRIZnnudJdubIbzoPQLooe2qXnzqpcJv2tLucjPXXiADJl-k+VvC+Uhnuh+cQ1BkzjEuYNhNoDEn1FEmaPIqgLFRALYoEWajyDELWOblrchdMAY55p4qYyBkhdYjCnY8oL4y2P8eRDeBgckFgd1E45mIRQBjZKA9iA2C-QgAiiKkpnjI49wJmFQ2ObQxCZXZxdXbOVHl5bHo3Zw83fTq3ZRmJWnoI13VnqI33bJRI6tkPYpVtkeePVeWoVPcoyIiGfXo+YvZBFWGFfsPWMwGk1DBCB9iphQ3fE7SBpYCuNAB5bFdoE4yoE7h+SDAsDAZYp4tM3UM9sYMxS+ghbrpRORZ4rYkwJYOEgCc4FaG4G7BhGFtOKoNfUFF8EYUzeQMmR4FvZSUlmXbTAioE+GN8corYgFBhH0U8ihkwS+Nzf0yOqo+kU3pBHQBwFiaE88g6VUapjDmcEYZgPjTEOwDCy4kIIaslvwK1KBS2H1Z41BWELQgII87Dk4OErsJ5v+mwCwGM-YmarYrxMYrlkMQICMfkoGjoMY+YGjsTkw6jU-SnVqZHZWWavqbsXHfjQne6ETS2VvG2enR2QDlTd2Y6U8doNpBVv2TZYyG8YIOZigHlGoKYqwBXRxYw1xTXSvvOaSuw+U8CJSsJdUynvw1uc00I7uVJYHp3Rfm01I8PfzaPV0zwkcmpeoWi3Lqo+owvWGZWOS2SAUGSxS-EBMKKAFOBewI69DGZiYAyDeUS62DwNSyBa49YlgJKBFJmHUBeqSJ0MW9QFOFkBc-zPyKUNybuuRATLBfzB+baOZKoIRe-Q5EsMDPsbcgYa3oauSErQNcsKNSy5sMDZdLFvAH5SILYGAPQEq08TDWzfEevVgQkSRVVW8XUMgJKN6ww8jSq9xSww1Gw-xSGzglwy3Wubw1RqQrRjGw0yIwm-U0myrgpYnUpRm5tPI0-n05pQM3zQAOrKAENaNtA8BPtS2vsWFAuWDb1Un8hPgPXhRPU8CgXAs73fIZAID8hrGpmtG1ZBCsjaAoAoDgNcfz3ryTpWTL2NjUjxP+0eAX2yvFbYRX1vnPCGqXN1tWuttGDLDwNUBf3FG-2K1fC+7ZbNCCuQAdpBgFD6C5mgORHkEY6BVCDBU-F5Skls3NjCnIqIkglc3bVBn3nkyYtdpFEkmonIm+frBadJG44cDgJQ0BJexgqjTQA4iA5ZbfJXD4AdumG1EuHvJufBU9gUS1Jk167nwITeCCB9S3FGXYBpkCzTCbBIpNB3yUeJLGOmodcRCgWTENDKCihVsNAicIBkFV0cFqlqsk2rGavY3VkGl6sHEmmJ1GvquQSmtXEU0WtZ1Ws01PE9v+7xGdAfJYRAlImgmoZNLMGov4fosvjhcInqYebJPdo2WQCBDfJ7C8BPZGejDUmjg-YXeSieXAzmdGHTDGagUndyglZlVLjXwHDQSlChCmrKDLBXyAwPA2XJCRzUnbEQC0vbhcAd4BxQVWRCAxjD7eC3XhI3jqAmSPNQG0wcTE+k+ha21FcINeCgiwp1uQy4PJBwA8DrtBxGdbBBixl2c5fWYgaB1L63eLFzfo1i5Y2ko40recDx3reGvNlbf2g7eoPmu3FLvWspjT5bo+nyIIbgWxwNJglsUYY+sAd+vFN10LmEZLmhsrlQc8Nt377wcgDcqIfxu92h-n756SNF7SM7LptyMT3Zt4dHYqNjpdB-KfOMV67mUS2eBOUrga0vyLxaDInW8ZDf5i50Au0PCORO2RKTx9gCwA51C7i7Okks1cAJL6oOoBrRaoO2D2CLujgoAHwpLICtXMdVU+TaCQOoUwNwMbuGC0xi8F-tArpbpikkNboIpwYl18jQW1j7BwADlIA1s-tIt3fB6Tm+tFNcG9be9lMUr+9VPQdB+bkH5R-0bCMR857f+sZWmaHdphh06ZJ8emk9UTLm1yJz0xwzhTRpBBBzFdcsYzNgBdQCQX8KQWAUNOwDTLcdjMhLO7G20GiUVTUBXJyIrE-LylQUJWORAoiCCjBomJWRtgpB74RZ++qVVBl4EHB65JiCea3vOlHCQtHaUAUoD9hQAIozCa4agj4G+LNg8o2IM9CxWd50NXe-7IOswxKagcfeHDP3pBzf6B8am7daNgAKmiSEe6--MPqh0FroclCF5FSsnwUbqVq8vNWekM1kwjN7QsnD7vqjaDGAz0SQQ+GAH3qOYAWZlUvrZREAtgrUjmX0C2AOZwFqsphCIV0T6qPxXAo-FfhKTPgXgJwRFXRiS1jLaRVg3ffTi6k3bIDgg+xbCMlmmqmpawBmAOlEQrBxFSBl4FTGQyKwRooEKvF3hOTaR38OCnvR-kGzA4v99B1KCNiISjZf8w+klKQshzEaHl5CIAuwWPUza9onBObR7nmxfDa1fc0xFwj4hRIWVfaFfdcEEFCCvQuh86KyoYHramoqwJlUUDNUXZVBpA7gUFhADfgW8HkqwDYMZy8CwNbG+6KQJYDgCVAwAvEGrBEB0bhgDAc1WHOwF4BcAFAPAvRAgFjAhFRWMADYGCIRg5ByA5EMaGQSeJ7MoYCg-wXYGUG9DVB-Q3FIB39Y8UQOT-YiOBzDbcMi0H-GYSHzmHmD5sZ+PPHJWTZx9U2mHcARLhT5QCdhMA9wRo08GbQ3Ac-fEoUHJHIliGfUNjllCBiVBPYszUQMERUQ21iutoMok8E64fR02CnBGoQObAeQDOy-XLB62gzbhbCo4ToIgDiAURbg+wfZvqltDHURY3w1AAihp7gEf07QwmKKCu6Bc8mzBApoMJnIP9V8ownQeyNf6TD3+Rg4PhJX5Gc5BRgAgeiKOvwyNb8EorNlsNT6v4CObgtRorik4Ki1Yu7f-E2BAzFcwxFop5igCtAHxfCOPEOHfG1GWUcs0gQqpZlcDkREAWrGOOl2-oBddmig5JKimFDIkJen9KoVME0jQ0kAIOHoL-UkFaBbM1SHkKJwoZvEuACRCKOQD-a393e9-WuiMKzTBtxhlTTMYYMjZwdcxv-BYZHysEx9ixQqUscoUvKSjKx0otPjWPzb1iJ0jY0rKdUh4uBeBInb2KMH+w6gkgBPbEaOEeynNXshqOEVUVYAg1nQqDALpAm3CjArxczERAsDMqLiuA3kGqhRE6ouIu01IGzj6Gy7VARAn2KcCeNnDQMSWtiUTnkmwbYR6qrEhElcPbA1lPyV4kvjRKsBt8mgtYUYGajkh7BxQ2QfiRQwRQdBqkLpPIGQzIk3dkW5MB7hBKe5hdYJ2A-7PECtCmM8GWEIdl8kMlP0q2qPFMggEdopIghyMSgA5z2B2VMhUzfmEICV4o1neodYEOHRUCLctey3XVrr31b68Kom3ebiazTq7c7SlrU5I8WPCGhEUNADgAADV7EmYf4CAF4AABGQqdoiSKA4AAslqGdB-gQA1gduPyGqlyBqpAAJmkjngB4AAC" target="_blank" rel="noreferrer noopener noreferrer" className="text-primary">在 TypeSafe playground 中打开笔记和问题 →</a></p>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建并托管，Mintlify 是一个面向开发者的文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-parallel-questions/"><span>上一篇</span><strong>并行提问</strong></a>
+    <span></span>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">配置</a><a class="toc-link depth-2" href="#two-question-types">两种题型</a><a class="toc-link depth-2" href="#the-method">方法</a><a class="toc-link depth-2" href="#the-autoresearch-loop">自主研究循环</a><a class="toc-link depth-2" href="#pointing-it-at-your-own-data">指向你自己的数据</a><a class="toc-link depth-2" href="#what-the-questions-see">问题看到的是什么</a><a class="toc-link depth-2" href="#did-the-autoresearch-rounds-help">自动研究的几轮有帮助吗？</a><a class="toc-link depth-2" href="#next-steps">下一步</a><a class="toc-link depth-2" href="#open-it-in-the-playground">在 playground 中打开</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

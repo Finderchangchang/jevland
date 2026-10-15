@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>API 参考 · JevLand</title>
+<meta name="description" content="TypeSafe 评估接口的完整 HTTP API 参考。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/api/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="API 参考">
+<meta property="og:description" content="TypeSafe 评估接口的完整 HTTP API 参考。">
+<meta property="og:url" content="https://jevland.com/docs/api/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="API 参考">
+<meta name="twitter:description" content="TypeSafe 评估接口的完整 HTTP API 参考。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"API 参考","url":"https://jevland.com/docs/api/","inLanguage":"zh-CN","description":"TypeSafe 评估接口的完整 HTTP API 参考。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link is-current" href="/docs/api/" aria-current="page">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link is-current" href="/docs/api/" aria-current="page">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 参考</p>
+        <h1>API 参考</h1>
+        <p class="lead">TypeSafe 评估接口的完整 HTTP API 参考。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/api" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>针对一份 state 对一组带类型的 questions 进行评估，并按题目返回结构化的 answers，每个 question 对应一个 answer。入门介绍请从 primitives 开始。</p>
+<h2 id="evaluation-endpoint">评估接口</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">http</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">POST https://api.typesafe.ai/v1/systemone
+<span class="hljs-attribute">Authorization</span><span class="hljs-punctuation">: </span>Bearer &lt;API_KEY&gt;
+<span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json</code></pre></div>
+<h2 id="request-body">请求体</h2>
+<p>每个请求的顶层结构。<code>questions</code> 映射中的每个条目都是你命名的带类型的问题。</p>
+<ul>
+<li><p><strong><code>state</code></strong> <code>string | object | array</code> · 必填：待评估的内容。文本可用普通字符串，结构化数据（对象/数组）可用于聊天记录、记录或你应用的当前状态等场景。格式与最佳实践见 State。</p>
+</li>
+<li><p><strong><code>model</code></strong> <code>string</code> · 必填：处理该请求的模型。使用 <code>&quot;jev-latest&quot;</code>，即 TypeSafe 的旗舰模型。可用模型与别名见 Models。</p>
+</li>
+<li><p><strong><code>questions</code></strong> <code>map&lt;string, Question&gt;</code> · 必填：一组带类型的 Question 对象映射。每个键由你命名，答案会以同样的键返回。</p>
+<ul>
+<li><strong><code>‹question id›</code></strong> <code>Question</code>：由你选择的键。对应的 Answer 会以这个 id 返回。该键不会发送给底层模型，也不参与推理。</li>
+</ul>
+</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Help! My payouts have been failing for 3 days.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;is_urgent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does this convey urgency?&quot;</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h2 id="request-rules">请求规则</h2>
+<p>以下规则适用于所有请求：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>规则</th>
+<th>限制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>请求体大小</td>
+<td>最多 32 MiB，请求头不计入。</td>
+</tr>
+<tr>
+<td>编码</td>
+<td>UTF-8 JSON，不带字节顺序标记（BOM）。</td>
+</tr>
+<tr>
+<td>嵌套层级</td>
+<td><code>state</code>、<code>instructions</code> 和 <code>criteria</code> 中每一项最多 64 层嵌套的对象和数组。深度更大的内容请自行扁平化。</td>
+</tr>
+<tr>
+<td>数字</td>
+<td>仅限有限数。<code>NaN</code>、<code>Infinity</code> 以及无法表示的极大数字（例如 <code>1e400</code>）会被拒绝。请将标识符和精确的大数作为字符串发送。</td>
+</tr>
+</tbody></table></div>
+<p>超过 32 MiB 的请求体会返回 <code>413</code>；其他违规情况会返回 <code>400</code>。</p>
+<h3 id="compression">压缩</h3>
+<p>你可以通过 <code>Content-Encoding: gzip</code>（或 <code>x-gzip</code>）或 <code>zstd</code> 压缩请求体。当运行环境支持 zstd 时，SDK 会对 1 KiB 及以上的请求体使用 zstd 压缩。请只使用一层压缩，并保持 zstd 的窗口大小不超过 8 MiB。32 MiB 的限制同时适用于压缩后与解压后的请求体。不支持的 <code>Content-Encoding</code> 或超过一层压缩会返回 <code>415</code>；压缩后的请求体格式错误会返回 <code>400</code>。</p>
+<h2 id="question-types">题型</h2>
+<p>Question 的类型由其 <code>type</code> 字段决定。每个问题都包含 <code>type</code> 和 <code>instructions</code>，大多数类型还会接受 <code>criteria</code>；每个类型的文档说明了它支持的字段。</p>
+<p><code>instructions</code> 属性可以是字符串、对象或数组。你可以把一道较长的问题拆分为结构化对象，将额外上下文或需要引用的数据放进单独字段。问题放在一个字段中，数据放在其他字段里，并使用与引用嵌套 <code>state</code> 值相同的方式，用反引号按字段名引用数据：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;potential_duplicate&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;John Smith&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;location&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Oakland, California&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;last_employer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Google&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Is the resume for the same person as `potential_duplicate`?&quot;</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>详见 在问题中使用结构化数据。</p>
+<h3 id="noul">Noul（是非题）</h3>
+<p>是一道判断题。返回答案为“是”的概率。</p>
+<ul>
+<li><p><strong><code>type</code></strong> <code>&quot;noul&quot;</code> · 必填</p>
+</li>
+<li><p><strong><code>instructions</code></strong> <code>string | object | array</code> · 必填：要评估的判断题。对象形式可以将问题放在一个字段，把需要引用的数据放在其他字段；见 在问题中使用结构化数据。</p>
+</li>
+<li><p><strong><code>criteria</code></strong> <code>object</code>：对“是”和“否”的可选描述。</p>
+<ul>
+<li><strong><code>true</code></strong> <code>string | object | array</code>：表示“是”（值接近 1）的含义。</li>
+<li><strong><code>false</code></strong> <code>string | object | array</code>：表示“否”（值接近 0）的含义。</li>
+</ul>
+</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Help! My payouts have been failing for 3 days.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;is_urgent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does this convey urgency?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;true&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Explicitly time-sensitive&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;false&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;No urgency expressed&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h3 id="choice">Choice（选择题）</h3>
+<p>从你定义的选项集合中选出一个选项。返回所选选项以及完整的概率分布。</p>
+<ul>
+<li><p><strong><code>type</code></strong> <code>&quot;choice&quot;</code> · 必填</p>
+</li>
+<li><p><strong><code>instructions</code></strong> <code>string | object | array</code> · 必填：模型应决策的内容。对象形式可以将问题放在一个字段，把需要引用的数据放在其他字段；见 结构化指令与判定标准。</p>
+</li>
+<li><p><strong><code>criteria</code></strong> <code>map&lt;string, string | object | array | null&gt;</code> · 必填：选项到评分说明的映射；当某个选项无需额外说明时使用 <code>null</code>。每个 Choice 最多 255 个选项。</p>
+<ul>
+<li><strong><code>‹option›</code></strong> <code>string | object | array | null</code>：由你选择的键。该选项的描述。</li>
+</ul>
+</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Help! My payouts have been failing for 3 days.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Which team should handle this?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;billing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Payments, invoicing, refunds&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;technical&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Bugs, outages, integrations&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;sales&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Pricing, upgrades, new accounts&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h3 id="score">Score（打分题）</h3>
+<p>按你定义的评分标准对 state 评级。返回一个跨档位按概率加权的值。</p>
+<ul>
+<li><strong><code>type</code></strong> <code>&quot;score&quot;</code> · 必填</li>
+<li><strong><code>instructions</code></strong> <code>string | object | array</code> · 必填：模型应打分的内容。对象形式可以将问题放在一个字段，把需要引用的数据放在其他字段；见 在问题中使用结构化数据。</li>
+<li><strong><code>criteria</code></strong> <code>array&lt;string | object | array&gt;</code> · 必填：按顺序排列的档位描述数组。Score 至少需要两个档位，API 最多接受 10 个。</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Help! My payouts have been failing for 3 days.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;frustration&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How frustrated is the customer?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;Calm&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;Frustrated&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;Very angry&quot;</span><span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h2 id="response-body">响应体</h2>
+<p>每个问题对应一个答案，按你提供的相同 id 返回。</p>
+<ul>
+<li><p><strong><code>model</code></strong> <code>string</code> · 必填：执行此次评估的模型。</p>
+</li>
+<li><p><strong><code>answers</code></strong> <code>map&lt;string, Answer&gt;</code> · 必填：每个问题对应的 Answer，使用你在 questions 中相同的 id 作为键。</p>
+<ul>
+<li><strong><code>‹question id›</code></strong> <code>Answer</code>：你在 questions 中选择的相同 id。</li>
+</ul>
+</li>
+<li><p><strong><code>usage</code></strong> <code>object</code> · 必填：本次请求的 token 用量。</p>
+<ul>
+<li><strong><code>input_tokens</code></strong> <code>integer</code></li>
+<li><strong><code>output_tokens</code></strong> <code>integer</code></li>
+</ul>
+</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;is_urgent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.95</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">296</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">20</span> <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h2 id="answer-types">答案类型</h2>
+<p>每个答案都带有一个与对应问题匹配的 <code>type</code>。部分答案类型还会带有一个介于 0 到 1 之间的 <code>confidence</code>；每个类型的文档列出了其答案包含的字段。详见 Confidence。</p>
+<h3 id="noul-answer">Noul（是非题）答案</h3>
+<ul>
+<li><strong><code>type</code></strong> <code>&quot;noul&quot;</code> · 必填</li>
+<li><strong><code>noul</code></strong> <code>number</code> · 必填：判断题的答案，取值范围 0（否）到 1（是）。</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;is_urgent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.95</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">307</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">20</span> <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h3 id="choice-answer">Choice（选择题）答案</h3>
+<ul>
+<li><p><strong><code>type</code></strong> <code>&quot;choice&quot;</code> · 必填</p>
+</li>
+<li><p><strong><code>choice</code></strong> <code>string</code> · 必填：概率最高的选项。</p>
+</li>
+<li><p><strong><code>probabilities</code></strong> <code>map&lt;string, number&gt;</code> · 必填：每个选项到其概率的映射（浮点数之和为 1）。</p>
+<ul>
+<li><strong><code>‹option›</code></strong> <code>number</code>：你在 criteria 中定义的某个选项。</li>
+</ul>
+</li>
+<li><p><strong><code>confidence</code></strong> <code>number</code> · 必填：模型的确定性，由概率推导得出。</p>
+</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;billing&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;billing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.88</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;technical&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.12</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;sales&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.81</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">318</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">34</span> <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h3 id="score-answer">Score（打分题）答案</h3>
+<ul>
+<li><p><strong><code>type</code></strong> <code>&quot;score&quot;</code> · 必填</p>
+</li>
+<li><p><strong><code>score</code></strong> <code>number</code> · 必填：跨档位按概率加权的答案；可能落在档位之间。</p>
+</li>
+<li><p><strong><code>legend</code></strong> <code>map&lt;string, string&gt;</code> · 必填：每个档位编号到其描述的反向映射。</p>
+</li>
+<li><p><strong><code>probabilities</code></strong> <code>map&lt;string, number&gt;</code> · 必填：每个档位（字符串键）到其概率的映射（浮点数之和为 1）。</p>
+<ul>
+<li><strong><code>‹level›</code></strong> <code>number</code>：档位索引，以字符串键的形式与 legend 对应。</li>
+</ul>
+</li>
+<li><p><strong><code>confidence</code></strong> <code>number</code> · 必填：模型的确定性，由概率推导得出。</p>
+</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;frustration&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.05</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;legend&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Calm&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Frustrated&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Very angry&quot;</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.95</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.05</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.92</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">304</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">18</span> <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h2 id="errors">错误</h2>
+<p>错误使用标准的 HTTP 状态码，响应体为一个 JSON，用于描述具体出了什么问题。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>400 Bad Request</code></td>
+<td>请求体违反了<a href="#request-rules">请求规则</a>，例如 UTF-8 编码无效、嵌套层级过深、数字不是有限值，或者压缩后的请求体格式错误。<code>max_tokens_exceeded</code> 表示请求长度超出了模型的<a href="../models/">上下文长度</a>。</td>
+</tr>
+<tr>
+<td><code>401 Unauthorized</code></td>
+<td>缺少 API key 或者 API key 无效。请检查 <code>Authorization</code> 请求头。</td>
+</tr>
+<tr>
+<td><code>413 Payload Too Large</code></td>
+<td>请求体大小超过 32 MiB。参见<a href="#request-rules">请求规则</a>。</td>
+</tr>
+<tr>
+<td><code>415 Unsupported Media Type</code></td>
+<td>请求体使用了不支持的 <code>Content-Encoding</code>，或者使用了多层压缩。参见<a href="#compression">压缩</a>。</td>
+</tr>
+<tr>
+<td><code>422 Unprocessable Entity</code></td>
+<td>请求体校验失败，例如缺少必填字段，或者 question 格式错误。响应体会标明出错的字段。</td>
+</tr>
+<tr>
+<td><code>429 Too Many Requests</code></td>
+<td>已超出限流（rate limit）。请退避并短暂等待后重试。</td>
+</tr>
+<tr>
+<td><code>529 Overloaded</code></td>
+<td>TypeSafe 暂时过载。请短暂等待后重试。</td>
+</tr>
+</tbody></table></div>
+<h3 id="handling-rate-limits">处理限流</h3>
+<p>当你收到 <code>429 Too Many Requests</code> 或 <code>529 Overloaded</code> 响应时，应当采用指数退避策略重试，而不是立即重试。如果你使用我们的客户端 SDK 并沿用其默认的重试策略，SDK 会自动处理这一逻辑，无需额外处理。</p>
+<hr>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建并托管，Mintlify 是一个面向开发者的文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/models/"><span>上一篇</span><strong>模型</strong></a>
+    <a class="pager-link is-next" href="/docs/jev-1-13-jaggedness/"><span>下一篇</span><strong>Jev 1.13 能力短板</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#evaluation-endpoint">评估接口</a><a class="toc-link depth-2" href="#request-body">请求体</a><a class="toc-link depth-2" href="#request-rules">请求规则</a><a class="toc-link depth-3" href="#compression">压缩</a><a class="toc-link depth-2" href="#question-types">题型</a><a class="toc-link depth-3" href="#noul">Noul（是非题）</a><a class="toc-link depth-3" href="#choice">Choice（选择题）</a><a class="toc-link depth-3" href="#score">Score（打分题）</a><a class="toc-link depth-2" href="#response-body">响应体</a><a class="toc-link depth-2" href="#answer-types">答案类型</a><a class="toc-link depth-3" href="#noul-answer">Noul（是非题）答案</a><a class="toc-link depth-3" href="#choice-answer">Choice（选择题）答案</a><a class="toc-link depth-3" href="#score-answer">Score（打分题）答案</a><a class="toc-link depth-2" href="#errors">错误</a><a class="toc-link depth-3" href="#handling-rate-limits">处理限流</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

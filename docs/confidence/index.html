@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>置信度 · JevLand</title>
+<meta name="description" content="TypeSafe 如何报告确定性、与概率的区别，以及如何用它来控制系统行为。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/confidence/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="置信度">
+<meta property="og:description" content="TypeSafe 如何报告确定性、与概率的区别，以及如何用它来控制系统行为。">
+<meta property="og:url" content="https://jevland.com/docs/confidence/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="置信度">
+<meta name="twitter:description" content="TypeSafe 如何报告确定性、与概率的区别，以及如何用它来控制系统行为。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"置信度","url":"https://jevland.com/docs/confidence/","inLanguage":"zh-CN","description":"TypeSafe 如何报告确定性、与概率的区别，以及如何用它来控制系统行为。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link is-current" href="/docs/confidence/" aria-current="page">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link is-current" href="/docs/confidence/" aria-current="page">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 核心概念</p>
+        <h1>置信度</h1>
+        <p class="lead">TypeSafe 如何报告确定性、与概率的区别，以及如何用它来控制系统行为。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/confidence" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>TypeSafe 返回的所有 Score（打分题）和 Choice（选择题）答案都包含一个 <code>probabilities</code> 属性，表示跨选项（Choice）或档位（Score）的概率分布。该分布的<em>形状</em>能告诉你模型有多大把握：集中在某一个结果上表示答案有把握，分布均匀则表示答案不确定。</p>
+<p>答案的 <code>confidence</code> 属性将该形状压缩为一个 0 到 1 之间的数字，让你无需自己计算就能基于 <code>confidence</code> 设置阈值。当所有概率都集中在一个结果上时它为 1，当概率均匀分布时它为 0。（Noul（是非题）答案不附带该属性，详见下文 <a href="#noul">Noul</a>。）</p>
+<h2 id="confidence-is-derived-from-the-probabilities">置信度由概率派生</h2>
+<p><code>confidence</code> 是一个由答案已给出的概率分布计算得到的统计量。TypeSafe 为你计算它，并在每个 Choice 和 Score 答案中返回，所以常见场景下你无需额外工作。</p>
+<p>对于 <a href="../choice/">Choice</a>，分布就是跨选项的 <code>probabilities</code>。对于 <a href="../score/">Score</a>，分布则是跨档位的 <code>probabilities</code>。两种情况下，分布越平坦，置信度越低：Choice 上的低置信度通常意味着没有任何一个选项明显胜出，而 Score 上的低置信度通常意味着档位本身模糊、涉及多个维度，或是 state（上下文状态）中包含的信息不足以作出判断。</p>
+<p>每种题型对应的精确公式见 <a href="#how-confidence-is-calculated">置信度是如何计算的</a>，你可以从中看到任何 <code>confidence</code> 值是如何由答案自身的 <code>probabilities</code> 推导出来的。</p>
+<h2 id="i-dont-know-is-a-useful-signal">&quot;我不知道&quot;是有用的信号</h2>
+<p>如果一个智能系统——无论人还是机器——无法诚实地表达不确定性，那么这个系统就无法被信任。</p>
+<p>置信度为模型提供了一个内置的机制，让它可以说&quot;我对此不太确定&quot;。这让你的代码可以根据不同的确定程度实现不同的行为，这是构建真正可靠系统的基础。</p>
+<h2 id="three-paths-for-using-confidence-in-your-code">在代码中使用置信度的三条路径</h2>
+<p>一个有用的起始模式是将置信度划分为三个区间，每个区间对应不同的系统行为：</p>
+<p><strong>高置信度：</strong> 自动执行。模型有明确的判断，无需人工参与即可继续。</p>
+<p><strong>中等置信度：</strong> 谨慎推进。模型给出的答案合理，但并不确定。根据上下文，你可以让用户确认、标记为待复核，或在执行前收集更多信息。</p>
+<p><strong>低置信度：</strong> 不执行。转人工、请求澄清，或回退到另一个系统。模型在告诉你它的信息不足，或这个问题并不适合由它回答。</p>
+<p>这些边界的具体位置取决于风险大小。</p>
+<h2 id="thresholds-scale-with-risk">阈值随风险而变化</h2>
+<p>置信度阈值不是一个数字。同一系统中的不同操作应根据出错的后果，在不同的置信度水平上进行门控。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">response = client.system_one(
+    state=user_message,
+    questions={
+        <span class="hljs-string">&quot;action&quot;</span>: Choice(
+            instructions=<span class="hljs-string">&quot;What is the user trying to do?&quot;</span>,
+            criteria={
+                <span class="hljs-string">&quot;check_balance&quot;</span>: <span class="hljs-string">&quot;View account balance&quot;</span>,
+                <span class="hljs-string">&quot;approve_transfer&quot;</span>: <span class="hljs-string">&quot;Approve the pending withdrawal request&quot;</span>,
+                <span class="hljs-string">&quot;support&quot;</span>: <span class="hljs-string">&quot;Get help with an issue&quot;</span>,
+            },
+        ),
+    },
+)
+
+action = response.answers[<span class="hljs-string">&quot;action&quot;</span>]
+confidence = action.confidence
+
+<span class="hljs-keyword">if</span> confidence &lt; <span class="hljs-number">0.5</span>:
+    <span class="hljs-comment"># Model is genuinely unsure. Don&#x27;t guess.</span>
+    route_to_human(user_message)
+
+<span class="hljs-keyword">elif</span> action.choice == <span class="hljs-string">&quot;check_balance&quot;</span>:
+    <span class="hljs-comment"># Low stakes. Showing the wrong screen is recoverable.</span>
+    show_balance(account_id)
+
+<span class="hljs-keyword">elif</span> action.choice == <span class="hljs-string">&quot;approve_transfer&quot;</span>:
+    <span class="hljs-keyword">if</span> confidence &gt; <span class="hljs-number">0.9</span>:
+        <span class="hljs-comment"># High stakes, high confidence. Proceed with confirmation.</span>
+        confirm_then_execute(account_id)
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-comment"># High stakes, moderate confidence. Verify first.</span>
+        ask_user_to_confirm(account_id)</code></pre></div>
+<p>0.5 这一置信度下限会拦截模型报告的所有真正不确定的情况。在此之上，对于破坏性操作，未经确认就执行的阈值要高于只读操作。你的代码承载着风险偏好。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong> 合适的阈值取决于你的领域和模型在你具体用例上的表现。请从保守的阈值开始，用你自己的数据测试，并根据观察到的结果进行调整。</p>
+</aside>
+<h2 id="how-confidence-is-calculated">置信度是如何计算的</h2>
+<p>每种题型对其概率分布的汇总方式略有不同。Noul 有两个结果，Choice 有任意数量的选项且无特定顺序，而 Score 的档位是有序的，因此下面的每个公式都建立在前一个公式的基础上。</p>
+<p>TypeSafe 的 <code>confidence</code> 是汇总分布的一种合理方式，但不是唯一的方式。我们返回一个固定的度量，这样每个答案都会附带一个合理的默认值：你从第一次调用起就能基于 <code>confidence</code> 设置门控，所有题目使用同一个 0 到 1 的量表，而无需先自行选择并验证某个统计量。由于下面的公式都是精确的，并且每个答案都包含完整的 <code>probabilities</code>，你也可以改为计算对你应用而言最重要的度量。</p>
+<h3 id="noul">Noul</h3>
+<p>Noul 答案是一个表示答案为 yes 的单一概率 $p$，TypeSafe 不为其返回单独的 <code>confidence</code>。概率本身已经承载了不确定性：接近 0.5 的值表示模型在说它不确定，<a href="../noul/">Noul</a> 页面介绍了如何直接基于它设置阈值。</p>
+<p>如果你无论如何都想要一个置信度风格的数字（例如用同一段代码同时门控 Noul 和 Choice），可以使用与 0.5 的距离：</p>
+<p>$$
+\text{confidence} = |2p - 1|
+$$</p>
+<p>在 $p = 0.5$ 时它为 0，在 $p = 0$ 或 $p = 1$ 时它为 1。它也是将下面的 Choice 公式应用到一个 yes/no Choice 上得到的，因此与 Choice 置信度处于同一量表。</p>
+<h3 id="choice">Choice</h3>
+<p>Choice 将同样的思路推广到任意数量的选项。对于一个有 $n$ 个选项的 Choice，其中 $p_{\max}$ 是被选中的选项的概率：</p>
+<p>$$
+\text{confidence} = \frac{p_{\max} - \frac{1}{n}}{1 - \frac{1}{n}}
+$$</p>
+<p>它衡量的是最高概率在均匀分布 $\frac{1}{n}$ 之上偏离了多少，其中均匀分布对应 0、确定对应 1。由于只有最高概率起作用，$(0.6, 0.3, 0.1)$ 和 $(0.6, 0.2, 0.2)$ 的置信度都是 0.4。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">choice_confidence</span>(<span class="hljs-params">probabilities: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">float</span>]</span>) -&gt; <span class="hljs-built_in">float</span>:
+    n = <span class="hljs-built_in">len</span>(probabilities)
+    <span class="hljs-keyword">return</span> (<span class="hljs-built_in">max</span>(probabilities) - <span class="hljs-number">1</span> / n) / (<span class="hljs-number">1</span> - <span class="hljs-number">1</span> / n)
+
+
+choice_confidence(<span class="hljs-built_in">list</span>(answer.probabilities.values()))</code></pre></div>
+<p><a href="#confidence-is-derived-from-the-probabilities">本页开头的可视化工具</a> 使用的是这个公式，并配有三个选项。</p>
+<p>还有两种更简单的度量，它们同样从 <code>probabilities</code> 出发计算，在实践中往往非常有效，值得与 <code>confidence</code> 一起尝试：</p>
+<ul>
+<li><strong>最高概率</strong>，$p_{\max}$。它可以直接理解为&quot;被选中的选项有多大的可能性&quot;，使阈值易于推理。其含义取决于选项的数量：在两个选项中 0.5 是个弱答案，而在十个选项中 0.5 是一个很强的答案，因此其阈值应按题目分别设置。</li>
+<li><strong>最高与次高之比</strong>，$p_{\max} / p_{\text{second}}$。它衡量的是被选中的选项领先次高选项多少，而忽略其余概率如何分布。许多实际决策归根结底取决于前两个候选选项，这个比值正好针对这种情况。</li>
+</ul>
+<h3 id="score">Score</h3>
+<p>Score 的档位是有序的，因此其公式还计算了概率距离最可能档位有多远。对于一个有 $n$ 个档位（编号为 $0$ 到 $n - 1$）的 Score，其中 $p_i$ 是档位 $i$ 的概率，$m$ 是最可能的档位：</p>
+<p>$$
+\text{confidence} = \max\left(0,\ 1 - \frac{\sum_i p_i , |i - m|}{\text{MAD}<em>{\text{unif}}}\right)
+\qquad
+\text{MAD}</em>{\text{unif}} = \frac{1}{n} \sum_i \left| i - \frac{n - 1}{2} \right|
+$$</p>
+<p>分子中的求和是答案与最可能档位之间按概率加权的平均距离（以档位为单位）。$\text{MAD}_{\text{unif}}$ 是均匀分布到所有档位上时，按相同方式计算的、从中间档位出发的平均距离。置信度对两者进行比较，当答案的分布至少和均匀分布一样分散时，它会被截断到 0。</p>
+<p>相邻档位上的概率对置信度的削减小于更远档位上相同概率的影响。在三个档位的情况下，$(0, 0.5, 0.5)$ 的置信度为 0.25，因为模型在两个相邻档位之间摇摆。$(0.5, 0, 0.5)$ 的置信度为 0，因为它在相对的两端之间摇摆。Choice 公式会给这两种分布都给出 0.25。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">score_confidence</span>(<span class="hljs-params">probabilities: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">float</span>]</span>) -&gt; <span class="hljs-built_in">float</span>:
+    n = <span class="hljs-built_in">len</span>(probabilities)
+    m = probabilities.index(<span class="hljs-built_in">max</span>(probabilities))
+    spread = <span class="hljs-built_in">sum</span>(p * <span class="hljs-built_in">abs</span>(i - m) <span class="hljs-keyword">for</span> i, p <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(probabilities))
+    even_spread = <span class="hljs-built_in">sum</span>(<span class="hljs-built_in">abs</span>(i - (n - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n)) / n
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">max</span>(<span class="hljs-number">0.0</span>, <span class="hljs-number">1</span> - spread / even_spread)
+
+
+levels = <span class="hljs-built_in">sorted</span>(answer.probabilities)
+score_confidence([answer.probabilities[level] <span class="hljs-keyword">for</span> level <span class="hljs-keyword">in</span> levels])</code></pre></div>
+<p><a href="../score/#response-structure">Score 响应示例</a> 中的 <code>bug_severity</code> 答案具有概率 $(0, 0.57, 0.43)$。最可能的档位是 1，<code>spread</code> 为 $0.43$，三个档位对应的 $\text{MAD}_{\text{unif}}$ 为 $\frac{2}{3}$，因此置信度为 $1 - 0.43 / \frac{2}{3} \approx 0.35$。</p>
+<hr>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建并托管。Mintlify 是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/ai-primer/"><span>上一篇</span><strong>AI 入门</strong></a>
+    <a class="pager-link is-next" href="/docs/primitives/"><span>下一篇</span><strong>题型总览</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#confidence-is-derived-from-the-probabilities">置信度由概率派生</a><a class="toc-link depth-2" href="#i-dont-know-is-a-useful-signal">&quot;我不知道&quot;是有用的信号</a><a class="toc-link depth-2" href="#three-paths-for-using-confidence-in-your-code">在代码中使用置信度的三条路径</a><a class="toc-link depth-2" href="#thresholds-scale-with-risk">阈值随风险而变化</a><a class="toc-link depth-2" href="#how-confidence-is-calculated">置信度是如何计算的</a><a class="toc-link depth-3" href="#noul">Noul</a><a class="toc-link depth-3" href="#choice">Choice</a><a class="toc-link depth-3" href="#score">Score</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

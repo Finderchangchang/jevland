@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>怎样用 TypeSafe 构建 · JevLand</title>
+<meta name="description" content="通过让代码掌握控制权，并交给 System One 做出窄而结构化的判断，来设计 AI 驱动的软件。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/how-to-build/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="怎样用 TypeSafe 构建">
+<meta property="og:description" content="通过让代码掌握控制权，并交给 System One 做出窄而结构化的判断，来设计 AI 驱动的软件。">
+<meta property="og:url" content="https://jevland.com/docs/how-to-build/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="怎样用 TypeSafe 构建">
+<meta name="twitter:description" content="通过让代码掌握控制权，并交给 System One 做出窄而结构化的判断，来设计 AI 驱动的软件。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"怎样用 TypeSafe 构建","url":"https://jevland.com/docs/how-to-build/","inLanguage":"zh-CN","description":"通过让代码掌握控制权，并交给 System One 做出窄而结构化的判断，来设计 AI 驱动的软件。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link is-current" href="/docs/how-to-build/" aria-current="page">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link is-current" href="/docs/how-to-build/" aria-current="page">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 核心概念</p>
+        <h1>怎样用 TypeSafe 构建</h1>
+        <p class="lead">通过让代码掌握控制权，并交给 System One 做出窄而结构化的判断，来设计 AI 驱动的软件。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/concepts/how-to-build-with-system-one" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>System One 是 TypeSafe 用来构建 AI 驱动软件的模型——而不是智能体。它不生成代码，也不自己选择下一步动作。它提供可嵌入软件的 AI 题型，让代码始终掌握控制权，同时由模型在非结构化数据上完成常识判断。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong> 构建一个正常的软件工作流，只在需要 AI 的地方插入 System One。</p>
+<ul>
+<li>把控制流、确定性的规则和副作用保留在代码中。</li>
+<li>把宽泛的判断拆成窄而带类型的问题，配上明确的 instructions 和 criteria。</li>
+<li>每个问题只给它需要的上下文。</li>
+<li>用概率和置信度来决定执行、请求复核还是升级处理。</li>
+<li>让独立的问题同时发问，再用代码把它们各自的答案组合起来。</li>
+</ul>
+</aside>
+<h2 id="three-software-architectures">三种软件架构</h2>
+<p>TypeSafe 面向构建 <strong>AI 驱动的软件</strong> 而设计：代码掌握工作流，AI 处理窄而结构化的判断。</p>
+<h4 id="传统软件">传统软件</h4>
+<p>传统代码是由简单的软件原语组成的复杂决策树。由于每个原语都很可靠，开发者可以把它们组合成更高层的抽象。</p>
+<h4 id="LLM-智能体">LLM 智能体</h4>
+<p>智能体处理指令并自主选择下一步。当有人在监控流程时，这种方式很有效，但每多一轮循环就多一次跑偏的可能。</p>
+<h4 id="AI-驱动的软件">AI 驱动的软件</h4>
+<p>由代码处理确定性的工作并掌握控制流。模型只在系统需要可编程的常识或需要解读非结构化数据时出现。每个 AI 任务都保持原子化并且受限。</p>
+<img className="block dark:hidden" src="https://mintcdn.com/ts-docs/aFVnpmCIX68NpsV1/images/how-to-build-with-typesafe/software-architectures-light.webp?fit=max&auto=format&n=aFVnpmCIX68NpsV1&q=85&s=35c7622176190d1b1f19dc712f2fbf11" alt="传统软件、智能体和 AI 驱动的软件展示为三种不同的系统架构。" width="2048" height="1117" data-path="images/how-to-build-with-typesafe/software-architectures-light.webp" />
+
+<img className="hidden dark:block" src="https://mintcdn.com/ts-docs/aFVnpmCIX68NpsV1/images/how-to-build-with-typesafe/software-architectures-dark.webp?fit=max&auto=format&n=aFVnpmCIX68NpsV1&q=85&s=8e6c2c73bdd4c9b541c4f9294bd829b5" alt="传统软件、智能体和 AI 驱动的软件展示为三种不同的系统架构。" width="2048" height="1117" data-path="images/how-to-build-with-typesafe/software-architectures-dark.webp" />
+
+<h2 id="what-makes-system-one-composable">System One 可组合的原因</h2>
+<ul>
+<li><strong>结构化</strong>：System One 在构造上就是类型安全的。判断结果和概率与代码所期望的结构化软件类型和 JSON schema 完全匹配，因此永远不需要从生成的文字里反推出值。</li>
+<li><strong>并行</strong>：问题相互独立并并行求值。一个原语的结果不会变成隐藏的上下文，去影响另一个原语的结果。</li>
+<li><strong>可比较</strong>：输出可排序，可以驱动智能的 <code>if</code> 判断、阈值和比较。</li>
+<li><strong>快速</strong>：多数查询在 100 ms 左右完成。System One 足够快，可以跑在实时请求路径和用户界面上。</li>
+<li><strong>校准过的置信度</strong>：<a href="../ai-primer/">RLCD</a> 通过校准过的概率传达不确定性，而不是倾向于过度自信。</li>
+<li><strong>自一致</strong>：System One 设计上能在重复求值时给出稳定的答案。参见 <a href="../cookbook-consistency-noul/">自一致实战示例</a>。</li>
+</ul>
+<p>由于每个输出都被限制在给定的选项范围内，模型返回的是这些选项上的完整概率分布，而不是在 schema 之外自己造一个值。TypeSafe 的目标是实现超过 100 倍的「智能/速度 + 成本」比；其底层押注是，更便宜的智能会催生出远大于当前的巨大需求。</p>
+<h2 id="design-a-system-one-workflow">设计一个 System One 工作流</h2>
+<ol>
+<li><p><strong>能写代码时就写代码</strong></p>
+<p>把确定性的工作保留在代码中。它既可靠又便宜。如果一段软件工作流就能表达相同的行为，就不要用智能体的 <code>while</code> 循环。</p>
+<h4 id="示例把确定性的规则保留在代码中">示例：把确定性的规则保留在代码中</h4>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">days_overdue = (today - invoice.due_date).days
+
+<span class="hljs-keyword">if</span> days_overdue &gt; <span class="hljs-number">30</span>:
+    route_to_collections(invoice)</code></pre></div>
+<p>浏览 <a href="../patterns/">System One 设计模式</a>，了解把模型判断与代码组合的有界方式。</p>
+</li>
+<li><p><strong>拆分输入 state</strong></p>
+<p>只包含与当前问题相关的上下文。这能帮助模型避免分心和上下文腐烂。当自有知识库能提供最新信息时，不要依赖存储在模型权重里的知识。</p>
+<h4 id="示例只发送相关的上下文">示例：只发送相关的上下文</h4>
+<p><strong>request</strong></p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;ticket_message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;My flight was cancelled. Can I get a refund?&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;refund_policy&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Cancelled flights are eligible for a full refund.&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;policy_supports_refund&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does the refund policy support the refund requested in the ticket?&quot;</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+</li>
+<li><p><strong>在输入 state 中使用结构</strong></p>
+<p>对 <code>state</code> 和 <code>questions</code> 字段使用嵌套的 JSON。当指向具体的值能消除歧义时，让问题指向具体的值，并在问题内用反引号把路径括起来。</p>
+<h4 id="示例引用一个嵌套值">示例：引用一个嵌套值</h4>
+<p>用反引号包裹的点与下标路径，让问题指向具体的嵌套值，例如 <code>support.tickets[0].message</code>。</p>
+<p><strong>request</strong></p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;support&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;tickets&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;I was charged twice for order A-104.&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How do I reset my password?&quot;</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;commerce&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;orders&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;A-104&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;charges&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-punctuation">{</span>
+              <span class="hljs-attr">&quot;amount_usd&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">49</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;captured&quot;</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-punctuation">{</span>
+              <span class="hljs-attr">&quot;amount_usd&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">49</span><span class="hljs-punctuation">,</span>
+              <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;captured&quot;</span>
+            <span class="hljs-punctuation">}</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;account&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;security&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;password_reset&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Email a reset link to the address on file.&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;duplicate_charge&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Do `support.tickets[0].message` and `commerce.orders[0].charges` indicate a duplicate charge?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;password_reset_supported&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Can `account.security.password_reset` resolve the request in `support.tickets[1].message`?&quot;</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+</li>
+<li><p><strong>拆分问题</strong></p>
+<p>尽可能问最明确、最窄、最具体、最原子化的问题。把复杂或定义不清的问题拆成多个问题，每个问题只评估一个属性。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong> 这可能是本指南里最重要的概念。宽泛的问题把多种判断藏在同一个答案背后；原子化的问题把这些判断暴露出来，方便你在代码里检查、调优和组合。</p>
+</aside>
+<h4 id="示例拆分垃圾邮件识别">示例：拆分垃圾邮件识别</h4>
+<p><strong>一个宽泛的问题（不好的写法）</strong></p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;sender&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;display_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Acme Payroll&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;email&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;rewards@claim-bonus.example&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;subject&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Urgent: claim your employee bonus&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;You have been selected for a $1,000 bonus. Confirm your payroll password today to receive it.&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;links&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;text&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Claim bonus&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;http://claim-bonus.example/acme&quot;</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;is_spam&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Is `message` spam?&quot;</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p><strong>拆分后的问题（好的写法）</strong></p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;sender&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;display_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Acme Payroll&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;email&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;rewards@claim-bonus.example&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;subject&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Urgent: claim your employee bonus&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;You have been selected for a $1,000 bonus. Confirm your payroll password today to receive it.&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;links&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;text&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Claim bonus&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;http://claim-bonus.example/acme&quot;</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;requests_credentials&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `message.body` ask the recipient to provide a password or other login credential?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;offers_unexpected_reward&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `message.body` claim the recipient received an unexpected prize, payment, or reward?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;creates_time_pressure&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `message.subject` or `message.body` pressure the recipient to act quickly?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;sender_identity_mismatch&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does the organization named in `message.sender.display_name` conflict with the domain in `message.sender.email`?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;link_domain_mismatch&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does the domain in `message.links[0].url` conflict with the organization named in `message.sender.display_name`?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;disguises_link_destination&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `message.links[0].text` conceal or misrepresent the destination in `message.links[0].url`?&quot;</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h4 id="示例核对一次工具调用-trace">示例：核对一次工具调用 trace</h4>
+<p><strong>一个宽泛的问题（不好的写法）</strong></p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;request&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;text&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;What&#x27;s the weather in Seattle tomorrow in Fahrenheit?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;location&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Seattle, WA&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;date&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-09-03&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;unit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;fahrenheit&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;available_tools&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;geocode_city&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Resolve a city to latitude and longitude.&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;parameters&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;city&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;string&quot;</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;get_weather&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Get the forecast for coordinates and a date.&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;parameters&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;latitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;number&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;longitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;number&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;date&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;YYYY-MM-DD&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;unit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;fahrenheit&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;celsius&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;trace&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;tool_calls&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;call_1&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;geocode_city&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;arguments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">&quot;city&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Seattle, WA&quot;</span>
+          <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;call_2&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;get_weather&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;arguments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">&quot;latitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">47.6062</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;longitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-122.3321</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;date&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-09-03&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;unit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;celsius&quot;</span>
+          <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;tool_results&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;tool_call_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;call_1&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;output&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">&quot;latitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">47.6062</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;longitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-122.3321</span>
+          <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;tool_calls_are_correct&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Is `trace.tool_calls` correct for `request` and `available_tools`?&quot;</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p><strong>拆分后的问题（好的写法）</strong></p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;request&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;text&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;What&#x27;s the weather in Seattle tomorrow in Fahrenheit?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;location&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Seattle, WA&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;date&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-09-03&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;unit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;fahrenheit&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;available_tools&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;geocode_city&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Resolve a city to latitude and longitude.&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;parameters&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;city&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;string&quot;</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;get_weather&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Get the forecast for coordinates and a date.&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;parameters&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;latitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;number&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;longitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;number&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;date&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;YYYY-MM-DD&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;unit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;fahrenheit&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;celsius&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;trace&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;tool_calls&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;call_1&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;geocode_city&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;arguments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">&quot;city&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Seattle, WA&quot;</span>
+          <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;call_2&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;get_weather&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;arguments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">&quot;latitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">47.6062</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;longitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-122.3321</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;date&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-09-03&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;unit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;celsius&quot;</span>
+          <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;tool_results&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;tool_call_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;call_1&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;output&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">&quot;latitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">47.6062</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;longitude&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-122.3321</span>
+          <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;geocode_tool_is_relevant&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Is `trace.tool_calls[0].name` an appropriate tool for resolving `request.location`?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;geocode_location_matches&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `trace.tool_calls[0].arguments.city` match `request.location`?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;geocode_arguments_match_schema&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `trace.tool_calls[0].arguments` conform to `available_tools.geocode_city.parameters`?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;geocode_result_matches_call&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `trace.tool_results[0].tool_call_id` match `trace.tool_calls[0].id`?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;weather_tool_is_relevant&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Is `trace.tool_calls[1].name` an appropriate tool for answering `request.text`?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;weather_arguments_match_schema&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `trace.tool_calls[1].arguments` conform to `available_tools.get_weather.parameters`?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;weather_uses_geocoded_coordinates&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Do the coordinates in `trace.tool_calls[1].arguments` match those in `trace.tool_results[0].output`?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;weather_date_matches&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `trace.tool_calls[1].arguments.date` match `request.date`?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;weather_unit_matches&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `trace.tool_calls[1].arguments.unit` match `request.unit`?&quot;</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+</li>
+<li><p><strong>在问题中使用结构</strong></p>
+<p>问题要简短。<code>instructions</code> 和 <code>criteria</code> 通常是字符串，对于一个简短且不含歧义的问题，一个字符串就够用了。它们也可以是对象或数组。把问题放在一个字段里，把引导问题的数据放在其他字段里。</p>
+<p>在以下场景下，结构化能帮上忙：</p>
+<ul>
+<li>问题需要上下文或示例。一长段背景信息或一组示例输入应该放在问题旁边的具名字段里，方便你的代码往里追加或替换，而无需重写问题本身。</li>
+<li>问题的某一部分来自你的代码。当一个值来自数据库时，把它放在自己的字段里，而不是拼接到字符串模板里。</li>
+<li>多个问题有类似的 <code>instructions</code>。一次请求只有一个 state，但可以包含多个问题。补充数据有助于让问题彼此区分开来。</li>
+</ul>
+<h4 id="示例引用来自代码的一条记录">示例：引用来自代码的一条记录</h4>
+<p>这个 Noul 把 state 中的简历与来自候选人数据库的一条记录进行比较。该记录原样放入 <code>potential_duplicate</code>，问题通过名字引用它。</p>
+<p><strong>questions</strong></p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;resume&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;John Smith&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;location&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Oakland, CA&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Backend engineer with eight years of Python and Go experience.&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;experience&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;employer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Google&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Senior Backend Engineer&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;years&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2021-2025&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;employer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Microsoft&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Software Engineer&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;years&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2017-2021&quot;</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;same_as_record_18&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;potential_duplicate&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;John Smith&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;location&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Oakland, California&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;last_employer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Google&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Is the resume for the same person as `potential_duplicate`?&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>来自代码的 <code>potential_duplicate</code> 数据会随时间变化。<code>question</code> 用反引号引用它。</p>
+<p><code>criteria</code> 内部的描述同样可以是对象。对于 Choice，每个选项的描述可以是一个对象，说明该选项覆盖什么、不覆盖什么，并给出几个示例。跨选项使用相同的字段名，让模型可以直接进行比较。</p>
+<h4 id="示例定义对比式的-Choice-criteria">示例：定义对比式的 Choice criteria</h4>
+<p><strong>questions</strong></p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How many disposable virtual cards can I make per day?&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;card_help_topic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Which disposable virtual card topic is the user asking about?&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;focus&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Classify the information the user wants.&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;get_disposable_virtual_card&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Purpose, eligibility, or setup&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;not_for&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Quantity, transaction, or merchant restrictions&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;How can I get a disposable virtual card?&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;What are disposable cards for?&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;disposable_card_limits&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Quantity, transaction, or merchant restrictions&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;not_for&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Purpose, eligibility, or setup&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;How many disposable cards can I make per day?&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Where can I use a disposable card?&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>每种题型的页面都有一个完整示例：</p>
+<ul>
+<li><a href="../noul/#structured-instructions">Noul</a> 把一份简历与多条候选人记录对比，每条记录一个问题，问题在代码中构建。</li>
+<li><a href="../choice/#structured-instructions-and-criteria">Choice</a> 用「覆盖什么 / 不覆盖什么 / 示例」描述两个容易混淆的选项。</li>
+<li><a href="../score/#structured-level-descriptions">Score</a> 为每个档位给出描述和示例情境。</li>
+</ul>
+<p><a href="../cookbook-sde-cascade/">结构化数据提取级联实战示例</a> 展示了「共享措辞」的情况：对抽取记录里的每个字段问同一组问题。</p>
+<p>简短且不含歧义的问题或判定标准可以继续用字符串。当结构能拆分原本会混在一起的指引时，就加入结构。完整可接受结构的位置集合见 <a href="../advanced-structure/">高级：结构</a>。</p>
+</li>
+<li><p><strong>多问几个问题</strong></p>
+<p>在同一次请求里围绕同一个 state 大量问出窄而独立的问题。这就是你用 API 把「每美元的有效性和智能」最大化的方式：问题并行运行，代码可以在不增加串行模型往返的前提下组合它们的信号。</p>
+<p>参见 <a href="../fan-out/">推测式扇出（speculative fan-out）设计模式</a> 和 <a href="../cookbook-parallel-questions/">并行问题实战示例</a>。</p>
+</li>
+<li><p><strong>在代码中合并问题的输出（或送入经典的 ML 模型）</strong></p>
+<p>用确定性的规则或加权和把独立的答案组合起来。如果希望学到更复杂的组合方式，可以把这些概率作为下游经典机器学习模型的特征。</p>
+<h4 id="示例用加权和组合信号">示例：用加权和组合信号</h4>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">answers = response.answers
+
+<span class="hljs-comment"># Combine independent signals into one application-specific score.</span>
+quality = (
+    <span class="hljs-number">0.4</span> * answers[<span class="hljs-string">&quot;answers_request&quot;</span>].noul
+    + <span class="hljs-number">0.4</span> * answers[<span class="hljs-string">&quot;citations_are_supported&quot;</span>].noul
+    + <span class="hljs-number">0.2</span> * (<span class="hljs-number">1</span> - answers[<span class="hljs-string">&quot;contradicts_context&quot;</span>].noul)
+)</code></pre></div>
+<p><a href="../composite-scoring/">组合打分</a> 展示了在合并的同时保留各个独立判断的方法。如果你没有用于下游模型的标签，可以用一组昂贵的推理模型来生成标签；<a href="../cookbook-autoresearch-feature-discovery/">AutoResearch 实战示例</a> 展示了如何基于 System One 的输出训练一个经典模型。</p>
+</li>
+<li><p><strong>根据不确定性进行路由</strong></p>
+<p>让代码对高置信和低置信的答案采取不同的动作。把不确定的用例升级到人工，或者交给一个更昂贵的推理模型。通过在你自己的数据上绘制置信度与准确率的关系曲线来测试阈值。</p>
+<h4 id="示例按置信度路由">示例：按置信度路由</h4>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">answer = response.answers[<span class="hljs-string">&quot;card_help_topic&quot;</span>]
+
+<span class="hljs-keyword">if</span> answer.confidence &lt; <span class="hljs-number">0.8</span>:
+    route_to_human_review(ticket)
+<span class="hljs-keyword">else</span>:
+    route_to_handler(answer.choice, ticket)</code></pre></div>
+<p>参见 <a href="../confidence/">置信度</a> 和 <a href="../confidence-routing/">置信度分流</a>，了解如何选择阈值，以及如何让阈值与每种动作的风险相匹配。</p>
+</li>
+</ol>
+<aside class="callout callout-tip"><p><strong>提示：</strong> 拆分并不需要更多次往返。同一个 state 上的问题会并行运行。</p>
+</aside>
+<h2 id="putting-it-all-together">整合到一起</h2>
+<p>这个客服工单工作流把确定性的工作保留在代码中，只发送相关的结构化上下文，在一次请求中评估多个原子问题，并通过显式的置信度阈值来组合答案。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, Noul, NoulCriteria, Score, TypeSafeClient
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">triage_ticket</span>(<span class="hljs-params">ticket, customer</span>):
+    <span class="hljs-comment"># Handle deterministic states without calling a model.</span>
+    <span class="hljs-keyword">if</span> ticket[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;closed&quot;</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;no_action&quot;</span>
+
+    open_orders = [
+        order <span class="hljs-keyword">for</span> order <span class="hljs-keyword">in</span> customer[<span class="hljs-string">&quot;orders&quot;</span>] <span class="hljs-keyword">if</span> order[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;delivered&quot;</span>
+    ]
+
+    <span class="hljs-comment"># Include only the structured context needed by the questions below.</span>
+    state = {
+        <span class="hljs-string">&quot;ticket&quot;</span>: {
+            <span class="hljs-string">&quot;message&quot;</span>: ticket[<span class="hljs-string">&quot;message&quot;</span>],
+            <span class="hljs-string">&quot;sender&quot;</span>: ticket[<span class="hljs-string">&quot;sender&quot;</span>],
+            <span class="hljs-string">&quot;links&quot;</span>: ticket[<span class="hljs-string">&quot;links&quot;</span>],
+        },
+        <span class="hljs-string">&quot;customer&quot;</span>: {
+            <span class="hljs-string">&quot;plan&quot;</span>: customer[<span class="hljs-string">&quot;plan&quot;</span>],
+            <span class="hljs-string">&quot;open_orders&quot;</span>: open_orders,
+        },
+        <span class="hljs-string">&quot;policy&quot;</span>: {
+            <span class="hljs-string">&quot;sensitive_credentials&quot;</span>: [<span class="hljs-string">&quot;password&quot;</span>, <span class="hljs-string">&quot;security code&quot;</span>, <span class="hljs-string">&quot;API key&quot;</span>],
+        },
+    }
+
+    <span class="hljs-comment"># Ask structured, atomic questions together so they run in parallel.</span>
+    questions = {
+        <span class="hljs-string">&quot;topic&quot;</span>: Choice(
+            instructions={
+                <span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;Which team should handle `ticket.message`?&quot;</span>,
+                <span class="hljs-string">&quot;focus&quot;</span>: <span class="hljs-string">&quot;Classify the customer&#x27;s primary request.&quot;</span>,
+            },
+            criteria={
+                <span class="hljs-string">&quot;billing&quot;</span>: {
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Charges, invoices, refunds, or subscriptions&quot;</span>,
+                    <span class="hljs-string">&quot;not_for&quot;</span>: <span class="hljs-string">&quot;Order tracking or account access&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;I was charged twice&quot;</span>, <span class="hljs-string">&quot;Where is my refund?&quot;</span>],
+                },
+                <span class="hljs-string">&quot;orders&quot;</span>: {
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Order status, delivery, cancellation, or returns&quot;</span>,
+                    <span class="hljs-string">&quot;not_for&quot;</span>: <span class="hljs-string">&quot;Charges or account access&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;Where is my order?&quot;</span>, <span class="hljs-string">&quot;Cancel my shipment&quot;</span>],
+                },
+                <span class="hljs-string">&quot;account&quot;</span>: {
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Login, profile, permissions, or security&quot;</span>,
+                    <span class="hljs-string">&quot;not_for&quot;</span>: <span class="hljs-string">&quot;Charges or order tracking&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;Reset my password&quot;</span>, <span class="hljs-string">&quot;I cannot sign in&quot;</span>],
+                },
+            },
+        ),
+        <span class="hljs-string">&quot;requests_credentials&quot;</span>: Noul(
+            instructions={
+                <span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;Does the message request a sensitive credential?&quot;</span>,
+                <span class="hljs-string">&quot;compare&quot;</span>: [
+                    <span class="hljs-string">&quot;`ticket.message`&quot;</span>,
+                    <span class="hljs-string">&quot;`policy.sensitive_credentials`&quot;</span>,
+                ],
+                <span class="hljs-string">&quot;focus&quot;</span>: <span class="hljs-string">&quot;Look for a request to disclose the credential itself.&quot;</span>,
+            },
+            criteria=NoulCriteria(
+                true={
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Asks the recipient to disclose a listed credential&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [
+                        <span class="hljs-string">&quot;Reply with your password&quot;</span>,
+                        <span class="hljs-string">&quot;Send us your API key&quot;</span>,
+                    ],
+                },
+                false={
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Does not ask the recipient to disclose a credential&quot;</span>,
+                    <span class="hljs-string">&quot;not_for&quot;</span>: <span class="hljs-string">&quot;A legitimate instruction to reset a credential&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;Use this link to reset your password&quot;</span>],
+                },
+            ),
+        ),
+        <span class="hljs-string">&quot;sender_identity_mismatch&quot;</span>: Noul(
+            instructions={
+                <span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;Does the claimed sender identity conflict with its domain?&quot;</span>,
+                <span class="hljs-string">&quot;compare&quot;</span>: [
+                    <span class="hljs-string">&quot;`ticket.sender.display_name`&quot;</span>,
+                    <span class="hljs-string">&quot;`ticket.sender.email`&quot;</span>,
+                ],
+                <span class="hljs-string">&quot;focus&quot;</span>: <span class="hljs-string">&quot;Compare the named organization with the email domain.&quot;</span>,
+            },
+            criteria=NoulCriteria(
+                true={
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Claims an organization unrelated to the email domain&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;Acme Payroll sent from claim-bonus.example&quot;</span>],
+                },
+                false={
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;The identity and domain agree or make no conflicting claim&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;Acme Payroll sent from acme.example&quot;</span>],
+                },
+            ),
+        ),
+        <span class="hljs-string">&quot;unexpected_reward&quot;</span>: Noul(
+            instructions={
+                <span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;Does the message announce an unexpected reward?&quot;</span>,
+                <span class="hljs-string">&quot;inspect&quot;</span>: <span class="hljs-string">&quot;`ticket.message`&quot;</span>,
+                <span class="hljs-string">&quot;focus&quot;</span>: <span class="hljs-string">&quot;Look for an unsolicited prize, payment, or reward claim.&quot;</span>,
+            },
+            criteria=NoulCriteria(
+                true={
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Announces an unrequested prize, payment, or reward&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;You were selected for a $1,000 bonus&quot;</span>],
+                },
+                false={
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Contains no reward claim or discusses an expected payment&quot;</span>,
+                    <span class="hljs-string">&quot;not_for&quot;</span>: <span class="hljs-string">&quot;A customer asking about a known refund or payroll deposit&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;When will my approved refund arrive?&quot;</span>],
+                },
+            ),
+        ),
+        <span class="hljs-string">&quot;refund_requested&quot;</span>: Noul(
+            instructions={
+                <span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;Does the customer explicitly request a refund or credit?&quot;</span>,
+                <span class="hljs-string">&quot;inspect&quot;</span>: <span class="hljs-string">&quot;`ticket.message`&quot;</span>,
+                <span class="hljs-string">&quot;focus&quot;</span>: <span class="hljs-string">&quot;Require a requested remedy, not a billing complaint alone.&quot;</span>,
+            },
+            criteria=NoulCriteria(
+                true={
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Directly asks for money back or an account credit&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;Please refund the duplicate charge&quot;</span>],
+                },
+                false={
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Does not ask for a refund or credit&quot;</span>,
+                    <span class="hljs-string">&quot;not_for&quot;</span>: <span class="hljs-string">&quot;A complaint or billing question without a requested remedy&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;Why was I charged twice?&quot;</span>],
+                },
+            ),
+        ),
+        <span class="hljs-string">&quot;mentions_open_order&quot;</span>: Noul(
+            instructions={
+                <span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;Does the message refer to a supplied open order?&quot;</span>,
+                <span class="hljs-string">&quot;compare&quot;</span>: [
+                    <span class="hljs-string">&quot;`ticket.message`&quot;</span>,
+                    <span class="hljs-string">&quot;`customer.open_orders`&quot;</span>,
+                ],
+                <span class="hljs-string">&quot;focus&quot;</span>: <span class="hljs-string">&quot;Match an order id or other identifying details.&quot;</span>,
+            },
+            criteria=NoulCriteria(
+                true={
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Refers to an open order by id or identifying details&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;Where is order A-104?&quot;</span>],
+                },
+                false={
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Does not identify any supplied open order&quot;</span>,
+                    <span class="hljs-string">&quot;not_for&quot;</span>: <span class="hljs-string">&quot;A generic order question with no matching details&quot;</span>,
+                    <span class="hljs-string">&quot;examples&quot;</span>: [<span class="hljs-string">&quot;How long does shipping usually take?&quot;</span>],
+                },
+            ),
+        ),
+        <span class="hljs-string">&quot;frustration&quot;</span>: Score(
+            instructions={
+                <span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;How frustrated does the customer appear?&quot;</span>,
+                <span class="hljs-string">&quot;inspect&quot;</span>: <span class="hljs-string">&quot;`ticket.message`&quot;</span>,
+                <span class="hljs-string">&quot;focus&quot;</span>: <span class="hljs-string">&quot;Judge expressed frustration, not issue severity.&quot;</span>,
+            },
+            criteria=[
+                {
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Calm and matter-of-fact&quot;</span>,
+                    <span class="hljs-string">&quot;signals&quot;</span>: [<span class="hljs-string">&quot;Neutral wording&quot;</span>, <span class="hljs-string">&quot;No complaint about the experience&quot;</span>],
+                },
+                {
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Frustrated but civil&quot;</span>,
+                    <span class="hljs-string">&quot;signals&quot;</span>: [<span class="hljs-string">&quot;Expresses annoyance&quot;</span>, <span class="hljs-string">&quot;Remains constructive&quot;</span>],
+                },
+                {
+                    <span class="hljs-string">&quot;what&quot;</span>: <span class="hljs-string">&quot;Very angry or threatening to leave&quot;</span>,
+                    <span class="hljs-string">&quot;signals&quot;</span>: [<span class="hljs-string">&quot;Hostile language&quot;</span>, <span class="hljs-string">&quot;Threatens cancellation or churn&quot;</span>],
+                },
+            ],
+        ),
+    }
+
+    <span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+        response = client.system_one(
+            state=state,
+            questions=questions,
+        )
+
+    <span class="hljs-comment"># Compose independent spam signals with weights controlled by code.</span>
+    answers = response.answers
+    spam_risk = (
+        <span class="hljs-number">0.45</span> * answers[<span class="hljs-string">&quot;requests_credentials&quot;</span>].noul
+        + <span class="hljs-number">0.30</span> * answers[<span class="hljs-string">&quot;sender_identity_mismatch&quot;</span>].noul
+        + <span class="hljs-number">0.25</span> * answers[<span class="hljs-string">&quot;unexpected_reward&quot;</span>].noul
+    )
+
+    <span class="hljs-comment"># Escalate uncertain judgments instead of guessing.</span>
+    spam_is_uncertain = <span class="hljs-number">0.4</span> &lt; spam_risk &lt; <span class="hljs-number">0.6</span>
+    <span class="hljs-keyword">if</span> spam_is_uncertain <span class="hljs-keyword">or</span> answers[<span class="hljs-string">&quot;topic&quot;</span>].confidence &lt; <span class="hljs-number">0.75</span>:
+        <span class="hljs-keyword">return</span> route_to_human_review(ticket)
+    <span class="hljs-keyword">if</span> spam_risk &gt;= <span class="hljs-number">0.6</span>:
+        <span class="hljs-keyword">return</span> quarantine_as_spam(ticket)
+
+    <span class="hljs-comment"># Let code decide which speculative answers matter on this path.</span>
+    <span class="hljs-keyword">if</span> answers[<span class="hljs-string">&quot;topic&quot;</span>].choice == <span class="hljs-string">&quot;billing&quot;</span>:
+        <span class="hljs-keyword">return</span> route_to_billing(
+            ticket,
+            refund_requested=answers[<span class="hljs-string">&quot;refund_requested&quot;</span>].noul &gt;= <span class="hljs-number">0.7</span>,
+        )
+    <span class="hljs-keyword">if</span> answers[<span class="hljs-string">&quot;topic&quot;</span>].choice == <span class="hljs-string">&quot;orders&quot;</span>:
+        <span class="hljs-keyword">return</span> route_to_orders(
+            ticket,
+            mentions_open_order=answers[<span class="hljs-string">&quot;mentions_open_order&quot;</span>].noul &gt;= <span class="hljs-number">0.7</span>,
+        )
+
+    priority = (
+        <span class="hljs-string">&quot;high&quot;</span>
+        <span class="hljs-keyword">if</span> answers[<span class="hljs-string">&quot;frustration&quot;</span>].confidence &gt;= <span class="hljs-number">0.7</span>
+        <span class="hljs-keyword">and</span> answers[<span class="hljs-string">&quot;frustration&quot;</span>].score &gt;= <span class="hljs-number">1.5</span>
+        <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;normal&quot;</span>
+    )
+    <span class="hljs-keyword">return</span> route_to_account_support(ticket, priority=priority)</code></pre></div>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建并托管，Mintlify 是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/state/"><span>上一篇</span><strong>State（上下文状态）</strong></a>
+    <a class="pager-link is-next" href="/docs/ai-primer/"><span>下一篇</span><strong>AI 入门</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#three-software-architectures">三种软件架构</a><a class="toc-link depth-2" href="#what-makes-system-one-composable">System One 可组合的原因</a><a class="toc-link depth-2" href="#design-a-system-one-workflow">设计一个 System One 工作流</a><a class="toc-link depth-2" href="#putting-it-all-together">整合到一起</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

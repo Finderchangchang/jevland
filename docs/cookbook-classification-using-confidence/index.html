@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>使用置信度进行分类 · JevLand</title>
+<meta name="description" content="用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-classification-using-confidence/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="使用置信度进行分类">
+<meta property="og:description" content="用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-classification-using-confidence/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="使用置信度进行分类">
+<meta name="twitter:description" content="用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"使用置信度进行分类","url":"https://jevland.com/docs/cookbook-classification-using-confidence/","inLanguage":"zh-CN","description":"用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link is-current" href="/docs/cookbook-classification-using-confidence/" aria-current="page">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link is-current" href="/docs/cookbook-classification-using-confidence/" aria-current="page">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>使用置信度进行分类</h1>
+        <p class="lead">用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/classification_using_confidence" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>每一家向 SEC 提交年报的公司都会在文件中描述自身业务。我们按照标准行业分类（Standard Industrial Classification）对这些描述进行归类：75 个行业组，每份文件对应一道 Choice 问题。</p>
+<p>大部分申报材料都很容易归类。区域性银行就是区域性银行。但有些则不然：一家公司刚刚出售了两个业务部门中的一个，或者一家初创公司描述的是它计划进入的业务，而非它正在经营的业务。模型无论如何都必须选出一个组，而困难案例的答案与简单案例的答案看起来毫无差别。区分这两类案例通常正是产生成本的环节：第二个模型、额外的调用、人工复核。</p>
+<p>Choice 已经自带这些信息。除了胜出的选项之外，它还会返回 <code>confidence</code>（置信度）：当几乎所有概率都集中到同一个选项上时置信度较高，而当概率分散在多个选项上时置信度较低。仅凭这一个数字，就能把可以信任的答案与不能信任的答案区分开。</p>
+<p>如何处理不可信的答案，取决于你的标签体系。SIC 标签构成一个层级：行业组向上汇总为更宽泛的行业门类。这让一次响应几乎不需要任何额外开销。当模型对行业组没有把握时，就报出它所属的行业门类。这个更宽泛的标签由较窄的标签自然得出，因此无需第二次调用。</p>
+<p>在 60 份申报材料中，置信度阈值为 0.9 将它们对半分开。置信度高的一半正确率为 90%；另一半则为 40%。如果向上汇报一级，那 40% 就会变成 70%。我们最终得到一个 <code>classify()</code> 函数，它返回一个标签及其具体程度，每个文件只需一次请求。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">mermaid</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">flowchart LR
+    doc[&quot;Item 1 &#39;Business&#39;&lt;br/&gt;from one 10-K&quot;]
+
+    subgraph request[&quot;one request&quot;]
+        q[&quot;Choice&lt;br/&gt;75 industry groups&quot;]
+    end
+
+    sure{&quot;confidence&lt;br/&gt;&amp;ge; 0.9?&quot;}
+    grp[&quot;report the industry group&lt;br/&gt;&lt;i&gt;e.g. 28&lt;/i&gt;&quot;]
+    div[&quot;report its division&lt;br/&gt;&lt;i&gt;e.g. manufacturing&lt;/i&gt;&quot;]
+
+    doc --&gt; request --&gt; sure
+    %% both branches leave the test, so they share a rank and stack on their own
+    sure -- &quot;yes&quot; --&gt; grp
+    sure -- &quot;no&quot; --&gt; div</code></pre></div>
+<h2 id="setup">环境配置</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install ipython matplotlib <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<p>接下来设置 <code>TYPESAFE_API_KEY</code>。每次 API 调用都会缓存到 <code>json_cache.json</code>，该文件随本示例一同发布，因此重新渲染时可以重放已发布的数字而无需调用 API。删除该文件即可重新实时运行所有内容。</p>
+<p>下面的数字来自 <code>jev-1.12</code>，于 2026-08-12 跑出。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> defaultdict
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+
+<span class="hljs-keyword">import</span> matplotlib
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, TypeSafeClient
+
+matplotlib.use(<span class="hljs-string">&quot;Agg&quot;</span>)  <span class="hljs-comment"># headless render</span>
+
+<span class="hljs-keyword">import</span> os  <span class="hljs-comment"># noqa: E402</span>
+
+TYPESAFE_MODEL = <span class="hljs-string">&quot;jev-1.12&quot;</span>
+CONFIDENT = <span class="hljs-number">0.9</span>  <span class="hljs-comment"># above this the group is reported; below it, the division</span>
+
+client = TypeSafeClient(
+    api_key=os.environ.get(
+        <span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>, <span class="hljs-string">&quot;cache-only&quot;</span>
+    ),  <span class="hljs-comment"># keyless kernels replay the cache</span>
+    base_url=os.environ.get(<span class="hljs-string">&quot;TYPESAFE_ENDPOINT&quot;</span>),
+    timeout=<span class="hljs-number">120.0</span>,
+)
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))</code></pre></div>
+<h2 id="build-the-two-levels-of-the-taxonomy">构建分类法的两个层级</h2>
+<p><code>sic_codes.tsv</code> 是 SEC 向申报人发布的行业清单，用于让他们选择自身代码，获取时间为 2026-08-10：共 444 个四位代码，每个都带有一个行业名称。这些数字本身构成一个层级。前两位是 <strong>大组（major group）</strong>（这里共 75 个，从 <code>01</code> 农业生产到 <code>99</code> 不可分类），固定范围的大组又组成十个 <strong>行业门类（division）</strong>，即 SIC 中最宽泛的划分。</p>
+<p>两个层级都来自这一个文件，不涉及任何模型：按前两位数字对代码分组，再将这些数字映射到行业门类。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">DIVISIONS = [
+    (<span class="hljs-number">1</span>, <span class="hljs-number">9</span>, <span class="hljs-string">&quot;agriculture, forestry and fishing&quot;</span>),
+    (<span class="hljs-number">10</span>, <span class="hljs-number">14</span>, <span class="hljs-string">&quot;mining&quot;</span>),
+    (<span class="hljs-number">15</span>, <span class="hljs-number">17</span>, <span class="hljs-string">&quot;construction&quot;</span>),
+    (<span class="hljs-number">20</span>, <span class="hljs-number">39</span>, <span class="hljs-string">&quot;manufacturing&quot;</span>),
+    (<span class="hljs-number">40</span>, <span class="hljs-number">49</span>, <span class="hljs-string">&quot;transportation, communications and utilities&quot;</span>),
+    (<span class="hljs-number">50</span>, <span class="hljs-number">51</span>, <span class="hljs-string">&quot;wholesale trade&quot;</span>),
+    (<span class="hljs-number">52</span>, <span class="hljs-number">59</span>, <span class="hljs-string">&quot;retail trade&quot;</span>),
+    (<span class="hljs-number">60</span>, <span class="hljs-number">67</span>, <span class="hljs-string">&quot;finance, insurance and real estate&quot;</span>),
+    (<span class="hljs-number">70</span>, <span class="hljs-number">89</span>, <span class="hljs-string">&quot;services&quot;</span>),
+    (<span class="hljs-number">91</span>, <span class="hljs-number">99</span>, <span class="hljs-string">&quot;public administration&quot;</span>),
+]
+
+INDUSTRIES: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>] = {}
+<span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> Path(<span class="hljs-string">&quot;sic_codes.tsv&quot;</span>).read_text().splitlines()[<span class="hljs-number">1</span>:]:
+    code, _office, title = line.split(<span class="hljs-string">&quot;\t&quot;</span>)
+    INDUSTRIES[code] = title.lower()
+
+GROUPS: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]] = defaultdict(<span class="hljs-built_in">list</span>)
+<span class="hljs-keyword">for</span> code <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(INDUSTRIES):
+    GROUPS[code[:<span class="hljs-number">2</span>]].append(code)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">division</span>(<span class="hljs-params">group: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    number = <span class="hljs-built_in">int</span>(group)
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">next</span>(name <span class="hljs-keyword">for</span> low, high, name <span class="hljs-keyword">in</span> DIVISIONS <span class="hljs-keyword">if</span> low &lt;= number &lt;= high)
+
+
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(INDUSTRIES)}</span> industries -&gt; <span class="hljs-subst">{<span class="hljs-built_in">len</span>(GROUPS)}</span> major groups -&gt; <span class="hljs-subst">{<span class="hljs-built_in">len</span>(DIVISIONS)}</span> divisions&quot;</span>
+)
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;  group 35 = <span class="hljs-subst">{division(<span class="hljs-string">&#x27;35&#x27;</span>)}</span> / <span class="hljs-subst">{<span class="hljs-string">&#x27;, &#x27;</span>.join(INDUSTRIES[c] <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> GROUPS[<span class="hljs-string">&#x27;35&#x27;</span>][:<span class="hljs-number">3</span>])}</span> ...&quot;</span>
+)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">444 industries -&gt; 75 major groups -&gt; 10 divisions
+  group 35 = manufacturing / engines &amp; turbines, farm machinery &amp; equipment, lawn &amp; garden tractors &amp; home lawn &amp; gardens equip ...</code></pre></div>
+<p>一道 Choice 问题需要对每个选项进行描述，而组自身的名称并不总是存在：75 个组中有 42 个在 SEC 的清单中带有总括名称，其余则没有。因此，每个组通过其内部所包含的行业来描述，而这正是阅读申报材料的人会去匹配的内容。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">MAX_NAMED = (
+    <span class="hljs-number">8</span>  <span class="hljs-comment"># industries listed per group; enough to characterise it without a wall of text</span>
+)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">describe</span>(<span class="hljs-params">group: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    umbrella = INDUSTRIES.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{group}</span>00&quot;</span>)
+    inside = [INDUSTRIES[c] <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> GROUPS[group] <span class="hljs-keyword">if</span> c != <span class="hljs-string">f&quot;<span class="hljs-subst">{group}</span>00&quot;</span>][:MAX_NAMED]
+    listed = <span class="hljs-string">&quot;; &quot;</span>.join(inside)
+    <span class="hljs-keyword">return</span> (
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{umbrella}</span> — includes: <span class="hljs-subst">{listed}</span>&quot;</span>
+        <span class="hljs-keyword">if</span> umbrella <span class="hljs-keyword">and</span> listed
+        <span class="hljs-keyword">else</span> (umbrella <span class="hljs-keyword">or</span> listed)
+    )
+
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;group 20: <span class="hljs-subst">{describe(<span class="hljs-string">&#x27;20&#x27;</span>)[:<span class="hljs-number">150</span>]}</span>&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\ngroup 65: <span class="hljs-subst">{describe(<span class="hljs-string">&#x27;65&#x27;</span>)[:<span class="hljs-number">150</span>]}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">group 20: food and kindred products — includes: meat packing plants; sausages &amp; other prepared meat products; poultry slaughtering and processing; dairy product
+
+group 65: real estate — includes: real estate operators (no developers) &amp; lessors; operators of nonresidential buildings; operators of apartment buildings; less</code></pre></div>
+<h2 id="the-filings">申报材料</h2>
+<p><code>filings.jsonl</code> 包含 60 份年报（10-K），每份都裁剪到第 1 项「Business」（业务描述），即公司描述自身业务的部分——这也是行业代码唯一相关的部分。它们横跨 1993–2024 年，字数从 700 到 2,200 不等。每份都附带申报人自己选择的 SIC 代码，以及在 EDGAR 上查询它的归档号。</p>
+<p>在任何准确率数字之前，标签的来源至关重要。它是自我报告的：无论是谁准备的文件，都曾经选过一次；而当公司出售了代码所指的业务并保留该代码时，它就会过时。这 60 份经过筛选，只保留自身文本能够支持其代码的文件，因此这里的数字衡量的是这个方法本身，而非 EDGAR 元数据的状态。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">FILINGS = [json.loads(line) <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> Path(<span class="hljs-string">&quot;filings.jsonl&quot;</span>).read_text().splitlines()]
+example = FILINGS[<span class="hljs-number">7</span>]
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(FILINGS)}</span> filings, <span class="hljs-subst">{<span class="hljs-built_in">sum</span>(f[<span class="hljs-string">&#x27;words&#x27;</span>] <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> FILINGS) // <span class="hljs-built_in">len</span>(FILINGS)}</span> words on average&quot;</span>
+)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\n<span class="hljs-subst">{example[<span class="hljs-string">&#x27;id&#x27;</span>]}</span> (filed <span class="hljs-subst">{example[<span class="hljs-string">&#x27;year&#x27;</span>]}</span>, accession <span class="hljs-subst">{example[<span class="hljs-string">&#x27;accession&#x27;</span>]}</span>):&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  <span class="hljs-subst">{example[<span class="hljs-string">&#x27;text&#x27;</span>][:<span class="hljs-number">230</span>]}</span>...&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  filer&#x27;s code: <span class="hljs-subst">{example[<span class="hljs-string">&#x27;sic&#x27;</span>]}</span> <span class="hljs-subst">{INDUSTRIES[example[<span class="hljs-string">&#x27;sic&#x27;</span>]]}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">60 filings, 1438 words on average
+
+1389870_2008 (filed 2008, accession 0001079974-09-000155):
+  Item 1. DESCRIPTION OF BUSINESS. NARRATIVE DESCRIPTION OF THE BUSINESS Across America Financial Services, Inc. is a corporation which was formed under the laws of the State of Colorado on December 1, 2005. Until March 23, 2007, we...
+  filer&#39;s code: 6163 loan brokers</code></pre></div>
+<h2 id="ask-one-choice-question-and-read-the-confidence">提出一道 Choice 问题，并读取置信度</h2>
+<p>一道 <code>Choice</code> 问题，其选项是 75 个组。整个分类法可以放进一次请求中：Choice 在大约 240 个选项以内都能可靠工作，而 75 个远在其范围内。</p>
+<p>返回的答案带有 <code>choice</code>（胜出的组）、<code>probabilities</code>（75 个选项各自的权重）以及 <code>confidence</code>（该分布的集中程度）。本方法读取的是 <code>confidence</code> 而非胜出选项自身的概率。胜出选项为 0.45、亚军为 0.44，与胜出选项为 0.45、其余权重零散分布，是两种不同的局面；而 <code>confidence</code> 正是将它们区分开的指标。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">QUESTION = (
+    <span class="hljs-string">&quot;Which broad industry does this company operate in? Judge the company&#x27;s own operations &quot;</span>
+    <span class="hljs-string">&quot;as this filing describes them.&quot;</span>
+)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">questions</span>() -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;group&quot;</span>: Choice(
+            instructions=QUESTION,
+            criteria={group: describe(group) <span class="hljs-keyword">for</span> group <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(GROUPS)},
+        )
+    }
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">ask</span>(<span class="hljs-params">filing_id: <span class="hljs-built_in">str</span>, text: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    response = client.system_one(
+        state=text, questions=questions(), model=TYPESAFE_MODEL
+    )
+    answer = response.answers[<span class="hljs-string">&quot;group&quot;</span>]
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;group&quot;</span>: answer.choice,
+        <span class="hljs-string">&quot;confidence&quot;</span>: answer.confidence,
+        <span class="hljs-string">&quot;probabilities&quot;</span>: <span class="hljs-built_in">dict</span>(answer.probabilities),
+    }</code></pre></div>
+<h2 id="return-the-group-when-sure-its-division-when-not">确定时返回行业组，不确定时返回其门类</h2>
+<p>下面这四行就是全部要点。置信度达到 0.9 及以上时，答案以行业组（industry group）形式给出；低于 0.9 时，同一份答案会以该行业组所属的门类（division）形式给出。</p>
+<p>每份申报文件依然会带有一个可用的标签回来。模型无法有把握地分类的那些，会沿层级上升一级返回，而不是被丢弃或转走。如果门类对你的应用来说粒度太粗，那就把这条分支上的任务交给人工处理。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">classify</span>(<span class="hljs-params">filing: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    answer = ask(filing[<span class="hljs-string">&quot;id&quot;</span>], filing[<span class="hljs-string">&quot;text&quot;</span>])
+    sure = answer[<span class="hljs-string">&quot;confidence&quot;</span>] &gt;= CONFIDENT
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;level&quot;</span>: <span class="hljs-string">&quot;group&quot;</span> <span class="hljs-keyword">if</span> sure <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;division&quot;</span>,
+        <span class="hljs-string">&quot;label&quot;</span>: answer[<span class="hljs-string">&quot;group&quot;</span>] <span class="hljs-keyword">if</span> sure <span class="hljs-keyword">else</span> division(answer[<span class="hljs-string">&quot;group&quot;</span>]),
+        <span class="hljs-string">&quot;confidence&quot;</span>: answer[<span class="hljs-string">&quot;confidence&quot;</span>],
+        <span class="hljs-string">&quot;group&quot;</span>: answer[<span class="hljs-string">&quot;group&quot;</span>],
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">show</span>(<span class="hljs-params">filing: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-literal">None</span>:
+    result = classify(filing)
+    named = describe(result[<span class="hljs-string">&quot;group&quot;</span>]).split(<span class="hljs-string">&quot; — &quot;</span>)[<span class="hljs-number">0</span>][:<span class="hljs-number">46</span>]
+    <span class="hljs-built_in">print</span>(
+        <span class="hljs-string">f&quot;  <span class="hljs-subst">{filing[<span class="hljs-string">&#x27;id&#x27;</span>]:&gt;<span class="hljs-number">13</span>}</span>  conf <span class="hljs-subst">{result[<span class="hljs-string">&#x27;confidence&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>  -&gt; <span class="hljs-subst">{result[<span class="hljs-string">&#x27;level&#x27;</span>]:&lt;<span class="hljs-number">8</span>}</span> &quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{result[<span class="hljs-string">&#x27;label&#x27;</span>]:&lt;<span class="hljs-number">14</span>}</span> (group <span class="hljs-subst">{result[<span class="hljs-string">&#x27;group&#x27;</span>]}</span>: <span class="hljs-subst">{named}</span>)&quot;</span>
+    )
+
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;three filings the model was sure about:&quot;</span>)
+<span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(FILINGS, key=<span class="hljs-keyword">lambda</span> f: -ask(f[<span class="hljs-string">&quot;id&quot;</span>], f[<span class="hljs-string">&quot;text&quot;</span>])[<span class="hljs-string">&quot;confidence&quot;</span>])[:<span class="hljs-number">3</span>]:
+    show(f)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nthree it was not:&quot;</span>)
+<span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(FILINGS, key=<span class="hljs-keyword">lambda</span> f: ask(f[<span class="hljs-string">&quot;id&quot;</span>], f[<span class="hljs-string">&quot;text&quot;</span>])[<span class="hljs-string">&quot;confidence&quot;</span>])[:<span class="hljs-number">3</span>]:
+    show(f)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">three filings the model was sure about:
+    310158_1996  conf 1.00  -&gt; group    28             (group 28: chemicals &amp; allied products)
+     33416_1998  conf 1.00  -&gt; group    63             (group 63: life insurance; accident &amp; health insurance; h)
+    352541_1996  conf 1.00  -&gt; group    49             (group 49: electric, gas &amp; sanitary services)
+
+three it was not:
+   1372167_2013  conf 0.22  -&gt; division manufacturing  (group 38: search, detection, navagation, guidance, aeron)
+   1398633_2009  conf 0.23  -&gt; division wholesale trade (group 50: wholesale-durable goods)
+     46653_1999  conf 0.29  -&gt; division services       (group 87: services-engineering, accounting, research, ma)</code></pre></div>
+<p>置信度与每份文件的分类难度相对应。置信度为 1.00 的三份分别来自一家制药商、一家人寿保险公司和一家公用事业公司；三家在文件上都只是控股公司，但每一家都有一项占主导的业务，文件中也直接点明。底部那三份更难，难度原因在文件正文中就能读到：两家是处于开发阶段的公司，描述的是它们打算开展的业务（Nevaeh「intends to operate as a software developer」，Barricode「organized to enter into the computer security software industry」），第三家有两个分部，并在提交申报前几周出售了其中一个。这三份返回的是门类，而不是行业组。</p>
+<p><code>classify()</code> 就是全部要点。把 <code>ask()</code> 指向你自己的文档，为你自己的分类体系重写 <code>describe()</code>，其余部分可以直接沿用。</p>
+<h2 id="what-the-broader-answer-buys">更宽泛的答案能带来什么</h2>
+<p>全部 60 份文件，以每家申报人选定的 SIC 编码为基准，对两种策略分别打分：始终给出行业组，或者仅在置信度低于 0.9 时给出门类。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">correct</span>(<span class="hljs-params">filing: <span class="hljs-built_in">dict</span>, result: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">bool</span>:
+    gold_group = filing[<span class="hljs-string">&quot;sic&quot;</span>][:<span class="hljs-number">2</span>]
+    <span class="hljs-keyword">if</span> result[<span class="hljs-string">&quot;level&quot;</span>] == <span class="hljs-string">&quot;group&quot;</span>:
+        <span class="hljs-keyword">return</span> result[<span class="hljs-string">&quot;label&quot;</span>] == gold_group
+    <span class="hljs-keyword">return</span> result[<span class="hljs-string">&quot;label&quot;</span>] == division(gold_group)
+
+
+results = [(f, classify(f)) <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> FILINGS]
+sure = [(f, r) <span class="hljs-keyword">for</span> f, r <span class="hljs-keyword">in</span> results <span class="hljs-keyword">if</span> r[<span class="hljs-string">&quot;level&quot;</span>] == <span class="hljs-string">&quot;group&quot;</span>]
+unsure = [(f, r) <span class="hljs-keyword">for</span> f, r <span class="hljs-keyword">in</span> results <span class="hljs-keyword">if</span> r[<span class="hljs-string">&quot;level&quot;</span>] == <span class="hljs-string">&quot;division&quot;</span>]
+
+forced = <span class="hljs-built_in">sum</span>(r[<span class="hljs-string">&quot;group&quot;</span>] == f[<span class="hljs-string">&quot;sic&quot;</span>][:<span class="hljs-number">2</span>] <span class="hljs-keyword">for</span> f, r <span class="hljs-keyword">in</span> results)
+broadened = <span class="hljs-built_in">sum</span>(correct(f, r) <span class="hljs-keyword">for</span> f, r <span class="hljs-keyword">in</span> results)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;forced to name a group every time      <span class="hljs-subst">{forced}</span>/<span class="hljs-subst">{<span class="hljs-built_in">len</span>(results)}</span> right&quot;</span>)
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;  of those, the <span class="hljs-subst">{<span class="hljs-built_in">len</span>(sure)}</span> it was sure about  &quot;</span>
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">sum</span>(r[<span class="hljs-string">&#x27;group&#x27;</span>] == f[<span class="hljs-string">&#x27;sic&#x27;</span>][:<span class="hljs-number">2</span>] <span class="hljs-keyword">for</span> f, r <span class="hljs-keyword">in</span> sure)}</span>/<span class="hljs-subst">{<span class="hljs-built_in">len</span>(sure)}</span> right&quot;</span>
+)
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;  and the <span class="hljs-subst">{<span class="hljs-built_in">len</span>(unsure)}</span> it was not           &quot;</span>
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">sum</span>(r[<span class="hljs-string">&#x27;group&#x27;</span>] == f[<span class="hljs-string">&#x27;sic&#x27;</span>][:<span class="hljs-number">2</span>] <span class="hljs-keyword">for</span> f, r <span class="hljs-keyword">in</span> unsure)}</span>/<span class="hljs-subst">{<span class="hljs-built_in">len</span>(unsure)}</span> right&quot;</span>
+)
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;\nletting it answer coarsely when unsure  <span class="hljs-subst">{broadened}</span>/<span class="hljs-subst">{<span class="hljs-built_in">len</span>(results)}</span> useful answers&quot;</span>
+)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">forced to name a group every time      39/60 right
+  of those, the 30 it was sure about  27/30 right
+  and the 30 it was not           12/30 right
+
+letting it answer coarsely when unsure  48/60 useful answers</code></pre></div>
+<p>在模型有把握的地方，它给出的行业组九成是对的。在它没把握的地方，给出行业组的正确率只有 40%，错的比对的还多。而把这些答案换算成门类，正确率就能提到 70%。</p>
+<p>图表把两种策略并排展示，并按模型是否有把握分组。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">labels = [<span class="hljs-string">&quot;sure\n(group reported)&quot;</span>, <span class="hljs-string">&quot;unsure\n(division reported)&quot;</span>]
+forced_split = [
+    <span class="hljs-built_in">sum</span>(r[<span class="hljs-string">&quot;group&quot;</span>] == f[<span class="hljs-string">&quot;sic&quot;</span>][:<span class="hljs-number">2</span>] <span class="hljs-keyword">for</span> f, r <span class="hljs-keyword">in</span> sure) / <span class="hljs-built_in">len</span>(sure),
+    <span class="hljs-built_in">sum</span>(r[<span class="hljs-string">&quot;group&quot;</span>] == f[<span class="hljs-string">&quot;sic&quot;</span>][:<span class="hljs-number">2</span>] <span class="hljs-keyword">for</span> f, r <span class="hljs-keyword">in</span> unsure) / <span class="hljs-built_in">len</span>(unsure),
+]
+broad_split = [
+    <span class="hljs-built_in">sum</span>(correct(f, r) <span class="hljs-keyword">for</span> f, r <span class="hljs-keyword">in</span> sure) / <span class="hljs-built_in">len</span>(sure),
+    <span class="hljs-built_in">sum</span>(correct(f, r) <span class="hljs-keyword">for</span> f, r <span class="hljs-keyword">in</span> unsure) / <span class="hljs-built_in">len</span>(unsure),
+]
+
+fig, ax = plt.subplots(figsize=(<span class="hljs-number">7</span>, <span class="hljs-number">3.6</span>))
+x = <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(labels))
+ax.bar(
+    [i - <span class="hljs-number">0.19</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> x],
+    forced_split,
+    <span class="hljs-number">0.38</span>,
+    label=<span class="hljs-string">&quot;always name a group&quot;</span>,
+    color=<span class="hljs-string">&quot;#c8ccd4&quot;</span>,
+)
+ax.bar(
+    [i + <span class="hljs-number">0.19</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> x],
+    broad_split,
+    <span class="hljs-number">0.38</span>,
+    label=<span class="hljs-string">&quot;answer broadly when unsure&quot;</span>,
+    color=<span class="hljs-string">&quot;#3b6ea5&quot;</span>,
+)
+<span class="hljs-keyword">for</span> i, (a, b) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(<span class="hljs-built_in">zip</span>(forced_split, broad_split)):
+    ax.text(i - <span class="hljs-number">0.19</span>, a + <span class="hljs-number">0.02</span>, <span class="hljs-string">f&quot;<span class="hljs-subst">{a:<span class="hljs-number">.0</span>%}</span>&quot;</span>, ha=<span class="hljs-string">&quot;center&quot;</span>, fontsize=<span class="hljs-number">9</span>)
+    ax.text(i + <span class="hljs-number">0.19</span>, b + <span class="hljs-number">0.02</span>, <span class="hljs-string">f&quot;<span class="hljs-subst">{b:<span class="hljs-number">.0</span>%}</span>&quot;</span>, ha=<span class="hljs-string">&quot;center&quot;</span>, fontsize=<span class="hljs-number">9</span>)
+ax.set_xticks(<span class="hljs-built_in">list</span>(x))
+ax.set_xticklabels(
+    [<span class="hljs-string">f&quot;<span class="hljs-subst">{lab}</span>\nn=<span class="hljs-subst">{n}</span>&quot;</span> <span class="hljs-keyword">for</span> lab, n <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(labels, [<span class="hljs-built_in">len</span>(sure), <span class="hljs-built_in">len</span>(unsure)])]
+)
+ax.set_ylabel(<span class="hljs-string">&quot;labels that are right&quot;</span>)
+ax.set_ylim(<span class="hljs-number">0</span>, <span class="hljs-number">1.12</span>)
+ax.set_title(<span class="hljs-string">&quot;Where the broader answer helps: the filings it was unsure about&quot;</span>)
+ax.legend(frameon=<span class="hljs-literal">False</span>, loc=<span class="hljs-string">&quot;upper right&quot;</span>)
+ax.spines[[<span class="hljs-string">&quot;top&quot;</span>, <span class="hljs-string">&quot;right&quot;</span>]].set_visible(<span class="hljs-literal">False</span>)
+plt.tight_layout()
+display(fig)</code></pre></div>
+<img src="https://mintcdn.com/ts-docs/teQYilPCKt0TpDJJ/cookbooks/classification_using_confidence/classification_using_confidence.executed.1.png?fit=max&auto=format&n=teQYilPCKt0TpDJJ&q=85&s=e75ad9c2e17cae7094f30cd0cbb36f53" alt="输出图像" width="1034" height="523" data-path="cookbooks/classification_using_confidence/classification_using_confidence.executed.1.png" />
+
+<h2 id="open-it-in-the-playground">在 playground 中打开</h2>
+<p>这个分享链接包含一份文件以及那道有 75 个选项的问题，你不用写任何代码就能看到分布情况和模型给出的置信度。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">playground_link = make_playground_link(
+    example[<span class="hljs-string">&quot;text&quot;</span>], questions(), models=[TYPESAFE_MODEL]
+)
+display(
+    Markdown(
+        <span class="hljs-string">f&quot;🔗 [Open the filing + question in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>
+    )
+)</code></pre></div>
+<p>[在 TypeSafe playground 中打开该文件与这道问题 →](<a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIAkignPgIwB0+AIgKIDKAwgEpEAKaRA8gHL4eAMXwAhAKqMifJoxp8Agq1YLuANXp0mbTt36CRaABKaJUmY0b4FUAE4QAzg+uJbASygBDfELdJPSFBungA2+IwItgBuHggOADT4RIE0bs7eUBC2AA5ZnihuEEj4AO4AFh5lpZ7OAGZZiGD4MEhgkfgoZQj4IZ4lzhC1HV3hKPndg-jMECF5kPhFdAhQZABG7RSJAEwADDsArDTiqG5hALKetlBVWwDM23sA7Ikl3a+23d7lMyEAngC0EBKSAQTQcMFWDjcYGCtl+CyGzE82VItls3l8-kCwTCAHF7DBsolklAqIl6rZXH98ABrJBA4o1ax2RzOBSuDzeVgIUL4egOMakKZZbJUAAUgBwCZgKLiAXAIAJQ0HjFABSARgl3hFB2Dx2z2G3RhHygKCyA0RMrQ+GR2XsUVBiXBqwAVssUB0IAb8AharU3W57SCnAjrfgPgBzNIodEFRYlNydL0RWDuApxa2tPmYa4BcPdaZwOBpKFFRKdbq2z0x7wObJ+QG+kM2ezB9mRTk+PwBIK8iLRWIJJIpfBizHdnHhSIxFYOeUeqaW-AOMqXBBlGZtWzmsPLLJNRYXK5VTb4XZ6haM-CVsP5byrGppGiMPwrBdcQCYBM5VjAoUHnGkd16UgmlNL1K1yBxQWtE0AwTNx00mMdsV7KcBy9aUuHwI03TNLDlmhKCE2qf9inLfB1gFfA-FROJ3UmDCrQCJokJ7MI+2ndMmLfNBPyXFcPnXEJN2cUDa3rQYhhYid2LQ0CiyQNwiwAL0+JB4VyUgTl5SZMiQWoQg8OihmoyJaJoNARmXVdtyklD+xnUpTIWYEoNWeEGJedcsKjdxv2A0NTTGMJJk2AAObV4gAFkeAA2PjrPnMiGPigSN0iAZiiya1VggGB3UPa5T3uU8niVVV1U1Sgtl1fUAgWWxwwCNwlPyQpin8Rpwk8P18CMS4ctsJJEgAGWG5gyXwCkqXhOkGWtZxGG67o+tsAaxB-Pw4mcWgEHtWZskQVBhTgbIAnhSVFp6laBoVTzKio9JfVOYJ-PjRNcsG3oGtolK1zS2xElxWhRAUId7QFQ6UEHUbmESTxww+KDQMrGI2gWbJIlapBw3wLw6yCqjSJGKaQ28WY6smAASLZ9h1PYdnnTJ7UGiAMZjPwcawDGkEghxzIqZxyeKEomTAGAJnKpANThKqHm1GgjCBXbIkSH0-Rg+1BBNCB1kGigYt1UKXgrTxoQRIYyNtF83FOsIuM8KA7HFpoTI+SixYlhYYE+iA6tAy7lv6rKdr21nIeO061Lh9InDccMQRAz0A96oO9ZGsaaAUd0yIcTxEA6RSEGN71UFMl3UE9MnfcZNFczIZB3TeqoAHUfrOXLUFN4oOHcRB0-Gu7CoA7rame8Ymibr3Bp7uICNQRIzlsGgAGkQjIBwlJoVvyKyexXiaSmKFuar6cm+xyFbyj25aMY-HwHvC-7+cUYI9HMYKbHceRBNeVApn2lZu-Dm3pMDc15vzACQsHrelRsgFYTQ3IZmaDzZY3soKViLE4LI8J6RCjFGRCUfAICkAVKUCoQ9nD0hKFhcWWtTS60oAbEqOwACciQWhr2DLpZmwFM4hDCFbbEtsMzlxopRB2Tt0w31OF6IhQoAIe3qrjIoPDQT80+NkbIBkvCrDXoTMR7oYyezInI7oAEKBbAAKRXnaAEKW5AsArBRITL0ysjqdHyI5Sapswh-xUZEd0Z0rxZFjJlC2IxBFBGEVxU68IyKux+oou+5R7peEgl6G02jPC6O6EYi8sjiHdCsvwg0HxuqonIt0CgoVrFswzPYzOgS1IF3zlbLKoEyKKLAOMEMJjClwxKblKGYxWjAMiTbXkLRNwFKFHATwvw4bZ0sjMCYKI2q9JGIrISKtKnKKQKo0RnoPrKMLIsKybtvQAEcNS+M9GRIZAomJjPcEI3kecO5GS9Lgw0sE2gIPhFQLYWwaD-HwLcfAoKOCsB4BwHgjB6C0EEBwegKg9B8CsNvVcoY2ihwOg3JcYw8wnMjr8JU3s8K4vDo8ol6xGrCy6MLDRKMoLHO-L+LaV5eiZWKEQ+0cAGFsOYTFMlg0tF1RFiJSuJp5qhjgCExqNL7A0naBSE5rhWI7l5LRHp0YAi5xgkUPmggeUQD5Qwig+ozxGy8Q3Mu+jK7FAUAjBA9cjqTDOJEPMg0uIcC5SGbkWQ6XNVanGBMVQZTQrEIUe+-E5krDypyMI0wch5FCSOCNPB5RwyvO4KIPTpizHRPMTIKb2aljIaZRBxzvj8IBAyKCTooQwk1IkZsrIXDti8Mya5aQ4KLGTaKF4uUhL4FcESyeGaXhhusFCnglTgE529jEGIn8G4JlJTOyNJRh0gQZZUzI+dq2CT+ICFyYIIRNthBu8QuRihQFmL+HGZEx07NeKUHdD1wSfA9ATEKRtqlsMijFLYv1JVegzb9QSwkXGOJXNjboqrQjBXCQgNwet-2hUA8Bz9zsRFe2GU8z+5y4hlVDLUGAtbEgwhCHlVyD5BxkQg8RqD6V30Uf3MCAKxDtJDF2PECgQH4gsOw8R7cBYSXHTlcURgpooA0kzukHc4IQifM6ABXVPMHahOLtu9j+AVya28IFHj1pNH2EwIpcY1I7ijtOAZM5-EEKIggKc6TsmaQ4aglxB5IyYTYyOLer097HDAMmM+z1Oz7lPRWFuPD2FtaxcmBB3TI71gHomOSiSsRYtcXi6aLcIqlwrPNtluLaGcIA3wIvFea84AbyHXpt2cdihq39IZpZ3QCiHqGMFx96iTmrE2k0A9EmUv7jZj0qZ7QyIdW6AoJSpBCqiEKA4IIcCi5DlJIkLKDgXOGnbHmtN5YPiDH6710L4T1Pok0wa4oAEnSumlX-AJXc9kfzzNiOI0dR1ZAQxR6kMJVs-kguXcDzrXWfI9d9b1mZfUUyGAGhqTUWrabw2RD4PaPjh0mJ4GAMJ-KjyxBqx5pBIZ1HPpungAyig40nmRG0doTNkQ0-qtNiCc6OZY4loYEGuJJRcySzOs7oFkW0cgSCEwhijzXggvK+BcH4F+Agd0xZcOnU0lDQC49GYC5C2myYcyUAVK4ogToEB9xDB-Ah9pZT3vkS0+2Xkfh1ZppfDRvzON7wmkdwIkE8AijBDLBCSIsAH3D0zAETo6JMCExd21I1EGVzpBCLtnosQUFNDqlgKMYzxhHVVcz232OhgxHRGEZ3-pFhu7x8AowRA1DEj0jR5ALU8MaTXUhuJIwJSDdsE0fSMBZT4FLz+IXkaxU83nA7THqkmg4oQPtEBOfP5cXpHtUp390wePdF4YocrNZR9yuGKo96-CJo6O4UIzge1yb+I6Lo2Quh94XV0cgh+YDH69EIWgoMGemt5JWDOLzHhp4GAHmtiJ-OWG-mUASJ-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-hZiUdZuCsifZsUIE-RC5lJqMD055qk-hhkx7v1qgy6tju4JGP4GaRiUjCuCro3B+qiPJD0osEIHHbYNLFqPWXsCwlREMN4MwGHp-E4c2XRI7L6WANGYg4RBXEgnnJxVBAcxDvOFgJpLup1pEHc2mrYZ1p6AVMeG86wi4mKq+GFiMOiyGI8-QS85QDi07RA1ixS7qIKgg6XEg-aqGGnUUJnodH8tYODuHKBAi5xV6Lc12Gizqpi-VVUHWXS3i70ASyhlhPc0MDSxQJSzQMkIRcFHOW7BjCaKU3Nty-iu6pg3hjg-6ggPgwpCjusljl3HafmVE1cLPt6L6G6CCvgPsBCiAIkCABgiiA4BgNgHgIQMAAADogAIy5TZAhsEDBsgBSkYyRv4AhvXAQCxAhuJAhui3RjYn53xshvNzkJVD0G+zlxiwCgyyQBb7CkjZBJNHyJIAAD8+AKoeORKZEVbakMdzkmUE2+dMqamdQz0n8bQq2vkFbZAVAqbCbIAdgZhl+8b0bOwFAObIA8MFJgz3sAB9gYst2-wLI2QDgE7IbOwWwS7K7Hga7ZeOa5u-wBkOdmzAAZBmJZmEGLTiETQeyAHqCewjGeypuu8+6hDOO+zsKFEuxSLRHCEBywqB2kBbeGIkGUNIivpmLqpohzO+9qEu6bu7Wfp-IACgEhM96eOcQBA-lI6UNpwZVv2DgAA3LZqtgvlyqaxEVh8FG7Oh8ewGyG4NvMfJAicoryA+wZPHAnfJBzLR9x-AH4Hx5kAJ2nsJ0KEeVMd0KJ9jOh7cEu07GjBjNGCsvAPgA++oX+0yTULR2AO4PPZ-Mm2EA+41LHfwjRwsDIjZ0yKPAvk0FzIWrzZGTOLR1Z-p8Z-2250uAB19vLssOh5FJhzhzjA+8fXCBds2UFSpfPVALZiCGXs4GKC4eRgvrOOh-sEux9pjGELomADjOXeiAls4KCk1m0FpCV0JB2b5927RSKQIelLR0Vxe6V+V0ULqlVz2fSEgLVx3g12V-ux65O-rEu4fVEPCLpKW1m+spjdNnBuRI13spRKChV3UbFvh9XkOwQCLKiI6AgO8IkHWBjAZCCIkPAf57kO8GniCJt5m7duh48Bp4aq92mqCi+7-EWo5X15V7SfgPt4EO7sR96P7dGOfturYDSO+7sKBxAObnhjSH4GZ+gpu1m84GD4R4d0o54gtej5-BPlDLR7nD+A8c4A+yt6Kh8EXVBGHe6JWFu+T8EoMzLA4L0B-mUBMUh00IAVtGJ3K2hupNj9q7R7ELjGUuQA+7UPYCpMUEO7iez7vgnOSIr8gPd+0dEP3s8wmIkPaDF1E6j39ypurbR+rw6GfBPVDEbwgHBzmnEFOKF86HnDT-gK6PPXEJ1+iHfIs5e2zxN2myAFsIu5xzGzrBIp6Kzzj6DwRxDw4AQEEI1AoaSYjxxwQCG6QNgKcMp3ZkH-H3j0nwQIW6AduoGN4vQR4LZvZ7d8QlbeJ-YBXwFcULUTX6l4s4ODheaWjKPAwg+1CCEDSLR3SAmHbt32PwpFaaiK8JcHXynlb5cNp5788x2Yj+p5HzaKuNZwsHOYTjB4L5u9uB3xSZ70iacAv4bmECX0R8n0o0gB2w+zlL8A4FHZNN7ApMuB2UOvD7jLME6BO8H2SGeCE0DT5k5aO26Q6DHUSCU04gUddGk0GdAtBCgiWWjLYHn62AoBe2J-j32LAIDbuFQISPgWf6x5I87-ZBJuAgENwHOmCFYPwgCBMc6g2SCktrlz4FAJCEvKGIj0i6R8aMmFfztulR5x9tWI4bLl-wTBoI5wd-AnrnBKDd97uXKSfnZkHBddQgtHRZsIKkLD5kALqSrFol+DaDEgQ-b7kZ20FKNMKdAnWPn30x7YHOtoH0KwM5CvQUeCCRrp7xGzb1UAIfSdjTBm4Ik-oI6cjLYBn5oIcBqPdcFbigyf9QhUgj4IkCy6ehCQgkAUGXHlC+dosf2OIfMQ+CZCu62QsITgSSHvpzcGQuWrolr49d-OCFbXCEKKEIBaORdGkvHnvwL4ogTvZuh5UHC08sh-nAULyVHjYA0EdAtIAwMY58d6h8Q7oPLzcDDC2Ok3ENlsBihLtTobMT3qAKx7m5i+ife-gQGyAUZsgi-BwciHaBT8rwpw1aJRV4qqCmhlwnKDxTexdxWML-CAJgF957IDkFwupA+zWGRAHhVFVnplyDJ9cmBW4AAPRyE4g5QsVAKA8CDh6gTnfjv5D+GDR7wG-RYWHw+6R8QQ-QVEQ-wOGVDlwoWUVPLRg7AJfhLyd7E0PbDm5E0BIskcSMs6kiiRsHHXtRBF45R3KDI1kSSIqEGQmRJvQRNSJ3juUc0HI7GJoLGEMcmBfHQkQKNg5W81mLBDdhKPDCaCmo9QVLG+RAp1Y-eLqO3F4D7y+ClhIHSPtcDID0j-Omw4-tsLEGyDIeGPH8DDydz0gkcQdXGK-npFNDegcIrvsMVCCOhfgqAKoE1iQDgjnmqwXWLdwY4UZHA4gz0OGF9GzgfRNQAoP6ImJX4gxIYpTKLX85DcogFGUugvjTF7Ytwmg0EB4C7DMUvRwdT3jlBGTn5RB7PR-JcDjSUN0xG7OGpcDCpS9igMQHTv5zvjLobCwQeOI4HTFCMMmPnciIUHbJNjuBg4EoYDnHF+ipxIyGcOUN2zIgqMyuCLD4Nu5rxcwzvIumFQu6RByMiAQcJkAcCm54RiPKDpH2072A14enD4If0lHzRWxKmC4SuhN72BBgwCN2kvzo7jDZRERZsduGfG6c5e-HEIO+1vpLsCgFyB9n4HS4dBg8DnSMYP05Rpj4RpvFAFgM641BLSiNB2DSBN6QRQgOMHFGhAfbYT2gvw30emOcDrhIItHM-i4KggMT6edo+3mFygBSj6OjAkEHKOYn4TIJtHFoOCE0QhJ0E4kqAP2xCCwTlwBo1MX6LDJ5wi+kvXCRpO0n8TwKCEiPtnxABHi5ygnHkHOUgkJ8DukPeoMQiwGJCXCPE+UAhKz6Tt9IniJMTUAc7eTgwNnZMSLASHO8nALKNEbMGBCddkxTwzaOWKZLRTIJcA0ApLjlpHgagUEPyQ52rINx4OvwMzrjm0QU8zBF7e9PMn0kODG+kQeEPRJLEojFxSowIAoQ2zBE92enJiWmPaCQSEJW-EyWkIXzvp4eg4XRGmNiH+AHI9En4BSNZLf82R5wvqWEDh40ghpzE0aRQzX6TTP4igsUJkGVQLBAwKYglC6gESJF-O8xCiFL0Dr9DSA-U+oFMmUoODe4lUW8Qvjtw1SPxOMSYENyVoEhnALHB6ZZhljNjluXzAQX4HgAU9dwrQJ6YgAt6fw3p0XEMF9MiA-SlGQULCRtJolFEppCLZ5piU+lFBvpfHP6QhL4EmSWOMZOgclz4g2w6wn8e8GiFy5UZnmdWRIMqg7L3cfEWUvKGvFEb6YmIpoGYJ73UEMkeKQUxofpksnAIEAPaIkCAicTugF8ywIQW2OtBoZaOTE+AINk-hDDchHww+nbmlkT08U88OWXDQVnQ8KSysykKrOeJf81pHE5wS3QbTFT3aVMySajN5CQAzQjoc2pryhY98NwHMT3jDzgAOzO+2uMVEKEWkjgco+fQaMuFZh5dMRtwArpH2QAnN0wD7XIVrI+G1FrZcaC2lVP86GybYkMWjgdWKDOc+82vfriDwfbrh84Fc-zmnzq7OAS52QBqYt1uxwCEZD7YCaxKYjXccYBc2KdVKuRGzO333dZCPPS5jz25UohSJtIdiFyZYD7duQmMc579bOrJILgXOLkyzyhfnZzoFxHQzyi5a8mWWXMJglsXRviZ5nJgYzA9vZF+HxLhFMHkT0oCElYWnItkB5UutPOcorIDrn5254cEoSNgwHjybYMg3YQTwe47JAcMPPyOsiH5atX2cSH4lNA65Lg3o1wPMAvyH64KygAIzPJoh7HzEHOQCmHtQydGlsJwO-GMD+E0HEI35TJPQTGDNC0cohkEGIZkmCDWVKFFs2vtwrO4JR5eeqWjlQstlCc+eU0+MC8k5iXyG4XCwIbwpryegH2sCCckotQAITsRZMlhYNHtDkJOEHM0KfBkGhGid4MID4a9w8wv8IiOUGxdYNzrGKPAEhcGhsONJYJ7ptHOxS-LjkuKsoDcj4abCuDohag7oX4Z4to5hK7A5SWJWhniWRKS4Gcz3unM2gXCEaCEs0b1J5BHhdxi2VHP4DzSNRUc8ZaEN2A2yeB4S-gKhryAcBv9y52" target="_blank" rel="noopener noreferrer">https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIAkignPgIwB0+AIgKIDKAwgEpEAKaRA8gHL4eAMXwAhAKqMifJoxp8Agq1YLuANXp0mbTt36CRaABKaJUmY0b4FUAE4QAzg+uJbASygBDfELdJPSFBungA2+IwItgBuHggOADT4RIE0bs7eUBC2AA5ZnihuEEj4AO4AFh5lpZ7OAGZZiGD4MEhgkfgoZQj4IZ4lzhC1HV3hKPndg-jMECF5kPhFdAhQZABG7RSJAEwADDsArDTiqG5hALKetlBVWwDM23sA7Ikl3a+23d7lMyEAngC0EBKSAQTQcMFWDjcYGCtl+CyGzE82VItls3l8-kCwTCAHF7DBsolklAqIl6rZXH98ABrJBA4o1ax2RzOBSuDzeVgIUL4egOMakKZZbJUAAUgBwCZgKLiAXAIAJQ0HjFABSARgl3hFB2Dx2z2G3RhHygKCyA0RMrQ+GR2XsUVBiXBqwAVssUB0IAb8AharU3W57SCnAjrfgPgBzNIodEFRYlNydL0RWDuApxa2tPmYa4BcPdaZwOBpKFFRKdbq2z0x7wObJ+QG+kM2ezB9mRTk+PwBIK8iLRWIJJIpfBizHdnHhSIxFYOeUeqaW-AOMqXBBlGZtWzmsPLLJNRYXK5VTb4XZ6haM-CVsP5byrGppGiMPwrBdcQCYBM5VjAoUHnGkd16UgmlNL1K1yBxQWtE0AwTNx00mMdsV7KcBy9aUuHwI03TNLDlmhKCE2qf9inLfB1gFfA-FROJ3UmDCrQCJokJ7MI+2ndMmLfNBPyXFcPnXEJN2cUDa3rQYhhYid2LQ0CiyQNwiwAL0+JB4VyUgTl5SZMiQWoQg8OihmoyJaJoNARmXVdtyklD+xnUpTIWYEoNWeEGJedcsKjdxv2A0NTTGMJJk2AAObV4gAFkeAA2PjrPnMiGPigSN0iAZiiya1VggGB3UPa5T3uU8niVVV1U1Sgtl1fUAgWWxwwCNwlPyQpin8Rpwk8P18CMS4ctsJJEgAGWG5gyXwCkqXhOkGWtZxGG67o+tsAaxB-Pw4mcWgEHtWZskQVBhTgbIAnhSVFp6laBoVTzKio9JfVOYJ-PjRNcsG3oGtolK1zS2xElxWhRAUId7QFQ6UEHUbmESTxww+KDQMrGI2gWbJIlapBw3wLw6yCqjSJGKaQ28WY6smAASLZ9h1PYdnnTJ7UGiAMZjPwcawDGkEghxzIqZxyeKEomTAGAJnKpANThKqHm1GgjCBXbIkSH0-Rg+1BBNCB1kGigYt1UKXgrTxoQRIYyNtF83FOsIuM8KA7HFpoTI+SixYlhYYE+iA6tAy7lv6rKdr21nIeO061Lh9InDccMQRAz0A96oO9ZGsaaAUd0yIcTxEA6RSEGN71UFMl3UE9MnfcZNFczIZB3TeqoAHUfrOXLUFN4oOHcRB0-Gu7CoA7rame8Ymibr3Bp7uICNQRIzlsGgAGkQjIBwlJoVvyKyexXiaSmKFuar6cm+xyFbyj25aMY-HwHvC-7+cUYI9HMYKbHceRBNeVApn2lZu-Dm3pMDc15vzACQsHrelRsgFYTQ3IZmaDzZY3soKViLE4LI8J6RCjFGRCUfAICkAVKUCoQ9nD0hKFhcWWtTS60oAbEqOwACciQWhr2DLpZmwFM4hDCFbbEtsMzlxopRB2Tt0w31OF6IhQoAIe3qrjIoPDQT80+NkbIBkvCrDXoTMR7oYyezInI7oAEKBbAAKRXnaAEKW5AsArBRITL0ysjqdHyI5Sapswh-xUZEd0Z0rxZFjJlC2IxBFBGEVxU68IyKux+oou+5R7peEgl6G02jPC6O6EYi8sjiHdCsvwg0HxuqonIt0CgoVrFswzPYzOgS1IF3zlbLKoEyKKLAOMEMJjClwxKblKGYxWjAMiTbXkLRNwFKFHATwvw4bZ0sjMCYKI2q9JGIrISKtKnKKQKo0RnoPrKMLIsKybtvQAEcNS+M9GRIZAomJjPcEI3kecO5GS9Lgw0sE2gIPhFQLYWwaD-HwLcfAoKOCsB4BwHgjB6C0EEBwegKg9B8CsNvVcoY2ihwOg3JcYw8wnMjr8JU3s8K4vDo8ol6xGrCy6MLDRKMoLHO-L+LaV5eiZWKEQ+0cAGFsOYTFMlg0tF1RFiJSuJp5qhjgCExqNL7A0naBSE5rhWI7l5LRHp0YAi5xgkUPmggeUQD5Qwig+ozxGy8Q3Mu+jK7FAUAjBA9cjqTDOJEPMg0uIcC5SGbkWQ6XNVanGBMVQZTQrEIUe+-E5krDypyMI0wch5FCSOCNPB5RwyvO4KIPTpizHRPMTIKb2aljIaZRBxzvj8IBAyKCTooQwk1IkZsrIXDti8Mya5aQ4KLGTaKF4uUhL4FcESyeGaXhhusFCnglTgE529jEGIn8G4JlJTOyNJRh0gQZZUzI+dq2CT+ICFyYIIRNthBu8QuRihQFmL+HGZEx07NeKUHdD1wSfA9ATEKRtqlsMijFLYv1JVegzb9QSwkXGOJXNjboqrQjBXCQgNwet-2hUA8Bz9zsRFe2GU8z+5y4hlVDLUGAtbEgwhCHlVyD5BxkQg8RqD6V30Uf3MCAKxDtJDF2PECgQH4gsOw8R7cBYSXHTlcURgpooA0kzukHc4IQifM6ABXVPMHahOLtu9j+AVya28IFHj1pNH2EwIpcY1I7ijtOAZM5-EEKIggKc6TsmaQ4aglxB5IyYTYyOLer097HDAMmM+z1Oz7lPRWFuPD2FtaxcmBB3TI71gHomOSiSsRYtcXi6aLcIqlwrPNtluLaGcIA3wIvFea84AbyHXpt2cdihq39IZpZ3QCiHqGMFx96iTmrE2k0A9EmUv7jZj0qZ7QyIdW6AoJSpBCqiEKA4IIcCi5DlJIkLKDgXOGnbHmtN5YPiDH6710L4T1Pok0wa4oAEnSumlX-AJXc9kfzzNiOI0dR1ZAQxR6kMJVs-kguXcDzrXWfI9d9b1mZfUUyGAGhqTUWrabw2RD4PaPjh0mJ4GAMJ-KjyxBqx5pBIZ1HPpungAyig40nmRG0doTNkQ0-qtNiCc6OZY4loYEGuJJRcySzOs7oFkW0cgSCEwhijzXggvK+BcH4F+Agd0xZcOnU0lDQC49GYC5C2myYcyUAVK4ogToEB9xDB-Ah9pZT3vkS0+2Xkfh1ZppfDRvzON7wmkdwIkE8AijBDLBCSIsAH3D0zAETo6JMCExd21I1EGVzpBCLtnosQUFNDqlgKMYzxhHVVcz232OhgxHRGEZ3-pFhu7x8AowRA1DEj0jR5ALU8MaTXUhuJIwJSDdsE0fSMBZT4FLz+IXkaxU83nA7THqkmg4oQPtEBOfP5cXpHtUp390wePdF4YocrNZR9yuGKo96-CJo6O4UIzge1yb+I6Lo2Quh94XV0cgh+YDH69EIWgoMGemt5JWDOLzHhp4GAHmtiJ-OWG-mUASJ-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-hZiUdZuCsifZsUIE-RC5lJqMD055qk-hhkx7v1qgy6tju4JGP4GaRiUjCuCro3B+qiPJD0osEIHHbYNLFqPWXsCwlREMN4MwGHp-E4c2XRI7L6WANGYg4RBXEgnnJxVBAcxDvOFgJpLup1pEHc2mrYZ1p6AVMeG86wi4mKq+GFiMOiyGI8-QS85QDi07RA1ixS7qIKgg6XEg-aqGGnUUJnodH8tYODuHKBAi5xV6Lc12Gizqpi-VVUHWXS3i70ASyhlhPc0MDSxQJSzQMkIRcFHOW7BjCaKU3Nty-iu6pg3hjg-6ggPgwpCjusljl3HafmVE1cLPt6L6G6CCvgPsBCiAIkCABgiiA4BgNgHgIQMAAADogAIy5TZAhsEDBsgBSkYyRv4AhvXAQCxAhuJAhui3RjYn53xshvNzkJVD0G+zlxiwCgyyQBb7CkjZBJNHyJIAAD8+AKoeORKZEVbakMdzkmUE2+dMqamdQz0n8bQq2vkFbZAVAqbCbIAdgZhl+8b0bOwFAObIA8MFJgz3sAB9gYst2-wLI2QDgE7IbOwWwS7K7Hga7ZeOa5u-wBkOdmzAAZBmJZmEGLTiETQeyAHqCewjGeypuu8+6hDOO+zsKFEuxSLRHCEBywqB2kBbeGIkGUNIivpmLqpohzO+9qEu6bu7Wfp-IACgEhM96eOcQBA-lI6UNpwZVv2DgAA3LZqtgvlyqaxEVh8FG7Oh8ewGyG4NvMfJAicoryA+wZPHAnfJBzLR9x-AH4Hx5kAJ2nsJ0KEeVMd0KJ9jOh7cEu07GjBjNGCsvAPgA++oX+0yTULR2AO4PPZ-Mm2EA+41LHfwjRwsDIjZ0yKPAvk0FzIWrzZGTOLR1Z-p8Z-2250uAB19vLssOh5FJhzhzjA+8fXCBds2UFSpfPVALZiCGXs4GKC4eRgvrOOh-sEux9pjGELomADjOXeiAls4KCk1m0FpCV0JB2b5927RSKQIelLR0Vxe6V+V0ULqlVz2fSEgLVx3g12V-ux65O-rEu4fVEPCLpKW1m+spjdNnBuRI13spRKChV3UbFvh9XkOwQCLKiI6AgO8IkHWBjAZCCIkPAf57kO8GniCJt5m7duh48Bp4aq92mqCi+7-EWo5X15V7SfgPt4EO7sR96P7dGOfturYDSO+7sKBxAObnhjSH4GZ+gpu1m84GD4R4d0o54gtej5-BPlDLR7nD+A8c4A+yt6Kh8EXVBGHe6JWFu+T8EoMzLA4L0B-mUBMUh00IAVtGJ3K2hupNj9q7R7ELjGUuQA+7UPYCpMUEO7iez7vgnOSIr8gPd+0dEP3s8wmIkPaDF1E6j39ypurbR+rw6GfBPVDEbwgHBzmnEFOKF86HnDT-gK6PPXEJ1+iHfIs5e2zxN2myAFsIu5xzGzrBIp6Kzzj6DwRxDw4AQEEI1AoaSYjxxwQCG6QNgKcMp3ZkH-H3j0nwQIW6AduoGN4vQR4LZvZ7d8QlbeJ-YBXwFcULUTX6l4s4ODheaWjKPAwg+1CCEDSLR3SAmHbt32PwpFaaiK8JcHXynlb5cNp5788x2Yj+p5HzaKuNZwsHOYTjB4L5u9uB3xSZ70iacAv4bmECX0R8n0o0gB2w+zlL8A4FHZNN7ApMuB2UOvD7jLME6BO8H2SGeCE0DT5k5aO26Q6DHUSCU04gUddGk0GdAtBCgiWWjLYHn62AoBe2J-j32LAIDbuFQISPgWf6x5I87-ZBJuAgENwHOmCFYPwgCBMc6g2SCktrlz4FAJCEvKGIj0i6R8aMmFfztulR5x9tWI4bLl-wTBoI5wd-AnrnBKDd97uXKSfnZkHBddQgtHRZsIKkLD5kALqSrFol+DaDEgQ-b7kZ20FKNMKdAnWPn30x7YHOtoH0KwM5CvQUeCCRrp7xGzb1UAIfSdjTBm4Ik-oI6cjLYBn5oIcBqPdcFbigyf9QhUgj4IkCy6ehCQgkAUGXHlC+dosf2OIfMQ+CZCu62QsITgSSHvpzcGQuWrolr49d-OCFbXCEKKEIBaORdGkvHnvwL4ogTvZuh5UHC08sh-nAULyVHjYA0EdAtIAwMY58d6h8Q7oPLzcDDC2Ok3ENlsBihLtTobMT3qAKx7m5i+ife-gQGyAUZsgi-BwciHaBT8rwpw1aJRV4qqCmhlwnKDxTexdxWML-CAJgF957IDkFwupA+zWGRAHhVFVnplyDJ9cmBW4AAPRyE4g5QsVAKA8CDh6gTnfjv5D+GDR7wG-RYWHw+6R8QQ-QVEQ-wOGVDlwoWUVPLRg7AJfhLyd7E0PbDm5E0BIskcSMs6kiiRsHHXtRBF45R3KDI1kSSIqEGQmRJvQRNSJ3juUc0HI7GJoLGEMcmBfHQkQKNg5W81mLBDdhKPDCaCmo9QVLG+RAp1Y-eLqO3F4D7y+ClhIHSPtcDID0j-Omw4-tsLEGyDIeGPH8DDydz0gkcQdXGK-npFNDegcIrvsMVCCOhfgqAKoE1iQDgjnmqwXWLdwY4UZHA4gz0OGF9GzgfRNQAoP6ImJX4gxIYpTKLX85DcogFGUugvjTF7Ytwmg0EB4C7DMUvRwdT3jlBGTn5RB7PR-JcDjSUN0xG7OGpcDCpS9igMQHTv5zvjLobCwQeOI4HTFCMMmPnciIUHbJNjuBg4EoYDnHF+ipxIyGcOUN2zIgqMyuCLD4Nu5rxcwzvIumFQu6RByMiAQcJkAcCm54RiPKDpH2072A14enD4If0lHzRWxKmC4SuhN72BBgwCN2kvzo7jDZRERZsduGfG6c5e-HEIO+1vpLsCgFyB9n4HS4dBg8DnSMYP05Rpj4RpvFAFgM641BLSiNB2DSBN6QRQgOMHFGhAfbYT2gvw30emOcDrhIItHM-i4KggMT6edo+3mFygBSj6OjAkEHKOYn4TIJtHFoOCE0QhJ0E4kqAP2xCCwTlwBo1MX6LDJ5wi+kvXCRpO0n8TwKCEiPtnxABHi5ygnHkHOUgkJ8DukPeoMQiwGJCXCPE+UAhKz6Tt9IniJMTUAc7eTgwNnZMSLASHO8nALKNEbMGBCddkxTwzaOWKZLRTIJcA0ApLjlpHgagUEPyQ52rINx4OvwMzrjm0QU8zBF7e9PMn0kODG+kQeEPRJLEojFxSowIAoQ2zBE92enJiWmPaCQSEJW-EyWkIXzvp4eg4XRGmNiH+AHI9En4BSNZLf82R5wvqWEDh40ghpzE0aRQzX6TTP4igsUJkGVQLBAwKYglC6gESJF-O8xCiFL0Dr9DSA-U+oFMmUoODe4lUW8Qvjtw1SPxOMSYENyVoEhnALHB6ZZhljNjluXzAQX4HgAU9dwrQJ6YgAt6fw3p0XEMF9MiA-SlGQULCRtJolFEppCLZ5piU+lFBvpfHP6QhL4EmSWOMZOgclz4g2w6wn8e8GiFy5UZnmdWRIMqg7L3cfEWUvKGvFEb6YmIpoGYJ73UEMkeKQUxofpksnAIEAPaIkCAicTugF8ywIQW2OtBoZaOTE+AINk-hDDchHww+nbmlkT08U88OWXDQVnQ8KSysykKrOeJf81pHE5wS3QbTFT3aVMySajN5CQAzQjoc2pryhY98NwHMT3jDzgAOzO+2uMVEKEWkjgco+fQaMuFZh5dMRtwArpH2QAnN0wD7XIVrI+G1FrZcaC2lVP86GybYkMWjgdWKDOc+82vfriDwfbrh84Fc-zmnzq7OAS52QBqYt1uxwCEZD7YCaxKYjXccYBc2KdVKuRGzO333dZCPPS5jz25UohSJtIdiFyZYD7duQmMc579bOrJILgXOLkyzyhfnZzoFxHQzyi5a8mWWXMJglsXRviZ5nJgYzA9vZF+HxLhFMHkT0oCElYWnItkB5UutPOcorIDrn5254cEoSNgwHjybYMg3YQTwe47JAcMPPyOsiH5atX2cSH4lNA65Lg3o1wPMAvyH64KygAIzPJoh7HzEHOQCmHtQydGlsJwO-GMD+E0HEI35TJPQTGDNC0cohkEGIZkmCDWVKFFs2vtwrO4JR5eeqWjlQstlCc+eU0+MC8k5iXyG4XCwIbwpryegH2sCCckotQAITsRZMlhYNHtDkJOEHM0KfBkGhGid4MID4a9w8wv8IiOUGxdYNzrGKPAEhcGhsONJYJ7ptHOxS-LjkuKsoDcj4abCuDohag7oX4Z4to5hK7A5SWJWhniWRKS4Gcz3unM2gXCEaCEs0b1J5BHhdxi2VHP4DzSNRUc8ZaEN2A2yeB4S-gKhryAcBv9y52</a></p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-hierarchical-classification/"><span>上一篇</span><strong>层次分类</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-twitch-chat-filter/"><span>下一篇</span><strong>Twitch 聊天过滤器</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">环境配置</a><a class="toc-link depth-2" href="#build-the-two-levels-of-the-taxonomy">构建分类法的两个层级</a><a class="toc-link depth-2" href="#the-filings">申报材料</a><a class="toc-link depth-2" href="#ask-one-choice-question-and-read-the-confidence">提出一道 Choice 问题，并读取置信度</a><a class="toc-link depth-2" href="#return-the-group-when-sure-its-division-when-not">确定时返回行业组，不确定时返回其门类</a><a class="toc-link depth-2" href="#what-the-broader-answer-buys">更宽泛的答案能带来什么</a><a class="toc-link depth-2" href="#open-it-in-the-playground">在 playground 中打开</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

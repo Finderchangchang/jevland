@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>更新速递 · JevLand</title>
+<meta name="description" content="Jev 与 JevLand 的版本与内容更新。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/news/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="更新速递">
+<meta property="og:description" content="Jev 与 JevLand 的版本与内容更新。">
+<meta property="og:url" content="https://jevland.com/news/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="更新速递">
+<meta name="twitter:description" content="Jev 与 JevLand 的版本与内容更新。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"WebPage","name":"更新速递","url":"https://jevland.com/news/","inLanguage":"zh-CN","description":"Jev 与 JevLand 的版本与内容更新。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/guides/">教程</a><a href="/news/" aria-current="page">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block news-page">
+    <header class="page-header">
+      <p class="kicker">Changelog</p>
+      <h1>更新速递</h1>
+      <p class="lead">官方版本变化、文档同步和社区内容更新，按时间排列。</p>
+    </header>
+    <div class="news-list"><article class="news-item" id="2026-10-15-jevland-launch">
+    <div class="news-meta"><time datetime="2026-10-15">2026-10-15</time><span class="chip">社区</span></div>
+    <h2>JevLand 上线：Jev 官方文档有了中文版</h2>
+    <p class="news-desc">Jev 的非官方中文社区，文档和实测教程同步上线。</p>
+    <div class="prose"><p>JevLand 是 Jev 的非官方中文社区，今天上线。官方文档的入门、核心概念、题型、设计模式、API 参考和 20 篇实战示例已经翻译成中文，每页都附了英文原文链接，内容以原文为准。另附 4 篇原创实测教程：跑通第一个请求、中文怎么写题、OpenRouter 看图的坑、1.14 看图实测。翻译有错或者想看什么内容，在 X 上找 @jev_chat，或者在公众号「杰哥的AI踩坑日记」留言。</p>
+</div>
+    
+  </article><article class="news-item" id="2026-10-14-jev-1-14">
+    <div class="news-meta"><time datetime="2026-10-14">2026-10-14</time><span class="chip">版本发布</span></div>
+    <h2>Jev 1.14 发布：能看图，新增 Box 框选题</h2>
+    <p class="news-desc">1.14 看图进入实验阶段，新增 Box 框选题，价格与 1.13 持平。</p>
+    <div class="prose"><p>模型 ID 是 <code>jev-1.14.0</code>，2026 年 10 月 14 日起可用，价格和 1.13 一样：输入 0.042 美元 / 百万 token，输出不收钱。</p>
+<p>看图是 Danger Zone（实验功能），需要在请求头里加 <code>TypeSafe-Danger-Zone-Images: true</code>，1.13 也能收图。新增的 Box（框选题）只有 1.14 支持：在图里找到目标，返回四条边的位置和置信度。</p>
+<p>OpenRouter 上已经有 <code>typesafe/jev-1.14</code>，别名 <code>~typesafe/jev-latest</code> 已经指向 1.14。但 OpenRouter 目前不转发图片，看图要走官方接口，详见<a href="../guides/openrouter-images/">这篇</a>。中文截图的实测结果见 <a href="../guides/vision-test/">Jev 1.14 看图实测</a>。</p>
+</div>
+    <p><a class="text-link" href="https://docs.typesafe.ai/models" target="_blank" rel="noopener noreferrer">查看原文 ↗</a></p>
+  </article></div>
+  </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

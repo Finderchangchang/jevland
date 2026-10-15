@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>模型 · JevLand</title>
+<meta name="description" content="当前可用的 Jev 模型、价格、上下文长度和限流说明。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/models/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="模型">
+<meta property="og:description" content="当前可用的 Jev 模型、价格、上下文长度和限流说明。">
+<meta property="og:url" content="https://jevland.com/docs/models/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="模型">
+<meta name="twitter:description" content="当前可用的 Jev 模型、价格、上下文长度和限流说明。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"模型","url":"https://jevland.com/docs/models/","inLanguage":"zh-CN","description":"当前可用的 Jev 模型、价格、上下文长度和限流说明。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link is-current" href="/docs/models/" aria-current="page">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link is-current" href="/docs/models/" aria-current="page">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 参考</p>
+        <h1>模型</h1>
+        <p class="lead">当前可用的 Jev 模型、价格、上下文长度和限流说明。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/models" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>Jev 是 TypeSafe 的旗舰模型，也是首款 <a href="../system-one/">System One 模型</a>。本页列出的所有模型都通过同一个接口提供，即 <code>POST /v1/systemone</code>。具体由哪个模型处理由请求中的 <code>model</code> 字段决定；完整的请求格式见 <a href="../api/">API 参考</a>。</p>
+<h2 id="current-models">当前模型</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">Jev 1.14</th>
+<th align="left">Jev 1.13</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">模型 ID</td>
+<td align="left"><code>jev-1.14.0</code></td>
+<td align="left"><code>jev-1.13.0</code></td>
+</tr>
+<tr>
+<td align="left">价格（每 Btok / 每 Mtok）</td>
+<td align="left">$42 / $0.042</td>
+<td align="left">$42 / $0.042</td>
+</tr>
+<tr>
+<td align="left">上下文长度</td>
+<td align="left">64k 单次请求 / 32k 单题</td>
+<td align="left">64k 单次请求 / 32k 单题</td>
+</tr>
+<tr>
+<td align="left">输入</td>
+<td align="left">文本</td>
+<td align="left">文本</td>
+</tr>
+</tbody></table></div>
+<p>Jev 1.14 是最新的 Jev 版本，自 2026 年 10 月 14 日起可用。</p>
+<ul>
+<li><strong>价格：</strong> 按输入 token 计费。输出 token 免费。Btok 是十亿 token，Mtok 是百万 token。</li>
+<li><strong>上下文长度：</strong> 有两个限制——单次请求上下文和单题上下文。详见 <a href="#context-length">上下文长度</a>。如需提升两者，参见 <a href="#long-context">长上下文</a>。</li>
+<li><strong>输入：</strong> Jev 接受自然语言文本，可以是字符串、JSON 对象或文本值数组。它不接受音频或视频，需要先将其转换为文本或结构化字段，再作为 <code>state</code> 发送。<code>state</code> 支持的形态见 <a href="../state/">state（上下文状态）</a>。</li>
+</ul>
+<h2 id="context-length">上下文长度</h2>
+<p>Jev 一次性读入 <code>state</code>，并据此并行评估每一题。请求需要同时满足两个上下文限制：</p>
+<ul>
+<li><strong>单次请求上下文</strong>（<code>per_request_context</code>）：<code>state</code> 加上所有题目的总量。</li>
+<li><strong>单题上下文</strong>（<code>per_question_context</code>）：<code>state</code> 加上任意一道题目。</li>
+</ul>
+<p>对单个请求中的题目数量没有单独限制，只要同时满足上述两个限制，任意题目数量都允许。把大量题目打包到一次请求的方法见 <a href="../fan-out/">推测式扇出（speculative fan-out）</a>，state 增大时准确率的变化见 <a href="../jev-1-13-jaggedness/">Jev 1.13 能力短板</a>。</p>
+<p>如需提升这两个限制，参见 <a href="#long-context">长上下文</a>。</p>
+<h3 id="long-context">长上下文</h3>
+<p>长上下文默认关闭，Jev 1.14 和 Jev 1.13 均支持。开启方式是：在需要使用长上下文的请求上附带 <code>TypeSafe-Danger-Zone-Long-Context: true</code> 请求头。加上该请求头后，单次请求上下文和单题上下文均为 262k token。未带该请求头的请求仍按上表的默认限制执行。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">curl https://api.typesafe.ai/v1/systemone \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$TYPESAFE_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  -H <span class="hljs-string">&quot;TypeSafe-Danger-Zone-Long-Context: true&quot;</span> \
+  -d <span class="hljs-string">&#x27;{
+    &quot;model&quot;: &quot;jev-latest&quot;,
+    &quot;state&quot;: &quot;&lt;a long contract, transcript, or record&gt;&quot;,
+    &quot;questions&quot;: {
+      &quot;has_termination_clause&quot;: {
+        &quot;type&quot;: &quot;noul&quot;,
+        &quot;instructions&quot;: &quot;Does the `state` include a clause that lets either party end the agreement early?&quot;
+      }
+    }
+  }&#x27;</span></code></pre></div>
+<p>长上下文的每 token 价格与其他请求相同。它比默认限制下更慢、准确率也更低，因此仅在确实需要时才打开。</p>
+<h2 id="rate-limits">限流</h2>
+<p>限流按组织设置。你所在组织当前的限流配置可在 <a href="https://console.typesafe.ai/rate-limits" target="_blank" rel="noopener noreferrer">开发者控制台</a> 查看。</p>
+<p>限流同时按每秒 token 数和每秒请求数计量。超过任一限制的请求会返回 <code>429 Too Many Requests</code>。我们的 <a href="../sdk/">客户端 SDK</a> 默认会自动重试这类请求，每次重试间隔更长，并在响应包含 <code>retry-after</code> 请求头时遵循其值。直接调用 HTTP 接口的用户请参考 <a href="../api/#handling-rate-limits">处理限流</a>。</p>
+<p>更高的限流可在定制版和企业版套餐中提供，请联系 <a href="mailto:sales@typesafe.ai">sales@typesafe.ai</a>。</p>
+<h2 id="aliases">别名</h2>
+<p>别名是一个指向某个版本化模型 ID 的模型名称。它在 <code>model</code> 字段中的使用方式与模型 ID 一致。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">别名</th>
+<th align="left">指向</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>jev-latest</code></td>
+<td align="left"><code>jev-1.13.0</code></td>
+<td align="left">最新的稳定官方版本。客户端 SDK 的默认值，本文档示例也使用此名称。</td>
+</tr>
+<tr>
+<td align="left"><code>jev-preview</code></td>
+<td align="left"><code>jev-1.14.0</code></td>
+<td align="left">最新版本，无论是否官方。当存在预览版时，它会领先于 <code>jev-latest</code>。</td>
+</tr>
+</tbody></table></div>
+<p>新版本发布时别名将随之更新，因此它的输出可能在你的代码毫无改动的情况下发生变化。每个响应的 <code>model</code> 字段都会给出实际作答的版本化 ID，可以据此记录每次结果由哪个模型产出。如果你针对某个版本调校过置信度阈值，请直接发送该版本的 ID 而非别名，待准备就绪后再切换到新版本。</p>
+<h2 id="customizing-jev">定制 Jev</h2>
+<p>Jev 不会用客户数据做微调或 LoRA 适配。它通过 <a href="../ai-primer/">RLCD</a> 训练以输出校准过的决策，且同一组权重为所有账户服务。你可以通过请求本身——而非针对每个账户的权重——来塑造它在你所在领域中的输出：</p>
+<ul>
+<li>把专有内容、记录和参考资料放到 <code>state</code> 字段中。参见 <a href="../state/">state（上下文状态）</a>。</li>
+<li>把领域规则与边界情况编码到每个问题的 <code>instructions</code> 和 <code>criteria</code> 中。参见 <a href="../how-to-build/">如何基于 TypeSafe 构建</a> 与 <a href="../advanced-structure/">进阶：结构</a>。</li>
+<li>把宽泛的判断拆解为原子问题，并在代码中组合结果。参见 <a href="../composite-scoring/">组合打分</a>，以及 <a href="../cookbook-autoresearch-feature-discovery/">AutoResearch 实战示例</a>，了解如何在 Jev 的概率输出上训练下游经典模型。</li>
+</ul>
+<h2 id="language-support">语言支持</h2>
+<p>Jev 接受自然语言文本。英语是主要训练语言，也是当前准确率最高的语言。其他语言（含 CJK 文字）也可以处理，但效果参差不齐；在用 Jev 处理非英文工作负载前，请用你自己的内容进行测试，并在路由时密切关注 <a href="../confidence/">置信度</a>。</p>
+<h2 id="data-handling">数据处理</h2>
+<p>Jev 不会用客户请求或响应进行训练。数据处理协议、隐私政策以及面向企业客户的零数据保留（ZDR）详情见 <a href="https://docs.typesafe.ai/legal" target="_blank" rel="noopener noreferrer">法律条款</a>。</p>
+<h2 id="listing-models">模型列表</h2>
+<p><code>GET /v1/models</code> 返回你账户可在 <code>model</code> 字段中发送的模型名称，每项包含说明和发布日期。当前它返回的是这些别名。无论是否出现在该列表中，版本化 ID（如 <code>jev-1.14.0</code>）都会被 <code>model</code> 字段接受。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">curl https://api.typesafe.ai/v1/models \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$TYPESAFE_API_KEY</span>&quot;</span></code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> TypeSafeClient
+
+<span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+    <span class="hljs-keyword">for</span> model <span class="hljs-keyword">in</span> client.models.<span class="hljs-built_in">list</span>().models:
+        <span class="hljs-built_in">print</span>(model.name, model.release_date, model.description)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">typescript</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">TypeSafeClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@typesafe-ai/sdk&quot;</span>;
+
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeSafeClient</span>();
+<span class="hljs-keyword">const</span> models = <span class="hljs-keyword">await</span> client.<span class="hljs-property">models</span>.<span class="hljs-title function_">list</span>();
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> model <span class="hljs-keyword">of</span> models) {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(model.<span class="hljs-property">name</span>, model.<span class="hljs-property">release_date</span>, model.<span class="hljs-property">description</span>);
+}</code></pre></div>
+<blockquote><ul>
+<li><p><strong><code>models</code></strong> <code>array</code> · 必填：每个模型或别名对应一个条目。</p>
+<ul>
+<li><strong><code>name</code></strong> <code>string</code> · 必填：模型 ID 或别名，可直接用于 <code>model</code> 字段。</li>
+<li><strong><code>description</code></strong> <code>string</code> · 必填：该模型的用途说明。</li>
+<li><strong><code>release_date</code></strong> <code>string</code> · 必填：该模型或别名的发布时间。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>完整方法签名见 <a href="https://docs.typesafe.ai/sdk/python/api/clients/sync#typesafe_sdk.Models.list" target="_blank" rel="noopener noreferrer">Python</a> 和 <a href="https://docs.typesafe.ai/sdk/javascript/api/interfaces/Models" target="_blank" rel="noopener noreferrer">JavaScript</a> SDK 参考。</p>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建并托管，它是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/intent-routing/"><span>上一篇</span><strong>意图路由</strong></a>
+    <a class="pager-link is-next" href="/docs/api/"><span>下一篇</span><strong>API 参考</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#current-models">当前模型</a><a class="toc-link depth-2" href="#context-length">上下文长度</a><a class="toc-link depth-3" href="#long-context">长上下文</a><a class="toc-link depth-2" href="#rate-limits">限流</a><a class="toc-link depth-2" href="#aliases">别名</a><a class="toc-link depth-2" href="#customizing-jev">定制 Jev</a><a class="toc-link depth-2" href="#language-support">语言支持</a><a class="toc-link depth-2" href="#data-handling">数据处理</a><a class="toc-link depth-2" href="#listing-models">模型列表</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

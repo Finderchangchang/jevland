@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>实战示例 · JevLand</title>
+<meta name="description" content="从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbooks/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="实战示例">
+<meta property="og:description" content="从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。">
+<meta property="og:url" content="https://jevland.com/docs/cookbooks/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="实战示例">
+<meta name="twitter:description" content="从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"实战示例","url":"https://jevland.com/docs/cookbooks/","inLanguage":"zh-CN","description":"从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link is-current" href="/docs/cookbooks/" aria-current="page">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link is-current" href="/docs/cookbooks/" aria-current="page">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>实战示例</h1>
+        <p class="lead">从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>每篇实战示例都包含一份真实数据集、针对它的 TypeSafe 决策问题，以及把这些决策转化为可运行系统的代码。当你想要了解 <a href="../primitives/">primitives</a> 和 <a href="../patterns/">patterns</a> 如何在一个具体问题上协同工作时，就阅读其中一篇；或者直接复制一篇，作为你自己的起点。</p>
+<p>本节假设你已经了解 <a href="../primitives/">TypeSafe primitives</a>，并理解 <a href="../confidence/">confidence 如何运作</a>。如果还没有，请先阅读这两部分。</p>
+<p>每篇实战示例都按其所解决的问题归类，且只列一次；其中很多还用到了其他章节的技巧。</p>
+<h2 id="llms-and-agents">LLM 与智能体</h2>
+<p>把 Jev 与大语言模型（LLM）或智能体配合使用：挑选工具与技能，对进出内容进行筛查，并核对返回结果。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>实战示例</th>
+<th>功能</th>
+<th>档位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="../cookbook-function-calling/">函数调用</a></td>
+<td>通过把函数名和封闭集合参数映射到 confidence 感知的 TypeSafe 问题，把自然语言的交易请求转换为对普通类型化函数的调用。</td>
+<td>中级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-skill-suggestion/">技能推荐</a></td>
+<td>在 Nous Research 的 Hermes 目录的 182 个技能中，为 agent 的一次 turn 选出至多一个，并通过两次 TypeSafe 请求对排名靠前的候选进行排序与复核。</td>
+<td>中级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-llm-guardrails/">LLM 安全护栏</a></td>
+<td>用一次 TypeSafe 请求对进出 LLM 应用的每条消息进行筛查；将危害的 probability 与 severity 与阈值比对，决定是放行、人工复核、屏蔽还是路由。</td>
+<td>中级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-citation-check/">双重核对引用</a></td>
+<td>把引用与源文档进行比对，捕获错误或被幻觉出来的引用。一道 Choice（选择题）问题决定引文的上下文是否支持该论点。</td>
+<td>初级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-classifying-rag-passages/">对 RAG 段落分类</a></td>
+<td>用一次 TypeSafe 请求对每条检索到的段落打分，再在代码中决定其中哪几条可以送到答题模型。</td>
+<td>中级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-basic-memory/">简易记忆系统</a></td>
+<td>让 Jev 决定哪些请求和答案值得被记住，并把 Jev 的调用包成一个小函数，在后续调用中自动追加记忆。</td>
+<td>初级</td>
+</tr>
+</tbody></table></div>
+<h2 id="classification">分类</h2>
+<p>把输入按任意深度分配到类别中。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>实战示例</th>
+<th>功能</th>
+<th>档位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="../cookbook-hierarchical-classification/">层次化分类</a></td>
+<td>在专利、零售商品、生物医学和源代码的深层分类树中，通过基于 TypeSafe Choice probability 的并行束搜索对文档进行分类。</td>
+<td>中级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-classification-using-confidence/">按 confidence 分类</a></td>
+<td>用一个 Choice 把 SEC 年报分到 75 个 industry group 中，再读取 answer 自带的 confidence，决定是报出该 industry group 还是其上方更宽泛的 division。</td>
+<td>初级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a></td>
+<td>在 Twitch 聊天中隐藏侮辱、垃圾信息和未被询问的游戏攻略，把剧透涂掉，并把提问高亮。每条消息各对应一次包含多题的 TypeSafe 请求，最多 8 条消息并发处理，过滤规则由代码定义。</td>
+<td>初级</td>
+</tr>
+</tbody></table></div>
+<h2 id="extraction">抽取</h2>
+<p>从杂乱文本中抽出有类型的值与结构。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>实战示例</th>
+<th>功能</th>
+<th>档位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="../cookbook-sde-cascade/">SDE 级联</a></td>
+<td>使用两阶段结构化数据抽取级联（mini → verify → reasoning），以极低的成本获得接近大型推理模型的质量。</td>
+<td>中级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-date-extraction/">日期抽取</a></td>
+<td>先让 TypeSafe 给出文档中提到的各个日期组成部分，再在代码中基于 confidence 进行归一化与校验，由此抽取绝对日期和相对日期。</td>
+<td>初级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-pre-parsed-value-extraction/">预解析值抽取</a></td>
+<td>先用正则找出候选的邮箱、电话号码和金额，再让 TypeSafe 选出所请求的 span，由代码把该 span 归一化成精确值。</td>
+<td>初级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-autoformat/">结构恢复</a></td>
+<td>通过两次请求，从格式已经丢失的纯文本恢复 Markdown：一次把硬换行的行重新拼回段内，一次对每个 block（标题、列表、代码、callout）进行分类。</td>
+<td>初级</td>
+</tr>
+</tbody></table></div>
+<h2 id="search-and-matching">搜索与匹配</h2>
+<p>查找匹配查询的行、段落或记录，以及彼此匹配的多条记录。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>实战示例</th>
+<th>功能</th>
+<th>档位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="../cookbook-rerank-typesafe/">重排序</a></td>
+<td>为 40 条 CLERC 法律查询各构造一份 30 段 BM25 短名单，再用一道 TypeSafe 问题对每个查询-候选项对打分，把 top-1 准确率从 5% 提升到 18%，top-10 从 38% 提升到 62%。</td>
+<td>中级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-semantic-find/">按行搜索</a></td>
+<td>为 GitHub 服务条款构建语义搜索：一次请求中用一道 Choice 问题为 218 个 line id 针对自然语言查询打分，并用一道 Noul（是非题）问题判断文档中是否包含答案。</td>
+<td>初级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-entity-alignment/">知识图谱实体对齐</a></td>
+<td>从两份啤酒目录的 450 对候选项中，判定哪一对描述的是同一款产品：用一道 Score（打分题）问题加三道配套 Noul，标出哪些字段不一致。</td>
+<td>初级</td>
+</tr>
+</tbody></table></div>
+<h2 id="techniques">技巧</h2>
+<p>让任何一道题发挥更大作用：重复它、批处理它，或把它的 answer 转成特征。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>实战示例</th>
+<th>功能</th>
+<th>档位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="../cookbook-consistency-choice/">自洽性：choices</a></td>
+<td>在内容审核决策中纳入不确定的结果，并把标签一致性与自动处置所占的比例进行对比。</td>
+<td>初级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-consistency-noul/">自洽性：nouls</a></td>
+<td>把不确定的 probability 路由到人工复核，同时让底层的 Noul 值保持可见。</td>
+<td>初级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-parallel-questions/">并行问题</a></td>
+<td>针对 GDPR 维基百科词条给出一份包含 13 道题的监管简报；结果显示，把所有题打包到一次 TypeSafe 调用中，成本便宜 12.2 倍、速度快 10.0 倍，且 answer 完全不变。</td>
+<td>初级</td>
+</tr>
+<tr>
+<td><a href="../cookbook-autoresearch-feature-discovery/">Autoresearch 特征发现</a></td>
+<td>运行一个 autoresearch 循环：提出 TypeSafe 问题，把自由文本转为数值特征，并借助模型错误来改进一个受监督的 CatBoost 回归器。</td>
+<td>高级</td>
+</tr>
+</tbody></table></div>
+<aside class="callout callout-tip"><p><strong>提示：</strong> 我们一直很希望了解大家都在如何使用我们的 primitives。如果你做出了值得做成实战示例的东西，欢迎给我们留言！</p>
+</aside>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建和托管，它是一个面向开发者的文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/sdk-python/"><span>上一篇</span><strong>Python SDK</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-function-calling/"><span>下一篇</span><strong>函数调用</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#llms-and-agents">LLM 与智能体</a><a class="toc-link depth-2" href="#classification">分类</a><a class="toc-link depth-2" href="#extraction">抽取</a><a class="toc-link depth-2" href="#search-and-matching">搜索与匹配</a><a class="toc-link depth-2" href="#techniques">技巧</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>进阶：结构化写法 · JevLand</title>
+<meta name="description" content="instructions（指令）字段、Choice（选择题）选项、Score（打分题）档位以及 Noul（是非题）的 criteria（判定标准）字段，都接受 JSON 结构。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/advanced-structure/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="进阶：结构化写法">
+<meta property="og:description" content="instructions（指令）字段、Choice（选择题）选项、Score（打分题）档位以及 Noul（是非题）的 criteria（判定标准）字段，都接受 JSON 结构。">
+<meta property="og:url" content="https://jevland.com/docs/advanced-structure/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="进阶：结构化写法">
+<meta name="twitter:description" content="instructions（指令）字段、Choice（选择题）选项、Score（打分题）档位以及 Noul（是非题）的 criteria（判定标准）字段，都接受 JSON 结构。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"进阶：结构化写法","url":"https://jevland.com/docs/advanced-structure/","inLanguage":"zh-CN","description":"instructions（指令）字段、Choice（选择题）选项、Score（打分题）档位以及 Noul（是非题）的 criteria（判定标准）字段，都接受 JSON 结构。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link is-current" href="/docs/advanced-structure/" aria-current="page">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link is-current" href="/docs/advanced-structure/" aria-current="page">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 题型</p>
+        <h1>进阶：结构化写法</h1>
+        <p class="lead">instructions（指令）字段、Choice（选择题）选项、Score（打分题）档位以及 Noul（是非题）的 criteria（判定标准）字段，都接受 JSON 结构。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/primitives/advanced" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>System One 模型经过训练，能够理解结构化内容。</p>
+<h2 id="where-structure-is-allowed">哪些字段支持结构化</h2>
+<p>下面每一个字段都是一个 <a href="https://docs.typesafe.ai/sdk/javascript/api/type-aliases/EntryType" target="_blank" rel="noopener noreferrer"><code>EntryType</code></a> 类型。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>适用题型</th>
+<th>支持的数据形态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>instructions</code></td>
+<td>Choice、Score、Noul</td>
+<td><code>string</code>、<code>object</code>、<code>array</code>、<code>null</code></td>
+</tr>
+<tr>
+<td><code>criteria</code> 的值（选项描述）</td>
+<td>Choice</td>
+<td><code>string</code>、<code>object</code>、<code>array</code>、<code>null</code></td>
+</tr>
+<tr>
+<td><code>criteria</code> 的条目（档位描述）</td>
+<td>Score</td>
+<td><code>string</code>、<code>object</code>、<code>array</code>、<code>null</code></td>
+</tr>
+<tr>
+<td><code>criteria.true</code> 和 <code>criteria.false</code></td>
+<td>Noul</td>
+<td><code>string</code>、<code>object</code>、<code>array</code>、<code>null</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="when-to-structure-a-question">何时应当把问题结构化</h2>
+<ul>
+<li><strong>有助于表达清晰时。</strong> 当一个问题由多个部分组成时，把它写成 JSON 会更清晰，因为每个键本身就带有语义标签。</li>
+<li><strong>问题需要附带数据时。</strong> schema、分类树、数据库记录本身就已经是 JSON。这时可以直接传入整段 JSON，或者只传入相关子字段，而不必再把它们拼成一个字符串模板。</li>
+</ul>
+<h2 id="structured-instructions">结构化 instructions</h2>
+<p>一个 <code>field</code> 对象描述被校验的字段，每道问题通过键名引用它。同一种结构既适用于校验某个值的 Noul（是非题），也适用于从候选项中挑一个的 Choice（选择题），以及把一个值放到某个区间上的两个 Score（打分题）。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;source_text&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Invoice #4471 issued March 3, 2026 to Beaver Dam Logistics for $12,840.00, net 30.&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;invoice_number_is_correct&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;field&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;invoice_number&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;string&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The identifier printed on the invoice.&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;extracted_value&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;4471&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does `extracted_value` match the `field` as it appears in `source_text`?&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;customer_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;field&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;customer_name&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;string&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The organization the invoice was issued to.&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Which option is the value of `field` in `source_text`?&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;Beaver Logistics&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;Dam Logistics&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;Beaver Dam Logistics&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;Beaver&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;Dam&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;amount_due&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;field&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;amount_due&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;number&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;unit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;USD&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The total the invoice asks to be paid.&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How large is the `field` value in `source_text`?&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">&quot;Under $1,000&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;$1,000 to $10,000&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;$10,000 to $100,000&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;$100,000 to $1,000,000&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Over $1,000,000&quot;</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;payment_terms&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;field&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;payment_terms&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;integer&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;unit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;days&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Days allowed for payment, from terms such as \&quot;net 30\&quot;.&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How many days does the `field` in `source_text` allow for payment?&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">&quot;Due on receipt&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Net 10&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Net 30&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Net 60&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Net 90&quot;</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>代码里可以遍历候选记录，为每个字段构造一道问题，并合并到同一次请求里提交。<a href="../cookbook-sde-cascade/">SDE cascade 实战示例</a> 里就做了类似的事情。</p>
+<p>数组也可以。当指令本身就是要逐项检查或逐项对比的列表时，使用数组很合适：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does the claimed sender identity conflict with the sending domain?&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;compare&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;ticket.sender.display_name&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;ticket.sender.email&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;focus&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Compare the named organization with the email domain.&quot;</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h2 id="structured-choice-options">结构化 Choice 选项</h2>
+<p>Choice 选项的描述也可以写成结构化对象。</p>
+<h3 id="json-rubric-for-boundary-clarification">用 JSON 量表澄清选项边界</h3>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;I ordered the standing desk two weeks ago and tracking still says label created. Was I even charged?&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Which team should handle this message?&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;focus&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Classify the customer&#x27;s primary request, not every topic mentioned.&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;billing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Charges, invoices, refunds, or subscriptions&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;not_for&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Order tracking or account access&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;I was charged twice&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Where is my refund?&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;orders&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Order status, delivery, cancellation, or returns&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;not_for&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Charges or account access&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Where is my package?&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Cancel my order&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;account&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Login, password, profile, or security&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;not_for&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Charges or delivery&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;I can&#x27;t log in&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Change my email&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>这个示例让模型清楚每个选项覆盖以及<em>不</em>覆盖的内容，从而把选项之间的边界划得更清晰。</p>
+<h3 id="walking-a-taxonomy">遍历分类树</h3>
+<p>要把样本分到一棵层级很深的分类树时，可以在每一层用一个 Choice，在代码里逐层向下走。每一步的选项就是当前节点的子节点，每个选项的值是该子节点的子树。这样在真正选定之前，模型就能先看到该分支下面都有什么。当样本落到一个叶子节点、而仅凭父分支的名字又难以判断时，这点尤其关键。</p>
+<p>这里传入的 state（上下文状态）是一段商品描述，第一道问题负责选出顶级部门。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;32oz plastic bottle with a flip straw lid. Fits most bike cages.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Which top-level department does this product belong to?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;Sporting Goods&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;Cycling&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Bike Bottles &amp; Cages&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Bike Lights&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Helmets&quot;</span>
+          <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;Fitness&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Yoga Mats&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Resistance Bands&quot;</span>
+          <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;Outdoor&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Tents&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Sleeping Bags&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Hydration Packs&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;Home &amp; Kitchen&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;Drinkware&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Water Bottles&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Travel Mugs&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Tumblers&quot;</span>
+          <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;Cookware&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Pots &amp; Pans&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Bakeware&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;Baby &amp; Toddler&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+          <span class="hljs-string">&quot;Sippy Cups&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-string">&quot;Bottle Warmers&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-string">&quot;Bibs&quot;</span>
+        <span class="hljs-punctuation">]</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>这个水瓶看起来既可能落在运动部门，也可能落在家居厨房部门。把子树一并展示，模型就能同时看到 <code>Sporting Goods &gt; Cycling &gt; Bike Bottles &amp; Cages</code> 和 <code>Home &amp; Kitchen &gt; Drinkware &gt; Water Bottles</code> 这两个类目的存在，并把描述中对“车架”的强调与日常水具做权衡。这个回答返回的 <code>probabilities</code>（概率）会告诉你两个分支的差距有多大，从而判断是否值得沿着两个分支同时继续向下探。</p>
+<p>选定某个部门之后，下一道 Choice 的选项就换成该部门的子节点，选项的值是各自的子树，并不断重复直到走到叶子节点。代码上这可以是对一个嵌套字典的循环，每道问题的 <code>criteria</code> 就是当前节点。<a href="../cookbook-hierarchical-classification/">Hierarchical Classification 实战示例</a> 给出了一个类似的遍历示例，其中包含一种 beam search（束搜索）策略，会在概率接近时同时保留若干条候选路径。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong>
+子树可能会变得很大。如果某个分支太大，可以把它的值精简为直接子节点，再附上一部分叶子节点的样本。</p>
+</aside>
+<h2 id="structured-score-levels">结构化 Score 档位</h2>
+<p>Score 的 <code>criteria</code> 数组中，每一项也可以是一个对象。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Fixed the null check in the payment handler. Also refactored the retry loop while I was in there, and bumped the SDK version since the old one had that timeout bug.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;pr_scope&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How focused is this pull request description on a single change?&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;note&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Judge the number of independent changes, not the size of any one change.&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;One change, clearly stated&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;signals&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;A single fix or feature&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Nothing described as \&quot;also\&quot; or \&quot;while I was in there\&quot;&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;One main change plus a small related tweak&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;signals&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;A primary change and one minor adjacent edit&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;The tweak supports the main change&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Several independent changes bundled together&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;signals&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Two or more unrelated fixes or features&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Changes that could each be their own PR&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h1 id="structured-noul-criteria">结构化的 Noul criteria（判定标准）</h1>
+<p>Noul <code>criteria</code> 是可选的。当是/非的边界比较模糊时，可以用结构化的 <code>true</code> 和 <code>false</code> 描述，分别给出定义和示例，把边界说清楚。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;sender&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;display_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Beaver Dam Builders Ltd.&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;email&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;donotreply@payroll.example&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Your Q3 bonus is ready. Reply with your login password so we can verify your identity and release the funds.&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;requests_credentials&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does the `message` ask the recipient to disclose a sensitive credential?&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;inspect&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;message&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;focus&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Look for a request to send the credential itself, not a request to change or reset it.&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;true&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Asks the recipient to reply with, type, or send a password, PIN, one-time code, or other security sensitive answer&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Reply with your password&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Send us the 6-digit code you just received&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;false&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;No sensitive credential is requested&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;Reset your password from the settings page&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;Your statement is ready&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 搭建和托管，这是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/box/"><span>上一篇</span><strong>Box（框选题）</strong></a>
+    <a class="pager-link is-next" href="/docs/images/"><span>下一篇</span><strong>图片</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#where-structure-is-allowed">哪些字段支持结构化</a><a class="toc-link depth-2" href="#when-to-structure-a-question">何时应当把问题结构化</a><a class="toc-link depth-2" href="#structured-instructions">结构化 instructions</a><a class="toc-link depth-2" href="#structured-choice-options">结构化 Choice 选项</a><a class="toc-link depth-3" href="#json-rubric-for-boundary-clarification">用 JSON 量表澄清选项边界</a><a class="toc-link depth-3" href="#walking-a-taxonomy">遍历分类树</a><a class="toc-link depth-2" href="#structured-score-levels">结构化 Score 档位</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

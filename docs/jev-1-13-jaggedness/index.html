@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jev 1.13 能力短板 · JevLand</title>
+<meta name="description" content="Jev 并不完美。以下是我们已知的 `jev-1.13` 能力短板，其中很多会在后续版本中修复。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/jev-1-13-jaggedness/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="Jev 1.13 能力短板">
+<meta property="og:description" content="Jev 并不完美。以下是我们已知的 `jev-1.13` 能力短板，其中很多会在后续版本中修复。">
+<meta property="og:url" content="https://jevland.com/docs/jev-1-13-jaggedness/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jev 1.13 能力短板">
+<meta name="twitter:description" content="Jev 并不完美。以下是我们已知的 `jev-1.13` 能力短板，其中很多会在后续版本中修复。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"Jev 1.13 能力短板","url":"https://jevland.com/docs/jev-1-13-jaggedness/","inLanguage":"zh-CN","description":"Jev 并不完美。以下是我们已知的 `jev-1.13` 能力短板，其中很多会在后续版本中修复。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link is-current" href="/docs/jev-1-13-jaggedness/" aria-current="page">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link is-current" href="/docs/jev-1-13-jaggedness/" aria-current="page">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 参考</p>
+        <h1>Jev 1.13 能力短板</h1>
+        <p class="lead">Jev 并不完美。以下是我们已知的 `jev-1.13` 能力短板，其中很多会在后续版本中修复。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/model-jaggedness/jev-1.13" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><aside class="callout callout-tip"><p><strong>提示：</strong> <strong>适用于 <code>jev-1.13</code>。</strong> 最后审查日期：2026-10-02。</p>
+</aside>
+<p><code>jev-1.13</code> 速度快、经过校准，并且在常识判断上表现出色，但它并非完美。<code>jev-1.13</code> 在 <a href="../system-one/">System One</a> 任务上表现最佳。它可能在需要额外间接层级的任务上遇到困难，并且倾向于字面理解。它在需要数值精度的任务上表现不佳。</p>
+<h2 id="the-failure-modes-in-detail">失败模式的详细说明</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>失败模式</th>
+<th>替代做法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><a href="#literal-reading">字面阅读</a></td>
+<td>写出精确的条件，以及每个可用选项的判定标准</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="#math-and-numbers">数学与数字</a></td>
+<td>把算术逻辑放在代码里</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="#date-and-time-comparison">日期与时间比较</a></td>
+<td>提取各组成成分；在代码中比较</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="#indirection">间接引用</a></td>
+<td>减少跳数；直接指向相关的 state</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="#large-state-full-of-irrelevant-detail">状态过大且充满无关细节</a></td>
+<td>先过滤；只发送问题需要的内容</td>
+</tr>
+<tr>
+<td>6</td>
+<td><a href="#adversarial-content">对抗性内容</a></td>
+<td>编写精确的 prompt，部署前测试边界情况</td>
+</tr>
+<tr>
+<td>7</td>
+<td><a href="#contradictory-instructions-and-criteria">指令与判定标准相互矛盾</a></td>
+<td>让判定标准与指令保持一致</td>
+</tr>
+<tr>
+<td>8</td>
+<td><a href="#choice-option-order">选择题选项顺序</a></td>
+<td>重新排序选项，并检查答案是否一致</td>
+</tr>
+<tr>
+<td>9</td>
+<td><a href="#generation">生成</a></td>
+<td>使用生成式模型</td>
+</tr>
+</tbody></table></div>
+<h2 id="literal-reading">字面阅读</h2>
+<p><code>jev-1.13</code> 会按字面回答你写出的问题，而不是你心中所想。范围限定词、否定词以及隐含条件都会被照字面理解。问题的回答会基于 instructions 中写出的字面词，而人可能会读出 instructions 背后的意图。</p>
+<p><strong>替代做法：</strong> 在 <code>instructions</code> 中明确写出精确条件。要具体。把边界情况放入 criteria。当你看到错误答案，并发现自己要解释真正意图时，那个解释就是缺失的那一半 instruction。如果解读无法避免，就把它拆成两个字面问题，然后在代码中合并。</p>
+<h2 id="math-and-numbers">数学与数字</h2>
+<p>Jev 不是计算器。我们强烈建议把任何数学逻辑放在代码里实现。Jev 在语义类问题上会比在数学类问题上表现更好。</p>
+<h3 id="counting">计数</h3>
+<p><code>jev-1.13</code> 无法可靠地计数。这包括：单词中的字符数、段落中某个词的出现次数，以及长列表中条目的数量。模型识别的是答案的形态，而不是逐个清点，错误也会随着计数对象规模的增大而增多。</p>
+<p>在提出计数问题之前，先想想为什么这个计数需要交给模型。如果计数单位是普通正则或解析器可以找到的，那么计数应当交给代码，模型也就无从插手。</p>
+<p><strong>替代做法：</strong> 在代码中计数。当你想统计符合某些条件的条目时，先在代码里遍历候选对象，对每个对象单独问一个问题，然后自己把答案加起来。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Noul, TypeSafeClient
+
+client = TypeSafeClient(model=<span class="hljs-string">&quot;jev-1.13&quot;</span>)
+YES = <span class="hljs-number">0.5</span>  <span class="hljs-comment"># up to you on what you want the threshold to be, depends on your usecase.</span>
+
+items = [<span class="hljs-string">&quot;typesafe&quot;</span>, <span class="hljs-string">&quot;apple&quot;</span>, <span class="hljs-string">&quot;california&quot;</span>, <span class="hljs-string">&quot;banana&quot;</span>, <span class="hljs-string">&quot;likes&quot;</span>, <span class="hljs-string">&quot;calibration&quot;</span>, <span class="hljs-string">&quot;orange&quot;</span>, <span class="hljs-string">&quot;vertex&quot;</span>]
+
+result = client.system_one(
+    {<span class="hljs-string">&quot;items&quot;</span>: items},
+    {
+        <span class="hljs-string">f&quot;item_<span class="hljs-subst">{i}</span>&quot;</span>: Noul(instructions=<span class="hljs-string">f&quot;Is `items[<span class="hljs-subst">{i}</span>]` the name of a fruit?&quot;</span>)
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(items))
+    },
+)
+
+count = <span class="hljs-built_in">sum</span>(result.nouls[<span class="hljs-string">f&quot;item_<span class="hljs-subst">{i}</span>&quot;</span>].noul &gt; YES <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(items)))</code></pre></div>
+<h3 id="numeric-representations">数值表示</h3>
+<p><code>jev-1.13</code> 在语义表示上的表现优于在纯数值表示上的表现。例如，使用 hex 值描述颜色的题目，会比使用英文颜色名的题目表现更差。给定 RGB 三元组或 hex 值，它无法可靠地判断两个值是否接近。</p>
+<p>类似地，关于高层编程语言的问题，会比关于底层汇编或二进制编码指令的问题表现更好。</p>
+<p><strong>替代做法：</strong> 在代码中完成换算，然后传入计算好的数字或命名好的分桶。把模型留给真正需要判断的部分，例如颜色读起来像不像警告。</p>
+<h3 id="math-using-score">用 score 做数学</h3>
+<p>请勿使用 score 输出（例如期望值和概率）来计算某个 criterion 两个档位之间数值的精确大小。你可以用期望值来判断它是否通过某个阈值，但 <code>jev-1.13</code> 的 score 档位在数值校准上偏弱。它无法通过在最近的两个档位之间插值来帮你还原出精确数字。</p>
+<h2 id="date-and-time-comparison">日期与时间比较</h2>
+<p><code>jev-1.13</code> 把日期当作文本读取，而不是有序量。询问两个日期哪个更早、它们相距多远，或者某个日期是否落在某个区间内，结果都不可靠。在混合格式、相对引用，以及季度、交割窗口、应计期间等业务边界下，表现会更差。</p>
+<p><strong>替代做法：</strong> 把工作拆开。提取是判断，交由模型处理；算术不是，所以放在代码里。</p>
+<p>日期的每个组成都是一个小的封闭集合：十二个月、三十一天、有限范围的年份。这样一来，提取就被转换成一个针对枚举选项的 <a href="../choice/">Choice</a>，而不是自由形式的解析；同时也为显式放置一个&quot;未提及&quot;选项留出了空间，让缺失的部分被报告出来而不是被猜测。代码再把各个组成部分组装成真正的日期，并接管后续所有步骤，包括排序、时长、偏移和星期。</p>
+<p><a href="../cookbook-date-extraction/">date extraction cookbook</a> 提供了完整示例，包括相对日期与置信度分流。</p>
+<h2 id="indirection">间接引用</h2>
+<p>包含双重否定或复杂间接引用的 instructions，回答的可靠性较低。关于&quot;属性之属性&quot;的问题，或者需要多跳推理的问题，都会带来准确率的损失。</p>
+<p><strong>替代做法：</strong> 尽可能直接地编写 instructions。如果可能，按名称指明 state 中相关的部分。</p>
+<h2 id="large-state-full-of-irrelevant-detail">状态过大且充满无关细节</h2>
+<p>随着 state 中无关内容增多，准确率会下降。无关细节会充当干扰项，状态越大，也越难看出输入中哪一部分导致了错误答案。</p>
+<p><strong>替代做法：</strong> 先在代码中检索并过滤，只发送问题真正需要的字段。当无法在 state 中过滤时，你可以用一个 <a href="../noul/">Noul</a> 来过滤相关性。<a href="../cookbook-classifying-rag-passages/">classifying RAG passages cookbook</a> 提供了一个完整示例。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong> <strong>上下文长度限制。</strong> <code>state</code> 会按 <code>jev-1.13</code> 的上下文上限计入一次，即 <a href="../models/#context-length">单次请求上下文（per-request context）与单题上下文（per-question context）</a>。</p>
+</aside>
+<h2 id="adversarial-content">对抗性内容</h2>
+<p>state 就是数据，<code>jev-1.13</code> 默认不会把它视作敌对内容。无论是注入的 instruction、刻意误导的框架，还是试图为自身分类辩护的文本，都可能推动答案偏移。我们预期未来会在这方面持续改进。</p>
+<p><strong>替代做法：</strong> 在 criteria 中写得明确。在面向大量用户部署之前，对集成进行充分测试。</p>
+<h2 id="contradictory-instructions-and-criteria">指令与判定标准相互矛盾</h2>
+<p>当 <code>instructions</code> 和 <code>criteria</code> 要求的内容不一致时，<code>jev-1.13</code> 可能会感到困惑。最优表现来自明确的措辞。例如，一个 Noul 把 <code>true</code> 映射到&quot;否&quot;、把 <code>false</code> 映射到&quot;是&quot;，表现就会更差。目标应是让普通读者都能轻松读懂 instructions。</p>
+<p><strong>替代做法：</strong> 把 criteria 视作 instruction 的延伸。用清晰且精确的语言让两者保持一致。</p>
+<h2 id="choice-option-order">选择题选项顺序</h2>
+<p>在某些情况下，我们观察到 <a href="../choice/">Choice</a> 选项的顺序会影响答案，<code>jev-1.13</code> 会偏向排在更前面的选项。</p>
+<p><strong>替代做法：</strong> 重新排序选项，再次确认答案是否保持一致。</p>
+<h2 id="generation">生成</h2>
+<p><code>jev-1.13</code> 并没有训练成用来生成文本。虽然你可以通过串联 Choice 来强行让它生成，但效果不好且速度很慢。对于数据抽取，更好的做法是用正则或生成式模型提取出候选选项，再交给 <code>jev-1.13</code> 选出正确的那一个。</p>
+<p><strong>替代做法：</strong> 当答案空间有界时，把抽取转化为一个针对这些选项的 <a href="../choice/">Choice</a>，而不是直接询问该值。如果你真的需要生成文本……那是其他模型的工作。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong> <strong>提醒一下，请避免以下做法：</strong></p>
+<ul>
+<li>让模型回答代码可以精确计算的问题。</li>
+<li>把多个判断藏在同一个问题里。</li>
+<li>System Two 任务：更多层级的间接引用</li>
+<li>在 <code>state</code> 中提供超出问题所需的上下文。Jev 会受到 context rot（上下文退化）的影响，因此 <code>state</code> 中无关的材料会降低准确率。</li>
+</ul>
+</aside>
+<aside class="callout callout-tip"><p><strong>提示：</strong> <strong>发现了一个应该出现在这份文档里的失败模式？我们希望听到它。</strong> 请在 <a href="https://discord.com/invite/WUujKYBp8s" target="_blank" rel="noopener noreferrer">Discord</a> 上联系我们。</p>
+</aside>
+<p>这份文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a>（开发者文档平台）构建并托管。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/api/"><span>上一篇</span><strong>API 参考</strong></a>
+    <a class="pager-link is-next" href="/docs/sdk/"><span>下一篇</span><strong>客户端 SDK</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#the-failure-modes-in-detail">失败模式的详细说明</a><a class="toc-link depth-2" href="#literal-reading">字面阅读</a><a class="toc-link depth-2" href="#math-and-numbers">数学与数字</a><a class="toc-link depth-3" href="#counting">计数</a><a class="toc-link depth-3" href="#numeric-representations">数值表示</a><a class="toc-link depth-3" href="#math-using-score">用 score 做数学</a><a class="toc-link depth-2" href="#date-and-time-comparison">日期与时间比较</a><a class="toc-link depth-2" href="#indirection">间接引用</a><a class="toc-link depth-2" href="#large-state-full-of-irrelevant-detail">状态过大且充满无关细节</a><a class="toc-link depth-2" href="#adversarial-content">对抗性内容</a><a class="toc-link depth-2" href="#contradictory-instructions-and-criteria">指令与判定标准相互矛盾</a><a class="toc-link depth-2" href="#choice-option-order">选择题选项顺序</a><a class="toc-link depth-2" href="#generation">生成</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

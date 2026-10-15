@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>自一致性：Choice · JevLand</title>
+<meta name="description" content="为内容审核决策引入不确定结果（uncertain outcome），并比较标签一致性与自动处理占比。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-consistency-choice/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="自一致性：Choice">
+<meta property="og:description" content="为内容审核决策引入不确定结果（uncertain outcome），并比较标签一致性与自动处理占比。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-consistency-choice/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="自一致性：Choice">
+<meta name="twitter:description" content="为内容审核决策引入不确定结果（uncertain outcome），并比较标签一致性与自动处理占比。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"自一致性：Choice","url":"https://jevland.com/docs/cookbook-consistency-choice/","inLanguage":"zh-CN","description":"为内容审核决策引入不确定结果（uncertain outcome），并比较标签一致性与自动处理占比。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link is-current" href="/docs/cookbook-consistency-choice/" aria-current="page">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link is-current" href="/docs/cookbook-consistency-choice/" aria-current="page">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>自一致性：Choice</h1>
+        <p class="lead">为内容审核决策引入不确定结果（uncertain outcome），并比较标签一致性与自动处理占比。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/consistency_choice_cookbook" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>本实战示例（cookbook）取一条边界状态的用户帖子，对它执行 15 次审核评分，并检查每次答案在重复间是否能保持稳定。每一次检查都是一个 Choice 题型，因此每次答案都是从固定标签集中选出的一项。在审核管线中，该标签即路由决策：移除或保留、升级或自动解决、转发到威胁、垃圾信息或通用队列。当标签在不同运行间摇摆时，同一篇帖子会被无端路由到不同的位置。</p>
+<p>评分表包含 8 个 Choice 问题，每次运行通过一次调用同时回答全部 8 个问题。每个 condition 重复 15 次，其中 condition 是一个模型加一种设置，并绘制每一个返回的标签。</p>
+<p>各 condition 如下：</p>
+<ul>
+<li>非推理大语言模型（LLM）<code>claude-haiku-4-5</code> 与 <code>gpt-5.4-mini</code>，temperature 取 <code>0</code> 与 API 默认值。</li>
+<li>推理大语言模型（LLM）<code>gpt-5.5</code> 与 <code>claude-opus-4-8</code>，它们没有 temperature 调节旋钮。</li>
+<li>TypeSafe：对 8 个 Choice 问题执行一次 <code>system_one</code> 调用，每次调用都附带一个全新的 <code>uid</code> 字段（一次性唯一值），与 Noul 实战示例的设置一致。</li>
+</ul>
+<p>关注要点：被选中的标签可能在单个 condition 内部翻转，TypeSafe 也不例外，并且不同 condition 之间也会相互不一致。</p>
+<p>在本次运行中，LLM 分布设置以 87.5% 到 100% 的比例重复其多数标签，而 TypeSafe 为 90.8%。TypeSafe 的平均概率波动低于六个 LLM 分布条件中的五个；Haiku 在 temperature 0 下波动更小。相近的概率仍可能导致路由变化：TypeSafe 在 8 个问题中的 2 个上发生翻转。</p>
+<p>对于应用层决策，我们还要求最高概率至少为 <code>0.60</code>；否则结果标记为 <code>uncertain</code>，转入人工复核（human review）。此时 TypeSafe 的一致性提升至 99.2%，自动标签覆盖 74.2% 的答案。我们会展示原始输出，并对 LLM 概率条件应用相同的阈值（threshold），保留弃投与变化以便观察。</p>
+<h2 id="setup">准备工作</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install anthropic openai matplotlib ipython <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<p>然后设置 <code>TYPESAFE_API_KEY</code>、<code>ANTHROPIC_API_KEY</code> 与 <code>OPENAI_API_KEY</code>。本次运行在生产 API 上使用 <code>jev-latest</code>，采样时间为 2026-09-11。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> hashlib
+<span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> textwrap
+<span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> Counter
+<span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+<span class="hljs-keyword">from</span> secrets <span class="hljs-keyword">import</span> token_hex
+<span class="hljs-keyword">from</span> statistics <span class="hljs-keyword">import</span> mean
+
+<span class="hljs-keyword">from</span> time <span class="hljs-keyword">import</span> perf_counter
+
+<span class="hljs-keyword">import</span> anthropic
+<span class="hljs-keyword">import</span> matplotlib
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> matplotlib.colors <span class="hljs-keyword">import</span> ListedColormap
+<span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, TypeSafeClient
+
+matplotlib.use(<span class="hljs-string">&quot;Agg&quot;</span>)  <span class="hljs-comment"># headless render</span>
+
+BASE_MODELS = [
+    <span class="hljs-string">&quot;claude-haiku-4-5&quot;</span>,
+    <span class="hljs-string">&quot;gpt-5.4-mini&quot;</span>,
+]  <span class="hljs-comment"># non-reasoning models: temperature 0 + API default</span>
+REASONING_MODELS = [
+    <span class="hljs-string">&quot;gpt-5.5&quot;</span>,
+    <span class="hljs-string">&quot;claude-opus-4-8&quot;</span>,
+]  <span class="hljs-comment"># reasoning models: think first, no temperature</span>
+TYPESAFE_MODEL = <span class="hljs-string">&quot;jev-latest&quot;</span>  <span class="hljs-comment"># the TypeSafe model</span>
+NUM_SAMPLES = <span class="hljs-number">15</span>  <span class="hljs-comment"># repeated post+rubric calls per condition</span>
+MIN_CHOICE_PROBABILITY = <span class="hljs-number">0.60</span>  <span class="hljs-comment"># illustrative automatic-action threshold</span>
+
+LLM_PRICES = {  <span class="hljs-comment"># $ per 1M tokens (input, output); prices + model ids as of 2026-07, see README</span>
+    <span class="hljs-string">&quot;claude-haiku-4-5&quot;</span>: (<span class="hljs-number">1.00</span>, <span class="hljs-number">5.00</span>),
+    <span class="hljs-string">&quot;gpt-5.4-mini&quot;</span>: (<span class="hljs-number">0.75</span>, <span class="hljs-number">4.50</span>),
+    <span class="hljs-string">&quot;gpt-5.5&quot;</span>: (<span class="hljs-number">5.00</span>, <span class="hljs-number">30.00</span>),
+    <span class="hljs-string">&quot;claude-opus-4-8&quot;</span>: (<span class="hljs-number">5.00</span>, <span class="hljs-number">25.00</span>),
+}
+TYPESAFE_PRICE = (<span class="hljs-number">0.042</span>, <span class="hljs-number">0.00</span>)  <span class="hljs-comment"># Historical TypeSafe rate, as of 2026-08</span>
+
+anthropic_client = anthropic.Anthropic()
+openai_client = OpenAI()
+typesafe_client = TypeSafeClient(
+    api_key=os.environ[<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>],
+    base_url=<span class="hljs-string">&quot;https://api.typesafe.ai&quot;</span>,
+    timeout=<span class="hljs-number">30.0</span>,
+)</code></pre></div>
+<h2 id="the-state-a-borderline-user-post-as-json">上下文状态（state）：一条边界状态的用户帖子，JSON 格式</h2>
+<p>下面这条帖子被刻意设计为边界案例。语气激烈且带侮辱性，部分针对某个人，部分针对论点与社区。帖子包含一个外部邀请链接（将用户引向其他站点），账号已有 1 次历史违规记录，并收到 4 次用户举报，而威胁性措辞从未以清晰的方式表述。</p>
+<p>这里没有单一的明确答案，而这正是要点：微小的措辞差异不应让同一篇帖子在不同执行路径之间随意跳转。</p>
+<p>LLM 在 prompt 中获取 <code>json.dumps(POST)</code>。TypeSafe 直接获取 Python dict。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">POST = {
+    <span class="hljs-string">&quot;post_id&quot;</span>: <span class="hljs-string">&quot;P-88213&quot;</span>,
+    <span class="hljs-string">&quot;author&quot;</span>: {
+        <span class="hljs-string">&quot;user_id&quot;</span>: <span class="hljs-string">&quot;u/4471&quot;</span>,
+        <span class="hljs-string">&quot;account_age_days&quot;</span>: <span class="hljs-number">38</span>,
+        <span class="hljs-string">&quot;prior_strikes&quot;</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">&quot;followers&quot;</span>: <span class="hljs-number">210</span>,
+    },
+    <span class="hljs-string">&quot;context&quot;</span>: {
+        <span class="hljs-string">&quot;surface&quot;</span>: <span class="hljs-string">&quot;public reply&quot;</span>,
+        <span class="hljs-string">&quot;in_reply_to&quot;</span>: <span class="hljs-string">&quot;another user defending a game patch&quot;</span>,
+        <span class="hljs-string">&quot;community&quot;</span>: <span class="hljs-string">&quot;r/gamedebates&quot;</span>,
+    },
+    <span class="hljs-string">&quot;content&quot;</span>: {
+        <span class="hljs-string">&quot;text&quot;</span>: (
+            <span class="hljs-string">&quot;Are you seriously this dense? Anyone who defends that patch is a complete clown and &quot;</span>
+            <span class="hljs-string">&quot;should be embarrassed to even post here. People like you are what&#x27;s ruining this &quot;</span>
+            <span class="hljs-string">&quot;community and honestly you need to be dealt with. Come say it to my face, invite&#x27;s &quot;</span>
+            <span class="hljs-string">&quot;right here. Keep it up and I&#x27;ll end your whole channel.&quot;</span>
+        ),
+        <span class="hljs-string">&quot;has_link&quot;</span>: <span class="hljs-literal">True</span>,
+        <span class="hljs-string">&quot;link_domain&quot;</span>: <span class="hljs-string">&quot;discord.gg&quot;</span>,
+        <span class="hljs-string">&quot;language&quot;</span>: <span class="hljs-string">&quot;en&quot;</span>,
+    },
+    <span class="hljs-string">&quot;reports&quot;</span>: {<span class="hljs-string">&quot;user_reports&quot;</span>: <span class="hljs-number">4</span>, <span class="hljs-string">&quot;report_reasons&quot;</span>: [<span class="hljs-string">&quot;harassment&quot;</span>, <span class="hljs-string">&quot;spam&quot;</span>, <span class="hljs-string">&quot;threat&quot;</span>]},
+}</code></pre></div>
+<h2 id="the-rubric-8-choice-questions">评分表：8 个 Choice 问题</h2>
+<p>每个问题包含一个 <code>key</code>、一行 instructions 和一组固定的标签。问题中的标签两两互斥（恰好一个适用），每个标签都附带简短描述。TypeSafe 返回选中的 <code>choice</code> 以及标签上的 <code>probabilities</code> 概率分布。我们要求 LLM 使用相同的标签集，使每一行数据可比。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">QUESTIONS = {
+    <span class="hljs-string">&quot;category&quot;</span>: (
+        <span class="hljs-string">&quot;What is the single most applicable content-policy category for this post?&quot;</span>,
+        {
+            <span class="hljs-string">&quot;None&quot;</span>: <span class="hljs-string">&quot;No policy violation of any kind.&quot;</span>,
+            <span class="hljs-string">&quot;Harass&quot;</span>: <span class="hljs-string">&quot;Insults or demeans a person, with no threat of harm and no protected-class attack.&quot;</span>,
+            <span class="hljs-string">&quot;Hate&quot;</span>: <span class="hljs-string">&quot;Attacks a person or group over a protected characteristic (race, religion, gender, ...).&quot;</span>,
+            <span class="hljs-string">&quot;Violence&quot;</span>: <span class="hljs-string">&quot;Makes a credible threat of harm or incites violence against someone.&quot;</span>,
+            <span class="hljs-string">&quot;Spam&quot;</span>: <span class="hljs-string">&quot;Unsolicited promotion or link spam, with no personal attack.&quot;</span>,
+            <span class="hljs-string">&quot;Sexual&quot;</span>: <span class="hljs-string">&quot;Sexual or adult content.&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;primary_risk&quot;</span>: (
+        <span class="hljs-string">&quot;What is the primary moderation risk that should drive triage for this post?&quot;</span>,
+        {
+            <span class="hljs-string">&quot;Harassment&quot;</span>: <span class="hljs-string">&quot;Personal attack or targeted abuse is the main risk.&quot;</span>,
+            <span class="hljs-string">&quot;Violence&quot;</span>: <span class="hljs-string">&quot;A threat of harm or intimidation is the main risk.&quot;</span>,
+            <span class="hljs-string">&quot;LinkAbuse&quot;</span>: <span class="hljs-string">&quot;External-link or off-platform coordination risk is the main risk.&quot;</span>,
+            <span class="hljs-string">&quot;AccountHistory&quot;</span>: <span class="hljs-string">&quot;Prior account history or repeat behavior is the main risk.&quot;</span>,
+            <span class="hljs-string">&quot;LowRisk&quot;</span>: <span class="hljs-string">&quot;No meaningful moderation risk is present.&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;target&quot;</span>: (
+        <span class="hljs-string">&quot;Who or what is the content primarily directed at?&quot;</span>,
+        {
+            <span class="hljs-string">&quot;None&quot;</span>: <span class="hljs-string">&quot;Not directed at anyone in particular.&quot;</span>,
+            <span class="hljs-string">&quot;Person&quot;</span>: <span class="hljs-string">&quot;Directed at one specific individual.&quot;</span>,
+            <span class="hljs-string">&quot;Group&quot;</span>: <span class="hljs-string">&quot;Directed at a protected group or class.&quot;</span>,
+            <span class="hljs-string">&quot;Platform&quot;</span>: <span class="hljs-string">&quot;Directed at the community or platform itself, not a person.&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;action&quot;</span>: (
+        <span class="hljs-string">&quot;What enforcement action should be taken on this post?&quot;</span>,
+        {
+            <span class="hljs-string">&quot;Allow&quot;</span>: <span class="hljs-string">&quot;Leave the post up with no action.&quot;</span>,
+            <span class="hljs-string">&quot;Warn&quot;</span>: <span class="hljs-string">&quot;Leave the post up but attach a warning label.&quot;</span>,
+            <span class="hljs-string">&quot;Remove&quot;</span>: <span class="hljs-string">&quot;Remove the post, but do not penalize the account.&quot;</span>,
+            <span class="hljs-string">&quot;Strike&quot;</span>: <span class="hljs-string">&quot;Remove the post and add a strike to the account.&quot;</span>,
+            <span class="hljs-string">&quot;Escalate&quot;</span>: <span class="hljs-string">&quot;Take no automated action; hold for a human decision.&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;queue&quot;</span>: (
+        <span class="hljs-string">&quot;Which single moderation queue should own this post?&quot;</span>,
+        {
+            <span class="hljs-string">&quot;Auto&quot;</span>: <span class="hljs-string">&quot;Auto-resolve; no human queue needed.&quot;</span>,
+            <span class="hljs-string">&quot;General&quot;</span>: <span class="hljs-string">&quot;General moderation queue.&quot;</span>,
+            <span class="hljs-string">&quot;Threat&quot;</span>: <span class="hljs-string">&quot;Threat / violence response queue.&quot;</span>,
+            <span class="hljs-string">&quot;Spam&quot;</span>: <span class="hljs-string">&quot;Spam and platform-abuse queue.&quot;</span>,
+            <span class="hljs-string">&quot;TSLead&quot;</span>: <span class="hljs-string">&quot;Trust-and-safety lead / senior queue.&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;link_handling&quot;</span>: (
+        <span class="hljs-string">&quot;How should any external link or off-platform invite in the post be handled?&quot;</span>,
+        {
+            <span class="hljs-string">&quot;Allow&quot;</span>: <span class="hljs-string">&quot;Leave the link in place.&quot;</span>,
+            <span class="hljs-string">&quot;RmLink&quot;</span>: <span class="hljs-string">&quot;Strip or disable the link but keep the post.&quot;</span>,
+            <span class="hljs-string">&quot;Brigade&quot;</span>: <span class="hljs-string">&quot;Treat the link as coordinated brigading and action it as abuse.&quot;</span>,
+            <span class="hljs-string">&quot;Escalate&quot;</span>: <span class="hljs-string">&quot;Send the link to a specialist to assess before acting.&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;review_path&quot;</span>: (
+        <span class="hljs-string">&quot;Who should make the final call on this post?&quot;</span>,
+        {
+            <span class="hljs-string">&quot;Auto&quot;</span>: <span class="hljs-string">&quot;Automated action; no human review.&quot;</span>,
+            <span class="hljs-string">&quot;Human&quot;</span>: <span class="hljs-string">&quot;A frontline human moderator makes the call.&quot;</span>,
+            <span class="hljs-string">&quot;Senior&quot;</span>: <span class="hljs-string">&quot;A senior or specialist reviewer is required.&quot;</span>,
+            <span class="hljs-string">&quot;Legal&quot;</span>: <span class="hljs-string">&quot;Route to legal or law-enforcement escalation.&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;severity&quot;</span>: (
+        <span class="hljs-string">&quot;What is the overall severity of this post?&quot;</span>,
+        {
+            <span class="hljs-string">&quot;None&quot;</span>: <span class="hljs-string">&quot;No violation.&quot;</span>,
+            <span class="hljs-string">&quot;Low&quot;</span>: <span class="hljs-string">&quot;Rude or dismissive, but essentially harmless.&quot;</span>,
+            <span class="hljs-string">&quot;Medium&quot;</span>: <span class="hljs-string">&quot;Personal harassment with no clearly credible threat.&quot;</span>,
+            <span class="hljs-string">&quot;High&quot;</span>: <span class="hljs-string">&quot;Harassment together with a threat that could be read as credible.&quot;</span>,
+        },
+    ),
+}</code></pre></div>
+<h2 id="how-we-ask">我们如何提问</h2>
+<p>每次大语言模型（LLM）调用都是一条提示词，其中包含 <code>json.dumps(POST)</code>、全部 8 个问题，以及每个允许使用的标签。答案有两种格式。在分布模式下，模型对每个问题返回一个 JSON 对象，其中每个标签各对应一个概率值。在单选模式下，模型对每个问题返回一个裸标签，我们的后续分析会把这道题上全部的概率质量都集中到这个标签上。</p>
+<p>TypeSafe 调用针对同一帖子和同一组 8 个 <code>Choice</code> 问题发起一次 <code>system_one</code> 请求，对每个问题返回一个分布。</p>
+<p>每次查询还会得到一个全新的 <code>uid</code>，这是一个每次运行都会变化的一次性唯一值，而帖子和评分标准保持不变。它既会出现在 LLM 提示词中，也会作为 TypeSafe state 中的一个额外字段。这种设置无法把模型对无关字段的敏感性与在完全相同的请求上本就存在的波动区分开来。</p>
+<p>每个 helper 都会返回答案、预估成本和往返时延。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">argmax_label</span>(<span class="hljs-params">values: <span class="hljs-built_in">list</span>, labels: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-built_in">str</span> | <span class="hljs-literal">None</span>:
+    <span class="hljs-string">&quot;&quot;&quot;The label with the most probability mass, or ``None`` if any value is missing or
+    non-numeric -- a partially parsed distribution never yields a confident-looking pick.&quot;&quot;&quot;</span>
+    numeric = [_numeric_value(value) <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> values]
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">any</span>(value <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> numeric):
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
+    <span class="hljs-keyword">return</span> labels[<span class="hljs-built_in">int</span>(np.argmax(numeric))]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">choice_decision_with_uncertainty</span>(<span class="hljs-params">values: <span class="hljs-built_in">list</span>, labels: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-built_in">str</span> | <span class="hljs-literal">None</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Abstain below the action threshold; retain invalid results as parse failures.&quot;&quot;&quot;</span>
+    label = argmax_label(values, labels)
+    <span class="hljs-keyword">if</span> label <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
+    probabilities = [<span class="hljs-built_in">float</span>(value) <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> values]
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">any</span>(value &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> value &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> probabilities):
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
+    <span class="hljs-keyword">return</span> label <span class="hljs-keyword">if</span> <span class="hljs-built_in">max</span>(probabilities) &gt;= MIN_CHOICE_PROBABILITY <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;uncertain&quot;</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">choice_decision_annotation</span>(<span class="hljs-params">values: <span class="hljs-built_in">list</span>, labels: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Show the application decision and top probability in a heatmap cell.&quot;&quot;&quot;</span>
+    decision = choice_decision_with_uncertainty(values, labels)
+    <span class="hljs-keyword">if</span> decision <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>
+    probability = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">float</span>(value) <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> values)
+    probability_text = <span class="hljs-string">f&quot;<span class="hljs-subst">{probability:<span class="hljs-number">.2</span>f}</span>&quot;</span>.removeprefix(<span class="hljs-string">&quot;0&quot;</span>)
+    <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;<span class="hljs-subst">{decision}</span> <span class="hljs-subst">{probability_text}</span>&quot;</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_numeric_value</span>(<span class="hljs-params">value: <span class="hljs-built_in">object</span></span>) -&gt; <span class="hljs-built_in">float</span> | <span class="hljs-literal">None</span>:
+    <span class="hljs-string">&quot;&quot;&quot;A finite numeric value, or ``None`` if the model emitted something unusable.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">try</span>:
+        numeric = <span class="hljs-built_in">float</span>(value)
+    <span class="hljs-keyword">except</span> (TypeError, ValueError):
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
+    <span class="hljs-keyword">return</span> numeric <span class="hljs-keyword">if</span> np.isfinite(numeric) <span class="hljs-keyword">else</span> <span class="hljs-literal">None</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">parse_distribution</span>(<span class="hljs-params">raw: <span class="hljs-built_in">object</span>, labels: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">float</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Map a model&#x27;s already-parsed per-question reply to per-label probabilities, in label order
+    (distribution-mode answers left un-normalized).
+
+    A single-pick reply is a single label string -&gt; all the mass on that exact label; a
+    distribution-mode reply is a dict read label by label. Anything that doesn&#x27;t match a known label
+    or isn&#x27;t a finite number is left NaN -- we report the gap rather than massaging the reply (e.g.
+    stripping an echoed description) to make it fit.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(raw, <span class="hljs-built_in">str</span>):  <span class="hljs-comment"># single-pick mode: a single chosen label</span>
+        <span class="hljs-keyword">if</span> raw <span class="hljs-keyword">in</span> labels:
+            <span class="hljs-keyword">return</span> [<span class="hljs-number">1.0</span> <span class="hljs-keyword">if</span> label == raw <span class="hljs-keyword">else</span> <span class="hljs-number">0.0</span> <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> labels]
+        <span class="hljs-keyword">return</span> [<span class="hljs-built_in">float</span>(<span class="hljs-string">&quot;nan&quot;</span>)] * <span class="hljs-built_in">len</span>(labels)
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(raw, <span class="hljs-built_in">dict</span>):
+        <span class="hljs-keyword">return</span> [<span class="hljs-built_in">float</span>(<span class="hljs-string">&quot;nan&quot;</span>)] * <span class="hljs-built_in">len</span>(labels)
+    <span class="hljs-keyword">return</span> [
+        value <span class="hljs-keyword">if</span> (value := _numeric_value(raw.get(label))) <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">else</span> <span class="hljs-built_in">float</span>(<span class="hljs-string">&quot;nan&quot;</span>)
+        <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> labels
+    ]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">rubric_prompt</span>(<span class="hljs-params">mode: <span class="hljs-built_in">str</span>, sample_index: <span class="hljs-built_in">int</span>, rubric_hash: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-string">&quot;&quot;&quot;The post + all questions (with their label sets) in one prompt; ``mode`` picks the format.
+
+    ``mode=&quot;dist&quot;`` asks for a probability distribution over each question&#x27;s labels; the single-pick
+    mode (``mode=&quot;single&quot;``) asks for a single label per question. The uid line combines
+    ``rubric_hash`` (which rubric version) with ``sample_index`` and a random token, so every repeat
+    is a distinct, independent draw and two different rubrics never share a nonce.&quot;&quot;&quot;</span>
+    lines = []
+    <span class="hljs-keyword">for</span> key, (instructions, choices) <span class="hljs-keyword">in</span> QUESTIONS.items():
+        labels = <span class="hljs-string">&quot;\n&quot;</span>.join(<span class="hljs-string">f&quot;     <span class="hljs-subst">{label}</span>: <span class="hljs-subst">{desc}</span>&quot;</span> <span class="hljs-keyword">for</span> label, desc <span class="hljs-keyword">in</span> choices.items())
+        lines.append(<span class="hljs-string">f&quot;- <span class="hljs-subst">{key}</span>: <span class="hljs-subst">{instructions}</span>\n   labels:\n<span class="hljs-subst">{labels}</span>&quot;</span>)
+    exclusivity = (
+        <span class="hljs-string">&quot;\n\nEach question&#x27;s labels are mutually exclusive: exactly one applies. If a post could &quot;</span>
+        <span class="hljs-string">&quot;arguably fit more than one, pick the single most severe / most specific label per the &quot;</span>
+        <span class="hljs-string">&quot;label descriptions.&quot;</span>
+    )
+    <span class="hljs-keyword">if</span> mode == <span class="hljs-string">&quot;single&quot;</span>:
+        answer_format = (
+            <span class="hljs-string">&quot;\n\nFor each question, pick exactly ONE label.\nRespond with ONLY a JSON object &quot;</span>
+            <span class="hljs-string">&quot;mapping each question&#x27;s key to one of that question&#x27;s bare labels (the label only, &quot;</span>
+            <span class="hljs-string">&quot;not its description), with one entry per question.&quot;</span>
+        )
+    <span class="hljs-keyword">else</span>:
+        answer_format = (
+            <span class="hljs-string">&quot;\n\nFor each question, give a probability distribution over that question&#x27;s labels &quot;</span>
+            <span class="hljs-string">&quot;(values 0.00-1.00 that sum to 1).\nRespond with ONLY a JSON object mapping each &quot;</span>
+            <span class="hljs-string">&quot;question&#x27;s key to an object mapping that question&#x27;s bare labels (the label only, &quot;</span>
+            <span class="hljs-string">&quot;not its description) to probabilities, with one entry per question.&quot;</span>
+        )
+    <span class="hljs-keyword">return</span> (
+        <span class="hljs-string">f&quot;uid: <span class="hljs-subst">{rubric_hash}</span>:<span class="hljs-subst">{sample_index}</span>:<span class="hljs-subst">{token_hex(<span class="hljs-number">4</span>)}</span>\n\n&quot;</span>
+        <span class="hljs-string">f&quot;Document (a reported user post):\n<span class="hljs-subst">{json.dumps(POST, indent=<span class="hljs-number">2</span>)}</span>\n\nQuestions:\n&quot;</span>
+        + <span class="hljs-string">&quot;\n&quot;</span>.join(lines)
+        + exclusivity
+        + answer_format
+    )
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_cost</span>(<span class="hljs-params">prices: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>], input_tokens: <span class="hljs-built_in">int</span>, output_tokens: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-keyword">return</span> input_tokens / <span class="hljs-number">1e6</span> * prices[<span class="hljs-number">0</span>] + output_tokens / <span class="hljs-number">1e6</span> * prices[<span class="hljs-number">1</span>]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_call_llm</span>(<span class="hljs-params">model: <span class="hljs-built_in">str</span>, prompt: <span class="hljs-built_in">str</span>, temperature: <span class="hljs-built_in">float</span> | <span class="hljs-literal">None</span></span>):
+    <span class="hljs-string">&quot;&quot;&quot;One LLM call -&gt; (text, cost_usd, latency_s), routed by model name.&quot;&quot;&quot;</span>
+    reasoning = model <span class="hljs-keyword">in</span> REASONING_MODELS
+    started = perf_counter()
+    <span class="hljs-keyword">if</span> model.startswith(<span class="hljs-string">&quot;claude&quot;</span>):
+        kwargs = {
+            <span class="hljs-string">&quot;model&quot;</span>: model,
+            <span class="hljs-string">&quot;max_tokens&quot;</span>: <span class="hljs-number">4096</span>,
+            <span class="hljs-string">&quot;messages&quot;</span>: [{<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: prompt}],
+        }
+        <span class="hljs-keyword">if</span> reasoning:
+            kwargs[<span class="hljs-string">&quot;thinking&quot;</span>] = {<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;adaptive&quot;</span>}
+        <span class="hljs-keyword">elif</span> temperature <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+            kwargs[<span class="hljs-string">&quot;temperature&quot;</span>] = temperature
+        response = anthropic_client.messages.create(**kwargs)
+        text = <span class="hljs-built_in">next</span>((b.text <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> response.content <span class="hljs-keyword">if</span> b.<span class="hljs-built_in">type</span> == <span class="hljs-string">&quot;text&quot;</span>), <span class="hljs-string">&quot;&quot;</span>)
+        usage = (response.usage.input_tokens, response.usage.output_tokens)
+    <span class="hljs-keyword">else</span>:
+        kwargs = {<span class="hljs-string">&quot;model&quot;</span>: model, <span class="hljs-string">&quot;messages&quot;</span>: [{<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: prompt}]}
+        <span class="hljs-keyword">if</span> reasoning:
+            kwargs[<span class="hljs-string">&quot;reasoning_effort&quot;</span>] = <span class="hljs-string">&quot;high&quot;</span>
+        <span class="hljs-keyword">elif</span> temperature <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+            kwargs[<span class="hljs-string">&quot;temperature&quot;</span>] = temperature
+        response = openai_client.chat.completions.create(**kwargs)
+        text = response.choices[<span class="hljs-number">0</span>].message.content
+        usage = (response.usage.prompt_tokens, response.usage.completion_tokens)
+    <span class="hljs-keyword">return</span> text, _cost(LLM_PRICES[model], *usage), perf_counter() - started
+
+
+<span class="hljs-comment"># All samples (LLM and TypeSafe) are cached to ``json_cache.json``, which ships with the cookbook, so</span>
+<span class="hljs-comment"># re-rendering is instant and reproduces the published numbers with no API spend. ``sample_index``</span>
+<span class="hljs-comment"># seeds the uid buster and is part of the cache key, so each of the NUM_SAMPLES repeats is its own</span>
+<span class="hljs-comment"># entry and its own independent draw, not one draw replayed. Delete ``json_cache.json`` to re-sample</span>
+<span class="hljs-comment"># everything live.</span>
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_rubric_fingerprint</span>() -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Short digest of everything that shapes the prompt/rubric: the state and every question&#x27;s
+    text and label set. Passed into the cached calls below so that editing the post or any question
+    changes the cache key and forces a fresh sample, instead of silently serving a stale answer that
+    was generated for the old wording.&quot;&quot;&quot;</span>
+    payload = json.dumps([POST, QUESTIONS], sort_keys=<span class="hljs-literal">True</span>, default=<span class="hljs-built_in">str</span>)
+    <span class="hljs-keyword">return</span> hashlib.sha256(payload.encode()).hexdigest()[:<span class="hljs-number">12</span>]
+
+
+RUBRIC_HASH = _rubric_fingerprint()
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_call_typesafe</span>(<span class="hljs-params">sample_index: <span class="hljs-built_in">int</span>, rubric_hash: <span class="hljs-built_in">str</span>, model: <span class="hljs-built_in">str</span></span>):
+    <span class="hljs-string">&quot;&quot;&quot;Return distributions, token usage, latency, and model metadata for one call.
+
+    ``rubric_hash`` and ``model`` prevent reuse across rubric or model changes.
+    Preserve the returned model because an alias can resolve to a different version later.
+    &quot;&quot;&quot;</span>
+    questions = {
+        key: Choice(instructions=instructions, criteria=choices)
+        <span class="hljs-keyword">for</span> key, (instructions, choices) <span class="hljs-keyword">in</span> QUESTIONS.items()
+    }
+    started = perf_counter()
+    response = typesafe_client.system_one(
+        model=model,
+        state={<span class="hljs-string">&quot;uid&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{rubric_hash}</span>:<span class="hljs-subst">{sample_index}</span>:<span class="hljs-subst">{token_hex(<span class="hljs-number">4</span>)}</span>&quot;</span>, <span class="hljs-string">&quot;post&quot;</span>: POST},
+        questions=questions,
+    )
+    distributions = {}
+    <span class="hljs-keyword">for</span> key, (_instructions, choices) <span class="hljs-keyword">in</span> QUESTIONS.items():
+        probabilities = <span class="hljs-built_in">dict</span>(response.answers[key].probabilities)
+        distributions[key] = [
+            probabilities.get(label, <span class="hljs-built_in">float</span>(<span class="hljs-string">&quot;nan&quot;</span>)) <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> choices
+        ]
+    <span class="hljs-keyword">return</span> (
+        distributions,
+        response.usage.input_tokens,
+        response.usage.output_tokens,
+        perf_counter() - started,
+        {<span class="hljs-string">&quot;requested_model&quot;</span>: model, <span class="hljs-string">&quot;response_model&quot;</span>: response.model},
+    )
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">ask_llm_rubric</span>(<span class="hljs-params">
+    model: <span class="hljs-built_in">str</span>,
+    mode: <span class="hljs-built_in">str</span>,
+    temperature: <span class="hljs-built_in">float</span> | <span class="hljs-literal">None</span>,
+    sample_index: <span class="hljs-built_in">int</span>,
+    rubric_hash: <span class="hljs-built_in">str</span>,
+</span>):
+    <span class="hljs-string">&quot;&quot;&quot;One LLM rubric query -&gt; (per-question label distributions keyed by question key, cost_usd,
+    latency_s); NaNs if the reply doesn&#x27;t parse.
+
+    ``mode=&quot;dist&quot;`` parses 8 label distributions; the single-pick mode (``mode=&quot;single&quot;``) parses 8
+    single labels and puts all the mass on each. ``rubric_hash`` goes into the prompt&#x27;s uid nonce
+    (and so the cache key), so an edited state/rubric busts the cache instead of serving a stale
+    answer.&quot;&quot;&quot;</span>
+    prompt = rubric_prompt(mode, sample_index, rubric_hash)
+    text, cost, latency = _call_llm(model, prompt, temperature)
+    <span class="hljs-comment"># Peel a single ```json ... ``` fence (claude-haiku-4-5 sometimes adds one despite &quot;ONLY a JSON</span>
+    <span class="hljs-comment"># object&quot;).</span>
+    stripped = text.strip()
+    <span class="hljs-keyword">if</span> stripped.startswith(<span class="hljs-string">&quot;```&quot;</span>):
+        stripped = stripped[stripped.find(<span class="hljs-string">&quot;\n&quot;</span>) + <span class="hljs-number">1</span> :] <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;\n&quot;</span> <span class="hljs-keyword">in</span> stripped <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;&quot;</span>
+        <span class="hljs-keyword">if</span> stripped.rstrip().endswith(<span class="hljs-string">&quot;```&quot;</span>):
+            stripped = stripped.rstrip()[: -<span class="hljs-built_in">len</span>(<span class="hljs-string">&quot;```&quot;</span>)]
+    <span class="hljs-keyword">try</span>:
+        raw = json.loads(stripped)
+    <span class="hljs-keyword">except</span> (ValueError, json.JSONDecodeError):
+        raw = {}
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(raw, <span class="hljs-built_in">dict</span>):
+        raw = {}
+    distributions = {
+        key: parse_distribution(raw.get(key), <span class="hljs-built_in">list</span>(choices))
+        <span class="hljs-keyword">for</span> key, (_instructions, choices) <span class="hljs-keyword">in</span> QUESTIONS.items()
+    }
+    <span class="hljs-keyword">return</span> distributions, cost, latency</code></pre></div>
+<h2 id="experimental-conditions">实验条件</h2>
+<h3 id="experiment-grid">实验网格</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模型分组</th>
+<th>模型</th>
+<th align="center">分布（t=0）</th>
+<th align="center">分布（默认）</th>
+<th align="center">单选（t=0）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>非推理模型</td>
+<td><code>claude-haiku-4-5</code></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>非推理模型</td>
+<td><code>gpt-5.4-mini</code></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>推理模型</td>
+<td><code>gpt-5.5</code></td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>推理模型</td>
+<td><code>claude-opus-4-8</code></td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>TypeSafe</td>
+<td><code>jev-latest</code>（<code>typesafe_choice</code>）</td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>✓ 标记表示该条件测试了 15 次重复；— 标记表示未测试该组合。</li>
+<li>默认列不发送 temperature 参数：非推理模型使用 API 默认值，推理模型和 TypeSafe 运行时不设置 temperature。</li>
+<li>单选条件每次返回问题的一个标签。</li>
+<li>Temperature 0 常被建议用于可重复性，因此与 API 默认值进行比较。</li>
+</ul>
+<p>我们为每个条件采样 <code>NUM_SAMPLES</code> = 15 次重复。每次重复都有自己的缓存键，并算作一次独立抽取，缓存（<code>json_cache.json</code>）随本实战示例一同提供，因此重新渲染时会复用该缓存而不消耗任何 API 调用。删除缓存即可重新进行实时采样。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">CONDITIONS = []
+<span class="hljs-keyword">for</span> (
+    model
+) <span class="hljs-keyword">in</span> BASE_MODELS:  <span class="hljs-comment"># non-reasoning models: dist at t=0 / default, then a single-pick variant</span>
+    <span class="hljs-keyword">for</span> temp_value, temp_label <span class="hljs-keyword">in</span> ((<span class="hljs-number">0</span>, <span class="hljs-string">&quot;0&quot;</span>), (<span class="hljs-literal">None</span>, <span class="hljs-string">&quot;default&quot;</span>)):
+        CONDITIONS.append(
+            {
+                <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{model}</span> t=<span class="hljs-subst">{temp_label}</span>&quot;</span>,
+                <span class="hljs-string">&quot;model&quot;</span>: model,
+                <span class="hljs-string">&quot;temp&quot;</span>: temp_value,
+                <span class="hljs-string">&quot;mode&quot;</span>: <span class="hljs-string">&quot;dist&quot;</span>,
+            }
+        )
+    CONDITIONS.append(
+        {
+            <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{model}</span> single-pick t=0&quot;</span>,
+            <span class="hljs-string">&quot;model&quot;</span>: model,
+            <span class="hljs-string">&quot;temp&quot;</span>: <span class="hljs-number">0</span>,
+            <span class="hljs-string">&quot;mode&quot;</span>: <span class="hljs-string">&quot;single&quot;</span>,
+        }
+    )
+CONDITIONS += [  <span class="hljs-comment"># reasoning models: one distribution condition each</span>
+    {
+        <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{model}</span>-reasoning&quot;</span>,
+        <span class="hljs-string">&quot;model&quot;</span>: model,
+        <span class="hljs-string">&quot;temp&quot;</span>: <span class="hljs-literal">None</span>,
+        <span class="hljs-string">&quot;mode&quot;</span>: <span class="hljs-string">&quot;dist&quot;</span>,
+    }
+    <span class="hljs-keyword">for</span> model <span class="hljs-keyword">in</span> REASONING_MODELS
+]
+LABELS = [condition[<span class="hljs-string">&quot;label&quot;</span>] <span class="hljs-keyword">for</span> condition <span class="hljs-keyword">in</span> CONDITIONS]
+TYPESAFE_LABEL = <span class="hljs-string">&quot;typesafe_choice&quot;</span>
+ALL_LABELS = [*LABELS, TYPESAFE_LABEL]
+
+runs: <span class="hljs-built_in">dict</span>[
+    <span class="hljs-built_in">str</span>, <span class="hljs-built_in">list</span>
+] = {}  <span class="hljs-comment"># label -&gt; NUM_SAMPLES samples of {question key: distribution}</span>
+stats: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">list</span>] = {}  <span class="hljs-comment"># label -&gt; NUM_SAMPLES (cost_usd, latency_s) pairs</span>
+<span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-number">16</span>) <span class="hljs-keyword">as</span> pool:
+    futures = {
+        condition[<span class="hljs-string">&quot;label&quot;</span>]: [
+            pool.submit(
+                ask_llm_rubric,
+                condition[<span class="hljs-string">&quot;model&quot;</span>],
+                condition[<span class="hljs-string">&quot;mode&quot;</span>],
+                condition[<span class="hljs-string">&quot;temp&quot;</span>],
+                sample_index,
+                RUBRIC_HASH,
+            )
+            <span class="hljs-keyword">for</span> sample_index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(NUM_SAMPLES)
+        ]
+        <span class="hljs-keyword">for</span> condition <span class="hljs-keyword">in</span> CONDITIONS
+    }
+    <span class="hljs-keyword">for</span> label, sample_futures <span class="hljs-keyword">in</span> futures.items():
+        results = [future.result() <span class="hljs-keyword">for</span> future <span class="hljs-keyword">in</span> sample_futures]
+        runs[label] = [result[<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> results]
+        stats[label] = [(result[<span class="hljs-number">1</span>], result[<span class="hljs-number">2</span>]) <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> results]
+
+<span class="hljs-comment"># TypeSafe samples are drawn sequentially, after the LLM pool has closed, so each call&#x27;s latency is a</span>
+<span class="hljs-comment"># clean round trip rather than one measured under the 16-way LLM thread contention.</span>
+typesafe_usage_results = [
+    _call_typesafe(sample_index, RUBRIC_HASH, TYPESAFE_MODEL)
+    <span class="hljs-keyword">for</span> sample_index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(NUM_SAMPLES)
+]
+<span class="hljs-comment"># Report every returned version so alias changes within a run remain visible.</span>
+typesafe_model_counts = Counter(
+    result[<span class="hljs-number">4</span>][<span class="hljs-string">&quot;response_model&quot;</span>]
+    <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> typesafe_usage_results
+)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;TypeSafe requested model: <span class="hljs-subst">{TYPESAFE_MODEL}</span>&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;TypeSafe returned models (calls): <span class="hljs-subst">{<span class="hljs-built_in">dict</span>(<span class="hljs-built_in">sorted</span>(typesafe_model_counts.items()))}</span>&quot;</span>)
+<span class="hljs-comment"># Apply pricing after cache retrieval so price changes do not require new samples.</span>
+typesafe_results = [
+    (distributions, _cost(TYPESAFE_PRICE, input_tokens, output_tokens), latency)
+    <span class="hljs-keyword">for</span> distributions, input_tokens, output_tokens, latency, _metadata <span class="hljs-keyword">in</span> typesafe_usage_results
+]
+typesafe_runs = [result[<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> typesafe_results]
+stats[TYPESAFE_LABEL] = [(result[<span class="hljs-number">1</span>], result[<span class="hljs-number">2</span>]) <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> typesafe_results]</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">TypeSafe requested model: jev-latest
+TypeSafe returned models (calls): {&#39;jev-1.13.0&#39;: 15}</code></pre></div>
+<h3 id="cost-speed-per-rubric-query">成本 + 速度（按每次评分量表（rubric）查询计）</h3>
+<p>以下成本使用「设置」一节中的历史价格假设，包括 TypeSafe 的 <code>speed_latest</code> 费率。它们既不是已核实的 <code>jev-latest</code> 价格，也不是当前的计费金额。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">typesafe_cost = mean([cost <span class="hljs-keyword">for</span> cost, _latency <span class="hljs-keyword">in</span> stats[<span class="hljs-string">&quot;typesafe_choice&quot;</span>]])
+typesafe_latency = mean([latency <span class="hljs-keyword">for</span> _cost, latency <span class="hljs-keyword">in</span> stats[<span class="hljs-string">&quot;typesafe_choice&quot;</span>]])
+name_w = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">len</span>(name) <span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> ALL_LABELS) + <span class="hljs-number">2</span>  <span class="hljs-comment"># fit the longest condition label</span>
+<span class="hljs-comment"># Stack comparison headers so the relative speed and cost columns can stay narrow.</span>
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;&#x27;</span>:&lt;{name_w + <span class="hljs-number">31</span>}</span>}<span class="hljs-subst">{<span class="hljs-string">&#x27;speed vs&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;cost vs&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span>\n&quot;</span>
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;condition&#x27;</span>:&lt;{name_w}</span>}<span class="hljs-subst">{<span class="hljs-string">&#x27;calls&#x27;</span>:&gt;<span class="hljs-number">7</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;time/call&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;cost/call&#x27;</span>:&gt;<span class="hljs-number">13</span>}</span>&quot;</span>
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;ts_choice&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;ts_choice&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span>&quot;</span>
+)
+<span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> ALL_LABELS:
+    costs, latencies = <span class="hljs-built_in">zip</span>(*stats[name])
+    cost = mean(costs)
+    latency = mean(latencies)
+    <span class="hljs-built_in">print</span>(
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{name:&lt;{name_w}</span>}<span class="hljs-subst">{<span class="hljs-built_in">len</span>(costs):&gt;<span class="hljs-number">7</span>}</span><span class="hljs-subst">{latency * <span class="hljs-number">1000</span>:&gt;<span class="hljs-number">9.0</span>f}</span>ms&quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;$&#x27;</span> + <span class="hljs-built_in">format</span>(cost, <span class="hljs-string">&#x27;.6f&#x27;</span>):&gt;<span class="hljs-number">13</span>}</span>&quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">format</span>(latency / typesafe_latency, <span class="hljs-string">&#x27;.1f&#x27;</span>) + <span class="hljs-string">&#x27;x&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span>&quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">format</span>(cost / typesafe_cost, <span class="hljs-string">&#x27;.1f&#x27;</span>) + <span class="hljs-string">&#x27;x&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span>&quot;</span>
+    )</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">                                                                    speed vs    cost vs
+condition                           calls  time/call    cost/call  ts_choice  ts_choice
+claude-haiku-4-5 t=0                   15     3853ms    $0.003498      33.8x      76.1x
+claude-haiku-4-5 t=default             15     3860ms    $0.003494      33.8x      76.0x
+claude-haiku-4-5 single-pick t=0       15      992ms    $0.001527       8.7x      33.2x
+gpt-5.4-mini t=0                       15     2293ms    $0.002299      20.1x      50.0x
+gpt-5.4-mini t=default                 15     1986ms    $0.002164      17.4x      47.1x
+gpt-5.4-mini single-pick t=0           15      826ms    $0.000936       7.2x      20.3x
+gpt-5.5-reasoning                      15    12978ms    $0.041255     113.7x     897.4x
+claude-opus-4-8-reasoning              15    10376ms    $0.028375      90.9x     617.2x
+typesafe_choice                        15      114ms    $0.000046       1.0x       1.0x</code></pre></div>
+<p>在本次运行中，<code>typesafe_choice</code> 的平均往返延迟为 114ms。在上述并发设置下，LLM 条件的每次调用延迟介于 826ms 到 13.0 秒之间。</p>
+<h2 id="plot-every-samples-decision-as-a-heatmap">图表：每次采样的判定结果热力图</h2>
+<p>阅读方式：</p>
+<ul>
+<li>外层行组：问题。</li>
+<li>内层行：条件。</li>
+<li>列：一次完整的评分量表调用。</li>
+<li>单元格文字：应用判定以及首选标签的概率。</li>
+<li>单元格颜色：该标签在所属问题内的位置；同一行内颜色始终一致，意味着每次判定结果都相同。</li>
+<li>灰色 <code>uncertain</code>：首选概率低于 <code>0.60</code>，因此该案例进入人工复核。</li>
+<li>斜线填充 <code>n/a</code>：回复未能解析为可用标签（解析失败）。</li>
+<li>空行仅为间隔行。</li>
+</ul>
+<p>单选条件保留其返回的标签：它们不提供不确定性估计。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">GAP = <span class="hljs-number">1</span>  <span class="hljs-comment"># blank spacer row(s) between question blocks</span>
+HEAT_LABELS = ALL_LABELS
+rows_per_block = <span class="hljs-built_in">len</span>(HEAT_LABELS)  <span class="hljs-comment"># rows per question block</span>
+pooled_runs = {
+    **runs,
+    TYPESAFE_LABEL: typesafe_runs,
+}
+
+row_index_values, row_text, row_labels, blocks = [], [], [], []
+<span class="hljs-keyword">for</span> question_index, (question_key, (question_text, choices)) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(
+    QUESTIONS.items()
+):
+    labels = <span class="hljs-built_in">list</span>(choices)
+    <span class="hljs-keyword">if</span> question_index:  <span class="hljs-comment"># blank spacer rows (NaN -&gt; rendered white) separate the blocks</span>
+        row_index_values.extend([np.nan] * NUM_SAMPLES <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(GAP))
+        row_text.extend([[<span class="hljs-string">&quot;&quot;</span>] * NUM_SAMPLES <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(GAP)])
+        row_labels.extend([<span class="hljs-string">&quot;&quot;</span>] * GAP)
+    blocks.append((<span class="hljs-built_in">len</span>(row_index_values), question_key, question_text))
+    <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> HEAT_LABELS:
+        values_by_sample = [
+            pooled_runs[label][sample][question_key] <span class="hljs-keyword">for</span> sample <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(NUM_SAMPLES)
+        ]
+        picks = [
+            choice_decision_with_uncertainty(values, labels) <span class="hljs-keyword">for</span> values <span class="hljs-keyword">in</span> values_by_sample
+        ]
+        row_index_values.append(
+            [
+                <span class="hljs-number">10</span> <span class="hljs-keyword">if</span> pick == <span class="hljs-string">&quot;uncertain&quot;</span> <span class="hljs-keyword">else</span> labels.index(pick) <span class="hljs-keyword">if</span> pick <span class="hljs-keyword">in</span> labels <span class="hljs-keyword">else</span> np.nan
+                <span class="hljs-keyword">for</span> pick <span class="hljs-keyword">in</span> picks
+            ]
+        )
+        row_text.append(
+            [choice_decision_annotation(values, labels) <span class="hljs-keyword">for</span> values <span class="hljs-keyword">in</span> values_by_sample]
+        )
+        row_labels.append(label)
+
+heatmap_matrix = np.array(row_index_values, dtype=<span class="hljs-built_in">float</span>)
+<span class="hljs-comment"># Reserve gray for abstentions while concrete-label colors remain local to each question.</span>
+cmap = ListedColormap([*plt.get_cmap(<span class="hljs-string">&quot;tab10&quot;</span>).colors, <span class="hljs-string">&quot;#dddddd&quot;</span>])
+cmap.set_bad(
+    <span class="hljs-string">&quot;white&quot;</span>
+)  <span class="hljs-comment"># NaN cells (spacer rows AND unparseable replies) render white here...</span>
+
+fig, ax = plt.subplots(figsize=(<span class="hljs-number">15</span>, <span class="hljs-number">0.33</span> * <span class="hljs-built_in">len</span>(row_index_values) + <span class="hljs-number">1</span>))
+ax.imshow(heatmap_matrix, cmap=cmap, vmin=<span class="hljs-number">0</span>, vmax=<span class="hljs-number">10</span>, aspect=<span class="hljs-string">&quot;auto&quot;</span>)
+<span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(heatmap_matrix.shape[<span class="hljs-number">0</span>]):
+    is_spacer_row = row_labels[row] == <span class="hljs-string">&quot;&quot;</span>  <span class="hljs-comment"># blank separator between question blocks</span>
+    <span class="hljs-keyword">for</span> col <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(heatmap_matrix.shape[<span class="hljs-number">1</span>]):
+        label_text = row_text[row][col]
+        <span class="hljs-keyword">if</span> label_text:
+            ax.text(
+                col,
+                row,
+                label_text,
+                ha=<span class="hljs-string">&quot;center&quot;</span>,
+                va=<span class="hljs-string">&quot;center&quot;</span>,
+                fontsize=<span class="hljs-number">5.7</span>,
+                family=<span class="hljs-string">&quot;monospace&quot;</span>,
+                color=<span class="hljs-string">&quot;black&quot;</span>,
+            )
+        <span class="hljs-keyword">elif</span> (
+            <span class="hljs-keyword">not</span> is_spacer_row
+        ):  <span class="hljs-comment"># ...but an unparseable reply gets a hatched &quot;n/a&quot;, not blank white</span>
+            ax.add_patch(
+                plt.Rectangle(
+                    (col - <span class="hljs-number">0.5</span>, row - <span class="hljs-number">0.5</span>),
+                    <span class="hljs-number">1</span>,
+                    <span class="hljs-number">1</span>,
+                    facecolor=<span class="hljs-string">&quot;#e8e8e8&quot;</span>,
+                    edgecolor=<span class="hljs-string">&quot;#b0b0b0&quot;</span>,
+                    hatch=<span class="hljs-string">&quot;////&quot;</span>,
+                    linewidth=<span class="hljs-number">0</span>,
+                )
+            )
+            ax.text(
+                col,
+                row,
+                <span class="hljs-string">&quot;n/a&quot;</span>,
+                ha=<span class="hljs-string">&quot;center&quot;</span>,
+                va=<span class="hljs-string">&quot;center&quot;</span>,
+                fontsize=<span class="hljs-number">5</span>,
+                family=<span class="hljs-string">&quot;monospace&quot;</span>,
+                color=<span class="hljs-string">&quot;#b30000&quot;</span>,
+            )
+
+ax.set_xticks(<span class="hljs-built_in">range</span>(NUM_SAMPLES))
+ax.set_xticklabels(<span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, NUM_SAMPLES + <span class="hljs-number">1</span>), fontsize=<span class="hljs-number">7</span>)
+ax.set_xlabel(<span class="hljs-string">&quot;rubric query&quot;</span>)
+ax.set_yticks(<span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(row_labels)))
+ax.set_yticklabels(row_labels, fontsize=<span class="hljs-number">7</span>)
+ax.tick_params(length=<span class="hljs-number">0</span>)
+<span class="hljs-keyword">for</span> edge <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;top&quot;</span>, <span class="hljs-string">&quot;right&quot;</span>, <span class="hljs-string">&quot;left&quot;</span>, <span class="hljs-string">&quot;bottom&quot;</span>):
+    ax.spines[edge].set_visible(<span class="hljs-literal">False</span>)
+
+<span class="hljs-comment"># outer level of the multi-index: the question key, printed once per block and centered, with the</span>
+<span class="hljs-comment"># question text wrapped right under it</span>
+y_axis_transform = ax.get_yaxis_transform()
+<span class="hljs-keyword">for</span> start, question_key, question_text <span class="hljs-keyword">in</span> blocks:
+    center = start + (rows_per_block - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>
+    ax.text(
+        -<span class="hljs-number">0.2</span>,
+        center - <span class="hljs-number">0.7</span>,
+        question_key,
+        transform=y_axis_transform,
+        ha=<span class="hljs-string">&quot;right&quot;</span>,
+        va=<span class="hljs-string">&quot;center&quot;</span>,
+        fontsize=<span class="hljs-number">8</span>,
+        fontweight=<span class="hljs-string">&quot;bold&quot;</span>,
+    )
+    ax.text(
+        -<span class="hljs-number">0.2</span>,
+        center + <span class="hljs-number">0.1</span>,
+        textwrap.fill(question_text, <span class="hljs-number">34</span>),
+        transform=y_axis_transform,
+        ha=<span class="hljs-string">&quot;right&quot;</span>,
+        va=<span class="hljs-string">&quot;top&quot;</span>,
+        fontsize=<span class="hljs-number">6</span>,
+        style=<span class="hljs-string">&quot;italic&quot;</span>,
+        color=<span class="hljs-string">&quot;gray&quot;</span>,
+    )
+
+ax.set_title(
+    <span class="hljs-string">f&quot;Every sample&#x27;s decision + top probability; gray = uncertain (&lt; <span class="hljs-subst">{MIN_CHOICE_PROBABILITY:<span class="hljs-number">.2</span>f}</span>)\n&quot;</span>
+    <span class="hljs-string">f&quot;(rows = question x condition, <span class="hljs-subst">{NUM_SAMPLES}</span> columns)&quot;</span>,
+    pad=<span class="hljs-number">12</span>,
+)
+fig.tight_layout()
+display(fig)</code></pre></div>
+<img src="https://mintcdn.com/ts-docs/BBcnWK7wRF0qekMh/cookbooks/consistency_choice_cookbook/consistency_choice_cookbook.executed.1.png?fit=max&auto=format&n=BBcnWK7wRF0qekMh&q=85&s=558e5110fcd6836f92e02741374061c3" alt="输出" width="2230" height="4044" data-path="cookbooks/consistency_choice_cookbook/consistency_choice_cookbook.executed.1.png" />
+
+<p>更明确的问题保持稳定：<code>target</code> 一致判为 Person，<code>severity</code> 一致判为 High。边界问题在不同条件之间出现分歧：<code>category</code>、<code>primary_risk</code>、<code>action</code>、<code>review_path</code> 和 <code>link_handling</code>。某些条件在其自身的 15 次重复中也会出现翻转。在弃答之前，TypeSafe 在 <code>primary_risk</code>（Harassment 11 次，Violence 4 次）和 <code>link_handling</code>（RmLink 8 次，Brigade 7 次）上的首选标签会发生变化。由于这两行的首选概率均低于 <code>0.60</code>，现在全程显示为 <code>uncertain</code>。</p>
+<h1 id="probability-std-dev">Probability 标准差</h1>
+<p>这里观察的是完整的概率向量，而不只是被选中的 label。对每个 condition，我们收集每道 question 全部 15 次的概率分布，计算每个 label 在多次重复中概率的标准差（反映每次运行的波动幅度），然后对所有 label 和 question 求这些标准差的平均值。同时报告单个 label 的最大标准差，并单独统计解析失败率。</p>
+<p>下表把每个输出概率的 LLM（大语言模型）condition 都与 TypeSafe 做了对比。单选输出行被省略，因为它们输出的是硬 label，而不是概率分布。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">probability_std_stats</span>(<span class="hljs-params">samples: <span class="hljs-built_in">list</span></span>) -&gt; <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Mean label std dev, max label std dev, parse-failure rate.&quot;&quot;&quot;</span>
+    label_stds = []
+    parse_failures = []
+    <span class="hljs-keyword">for</span> question_key <span class="hljs-keyword">in</span> QUESTIONS:
+        arr = np.array(
+            [sample[question_key] <span class="hljs-keyword">for</span> sample <span class="hljs-keyword">in</span> samples],
+            dtype=<span class="hljs-built_in">float</span>,
+        )
+        parse_failures.extend(np.isnan(arr).<span class="hljs-built_in">any</span>(axis=<span class="hljs-number">1</span>).tolist())
+        label_stds.extend(np.nanstd(arr, axis=<span class="hljs-number">0</span>).tolist())
+    <span class="hljs-keyword">return</span> (
+        <span class="hljs-built_in">float</span>(np.nanmean(label_stds)),
+        <span class="hljs-built_in">float</span>(np.nanmax(label_stds)),
+        <span class="hljs-built_in">float</span>(np.mean(parse_failures)),
+    )
+
+
+PROBABILITY_OUTPUT_LABELS = [
+    condition[<span class="hljs-string">&quot;label&quot;</span>] <span class="hljs-keyword">for</span> condition <span class="hljs-keyword">in</span> CONDITIONS <span class="hljs-keyword">if</span> condition[<span class="hljs-string">&quot;mode&quot;</span>] == <span class="hljs-string">&quot;dist&quot;</span>
+] + [TYPESAFE_LABEL]
+probability_std_by_label = {
+    label: probability_std_stats(pooled_runs[label])
+    <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> PROBABILITY_OUTPUT_LABELS
+}
+typesafe_mean_std = probability_std_by_label[TYPESAFE_LABEL][<span class="hljs-number">0</span>]
+
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;condition&#x27;</span>:&lt;{name_w}</span>}<span class="hljs-subst">{<span class="hljs-string">&#x27;mean prob std&#x27;</span>:&gt;<span class="hljs-number">15</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;max prob std&#x27;</span>:&gt;<span class="hljs-number">14</span>}</span>&quot;</span>
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;parse fail&#x27;</span>:&gt;<span class="hljs-number">12</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;x TypeSafe&#x27;</span>:&gt;<span class="hljs-number">12</span>}</span>&quot;</span>
+)
+<span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> PROBABILITY_OUTPUT_LABELS:
+    mean_std, max_std, parse_failure_rate = probability_std_by_label[label]
+    relative_std = mean_std / typesafe_mean_std
+    <span class="hljs-built_in">print</span>(
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{label:&lt;{name_w}</span>}<span class="hljs-subst">{mean_std:&gt;<span class="hljs-number">15.4</span>f}</span><span class="hljs-subst">{max_std:&gt;<span class="hljs-number">14.4</span>f}</span>&quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{parse_failure_rate:&gt;<span class="hljs-number">11.0</span>%}</span><span class="hljs-subst">{relative_std:&gt;<span class="hljs-number">12.2</span>f}</span>x&quot;</span>
+    )</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">condition                           mean prob std  max prob std  parse fail  x TypeSafe
+claude-haiku-4-5 t=0                       0.0012        0.0221         0%        0.12x
+claude-haiku-4-5 t=default                 0.0516        0.3150         1%        5.29x
+gpt-5.4-mini t=0                           0.0312        0.0905         0%        3.20x
+gpt-5.4-mini t=default                     0.0543        0.2303         0%        5.56x
+gpt-5.5-reasoning                          0.0305        0.1047         0%        3.12x
+claude-opus-4-8-reasoning                  0.0245        0.0693         0%        2.52x
+typesafe_choice                            0.0098        0.0515         0%        1.00x</code></pre></div>
+<p>本次运行中，TypeSafe 的平均概率标准差为 <code>0.0098</code>，单个 label 的最大标准差为 <code>0.0515</code>。Haiku 在温度为 0 时的平均标准差更低，为 <code>0.0012</code>。其余 5 个 LLM 概率 condition 范围在 <code>0.0245</code> 到 <code>0.0543</code> 之间，约为 TypeSafe 平均值的 <code>2.5x</code> 到 <code>5.6x</code>。当两个 label 接近时，细小的概率变化仍可能切换排在首位的 label。</p>
+<h2 id="plot-decision-agreement-with-an-uncertain-outcome">图：含不确定结果的决策一致性</h2>
+<p>当首位概率低于 <code>0.60</code> 时，返回 <code>uncertain</code>。对每个输出概率的 condition 与 question，统计最常见的应用决策（包括 <code>uncertain</code>），再除以全部 15 次抽取。解析失败计入一致性损失。每个柱状条对全部 8 道 question 取平均，并按一致性从高到低排列。</p>
+<p>单选 LLM condition 被排除，因为它们不提供不确定性估计。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-comment"># Compute policy decisions and agreement once for both this chart and the comparison table.</span>
+decisions_by_condition = {}
+policy_agreement_by_condition = {}
+<span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> PROBABILITY_OUTPUT_LABELS:
+    decisions = [
+        [
+            choice_decision_with_uncertainty(sample[key], <span class="hljs-built_in">list</span>(choices))
+            <span class="hljs-keyword">for</span> sample <span class="hljs-keyword">in</span> pooled_runs[label]
+        ]
+        <span class="hljs-keyword">for</span> key, (_instructions, choices) <span class="hljs-keyword">in</span> QUESTIONS.items()
+    ]
+    decisions_by_condition[label] = decisions
+    shares = [
+        <span class="hljs-built_in">max</span>(Counter(value <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> row <span class="hljs-keyword">if</span> value <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>).values(), default=<span class="hljs-number">0</span>)
+        / NUM_SAMPLES
+        <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> decisions
+    ]
+    policy_agreement_by_condition[label] = mean(shares)
+
+<span class="hljs-comment"># Sort by the measured agreement, keeping TypeSafe&#x27;s color independent of its rank.</span>
+bar_labels = <span class="hljs-built_in">sorted</span>(
+    PROBABILITY_OUTPUT_LABELS, key=policy_agreement_by_condition.__getitem__, reverse=<span class="hljs-literal">True</span>
+)
+rates = [policy_agreement_by_condition[label] <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> bar_labels]
+
+fig_bar, bar_ax = plt.subplots(figsize=(<span class="hljs-number">7</span>, <span class="hljs-number">0.45</span> * <span class="hljs-built_in">len</span>(bar_labels) + <span class="hljs-number">1</span>))
+positions = <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(bar_labels))
+bar_ax.barh(
+    <span class="hljs-built_in">list</span>(positions),
+    rates,
+    color=[<span class="hljs-string">&quot;#2b8cbe&quot;</span> <span class="hljs-keyword">if</span> label == TYPESAFE_LABEL <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;#fe9929&quot;</span> <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> bar_labels],
+    alpha=<span class="hljs-number">0.85</span>,
+)
+<span class="hljs-keyword">for</span> label, position, rate <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(bar_labels, positions, rates):
+    marker = <span class="hljs-string">&quot;*&quot;</span> <span class="hljs-keyword">if</span> label == <span class="hljs-string">&quot;claude-haiku-4-5 t=0&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;&quot;</span>
+    bar_ax.text(
+        rate + <span class="hljs-number">0.01</span>, position, <span class="hljs-string">f&quot;<span class="hljs-subst">{rate:<span class="hljs-number">.1</span>%}</span><span class="hljs-subst">{marker}</span>&quot;</span>, va=<span class="hljs-string">&quot;center&quot;</span>, fontsize=<span class="hljs-number">8</span>, color=<span class="hljs-string">&quot;gray&quot;</span>
+    )
+bar_ax.set_yticks(<span class="hljs-built_in">list</span>(positions))
+bar_ax.set_yticklabels(bar_labels, fontsize=<span class="hljs-number">8</span>)
+bar_ax.invert_yaxis()  <span class="hljs-comment"># first condition on top</span>
+bar_ax.set_xlim(<span class="hljs-number">0</span>, <span class="hljs-number">1.08</span>)
+bar_ax.set_xticks(np.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">6</span>))
+bar_ax.set_xlabel(<span class="hljs-string">&quot;decision agreement across 15 re-runs (mean over 8 questions)&quot;</span>)
+<span class="hljs-keyword">for</span> edge <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;top&quot;</span>, <span class="hljs-string">&quot;right&quot;</span>, <span class="hljs-string">&quot;left&quot;</span>):
+    bar_ax.spines[edge].set_visible(<span class="hljs-literal">False</span>)
+bar_ax.tick_params(length=<span class="hljs-number">0</span>)
+fig_bar.suptitle(<span class="hljs-string">&quot;Decision agreement including uncertain outcomes&quot;</span>, y=<span class="hljs-number">1.0</span>)
+<span class="hljs-comment"># Keep the caveat inside the exported chart so it travels with the 100% annotation.</span>
+fig_bar.text(
+    <span class="hljs-number">0.01</span>,
+    <span class="hljs-number">0.01</span>,
+    <span class="hljs-string">&quot;* Haiku t=0: 100% repeatability does not imply correctness.\n&quot;</span>
+    <span class="hljs-string">&quot;  This experiment does not measure accuracy.&quot;</span>,
+    fontsize=<span class="hljs-number">8</span>,
+)
+fig_bar.tight_layout(rect=(<span class="hljs-number">0</span>, <span class="hljs-number">0.11</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>))
+display(fig_bar)</code></pre></div>
+<img src="https://mintcdn.com/ts-docs/BBcnWK7wRF0qekMh/cookbooks/consistency_choice_cookbook/consistency_choice_cookbook.executed.2.png?fit=max&auto=format&n=BBcnWK7wRF0qekMh&q=85&s=3bf99796df3faa60d1db45f626a7caee" alt="output" width="1052" height="651" data-path="cookbooks/consistency_choice_cookbook/consistency_choice_cookbook.executed.2.png" />
+
+<p>在同样的 <code>0.60</code> 规则下，Haiku 在温度为 0 时得分 100%。TypeSafe 得分 99.2%，其他 LLM condition 落在 84.2% 到 94.2% 之间。TypeSafe 在 25.8% 的答案上返回 <code>uncertain</code>，其余 74.2% 自动执行；Haiku 在温度为 0 时从未弃权。这些百分比只衡量可重复性。下表把原始一致性与弃权率，与本图中的策略一致性并列展示。</p>
+<h2 id="let-uncertain-probabilities-produce-an-uncertain-decision">让不确定概率产生不确定决策</h2>
+<p>微小的概率变化可能让两个接近的 label 互换顺序。应用不必对胜出者采取行动：当首位概率低于 <code>0.60</code> 时返回 <code>uncertain</code>，并把这种情况交给人工。当概率恰好为 <code>0.60</code> 时，选择排在首位的 label。这里使用的是返回的概率，而不是 API 独立的 <code>confidence</code>（置信度）字段，也不增加任何模型调用。</p>
+<p>这个阈值只是一个示例性的应用策略，并不是经过校准的保证，也不是为了最大化本次运行一致性而选定的阈值。生产环境的阈值应使用带标注的样例，并结合错误行动与人工复核的成本来确定。</p>
+<p>我们对每个输出概率的 condition 都应用同一条规则。单选 LLM 响应没有概率估计，其合成的 one-hot 向量无法衡量不确定性，因此被排除在一致性图表和表格之外。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">agreement_rate</span>(<span class="hljs-params">samples: <span class="hljs-built_in">list</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Mean over questions of the raw plurality label&#x27;s share across all NUM_SAMPLES draws.
+
+    Parse failures count against agreement because a failed route is not a repeated decision.
+    &quot;&quot;&quot;</span>
+    shares = []
+    <span class="hljs-keyword">for</span> question_key, (_instructions, choices) <span class="hljs-keyword">in</span> QUESTIONS.items():
+        labels = <span class="hljs-built_in">list</span>(choices)
+        picks = [
+            argmax_label(samples[sample][question_key], labels)
+            <span class="hljs-keyword">for</span> sample <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(NUM_SAMPLES)
+        ]
+        picks = [pick <span class="hljs-keyword">for</span> pick <span class="hljs-keyword">in</span> picks <span class="hljs-keyword">if</span> pick <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>]
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> picks:
+            shares.append(<span class="hljs-number">0.0</span>)
+            <span class="hljs-keyword">continue</span>
+        top = Counter(picks).most_common(<span class="hljs-number">1</span>)[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]
+        shares.append(top / NUM_SAMPLES)
+    <span class="hljs-keyword">return</span> mean(shares) <span class="hljs-keyword">if</span> shares <span class="hljs-keyword">else</span> <span class="hljs-built_in">float</span>(<span class="hljs-string">&quot;nan&quot;</span>)
+
+
+<span class="hljs-comment"># Keep failures separate from abstentions and count conflicting concrete actions per question.</span>
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;condition&#x27;</span>:&lt;{name_w}</span>}<span class="hljs-subst">{<span class="hljs-string">&#x27;raw agree&#x27;</span>:&gt;<span class="hljs-number">12</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;policy agree&#x27;</span>:&gt;<span class="hljs-number">14</span>}</span>&quot;</span>
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;uncertain&#x27;</span>:&gt;<span class="hljs-number">12</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;automatic&#x27;</span>:&gt;<span class="hljs-number">12</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;conflicts&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span>&quot;</span>
+)
+<span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> PROBABILITY_OUTPUT_LABELS:
+    decisions = decisions_by_condition[label]
+    flat = [value <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> decisions <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> row]
+    uncertain_rate = mean(value == <span class="hljs-string">&quot;uncertain&quot;</span> <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> flat)
+    automatic_rate = mean(value <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> (<span class="hljs-literal">None</span>, <span class="hljs-string">&quot;uncertain&quot;</span>) <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> flat)
+    conflicts = <span class="hljs-built_in">sum</span>(
+        <span class="hljs-built_in">len</span>({value <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> row <span class="hljs-keyword">if</span> value <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> (<span class="hljs-literal">None</span>, <span class="hljs-string">&quot;uncertain&quot;</span>)}) &gt; <span class="hljs-number">1</span>
+        <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> decisions
+    )
+    <span class="hljs-built_in">print</span>(
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{label:&lt;{name_w}</span>}<span class="hljs-subst">{agreement_rate(pooled_runs[label]):&gt;<span class="hljs-number">11.1</span>%}</span>&quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{policy_agreement_by_condition[label]:&gt;<span class="hljs-number">13.1</span>%}</span><span class="hljs-subst">{uncertain_rate:&gt;<span class="hljs-number">11.1</span>%}</span>&quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{automatic_rate:&gt;<span class="hljs-number">11.1</span>%}</span><span class="hljs-subst">{conflicts:&gt;<span class="hljs-number">11</span>}</span>&quot;</span>
+    )</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">condition                            raw agree  policy agree   uncertain   automatic  conflicts
+claude-haiku-4-5 t=0                   100.0%       100.0%       0.0%     100.0%          0
+claude-haiku-4-5 t=default              87.5%        86.7%       0.8%      98.3%          2
+gpt-5.4-mini t=0                        99.2%        87.5%      12.5%      87.5%          0
+gpt-5.4-mini t=default                  90.8%        84.2%      22.5%      77.5%          2
+gpt-5.5-reasoning                       90.0%        93.3%      30.8%      69.2%          1
+claude-opus-4-8-reasoning               92.5%        94.2%      33.3%      66.7%          0
+typesafe_choice                         90.8%        99.2%      25.8%      74.2%          0</code></pre></div>
+<p><code>policy agree</code> 将 <code>uncertain</code> 视为一种决策；解析失败计入一致性损失。<code>automatic</code> 是所有答案中选择一个 label 的占比。<code>conflicts</code> 统计多次重复中出现过两种以上具体 label 的 question 数，不含弃权。这些指标描述的是可重复性，以及应用采取行动的频率，而不是它的行动是否正确。</p>
+<p>TypeSafe 的一致性从 90.8% 上升到 99.2%。答案中 25.8% 不确定，74.2% 自动。<code>primary_risk</code> 和 <code>link_handling</code> 在每次重复中都返回不确定；<code>category</code> 在 Violence 和 <code>uncertain</code> 之间交替出现，有些重复越过行动阈值，有些没有。没有一道 question 产生两种不同的 TypeSafe 具体 label。这并不能证明正确性或优越性：Haiku 在温度为 0 时一致性也是 100%，且没有弃权。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-comment"># Show every TypeSafe decision while retaining the top probability behind it.</span>
+policy_decisions = decisions_by_condition[TYPESAFE_LABEL]
+policy_values = []
+<span class="hljs-keyword">for</span> row, (_key, (_instructions, choices)) <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(policy_decisions, QUESTIONS.items()):
+    labels = <span class="hljs-built_in">list</span>(choices)
+    policy_values.append([
+        <span class="hljs-number">10</span> <span class="hljs-keyword">if</span> value == <span class="hljs-string">&quot;uncertain&quot;</span> <span class="hljs-keyword">else</span> labels.index(value) <span class="hljs-keyword">if</span> value <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">else</span> np.nan
+        <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> row
+    ])
+policy_cmap = ListedColormap([*plt.get_cmap(<span class="hljs-string">&quot;tab10&quot;</span>).colors, <span class="hljs-string">&quot;#dddddd&quot;</span>])
+policy_cmap.set_bad(<span class="hljs-string">&quot;white&quot;</span>)
+fig_policy, ax_policy = plt.subplots(figsize=(<span class="hljs-number">13</span>, <span class="hljs-number">4</span>))
+ax_policy.imshow(policy_values, cmap=policy_cmap, vmin=<span class="hljs-number">0</span>, vmax=<span class="hljs-number">10</span>, aspect=<span class="hljs-string">&quot;auto&quot;</span>)
+<span class="hljs-keyword">for</span> row_index, key <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(QUESTIONS):
+    <span class="hljs-keyword">for</span> sample_index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(NUM_SAMPLES):
+        decision = policy_decisions[row_index][sample_index]
+        probability = <span class="hljs-built_in">max</span>(typesafe_runs[sample_index][key])
+        ax_policy.text(sample_index, row_index, <span class="hljs-string">f&quot;<span class="hljs-subst">{decision <span class="hljs-keyword">or</span> <span class="hljs-string">&#x27;n/a&#x27;</span>}</span>\n<span class="hljs-subst">{probability:<span class="hljs-number">.2</span>f}</span>&quot;</span>,
+                       ha=<span class="hljs-string">&quot;center&quot;</span>, va=<span class="hljs-string">&quot;center&quot;</span>, fontsize=<span class="hljs-number">6</span>)
+ax_policy.set_yticks(<span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(QUESTIONS)), <span class="hljs-built_in">list</span>(QUESTIONS))
+ax_policy.set_xticks(<span class="hljs-built_in">range</span>(NUM_SAMPLES), <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, NUM_SAMPLES + <span class="hljs-number">1</span>))
+ax_policy.set_xlabel(<span class="hljs-string">&quot;rubric query&quot;</span>)
+ax_policy.set_title(
+    <span class="hljs-string">&quot;TypeSafe application decisions: gray means uncertain &quot;</span>
+    <span class="hljs-string">f&quot;(top probability &lt; <span class="hljs-subst">{MIN_CHOICE_PROBABILITY:<span class="hljs-number">.2</span>f}</span>)&quot;</span>
+)
+fig_policy.tight_layout()
+display(fig_policy)</code></pre></div>
+<img src="https://mintcdn.com/ts-docs/BBcnWK7wRF0qekMh/cookbooks/consistency_choice_cookbook/consistency_choice_cookbook.executed.3.png?fit=max&auto=format&n=BBcnWK7wRF0qekMh&q=85&s=257663537c99b735f9f07609732d1a69" alt="output" width="1932" height="584" data-path="cookbooks/consistency_choice_cookbook/consistency_choice_cookbook.executed.3.png" />
+
+<p>这条策略并不会让模型变成确定性的（deterministic）。弃权可以把相互竞争的 label 替换为同样的人工复核结果，但接近 <code>0.60</code> 的概率仍可能在一个具体 label 和 <code>uncertain</code> 之间摆动。概率统计和表格中的 <code>raw agree</code> 列仍然报告的是原始模型输出。</p>
+<h2 id="open-it-in-the-typesafe-playground">在 TypeSafe playground 中打开它</h2>
+<p>下面的链接会在 playground 中打开同一篇帖子和同一份评分标准：一篇帖子、同样 8 个 <code>Choice</code>，以及 TypeSafe <code>jev-latest</code>。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">playground_link = make_playground_link(
+    {<span class="hljs-string">&quot;post&quot;</span>: POST},
+    {
+        key: Choice(instructions=instructions, criteria=choices)
+        <span class="hljs-keyword">for</span> key, (instructions, choices) <span class="hljs-keyword">in</span> QUESTIONS.items()
+    },
+    models=[TYPESAFE_MODEL],
+)
+display(
+    Markdown(
+        <span class="hljs-string">f&quot;🔗 [Open this post + rubric in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>
+    )
+)</code></pre></div>
+<p><a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIwAOiAA4QDOKpBJ5VKA+gJZi36kAKAtABx8ATAEYAzKQA0nEAEMYKABYQATh3oxKCZa3Z5pMAPQAWIwHZhk6TKhQIMVExkBzBEzAyAnpQ6i+U0mTKLCpM1EEA1gjeesL+IABmEAA2SRAA7lrRBCIADAC+cbaoWDR69JQwyvHWCBwBMABGSSxQ+MoIZEkelqQsSEztnR5MKBB1skgQilr4GjNgCPHIYH1O+DL4TjKI+GQyKFAKPSC2cHD2LCjdeqTKBluICw37UaQF0kUoyKV0pF-Y4wAgu18B47PhNEE7JQuvhFCxKPgFkhNAB+fCApBgpAIfBpJRIxbLRGKfa7faHfAI9b4U6dBBfWmpNJIdZIMAQpQwJIchq4hBwZ7KZQySiaDmjfAIABuyF2jHwCi0CAAdPguAgIPT8M1IqDwTIQfj9gByRHKGB9VZwhTU07nJCXDxsjlKHHUWFgmD4HEICUQfB8wkyJIoPGXBRqgDCEB2lE8VLDkrgzuqUAQUj60suCDNbRYTgUYaV7TVAGkEB1E7MyC78ABJE0pKXs-WVPFKJK4w4yJA4pIq44KUVMZpIcIcFAWjPSMfhNyxmR9cYrSi2ZRgFVOJzHJK9pwwZy1G4gZBvOKDFQoLL4dSQgYdK83owXx-KZjtUUQFEcADapGHEUxUQVBjkoPY4GORRP1KABdPIEJAKRyGUWMyGvDBsD0IhSCgF4nBUa5fhAK4yGPAhcKUFpjziPowhgKAUGCH8TwAdWHMNqWmCFVi7fA4AVGQyE6FoZCabtvy+VAeAoZooGdPCvgI5RUxUG1qQoahUWOKAgi+IIZDUUgADlv3I6RTPlOTnWzZJ9mY-AIHiNlnXCPpN2OAAJQ1RRvUh6xRblr0c5RCUQXtEQ2MjlEob8pDSCMfQDaCEDJJzFUNOA60mXZUK+Ri-R4KA9zFdYUBQaxwkHJDpG8r4gXKyrIt2TJvxCzZUJgWsIFlUKoryhACo5HsRQKoJqBafAAApRpndpmicZipBcdktCkFUNoASmquIADVgi7JB03GABZGRIma3S-RYcSbRgxznMArK1L6KAc0RWzDvTdYtjosNYsQMydukABlCDxgAVRRZIWhzDlAljKYHLUucIQg+LEpy6LYqQEMyoqqAquOEGsEPJJxhJzAyfamQwCC2lJO+aqELiQIWDgQ1hnGicyj+DwyPGQ4IGo44-otRjmL8kB2LJLilVy9nOf4iAFhFJi2u5m0yUoLkeSRIJZThAyXHwRJQvhRFNJQbSatwvStBYQzeZAbygMoECfmkDUYu-PH9gJ8J2oq5QXC+DkxLmKkSXljm+nzSgidtkB9uSZBjpPQE7tSsN0qe9q+iYuA2Hstq5dxWPWW54HSAAGT6cJAQaOZxgAUWwLRcaSHhUbUpz4hkvcUDNrLbBUFZcfVyuEUDsv+KXKeE+rkBARsOxUE8hFRhU8YuChPrV-sYtN8I9rBmzwMEGHWzQtniv48TuIa-SAAlafxks8LHSQJx4m5ZXVZLgvGelt2iaFQMzd4fxDShyMiRfm5lKLC3TrRFEU4GKTyluxAMaljScWjhJYoqAFYcyCLCFY7QhplRtoUe2BlYGmRxO-KYSIWAULDmVFyZkqSsj2O+Fo3JDRL29jjcYAARVhg12FpRxGjQaLB4iTXciwbMdMQxLwAOKdTIGIiRlCyT9SmJIv0HU7DdVCsVXyQjB7Dx0Ww4xZJuL2guFcdqnR9jD0TJoJI8QpCTDDFFVqSAIFxGsJPWBpEEEnCosg6QYt0GS3GDLMMyAzbpg9usCWbUdZ2D1kGCqkRWRtQtvKLSOlaGO1gYCFI6Rxg11SobbiVsazhkUElDJk8l6sUNEgWp9TcSNIVF1QM8h8bWAUDSNI3TrR7j5AOY4z8BQ9UiQsgSDT5ZWykE3MMkAkphjIp3FgAAvfp8trC2EPkvEGU4WCRHGCspZNpcRNN7OHMA4cITXL1JKbiZy14oCXi3NcIYXjjDQOdXEOU5CjA5lIzJSAADcipkgcjNjSBQ8BeyEjepQZiwTpAAEcYAICJeE+Bgtok0Viag8WGDEm2kpDi7+fEBIAMnvgQlxLcTZO5BydIrJilW2oR8cpTtiKAnkGMDOEqeCgOSLKRFOV0Uc1ZByolPpKwLA8kndRyAtAhnGDqnEIokj-z1Wy1VqpjhoAUDBUFNrz4GHwJ9NOuJQEUBRLiC1lzwYnjBtsOsbih4qDgDwCOmh2VEqJUvNAIM6m01BRaagob2Q8HjEsFxXZab4EdWA4IoUvVvEgSAOcTBhzsjHDuZ2ETyVIMpb0al8TvxS08ukTkOTw5YilO3ZQncdT13an3Ae7jg3cOzIyOOAzqAXwyuWv0Qq7Y5joc7KpzJekyDWbiVGcc3HpiXs-OAddxwU2uWYlh8ZbrcVRls-AkQqyTv+ccAAQkELYCwE3n0vf20UDMx59BeLyF9tNrQvPaQ5S46xIpN00ACoFg9Ikk1bJ+8ccIAwbHAnIkMm8UMQc0KVPkZtcShNWHi24MoWAIDSEwPYihSUCxPELEWSc4lwswQSblesOZfPlgo3teFmxFNtJbRg86TgisqRKoEEqYX2LhQqgMSrMXtGzBRpenkMU9IzqbVCqAxy4gU6yFlZq1KcaiI82kIY5lJwQ3moEEJkB5vauht6mGp1KfIxkG+5oECEokVqx+CAtjkxPM-OwjJJRdkC+1PcaQeApJUGk74UpYOAJIyATQvUnS0ciQxmJ9b6IsbpbLfBjleoWbsxllx6UBXCbKYuipzsGGRMsp9FLxwn5pDuTABY7VVxFzFMomc16ohgKYhZ50T0uxiiXida68Ad6BLxoBXy6SEqtJysVVKyhYRXRWBe+1+xVMFiOCeV2y3EujFDiWFp4yNgpQcRxBmPLp2fnDoiHbN0uwQLyDVWQZAWC7UyMxbC0phA-a8UYsAJ0VYICSJQPQv4QAACsZTdxeNQEA8EgA" target="_blank" rel="noreferrer noopener noreferrer" className="text-primary">在 TypeSafe playground 中打开这篇帖子 + 评分标准 →</a></p>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建并托管，Mintlify 是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-entity-alignment/"><span>上一篇</span><strong>知识图谱实体对齐</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-consistency-noul/"><span>下一篇</span><strong>自一致性：Noul</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">准备工作</a><a class="toc-link depth-2" href="#the-state-a-borderline-user-post-as-json">上下文状态（state）：一条边界状态的用户帖子，JSON 格式</a><a class="toc-link depth-2" href="#the-rubric-8-choice-questions">评分表：8 个 Choice 问题</a><a class="toc-link depth-2" href="#how-we-ask">我们如何提问</a><a class="toc-link depth-2" href="#experimental-conditions">实验条件</a><a class="toc-link depth-3" href="#experiment-grid">实验网格</a><a class="toc-link depth-3" href="#cost-speed-per-rubric-query">成本 + 速度（按每次评分量表（rubric）查询计）</a><a class="toc-link depth-2" href="#plot-every-samples-decision-as-a-heatmap">图表：每次采样的判定结果热力图</a><a class="toc-link depth-2" href="#plot-decision-agreement-with-an-uncertain-outcome">图：含不确定结果的决策一致性</a><a class="toc-link depth-2" href="#let-uncertain-probabilities-produce-an-uncertain-decision">让不确定概率产生不确定决策</a><a class="toc-link depth-2" href="#open-it-in-the-typesafe-playground">在 TypeSafe playground 中打开它</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>意图路由 · JevLand</title>
+<meta name="description" content="对传入的请求进行分类，并将每条请求路由到最优处理方：确定性的逻辑、专业的大语言模型（LLM），或人工。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/intent-routing/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="意图路由">
+<meta property="og:description" content="对传入的请求进行分类，并将每条请求路由到最优处理方：确定性的逻辑、专业的大语言模型（LLM），或人工。">
+<meta property="og:url" content="https://jevland.com/docs/intent-routing/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="意图路由">
+<meta name="twitter:description" content="对传入的请求进行分类，并将每条请求路由到最优处理方：确定性的逻辑、专业的大语言模型（LLM），或人工。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"意图路由","url":"https://jevland.com/docs/intent-routing/","inLanguage":"zh-CN","description":"对传入的请求进行分类，并将每条请求路由到最优处理方：确定性的逻辑、专业的大语言模型（LLM），或人工。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link is-current" href="/docs/intent-routing/" aria-current="page">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link is-current" href="/docs/intent-routing/" aria-current="page">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 设计模式</p>
+        <h1>意图路由</h1>
+        <p class="lead">对传入的请求进行分类，并将每条请求路由到最优处理方：确定性的逻辑、专业的大语言模型（LLM），或人工。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/patterns/intent-routing" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>并非每条用户请求都需要同一种处理方。有些可以通过数据库查询来回答，有些需要带有领域专属上下文的大语言模型（LLM），有些则需要人工。TypeSafe 可以作为所有这些处理方的前置层，作为一个快速且低成本的分类器来决定调用哪一个处理方。</p>
+<h2 id="example-customer-service-routing">示例：客服路由</h2>
+<p>假设你正在构建一个客服系统。消息进来后需要被路由到正确的处理方。与其把每条消息都丢给昂贵的 LLM 去判断这是什么类型的请求，不如先分类再路由。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">mermaid</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">%%{init: {&quot;fontFamily&quot;: &quot;Inter, sans-serif&quot;, &quot;flowchart&quot;: {&quot;rankSpacing&quot;: 35, &quot;wrappingWidth&quot;: 300, &quot;subGraphTitleMargin&quot;: {&quot;top&quot;: 12, &quot;bottom&quot;: 36}}}}%%
+flowchart LR
+    message[&quot;customer message&quot;]
+
+    subgraph req[&quot;TypeSafe evaluates questions&lt;br/&gt;in parallel&quot;]
+        direction TB
+        intent[&quot;&lt;b&gt;Choice:&lt;/b&gt; intent&quot;]
+        complexity[&quot;&lt;b&gt;Score:&lt;/b&gt; complexity&quot;]
+        %% Invisible links stack the questions; they are answered in parallel.
+        intent ~~~ complexity
+    end
+
+    message -- &quot;one request&lt;br/&gt;message + 2 questions&quot; --&gt; req
+    req -- &quot;one response&lt;br/&gt;2 answers with&lt;br/&gt;confidence&quot; --&gt; confidence{&quot;&lt;b&gt;intent confidence&lt;br/&gt;≥ 0.5?&lt;/b&gt;&lt;br/&gt;your code&quot;}
+    confidence blue_low@-- &quot;no&quot; --&gt; human[&quot;human agent&quot;]
+    confidence -- &quot;yes&quot; --&gt; route{&quot;&lt;b&gt;which intent?&lt;/b&gt;&lt;br/&gt;&quot;}
+    route green_order@-- &quot;order_status&quot; --&gt; order[&quot;order lookup&lt;br/&gt;deterministic code&quot;]
+    route green_product@-- &quot;product_question&quot; --&gt; product[&quot;product specialist LLM&quot;]
+    route green_returns@-- &quot;return_exchange&quot; --&gt; returns[&quot;returns specialist LLM&quot;]
+    route -- &quot;complaint&quot; --&gt; escalate{&quot;&lt;b&gt;complexity &gt; 1&lt;br/&gt;or its confidence &lt; 0.5?&lt;/b&gt;&lt;br/&gt;&quot;}
+    escalate blue_complex@-- &quot;yes&quot; --&gt; human
+    escalate green_complaint@-- &quot;no&quot; --&gt; complaint[&quot;complaint resolution LLM&quot;]
+    %% Branch colours (styles.css): node classes and green_/blue_/purple_/orange_ edge ids.
+    class order,product,returns,complaint neonGreen
+    class human neonBlue</code></pre></div>
+<h3 id="step-1-classify-intent-and-complexity">第 1 步：分类意图与复杂度</h3>
+<p><strong>问题</strong></p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;intent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The primary intent of this customer message&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;order_status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Asking about an existing order&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;product_question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Asking about a product before buying&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;return_exchange&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Wants to return or exchange something&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;complaint&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Unhappy with experience, wants resolution&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;complexity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How complex is this request to resolve&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">&quot;Simple lookup or standard procedure&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Requires some judgment or multi-step process&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Unusual situation, edge case, or escalation needed&quot;</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h3 id="step-2-route-to-the-optimal-handler">第 2 步：路由到最优处理方</h3>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">route_ticket</span>(<span class="hljs-params">ticket_id, response</span>):
+    intent = response.answers[<span class="hljs-string">&quot;intent&quot;</span>]
+    complexity = response.answers[<span class="hljs-string">&quot;complexity&quot;</span>]
+
+    <span class="hljs-keyword">if</span> intent.confidence &lt; <span class="hljs-number">0.5</span>:
+        <span class="hljs-comment"># If we don&#x27;t have enough confidence to classify, route to a human agent</span>
+        <span class="hljs-keyword">return</span> route_to_human_agent(ticket_id)
+
+    <span class="hljs-keyword">if</span> intent.choice == <span class="hljs-string">&quot;order_status&quot;</span>:
+        handle_order_status(ticket_id)
+
+    <span class="hljs-keyword">elif</span> intent.choice == <span class="hljs-string">&quot;product_question&quot;</span>:
+        handle_with_llm(ticket_id, PRODUCT_SPECIALIST)
+
+    <span class="hljs-keyword">elif</span> intent.choice == <span class="hljs-string">&quot;return_exchange&quot;</span>:
+        handle_with_llm(ticket_id, RETURNS_SPECIALIST)
+
+    <span class="hljs-keyword">elif</span> intent.choice == <span class="hljs-string">&quot;complaint&quot;</span>:
+        low_confidence = complexity.confidence &lt; <span class="hljs-number">0.5</span>
+        <span class="hljs-comment"># A higher complexity.score leans toward the &quot;escalation needed&quot; end of the scale.</span>
+        <span class="hljs-keyword">if</span> complexity.score &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">or</span> low_confidence:
+            <span class="hljs-comment"># Too complex for safe automation, or we&#x27;re not sure about the complexity; route to a human.</span>
+            route_to_human_agent(ticket_id)
+        <span class="hljs-keyword">else</span>:
+            handle_with_llm(ticket_id, COMPLAINT_RESOLUTION)</code></pre></div>
+<p>其中一个意图路由到不涉及 LLM 的确定性的代码；另外两个意图路由到不同的专业 LLM，各自加载不同的上下文；还有一个意图则使用复杂度评分来决定走 LLM 还是人工。TypeSafe 在一次快速调用中完成分类，昂贵的资源只会被用于真正需要它们的请求。</p>
+<p>注意对 <code>complexity</code> 评分也做了额外的置信度检查。正如在 <a href="../confidence/">置信度</a> 中讨论的，始终重要的是结合系统背景和决策代价来理解低置信度评分所代表的意义。</p>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a>（开发者文档平台）构建并托管。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/composite-scoring/"><span>上一篇</span><strong>组合打分</strong></a>
+    <a class="pager-link is-next" href="/docs/models/"><span>下一篇</span><strong>模型</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#example-customer-service-routing">示例：客服路由</a><a class="toc-link depth-3" href="#step-1-classify-intent-and-complexity">第 1 步：分类意图与复杂度</a><a class="toc-link depth-3" href="#step-2-route-to-the-optimal-handler">第 2 步：路由到最优处理方</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

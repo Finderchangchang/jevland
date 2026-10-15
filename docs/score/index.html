@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Score（打分题） · JevLand</title>
+<meta name="description" content="Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/score/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="Score（打分题）">
+<meta property="og:description" content="Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。">
+<meta property="og:url" content="https://jevland.com/docs/score/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Score（打分题）">
+<meta name="twitter:description" content="Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"Score（打分题）","url":"https://jevland.com/docs/score/","inLanguage":"zh-CN","description":"Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link is-current" href="/docs/score/" aria-current="page">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link is-current" href="/docs/score/" aria-current="page">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 题型</p>
+        <h1>Score（打分题）</h1>
+        <p class="lead">Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/primitives/score" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>当答案是一个可以用若干步骤描述的谱系上的位置时，可以使用 Score（打分题）。例如，一个 bug 的严重程度、一个客户有多满意，或者一位候选人有多少 Python 经验。如果答案是一组固定选项且选项之间没有顺序，请使用 <a href="../choice/">Choice（选择题）</a>。如果只是「是」或「否」，请使用 <a href="../noul/">Noul（是非题）</a>。<a href="../primitives/#choose-a-question-type">选择题型</a> 一节对三者进行了比较。</p>
+<p>Score 的答案是一个沿着档位排列的位置，写在 <code>score</code> 中，可以落在两个档位之间。模型还会返回每个档位在 <code>probabilities</code> 中的概率，以及答案的 <code>confidence</code>（置信度）值。</p>
+<p>The numbers in front of each step are positions, explained under <a href="#levels">档位（level）</a>。</p>
+<h2 id="request-structure">请求结构</h2>
+<p>发往 <a href="../api/">TypeSafe API</a> 的 POST 请求体与其他题型一样，包含三个顶层字段：<code>state</code>（要评估的内容）、<code>model</code>（模型）、<code>questions</code>（问题）。每个 Score 问题包含以下字段：</p>
+<ul>
+<li><code>type</code>：始终为 <code>&quot;score&quot;</code>。</li>
+<li><code>instructions</code>（指令）：模型回答的问题，即它在评什么。</li>
+<li><code>criteria</code>（判定标准）：按档位描述组成的有序数组，从刻度的低端到高端。至少需要两个档位；API 最多接受 10 个。</li>
+</ul>
+<p>下面的请求中，<code>state</code> 是一份 bug 报告，问题就是这个 bug 严重程度如何：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The export button crashes the settings page in Safari. It works in Chrome, but a few of our customers only use Safari.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;bug_severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How severe is the reported issue?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">&quot;Cosmetic; no impact to functionality&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Broken or degraded feature, but workaround exists&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Blocking issue; no workaround exists&quot;</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>你可以自行选择问题 id，本例中为 <code>bug_severity</code>。这个 id 不会发送给模型。答案会返回在同一个 id 下。</p>
+<h3 id="levels">档位（level）</h3>
+<p><code>criteria</code> 中的每一项就是一个档位（level）：答案谱系上的一个点，用文字描述。档位的编号就是它在 <code>criteria</code> 数组中的位置，从 0 开始，所以上面三个条目分别是档位 0、1 和 2。数组的顺序就是编号。</p>
+<p>模型只会拿到这些描述，没有其他内容，每个档位都独立地与 state 进行比较。</p>
+<p>响应中的 <code>score</code> 是档位谱系上的一个位置。对于三档刻度，它的范围是 0 到 2，并且可以落在两个档位之间。</p>
+<p>我们的<a href="../sdk/">客户端 SDK</a> 提供了带类型的问题。在 Python 中，同样的问题写成一个 <code>Score</code>：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Score, TypeSafeClient
+
+<span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+    response = client.system_one(
+        state=<span class="hljs-string">&quot;The export button crashes the settings page in Safari. It works in Chrome, but a few of our customers only use Safari.&quot;</span>,
+        questions={
+            <span class="hljs-string">&quot;bug_severity&quot;</span>: Score(
+                instructions=<span class="hljs-string">&quot;How severe is the reported issue?&quot;</span>,
+                criteria=[
+                    <span class="hljs-string">&quot;Cosmetic; no impact to functionality&quot;</span>,
+                    <span class="hljs-string">&quot;Broken or degraded feature, but workaround exists&quot;</span>,
+                    <span class="hljs-string">&quot;Blocking issue; no workaround exists&quot;</span>,
+                ],
+            ),
+        },
+    )
+
+    <span class="hljs-built_in">print</span>(response.answers[<span class="hljs-string">&quot;bug_severity&quot;</span>].score)</code></pre></div>
+<p>使用 <code>system_one</code> 方法或 <code>https://api.typesafe.ai/v1/systemone</code> 接口来调用 System One 模型。<code>model</code> 字段决定由哪个模型处理请求。<a href="../how-to-build/">如何基于 TypeSafe 构建</a> 介绍了在代码中的哪些位置调用它。</p>
+<p>可以使用我们的<a href="../sdk/">客户端 SDK</a>，也可以直接调用 <a href="../api/">TypeSafe API</a>。如果由编程智能体（coding agent）代你完成集成，请先安装 <a href="https://docs.typesafe.ai/agent-skill#installation" target="_blank" rel="noopener noreferrer">TypeSafe 智能体技能</a>，让它了解请求与响应的结构。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong> <code>instructions</code> 和 <code>criteria</code> 中的每个档位可以是字符串、对象或数组。建议从字符串开始。当某个档位既需要描述又需要少量示例情境时，可以使用对象。详见下方的<a href="#structured-level-descriptions">结构化档位描述</a> 一节和 <a href="../api/#param-instructions-2">API 参考</a>。</p>
+</aside>
+<h2 id="response-structure">响应结构</h2>
+<p>响应中 <code>answers</code> 的每个问题对应一个条目，键为请求中的 id。下面是上述示例请求的响应：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;bug_severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.43</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.35</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;legend&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Cosmetic; no impact to functionality&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Broken or degraded feature, but workaround exists&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Blocking issue; no workaround exists&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.57</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.43</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">332</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">18</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>每个 Score 答案有五个值：</p>
+<ul>
+<li><code>type</code>：问题的 TypeSafe 题型。</li>
+<li><code>probabilities</code>：每个档位的概率，以档位编号（字符串形式）作为键。所有值之和为 1。</li>
+<li><code>score</code>：档位编号轴上的一个位置，范围从 0 到最高档位编号（这里为 2）。它等于每个档位编号乘以其概率后求和：0 × 0.0 + 1 × 0.57 + 2 × 0.43 = 1.43。</li>
+<li><code>legend</code>：每个档位编号反向映射回它的描述。</li>
+<li><a href="../confidence/"><code>confidence</code></a>：一个 0 到 1 之间的数字，根据 <code>probabilities</code> 的分散程度计算得出。概率集中在某一个档位上意味着高置信度，概率分散在多个档位上意味着低置信度。</li>
+</ul>
+<p>分数 1.43 表示模型在档位 1 和档位 2 之间犹豫，更偏向档位 1。这与报告吻合：导出功能确实坏了，对大多数客户来说改用 Chrome 是一个变通方案，但对那些只使用 Safari 的客户来说并非如此。模型把 0.57 的概率放在「存在变通方案」上，把 0.43 放在「无变通方案」上，置信度为 0.35，因为概率被分散了。</p>
+<p>在 Python SDK 中，<code>ScoreAnswer</code> 把 <code>score</code>、<code>confidence</code>、<code>probabilities</code> 和 <code>legend</code> 暴露为带类型的字段。SDK 使用整数档位（而不是字符串）作为 <code>probabilities</code> 和 <code>legend</code> 的键。</p>
+<h2 id="reading-a-score">阅读 Score</h2>
+<p>我们来看看不同输入下分数如何变化。例如，使用上面请求中的问题和档位：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">&quot;How severe is the reported issue?&quot;
+  → 0: Cosmetic; no impact to functionality
+  → 1: Broken or degraded feature, but workaround exists
+  → 2: Blocking issue; no workaround exists</code></pre></div>
+<p>我们可以看到不同的 bug 报告如何改变分数：</p>
+<div class="table-wrap"><table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">  &lt;th colspan=&quot;3&quot; style=&quot;text-align: left;&quot;&gt;&lt;code&gt;probabilities&lt;/code&gt;&lt;/th&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+  &lt;th style=&quot;width: 44%;&quot;&gt;State&lt;/th&gt;
+  &lt;th style=&quot;width: 12%; white-space: nowrap;&quot;&gt;&lt;code&gt;score&lt;/code&gt;&lt;/th&gt;
+  &lt;th style=&quot;width: 16%; white-space: nowrap;&quot;&gt;&lt;code&gt;confidence&lt;/code&gt;&lt;/th&gt;
+  &lt;th style=&quot;width: 9%; white-space: nowrap;&quot;&gt;档位 0&lt;/th&gt;
+  &lt;th style=&quot;width: 9%; white-space: nowrap;&quot;&gt;档位 1&lt;/th&gt;
+  &lt;th style=&quot;width: 10%; white-space: nowrap;&quot;&gt;档位 2&lt;/th&gt;
+&lt;/tr&gt;</code></pre></div>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>导出按钮在设置页面上错位了几个像素。</td>
+      <td>0.0</td><td>1.0</td><td>1.0</td><td>0.0</td><td>0.0</td>
+    </tr>
+
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">&lt;tr&gt;
+  &lt;td&gt;点击 PDF 导出按钮没有任何反应。我仍然可以导出为 CSV 再自己转换，但要花很长时间。&lt;/td&gt;
+  &lt;td&gt;1.0&lt;/td&gt;&lt;td&gt;1.0&lt;/td&gt;&lt;td&gt;0.0&lt;/td&gt;&lt;td&gt;1.0&lt;/td&gt;&lt;td&gt;0.0&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+  &lt;td&gt;导出为 PDF 失败，旋转图标一直不消失。我们团队里有人说 CSV 导出对他们仍然有效，也有人说也失败了。&lt;/td&gt;
+  &lt;td&gt;1.11&lt;/td&gt;&lt;td&gt;0.84&lt;/td&gt;&lt;td&gt;0.0&lt;/td&gt;&lt;td&gt;0.89&lt;/td&gt;&lt;td&gt;0.11&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+  &lt;td&gt;导出按钮在 Safari 中会导致设置页面崩溃。它在 Chrome 中可以正常使用，但我们有一些客户只使用 Safari。&lt;/td&gt;
+  &lt;td&gt;1.43&lt;/td&gt;&lt;td&gt;0.35&lt;/td&gt;&lt;td&gt;0.0&lt;/td&gt;&lt;td&gt;0.57&lt;/td&gt;&lt;td&gt;0.43&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+  &lt;td&gt;从今天早上起，我们团队里没有人能登录。每次尝试都会出现 500 错误。&lt;/td&gt;
+  &lt;td&gt;2.0&lt;/td&gt;&lt;td&gt;1.0&lt;/td&gt;&lt;td&gt;0.0&lt;/td&gt;&lt;td&gt;0.0&lt;/td&gt;&lt;td&gt;1.0&lt;/td&gt;
+&lt;/tr&gt;</code></pre></div>
+  </tbody>
+</table></div>
+
+<p>在这些示例中，置信度 1.0 表示返回的概率分布将所有概率都放在某一个档位上。这描述的是模型的答案，并不保证答案一定正确。</p>
+<p>分数是档位编号的概率加权平均值。在第三个和第四个示例中，概率分散在档位 1 和档位 2 之间。档位 2 上的权重越大，分数就越高。它并不衡量没有变通方案的用户比例。</p>
+<p>不同的概率分布可以产生相同的分数。分数 1.0 可以表示所有概率都落在档位 1 上，也可以表示一半落在档位 0、另一半落在档位 2。要区分这些情况，请同时查看 <code>probabilities</code> 和 <code>confidence</code>。</p>
+<p>小数形式的分数是一个位置。你可以用它来按严重程度给报告排序，或者在你需要单一结果的代码中将其四舍五入到最近的档位。我们的<a href="../cookbook-entity-alignment/">实体对齐实战示例</a> 展示了一个四舍五入到最近档位以做决策的示例。</p>
+<p>Score 上置信度低通常意味着以下三种情况之一：档位之间存在重叠、问题同时衡量了多个维度，或者 state 提供的信息不足以定位它。我们的<a href="../confidence/">置信度</a> 文档介绍了如何在代码中使用它。</p>
+<h2 id="writing-good-levels">写出好的档位</h2>
+<p>描述情境，而不是程度。&quot;功能损坏或能力下降，但存在临时方案&quot;能让模型有具体的东西可以对照上下文状态。&quot;中等严重&quot;做不到。具体的描述能帮助模型区分不同档位。把答案与已知样本对照检查；仅仅置信度更高，并不能说明描述更好。</p>
+<p>每个档位都会被独立评估。模型看不到档位的编号，也看不到相邻的档位，所以&quot;比上一档更糟&quot;对它毫无意义，描述或指令里写数字也没有帮助。下面是上表中&quot;按钮错位&quot;那条工单在档位只用数字时的结果：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">instructions: &quot;Rate severity from 0 to 2, where 2 is worst&quot;
+criteria: [&quot;0&quot;, &quot;1&quot;, &quot;2&quot;]
+→ score 0.55, confidence 0.33, probabilities 0: 0.45, 1: 0.55, 2: 0.0</code></pre></div>
+<p>换成上面那三个文字描述的档位之后，同一条工单得 0.0 分，置信度为 1.0。只用数字时，模型没有任何东西可以对照，于是把概率分给了 0 和 1。</p>
+<p>能用多少个清晰区分的档位就用多少个，最多 10 个。三个就够用。别加你区分不了的档位。</p>
+<p>每道 Score 题只保留一个维度。如果描述里同时写&quot;守时、聪明、有经验&quot;，那这道题就在同时衡量三件事，一个输入在某一项上高、另一项上低，就放不到任何一个档位上。置信度会下降，分数的意义也变小。把它拆成每个维度一道 Score 题，再在代码里合并，下一节会演示。</p>
+<p>如果你的量表顶端存在一个你需要区别对待的罕见情况，给它单独一个档位。一个最高档为&quot;非常生气&quot;的情绪量表，可以再加一档&quot;辱骂或威胁&quot;。没有这一档的话，两条消息都可能落在靠近顶部的位置，分数本身可能无法区分它们。</p>
+<p>如果根本不存在中间地带，答案只是少数几个离散类别，那就改用 <a href="../choice/">Choice</a>，或者把题拆成几道 <a href="../noul/">Noul</a> 题。务必用自己的数据测试你的档位。同一量表的两种措辞，在你的数据上可能表现不同。</p>
+<h2 id="splitting-a-complex-judgment-into-several-score-questions">把复杂判断拆成多道 Score 题</h2>
+<p>一个复杂的判断往往取决于多件事，最好按&quot;一件事一道 Score 题&quot;的方式拆分。然后你可以在代码里把 TypeSafe 返回的 Score 合并成最终判断。不同 Score 题的重要性可能不同，所以给每道 Score 题一个权重表示相对重要程度。权重由你定。当合并结果和团队的实际判断不一致时，就在代码里调整权重再跑一遍。把这些 Score 题放在同一次请求里提交，它们会并行评估。多加几道题几乎不会影响响应时间，只多花几个 question token；参见 <a href="../primitives/#ask-multiple-questions-together">一次提交多道问题</a>。</p>
+<p>下面这条请求对应上表中&quot;导出转圈&quot;那条工单，并补充了一些上下文。它同时问了三个 Score 题：Bug 有多严重、客户有多不满、工单给工程师的线索有多充分。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Export to PDF fails with a spinner that never finishes. Some of our team say CSV export still works for them, others say it fails too. This is the third time I&#x27;m writing in and honestly I&#x27;m done. Steps: open any report, click Export, choose PDF. Chrome 128 on macOS.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How severe is the reported issue?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">&quot;Cosmetic; no impact to functionality&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Broken or degraded feature, but workaround exists&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Blocking issue; no workaround exists&quot;</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;frustration&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How frustrated is the customer?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">&quot;Calm, just stating facts&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Frustrated but civil&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Very angry, strong language or threatening to leave&quot;</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;report_quality&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How much does the report give an engineer to work with?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">&quot;No detail; just says something is broken&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Names the feature but no steps or environment&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Steps to reproduce or environment, but not both&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Steps to reproduce and environment&quot;</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>TypeSafe 的响应：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.24</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.64</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;legend&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Cosmetic; no impact to functionality&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Broken or degraded feature, but workaround exists&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Blocking issue; no workaround exists&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.76</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.24</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;frustration&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.28</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.58</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;legend&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Calm, just stating facts&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Frustrated but civil&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Very angry, strong language or threatening to leave&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.72</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.28</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;report_quality&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3.0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;legend&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;No detail; just says something is broken&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Names the feature but no steps or environment&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Steps to reproduce or environment, but not both&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;3&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Steps to reproduce and environment&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;3&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">468</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">43</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>每道题独立地对照工单作答，分别得到一个分数：</p>
+<ul>
+<li><code>severity</code> 是 1.24，置信度 0.64。和开头的示例判读一致：导出功能损坏，部分人有临时方案可走。</li>
+<li><code>frustration</code> 是 1.28，置信度 0.58。措辞还算克制，但&quot;第三次&quot;和&quot;我受够了&quot;把分数往上拉了一些，模型于是把 0.72 和 0.28 分别分给了&quot;不满但克制&quot;和&quot;非常生气&quot;。在这条工单上这两档互相重叠，所以置信度只是中等。</li>
+<li><code>report_quality</code> 是 3.0，置信度 1.0。复现步骤和浏览器版本都给出了。</li>
+</ul>
+<p>这三把量表的档位数不同，所以合并之前要把每个分数归一化。一把四档的量表返回 0 到 3，一把三档的量表返回 0 到 2，所以一把量表的最高分比另一把量表的最高分大。把每个分数除以它的最高档编号 <code>len(criteria) - 1</code>，就能把全部分数映射到 0 到 1 上。这样权重才和字面意思一致：severity 给 0.6、frustration 给 0.3，就表示 severity 的权重是 frustration 的两倍。</p>
+<p>下面这段 TypeSafe Python SDK 代码同时问三道题，对每个分数做归一化，并用一个示例的优先级算法把它们合并：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Score, TypeSafeClient
+
+TRIAGE_QUESTIONS = {
+    <span class="hljs-string">&quot;severity&quot;</span>: Score(
+        instructions=<span class="hljs-string">&quot;How severe is the reported issue?&quot;</span>,
+        criteria=[
+            <span class="hljs-string">&quot;Cosmetic; no impact to functionality&quot;</span>,
+            <span class="hljs-string">&quot;Broken or degraded feature, but workaround exists&quot;</span>,
+            <span class="hljs-string">&quot;Blocking issue; no workaround exists&quot;</span>,
+        ],
+    ),
+    <span class="hljs-string">&quot;frustration&quot;</span>: Score(
+        instructions=<span class="hljs-string">&quot;How frustrated is the customer?&quot;</span>,
+        criteria=[
+            <span class="hljs-string">&quot;Calm, just stating facts&quot;</span>,
+            <span class="hljs-string">&quot;Frustrated but civil&quot;</span>,
+            <span class="hljs-string">&quot;Very angry, strong language or threatening to leave&quot;</span>,
+        ],
+    ),
+    <span class="hljs-string">&quot;report_quality&quot;</span>: Score(
+        instructions=<span class="hljs-string">&quot;How much does the report give an engineer to work with?&quot;</span>,
+        criteria=[
+            <span class="hljs-string">&quot;No detail; just says something is broken&quot;</span>,
+            <span class="hljs-string">&quot;Names the feature but no steps or environment&quot;</span>,
+            <span class="hljs-string">&quot;Steps to reproduce or environment, but not both&quot;</span>,
+            <span class="hljs-string">&quot;Steps to reproduce and environment&quot;</span>,
+        ],
+    ),
+}
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">normalized</span>(<span class="hljs-params">answers, question_id: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Put a score on 0 to 1 by dividing by its top level number.&quot;&quot;&quot;</span>
+    top_level = <span class="hljs-built_in">len</span>(TRIAGE_QUESTIONS[question_id].criteria) - <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> answers[question_id].score / top_level
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">priority</span>(<span class="hljs-params">ticket: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+        response = client.system_one(
+            state=ticket,
+            questions=TRIAGE_QUESTIONS,
+        )
+    answers = response.answers
+
+    severity = normalized(answers, <span class="hljs-string">&quot;severity&quot;</span>)
+    frustration = normalized(answers, <span class="hljs-string">&quot;frustration&quot;</span>)
+    report_quality = normalized(answers, <span class="hljs-string">&quot;report_quality&quot;</span>)
+
+    <span class="hljs-comment"># A detailed report helps an engineer investigate, so it raises priority a little.</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0.6</span> * severity + <span class="hljs-number">0.3</span> * frustration + <span class="hljs-number">0.1</span> * report_quality</code></pre></div>
+<p>对上面的示例响应，归一化后的分数分别是 severity 0.62、frustration 0.64、report_quality 1.0。优先级为 <code>0.6 × 0.62 + 0.3 × 0.64 + 0.1 × 1.0 = 0.664</code>，四舍五入为 <code>0.66</code>。</p>
+<p>权重写在你的代码里，所以你能看清这个数字是怎么算出来的；当排序结果和团队实际判断不一致时，也可以随时改。后面如果需要更多 Score 题，往 <code>TRIAGE_QUESTIONS</code> 里加就行，请求次数仍然只有一次。这种把复杂判断拆成多个独立 Score、再用代码按权重合并的技巧，叫做 <a href="../composite-scoring/">组合打分（composite scoring）</a> 设计模式。</p>
+<h2 id="structured-level-descriptions">结构化档位描述</h2>
+<p>为每个档位先写一个基础的文本描述。当模型在你认为清晰的输入上持续在相邻两个档位之间摇摆时，把每个档位从字符串换成对象：一个字段描述档位覆盖什么，一个字段列出几个示例场景。每个档位使用相同的字段名，这样模型才能同类对比。</p>
+<p>下面的请求是之前用过的那个 spinner 工单，不过每个档位都加了示例：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Export to PDF fails with a spinner that never finishes. Some of our team say CSV export still works for them, others say it fails too.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;bug_severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How severe is the reported issue?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Cosmetic; no impact to functionality&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;typo in a label&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;misaligned icon&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Broken or degraded feature, but workaround exists&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;export fails in one browser but works in another&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Blocking issue; no workaround exists&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;cannot log in&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;data loss&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>响应：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;bug_severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.09</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.87</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;legend&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Cosmetic; no impact to functionality&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;typo in a label&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;misaligned icon&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Broken or degraded feature, but workaround exists&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;export fails in one browser but works in another&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;what&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Blocking issue; no workaround exists&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;examples&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;cannot log in&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;data loss&quot;</span>
+          <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.91</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.09</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">379</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">18</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>用普通字符串时，这个工单的打分是 1.11，置信度 0.84。加上示例后打分为 1.09，置信度 0.87，变化不大，因为普通字符串本来就已经把它放对了。当普通字符串让模型在档位之间摇摆时，效果更明显，参见下表。</p>
+<p>示例会引导模型，只有看起来像你真实输入的示例才有帮助。下表是开头那个 Safari 报告，分别用三组不同的档位对象：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>档位描述</th>
+<th><code>score</code></th>
+<th><code>confidence</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>普通字符串：没有带示例的对象</td>
+<td>1.43</td>
+<td>0.35</td>
+</tr>
+<tr>
+<td>加上 examples 数组，示例有用：「export fails in one browser but works in another」</td>
+<td>1.03</td>
+<td>0.96</td>
+</tr>
+<tr>
+<td>加上 examples 数组，示例与浏览器无关：「search fails, but browsing categories still works」</td>
+<td>1.43</td>
+<td>0.35</td>
+</tr>
+</tbody></table></div>
+<p>在这个对比中，匹配的示例把几乎所有概率都集中到了一个档位上。不相关的示例与普通字符串的结果一致。置信度更高并不能说明哪个答案就是正确的。挑选预期档位已知的示例，然后在另一批输入上测试改过的描述，再决定是否保留。</p>
+<p>本文档基于 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建和托管，它是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/choice/"><span>上一篇</span><strong>Choice（选择题）</strong></a>
+    <a class="pager-link is-next" href="/docs/noul/"><span>下一篇</span><strong>Noul（是非题）</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#request-structure">请求结构</a><a class="toc-link depth-3" href="#levels">档位（level）</a><a class="toc-link depth-2" href="#response-structure">响应结构</a><a class="toc-link depth-2" href="#reading-a-score">阅读 Score</a><a class="toc-link depth-2" href="#writing-good-levels">写出好的档位</a><a class="toc-link depth-2" href="#splitting-a-complex-judgment-into-several-score-questions">把复杂判断拆成多道 Score 题</a><a class="toc-link depth-2" href="#structured-level-descriptions">结构化档位描述</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

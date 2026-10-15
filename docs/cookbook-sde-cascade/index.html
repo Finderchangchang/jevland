@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SDE（结构化数据抽取）级联 · JevLand</title>
+<meta name="description" content="用一个 2 阶段的结构化数据抽取级联（mini → verify → reasoning），以小成本获得接近大型推理模型的质量。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-sde-cascade/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="SDE（结构化数据抽取）级联">
+<meta property="og:description" content="用一个 2 阶段的结构化数据抽取级联（mini → verify → reasoning），以小成本获得接近大型推理模型的质量。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-sde-cascade/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SDE（结构化数据抽取）级联">
+<meta name="twitter:description" content="用一个 2 阶段的结构化数据抽取级联（mini → verify → reasoning），以小成本获得接近大型推理模型的质量。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"SDE（结构化数据抽取）级联","url":"https://jevland.com/docs/cookbook-sde-cascade/","inLanguage":"zh-CN","description":"用一个 2 阶段的结构化数据抽取级联（mini → verify → reasoning），以小成本获得接近大型推理模型的质量。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link is-current" href="/docs/cookbook-sde-cascade/" aria-current="page">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link is-current" href="/docs/cookbook-sde-cascade/" aria-current="page">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>SDE（结构化数据抽取）级联</h1>
+        <p class="lead">用一个 2 阶段的结构化数据抽取级联（mini → verify → reasoning），以小成本获得接近大型推理模型的质量。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/sde_cascade" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><ul>
+<li>概述<ul>
+<li>大型推理模型抽取结构化数据效果不错，但速度慢、价格贵</li>
+<li>小型模型便宜，但会出错</li>
+<li><em>级联（cascade）</em> 能以极小的成本获得接近最优的质量</li>
+<li>我们使用的模型及其价格（每百万 token 的美元价格，输入 / 输出；标准价格
+于 2026 年 9 月 15 日核对）：<ul>
+<li>第 0 级（mini）：<a href="https://developers.openai.com/api/docs/models/gpt-5.4-mini" target="_blank" rel="noopener noreferrer"><code>gpt-5.4-mini</code></a>
+价格 $0.75 / $4.50</li>
+<li>第 1 级（reasoning）：<a href="https://developers.openai.com/api/docs/models/gpt-5.5" target="_blank" rel="noopener noreferrer"><code>gpt-5.5</code></a>
+价格 $5.00 / $30.00（约 mini 的 7 倍）</li>
+<li>验证器：TypeSafe <code>jev-1.12</code>，价格 $0.042 / $0.00（输出 token 免费；
+<a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noopener noreferrer">Jev 公开定价</a>）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>算法<ol>
+<li>用便宜 / 小型模型进行 <strong>抽取（Extract）</strong>。</li>
+<li>用 <strong>TypeSafe</strong> 题型做 <strong>验证（Verify）</strong>：每个字段出一道 Noul（是非题）问题<ul>
+<li>（例如「该值是否在源文档中缺失？」「它是否抄自无关文本？」），每道题返回出错概率 P。</li>
+</ul>
+</li>
+<li>如果验证器信号触发，就 <strong>升级（Escalate）</strong> 到昂贵的推理模型；否则保留便宜模型的答案。</li>
+</ol>
+</li>
+<li>本实战示例<ul>
+<li>端到端走完一个真实例子，然后展示在 100 个 prompt 上的权衡</li>
+<li>注意：两个抽取级都使用 OpenAI 的文本模式</li>
+<li>我们 <em>不使用</em> 结构化输出、工具调用或 json 模式，原因是：<ul>
+<li>LLM <em>不太会</em> 出现「<em>遵循 schema</em>」这类错误（这种错误很容易合成数据）</li>
+<li>如果 LLM 真的没遵循 schema，那它通常已经相当混乱，所以约束解码解决不了底层问题</li>
+<li>不过我们鼓励你亲自试试！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="setup">环境准备</h2>
+<ul>
+<li>安装依赖（TypeSafe 验证器客户端由 TypeSafe 的软件包源提供）：</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install openai datasets jsonschema ipython <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<ul>
+<li>然后在环境中设置 <code>OPENAI_API_KEY</code> 和 <code>TYPESAFE_API_KEY</code></li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+
+<span class="hljs-keyword">import</span> jsonschema
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> datasets <span class="hljs-keyword">import</span> load_dataset
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Noul, NoulCriteria, TypeSafeClient
+
+MINI = <span class="hljs-string">&quot;gpt-5.4-mini&quot;</span>  <span class="hljs-comment"># rung 0: cheap + fast</span>
+REASONING = <span class="hljs-string">&quot;gpt-5.5&quot;</span>  <span class="hljs-comment"># rung 1: strong, run with reasoning_effort=&quot;high&quot;</span>
+TS_MODEL = <span class="hljs-string">&quot;jev-1.12&quot;</span>  <span class="hljs-comment"># the TypeSafe verifier model</span>
+FIRE_T = <span class="hljs-number">0.7</span>  <span class="hljs-comment"># escalate if any per-field P(wrong) exceeds this; also the &quot;&lt;== FIRES&quot; display marker</span>
+
+oai = OpenAI()
+
+ts = TypeSafeClient(api_key=os.environ[<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>], timeout=<span class="hljs-number">30.0</span>)</code></pre></div>
+<h2 id="step-1-the-data">第 1 步：数据</h2>
+<p>我们选用 huggingface 上名为 scrapegraphai 的数据集</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">SCRAPEGRAPHAI_REVISION = <span class="hljs-string">&quot;4bb9fba1dff9181c5acdb60a5a26fea62fa54fe9&quot;</span>
+row = load_dataset(
+    <span class="hljs-string">&quot;scrapegraphai/scrapegraphai-100k&quot;</span>,
+    revision=SCRAPEGRAPHAI_REVISION,
+    split=<span class="hljs-string">&quot;train&quot;</span>,
+)[<span class="hljs-number">516</span>]
+schema = json.loads(row[<span class="hljs-string">&quot;schema&quot;</span>])
+prompt = row[<span class="hljs-string">&quot;prompt&quot;</span>]
+content = row[<span class="hljs-string">&quot;content&quot;</span>]
+
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;&quot;&quot;
+PROMPT
+===========
+<span class="hljs-subst">{prompt}</span>
+
+SCHEMA
+===========
+<span class="hljs-subst">{json.dumps(schema, indent=<span class="hljs-number">2</span>)}</span>
+
+CONTENT
+===========
+<span class="hljs-subst">{content}</span>
+&quot;&quot;&quot;</span>.strip()
+)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">PROMPT
+===========
+Find registration open date fall semester for New York University in New York, NY for the 2024-2025 school year.
+
+SCHEMA
+===========
+{
+  &quot;properties&quot;: {
+    &quot;registration_open_date&quot;: {
+      &quot;description&quot;: &quot;The date that registration opens for the fall semester. MUST be in the format mm/dd/yyyy. For example, for a college in the 2024-2025 school year, it might be something like 09/05/2024. Return a blank string if you are unsure.&quot;,
+      &quot;title&quot;: &quot;Registration Open Date&quot;,
+      &quot;type&quot;: &quot;string&quot;
+    },
+    &quot;description&quot;: {
+      &quot;description&quot;: &quot;A brief description of the registration open date. For example, &#39;Registration opens for the fall semester&#39;.&quot;,
+      &quot;title&quot;: &quot;Description&quot;,
+      &quot;type&quot;: &quot;string&quot;
+    }
+  },
+  &quot;required&quot;: [
+    &quot;registration_open_date&quot;,
+    &quot;description&quot;
+  ],
+  &quot;title&quot;: &quot;RegistrationOpen&quot;,
+  &quot;type&quot;: &quot;object&quot;
+}
+
+CONTENT
+===========
+Skip to content Skip to current page navigation
+
+[ ](https://www.nyu.edu/)
+
+Search Site
+
+[ ](https://www.nyu.edu/)
+
+  * [ Academics](https://www.nyu.edu/academics.html)
+  * [ Admissions](https://www.nyu.edu/admissions.html)
+  * [ Research](https://www.nyu.edu/research.html)
+  * [ University Life](https://www.nyu.edu/life.html)
+  * [ About](https://www.nyu.edu/about.html)
+
+
+
+All NYU
+
+#  Mobile Navigation 
+
+[ ](https://www.nyu.edu/)
+
+Search Site
+
+  * [Academics](https://www.nyu.edu/academics.html)
+  * [Admissions](https://www.nyu.edu/admissions.html)
+  * [Research](https://www.nyu.edu/research.html)
+  * [University Life](https://www.nyu.edu/life.html)
+  * [About](https://www.nyu.edu/about.html)
+
+
+
+All NYU
+
+Info for
+
+  * Back to main menu
+  * Info for 
+
+    * [Students](https://www.nyu.edu/students.html)
+    * [Faculty](https://www.nyu.edu/faculty.html)
+    * [Alumni](https://www.nyu.edu/alumni.html)
+    * [Employees](https://www.nyu.edu/employees.html)
+    * [Community](https://www.nyu.edu/community.html)
+
+
+
+[Log In](http://home.nyu.edu/)
+
+Info for
+
+  * [Students](https://www.nyu.edu/students.html)
+  * [Faculty](https://www.nyu.edu/faculty.html)
+  * [Alumni](https://www.nyu.edu/alumni.html)
+  * [Employees](https://www.nyu.edu/employees.html)
+  * [Community](https://www.nyu.edu/community.html)
+
+
+
+[Log In](https://home.nyu.edu/)
+
+Search Site Search
+
+#  Events Calendar 
+
+Search Events 
+
+Apply Reset
+
+  * [About the Events Calendar ](https://www.nyu.edu/employees/resources-and-services/media-and-communications/digital-communications/university-events-calendar.html)
+  * [Events Calendar Tutorial ](https://www.nyu.edu/employees/resources-and-services/media-and-communications/digital-communications/university-events-calendar/tutorials.html)
+  * [Report issue or provide feedback ](https://nyu.service-now.com/sp?id=sc_cat_item&amp;sys_id=7698dd2a98bcf4004c8c03063d84e274)
+
+
+
+Search Filters Calendar
+
+New York University 
+
+Equal Opportunity and Non-Discrimination at NYU - New York University is committed to maintaining an environment that encourages and fosters respect for individual values and appropriate conduct among all persons. In all University spaces--physical and digital--programming, activities, and events are carried out in accordance with applicable law as well as University policy, which includes but is not limited to its Non-Discrimination and Anti-Harassment Policy. 
+
+Unless otherwise noted, all content copyright New York University. All rights reserved. 
+
+  * [Search](https://search.nyu.edu/)
+  * [Campus Map](https://www.nyu.edu/map.html)
+  * [Events](https://events.nyu.edu/)
+  * [Contact Us](https://www.nyu.edu/contact-us.html)
+  * [Give](https://www.nyu.edu/about/giving.html)
+  * [Copyright &amp; Fair Use](https://www.nyu.edu/copyright-and-fair-use.html)
+  * [Privacy](https://www.nyu.edu/privacy.html)
+  * [Accessibility](https://www.nyu.edu/accessibility.html)
+  * [Feedback](https://www.nyu.edu/#feedback.html)
+
+
+
+  * [New York Campus](https://www.nyu.edu/)
+  * [Abu Dhabi Campus](https://nyuad.nyu.edu/)
+  * [Shanghai Campus](https://shanghai.nyu.edu/)
+
+
+
+  * [![](https://events.nyu.edu/live/resource/image/_i/themes/global/images/icons/facebook.rev.1773448757.svg)](https://facebook.com/)
+  * [![](https://events.nyu.edu/live/resource/image/_i/themes/global/images/icons/linkedin.rev.1773448758.svg)](https://linkedin.com/)
+  * [![](https://events.nyu.edu/live/resource/image/_i/themes/global/images/icons/x.rev.1773448757.svg)](https://x.com/)
+  * [![](https://events.nyu.edu/live/resource/image/_i/themes/global/images/icons/instagram.rev.1773448757.svg)](https://instagram.com/)
+  * [![](https://events.nyu.edu/live/resource/image/_i/themes/global/images/icons/youtube.rev.1773448758.svg)](https://youtube.com/)</code></pre></div>
+<ul>
+<li>这一行是 <strong>NYU 活动日历页面</strong>（&quot;Fall 2024 Census Date&quot;）：<ul>
+<li>schema 只需要两个字段：<code>registration_open_date</code> 和 <code>description</code></li>
+<li>抓取到的内容只包含日历导航和样板文本：<strong>既没有注册日期，也没有描述</strong></li>
+<li>注意 schema 的 <code>description</code> 字段甚至自带一个 <em>示例</em> 值（&quot;Registration opens for the fall semester&quot;），写在字段描述里</li>
+</ul>
+</li>
+<li>所以一个合格的抽取器应该 <em>拒绝</em> 编造页面中没有的字段</li>
+<li>让我们看看小模型是否做对了！</li>
+</ul>
+<h2 id="step-2-extract-with-the-mini-model-text-mode">第 2 步：用 mini 模型抽取（文本模式）</h2>
+<ul>
+<li>注意：<code>gpt-5.4-mini</code> 在这个输入上非常随机 —— 即使设置 <code>temperature=0</code>，几乎每次运行都会编造出不同的 <code>description</code>。为了完整演示可复现，我们 <strong>硬编码</strong> 下面整篇 notebook 要用到的那一个典型编造（验证器会以 P(wrong) &gt; 0.8 标记它）。真实流水线里直接用 <code>extract(MINI, prompt, schema, content, temperature=0)</code> 即可。</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">EXTRACT_SYSTEM = (
+    <span class="hljs-string">&quot;You extract structured data from documents. Return only values supported by the text. &quot;</span>
+    <span class="hljs-string">&quot;Follow any value format specified by the schema or its field descriptions.&quot;</span>
+)
+
+
+<span class="hljs-comment"># LLM and TypeSafe calls are cached to ``json_cache.json``, which ships with the cookbook, so</span>
+<span class="hljs-comment"># re-rendering reproduces the published results with no API spend; delete the file to re-run live.</span>
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">extract</span>(<span class="hljs-params">
+    model: <span class="hljs-built_in">str</span>,
+    prompt: <span class="hljs-built_in">str</span>,
+    schema: <span class="hljs-built_in">dict</span>,
+    content: <span class="hljs-built_in">str</span>,
+    *,
+    reasoning_effort: <span class="hljs-built_in">str</span> | <span class="hljs-literal">None</span> = <span class="hljs-literal">None</span>,
+    temperature: <span class="hljs-built_in">float</span> | <span class="hljs-literal">None</span> = <span class="hljs-literal">None</span>,
+</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    user = (
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{prompt}</span>\n\nReturn ONLY a JSON object matching this JSON Schema:\n&quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{json.dumps(schema, indent=<span class="hljs-number">2</span>)}</span>\n\nDocument:\n<span class="hljs-subst">{content}</span>&quot;</span>
+    )
+    kwargs = {
+        <span class="hljs-string">&quot;model&quot;</span>: model,
+        <span class="hljs-string">&quot;messages&quot;</span>: [
+            {<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;system&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: EXTRACT_SYSTEM},
+            {<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: user},
+        ],
+    }
+    <span class="hljs-keyword">if</span> reasoning_effort:
+        kwargs[<span class="hljs-string">&quot;reasoning_effort&quot;</span>] = reasoning_effort
+    <span class="hljs-keyword">if</span> temperature <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+        kwargs[<span class="hljs-string">&quot;temperature&quot;</span>] = temperature
+    text = oai.chat.completions.create(**kwargs).choices[<span class="hljs-number">0</span>].message.content
+    <span class="hljs-comment"># The prompt asks for ONLY a JSON object, so parse the reply as-is -- no regex fishing a</span>
+    <span class="hljs-comment"># substring out of a malformed reply. If ``json.loads`` fails, treat it as an empty extraction</span>
+    <span class="hljs-comment"># (the record-level analog of NaN): every field reads as absent, which the verifier flags and the</span>
+    <span class="hljs-comment"># gate escalates -- the safe direction. Schema-following errors are rare here (see the overview).</span>
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-keyword">return</span> json.loads(text)
+    <span class="hljs-keyword">except</span> (ValueError, json.JSONDecodeError):
+        <span class="hljs-keyword">return</span> {}
+
+
+<span class="hljs-comment"># Hard-coded canonical fabrication (see note above); a real pipeline would use extract(MINI, prompt, schema, content, temperature=0).</span>
+mini_record = {
+    <span class="hljs-string">&quot;registration_open_date&quot;</span>: <span class="hljs-string">&quot;&quot;</span>,
+    <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;Registration opens for the fall semester&quot;</span>,
+}
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;mini extraction:\n&quot;</span>, json.dumps(mini_record, indent=<span class="hljs-number">2</span>))
+
+<span class="hljs-comment"># The record is a perfect fit for the JSON Schema -- and still wrong. Schema validation is necessary</span>
+<span class="hljs-comment"># but not sufficient: it catches structural errors, never semantic ones. That gap is the whole point.</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nschema-valid:&quot;</span>, jsonschema.Draft202012Validator(schema).is_valid(mini_record))</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">mini extraction:
+ {
+  &quot;registration_open_date&quot;: &quot;&quot;,
+  &quot;description&quot;: &quot;Registration opens for the fall semester&quot;
+}
+
+schema-valid: True</code></pre></div>
+<ul>
+<li>这条记录是 <strong>符合 schema 的</strong>（上一行打印 <code>True</code>），但仍然是错的：<ul>
+<li><code>registration_open_date</code> 留空，这与页面一致：页面没有给出日期</li>
+<li>但 <code>description</code> 是编造的：页面根本没描述注册日期，mini 凭空捏造了一个听起来合理的值。它可能照搬 schema 自带的示例 &quot;Registration opens for the fall semester&quot;，或者写一句 &quot;...was not found in the document&quot;</li>
+<li>JSON-Schema 校验发现不了这类问题。小模型会自信地编造出满足 schema 的假数据，捕捉这些假数据正是语义验证器的工作</li>
+</ul>
+</li>
+</ul>
+<h2 id="step-3-verify-with-typesafe">步骤 3：用 TypeSafe 验证</h2>
+<ul>
+<li>验证器是 <strong>TypeSafe</strong>；对每个字段我们构建一个 <code>Noul</code> 问题：<ul>
+<li>一个狭窄的是非题，设定为 <code>true</code> = 存在问题（升级）</li>
+</ul>
+</li>
+<li>TypeSafe 在一次 system_one 调用中按问题返回校准过的 <code>noul</code> = <code>P(true)</code></li>
+<li>问题集：<ul>
+<li>一个整体的 <strong><code>__overall__::judge</code></strong> 判定头（&quot;这条记录是否应该被升级？&quot;）。我们计算并展示它是为了把整条记录的判断与按字段的判定头进行对比，但第 4 步的门控 <strong>不使用</strong>它 —— 升级是由按字段的检测组驱动的。</li>
+<li>一个按字段的检测组<ul>
+<li>非空字段获得完整的判定头集合</li>
+<li>空字段（null / &quot;&quot; / []）只获得 <code>absence_wrong</code> 判定头</li>
+</ul>
+</li>
+<li>（完整流水线还为整个容器设置了一个 <code>spurious</code> 判定头，以及一个整体的 <code>difficulty</code> 分数；这里不展示，以让本演练聚焦在两个门控判定头上）</li>
+</ul>
+</li>
+<li><strong>TypeSafe 之道：分解</strong><ul>
+<li>注意所有内容都是 <em>以编程方式分解</em> 的，这就是 TypeSafe 的方式。</li>
+<li>分解能让每个 prompt 都尽可能智能，并使算法可调、可解释。</li>
+<li><img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/sde_cascade/this_is_the_way.jpg?fit=max&amp;auto=format&amp;n=2NirYCl-v96cw05F&amp;q=85&amp;s=10bd7d99dc5f679022bb6763dde57330" alt="this is the way"></li>
+</ul>
+</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-comment"># metric -&gt; (question, NoulCriteria)</span>
+MAIN_QUESTIONS = {
+    <span class="hljs-string">&quot;name_desc_mismatch&quot;</span>: (
+        <span class="hljs-string">&quot;Does the `extracted_field` fail to match the field at `path` or the `description` in the &quot;</span>
+        <span class="hljs-string">&quot;`field_spec`? If the `description` is empty, judge against the `path` alone.&quot;</span>,
+        NoulCriteria(
+            true=<span class="hljs-string">&quot;the `extracted_field` does not match the field name or its `description`&quot;</span>,
+            false=<span class="hljs-string">&quot;the `extracted_field` matches the field name and `description`&quot;</span>,
+        ),
+    ),
+    <span class="hljs-string">&quot;type_mismatch&quot;</span>: (
+        <span class="hljs-string">&quot;Does the `extracted_field` violate the `type` declared in the `field_spec`?&quot;</span>,
+        NoulCriteria(
+            true=<span class="hljs-string">&quot;the `extracted_field` violates the declared `type`&quot;</span>,
+            false=<span class="hljs-string">&quot;the `extracted_field` conforms to the declared `type`&quot;</span>,
+        ),
+    ),
+    <span class="hljs-string">&quot;unreasonable&quot;</span>: (
+        <span class="hljs-string">&quot;Is the `extracted_field` one that a reasonable person would not have extracted for this &quot;</span>
+        <span class="hljs-string">&quot;`field_spec`?&quot;</span>,
+        NoulCriteria(
+            true=<span class="hljs-string">&quot;a reasonable person would not have extracted this value&quot;</span>,
+            false=<span class="hljs-string">&quot;the extraction is reasonable&quot;</span>,
+        ),
+    ),
+    <span class="hljs-string">&quot;hallucinated&quot;</span>: (
+        <span class="hljs-string">&quot;Is the `extracted_field` unsupported by, or absent from, the source text?&quot;</span>,
+        NoulCriteria(
+            true=<span class="hljs-string">&quot;the `extracted_field` is a hallucination -- not supported by, or absent &quot;</span>
+            <span class="hljs-string">&quot;from, the source text&quot;</span>,
+            false=<span class="hljs-string">&quot;the `extracted_field` is supported by the source text&quot;</span>,
+        ),
+    ),
+    <span class="hljs-string">&quot;off_target&quot;</span>: (
+        <span class="hljs-string">&quot;Does the source text fail to genuinely report the thing the `field_spec` describes, so the &quot;</span>
+        <span class="hljs-string">&quot;value was pulled from incidental text?&quot;</span>,
+        NoulCriteria(
+            true=<span class="hljs-string">&quot;the source does not genuinely provide this field -- the value was pulled &quot;</span>
+            <span class="hljs-string">&quot;from incidental text&quot;</span>,
+            false=<span class="hljs-string">&quot;the source genuinely reports this field&quot;</span>,
+        ),
+    ),
+    <span class="hljs-string">&quot;incomplete&quot;</span>: (
+        <span class="hljs-string">&quot;Does the `extracted_field` fail to capture a value the source supports (note whether the &quot;</span>
+        <span class="hljs-string">&quot;`field_spec` is `required`)?&quot;</span>,
+        NoulCriteria(
+            true=<span class="hljs-string">&quot;the field is wrongly empty, null, or missing a value the source supports&quot;</span>,
+            false=<span class="hljs-string">&quot;the field captures the value the source supports&quot;</span>,
+        ),
+    ),
+    <span class="hljs-string">&quot;format_violation&quot;</span>: (
+        <span class="hljs-string">&quot;Does the `extracted_field` violate the format or constraints implied by the `description`, &quot;</span>
+        <span class="hljs-string">&quot;the schema `type`, and the extraction instructions (e.g. date format, units, enum membership)?&quot;</span>,
+        NoulCriteria(
+            true=<span class="hljs-string">&quot;the `extracted_field` violates the implied format or constraints&quot;</span>,
+            false=<span class="hljs-string">&quot;the `extracted_field` satisfies the format and constraints&quot;</span>,
+        ),
+    ),
+}
+ABSENCE_QUESTION = (
+    <span class="hljs-string">&quot;The `extracted_field` is empty, null, or an empty collection. Does the source text contain the &quot;</span>
+    <span class="hljs-string">&quot;information the `field_spec` describes, making the empty result wrong?&quot;</span>
+)
+ABSENCE_CRITERIA = NoulCriteria(
+    true=<span class="hljs-string">&quot;a value was wrongly omitted&quot;</span>, false=<span class="hljs-string">&quot;returning nothing is correct&quot;</span>
+)
+
+<span class="hljs-comment"># The pipeline also asks one holistic, whole-record head: &quot;should this be escalated?&quot;</span>
+OVERALL_JUDGE = (
+    <span class="hljs-string">&quot;Is this extracted record an incorrect extraction -- some value unsupported by the source or &quot;</span>
+    <span class="hljs-string">&quot;not conforming to the schema, required information missing or wrong, or some field hallucinated -- &quot;</span>
+    <span class="hljs-string">&quot;so it should be escalated to a smarter model?&quot;</span>
+)
+OVERALL_JUDGE_CRITERIA = NoulCriteria(
+    true=<span class="hljs-string">&quot;the record is an incorrect extraction&quot;</span>,
+    false=<span class="hljs-string">&quot;the record is a correct extraction&quot;</span>,
+)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">is_empty</span>(<span class="hljs-params">v</span>) -&gt; <span class="hljs-built_in">bool</span>:
+    <span class="hljs-keyword">return</span> v <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">or</span> (<span class="hljs-built_in">isinstance</span>(v, (<span class="hljs-built_in">str</span>, <span class="hljs-built_in">list</span>, <span class="hljs-built_in">dict</span>)) <span class="hljs-keyword">and</span> <span class="hljs-built_in">len</span>(v) == <span class="hljs-number">0</span>)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">field_spec</span>(<span class="hljs-params">name: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Minimal spec pulled from the schema (unwrapping anyOf/null for optional fields).&quot;&quot;&quot;</span>
+    p = schema[<span class="hljs-string">&quot;properties&quot;</span>][name]
+    branches = p.get(<span class="hljs-string">&quot;anyOf&quot;</span>) <span class="hljs-keyword">or</span> []
+    typ = p.get(<span class="hljs-string">&quot;type&quot;</span>) <span class="hljs-keyword">or</span> <span class="hljs-built_in">next</span>(
+        (b[<span class="hljs-string">&quot;type&quot;</span>] <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> branches <span class="hljs-keyword">if</span> b.get(<span class="hljs-string">&quot;type&quot;</span>) != <span class="hljs-string">&quot;null&quot;</span>), <span class="hljs-string">&quot;unknown&quot;</span>
+    )
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;path&quot;</span>: name,
+        <span class="hljs-string">&quot;type&quot;</span>: typ,
+        <span class="hljs-string">&quot;description&quot;</span>: p.get(<span class="hljs-string">&quot;description&quot;</span>, <span class="hljs-string">&quot;&quot;</span>),
+        <span class="hljs-string">&quot;required&quot;</span>: name <span class="hljs-keyword">in</span> schema.get(<span class="hljs-string">&quot;required&quot;</span>, []),
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">build_questions</span>(<span class="hljs-params">record: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, Noul]:
+    <span class="hljs-string">&quot;&quot;&quot;The verify question set: one holistic ``__overall__::judge`` head plus a per-field battery,
+    keyed ``field::metric`` (mirrors build_verify_prompts).&quot;&quot;&quot;</span>
+    questions: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, Noul] = {
+        <span class="hljs-string">&quot;__overall__::judge&quot;</span>: Noul(
+            instructions=OVERALL_JUDGE, criteria=OVERALL_JUDGE_CRITERIA
+        ),
+    }
+    <span class="hljs-keyword">for</span> name, value <span class="hljs-keyword">in</span> record.items():
+        spec = field_spec(name)
+        <span class="hljs-keyword">if</span> is_empty(value):
+            questions[<span class="hljs-string">f&quot;<span class="hljs-subst">{name}</span>::absence_wrong&quot;</span>] = Noul(
+                instructions={
+                    <span class="hljs-string">&quot;field_spec&quot;</span>: spec,
+                    <span class="hljs-string">&quot;extracted_field&quot;</span>: value,
+                    <span class="hljs-string">&quot;main_question&quot;</span>: ABSENCE_QUESTION,
+                },
+                criteria=ABSENCE_CRITERIA,
+            )
+            <span class="hljs-keyword">continue</span>
+        <span class="hljs-keyword">for</span> metric, (question, criteria) <span class="hljs-keyword">in</span> MAIN_QUESTIONS.items():
+            <span class="hljs-keyword">if</span> metric == <span class="hljs-string">&quot;type_mismatch&quot;</span> <span class="hljs-keyword">and</span> spec[<span class="hljs-string">&quot;type&quot;</span>] == <span class="hljs-string">&quot;unknown&quot;</span>:
+                <span class="hljs-keyword">continue</span>
+            questions[<span class="hljs-string">f&quot;<span class="hljs-subst">{name}</span>::<span class="hljs-subst">{metric}</span>&quot;</span>] = Noul(
+                instructions={
+                    <span class="hljs-string">&quot;field_spec&quot;</span>: spec,
+                    <span class="hljs-string">&quot;extracted_field&quot;</span>: value,
+                    <span class="hljs-string">&quot;main_question&quot;</span>: question,
+                },
+                criteria=criteria,
+            )
+    <span class="hljs-keyword">return</span> questions
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">verify</span>(<span class="hljs-params">record: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">float</span> | <span class="hljs-built_in">str</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Run the whole Noul battery over a record in one TypeSafe call; return ``{field::metric: P(true)}``.&quot;&quot;&quot;</span>
+    state = {
+        <span class="hljs-string">&quot;system_message&quot;</span>: EXTRACT_SYSTEM,
+        <span class="hljs-string">&quot;instruction&quot;</span>: <span class="hljs-string">&quot;Extract the structured record from this document&quot;</span>,
+        <span class="hljs-string">&quot;source_text&quot;</span>: row[<span class="hljs-string">&quot;content&quot;</span>],
+        <span class="hljs-string">&quot;schema&quot;</span>: schema,
+        <span class="hljs-string">&quot;extraction&quot;</span>: record,
+    }
+    questions = build_questions(record)
+    answers = ts.system_one(state=state, questions=questions, model=TS_MODEL).answers
+    <span class="hljs-keyword">return</span> {qid: ans.noul <span class="hljs-keyword">for</span> qid, ans <span class="hljs-keyword">in</span> answers.items()} | {
+        <span class="hljs-string">&quot;playground_link&quot;</span>: make_playground_link(state, questions)
+    }</code></pre></div>
+<h3 id="run-the-whole-battery-over-the-mini-extraction">对小型抽取运行整个检测组</h3>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">checks = verify(mini_record)
+playground_link = checks.pop(<span class="hljs-string">&quot;playground_link&quot;</span>)
+display(
+    Markdown(
+        <span class="hljs-string">f&quot;🔗 [Open this verification in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>
+    )
+)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;qid&#x27;</span>:&lt;<span class="hljs-number">40</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;P(wrong)&#x27;</span>:&gt;<span class="hljs-number">9</span>}</span>&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;-&quot;</span> * <span class="hljs-number">50</span>)
+<span class="hljs-keyword">for</span> fld, p <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(checks.items(), key=<span class="hljs-keyword">lambda</span> c: -c[-<span class="hljs-number">1</span>]):
+    flag = <span class="hljs-string">&quot;  &lt;== FIRES&quot;</span> <span class="hljs-keyword">if</span> p &gt; FIRE_T <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;&quot;</span>
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{fld:&lt;<span class="hljs-number">40</span>}</span><span class="hljs-subst">{p:&gt;<span class="hljs-number">9.2</span>f}</span><span class="hljs-subst">{flag}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">qid                                      P(wrong)
+--------------------------------------------------
+description::hallucinated                    0.95  &lt;== FIRES
+description::off_target                      0.85  &lt;== FIRES
+description::unreasonable                    0.58
+__overall__::judge                           0.56
+description::incomplete                      0.16
+registration_open_date::absence_wrong        0.14
+description::format_violation                0.10
+description::name_desc_mismatch              0.08
+description::type_mismatch                   0.02</code></pre></div>
+<p><a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIwAOiAM4CeZKCcA+omWQIYDmCpBpAmhDPlhQAnZlBT5qQmGJhCEYfGGYpm+AGZCIcRdHjIUZAHT4ASghSyk+CEgA2FfADdmtmAjISYABy8QhNBQAjBxQACwR8GmxjADEIW1sIAHd8ZiQHZ1cItT84ZQkvBCgASzVi+XxgyPCJKHC86yF8YoN1ctsFMHcoIWKvFGKbI1IAGnxSYqRJaQGbTnGQAFFsETFqiOmZOQU5KD8FDS1q4o9IWERUUYWyPiEoBDoolHnSAGUAaz7IiHw91H18B8vigfrAhHJUPgvGwIkhmI5iqxlIMkMRiKj0QBtfAAXQAFKEUCgvGRcAB6MlJKmGdIwQzyGBkgCUaIxSFeCGYd1CgJaHHRrOx+MJxNJFKpSRpFDpDOZrNZ+HwACp8NiAIJQZhdODFKBkYVEknkynU2n0sCM0Ra2i6oyEuC2FnoxUq9VgHVMFH6gmGsUmyVm2Vaj1kL2Ge2OhXK1Wmdyc7kG0XGiVSmUWslyMjxurhlAOp1WaPYgCqSGKjgQQlDKAcABlSghE0bxabpebGbYG7n81HXfg1YE+Cgm36U4H08xBzAUN3IwL52y1Ql8AA5bjF+XogDEioAshBAsVbBEV-DEcibOMF0KfUmWwG27KC6yOVy6ryaJvC66NdadXqR2TVs00tTVtVtWcCxdVU1XdE5QyGQD71TdsyWDeCwwjKCizMLM31CJD-RQ2VM2zUJIN7VVS3LStqzrBtCLHR9007NQEAo50iwHIdGOA1DJyHDi2S-JdbFXdcvwASSQHJ1D8L9oIAIVEd5vnwPJJnU5AYEo6TZJyJoFMVItXgsLpUG9EVmyI8dGWoGBzIMITjKLGJRBgWwa14h8QLJNR3M8ihnOMn9XDgMtvOIicwrLYLoMxRY4C8RIKAQdxItsslaGSiBUvcOKiwAYS0OAYDLLzb2spjfL2OBSvKoKsK-L9MVrCBWHwaSm2NUItHYzLn3RPSfgMozXVMhz9Es30gJ81D7Mcu08znb9VTc2BAoy5jGX8jaa2C0L4AiyrRz4oMYuKA7VUSnK8umu8bO2rKkpStKlp7TjXWKuqypaCgtpqkrfv2pqFxatqOq6k6er6qLGUG9kyI-CJX25L8d3wRYKws-BCpcZAlEMhdUffLGpqvRcfHsWMs2eBd4u46d1kx7HWjx48kEJ3FoeQzLste9wM3cW57jIABaNIwDFrMhARUWyUQMBimYCXObF2r6t1C8pjJJXWBaFx1aBstNVmHXforKs-rFhBWfFzUOcJq6Ert3H8c5rl8DQac-GVsSAdQ-ncreoWblkUXValmW5cFxXlcjo2fpN7WyF1xEDdsRPNdNr0yQt2jrdtqb1fdwmyQsEFehcd6VvisxfH8ZomDcRooU0BEunUNKwECFTuasv0zWj3UEDFpBkkMWqyTILwAH5ijAABeMgoDoU26D5OAADJKDIDel4AdgANgATgADjAMAACZmHPwIoDUAAWAAGZ-H6gM+oGfgBmZ+j+-sAZ9H4ICvgfR+CMvwkx5DEI8NAqxu0dlyL8K4EApF4EIVS1FLZ0QpqyRYABHGALh8AAHkfB+AsA1VInNVw2DFgAEROD0YoOo4Rm1SOINcxZ8Bi1XKg-A6DMFlmwX9JuvwSotACGpDSqBmCTEmB1NIAgkAIk0EgC44gwj5GQHsWQMIPCSzktQWi+BMyFDWAZZonNywLyIWJTIbgDE0OYD4TQXgq40HEZzGYqQ4A2EUcuQoVYhjGGkqkZcWCC41gKKIdwYsxZeFCFQLWYlDF6wzvE9x7URB1QUWMUQAwEQDHcPkmhRccZcgiJqcE5QFBDisakKAewhBKCQPcfASQWg8hcclLWgRjz4FsMwFIzAPBJAQMuUZ+BIlW2ib4TsUAKBjCSKEXUPJJhQFcF0DwgQmYnHwOPcQnYdRSJBM0VoK46GMJXr0Vh2tqEKDVKgYoYsAASXJRlkA0fgAACvEXUQVcHolLMeJg1gwiVk6VmA5EAAj5OXH8GgkI9heAoL0VghI+FoL8EImiszAWiVMYiQkHhSKy3kMYMaqooGETwtyOGcpPqqjxklGAHhdwuIDrKPIXhnZkwsoRcpTkBqUUxMVWRaxiz3SqmddMiKClizZc7AA4jRLlE4pwoDJPrBESBWDO2Kqi9FmKt74DcsUJoUrGw80eoDI1xKUAJ38haxVWZnY-N6M4RZ6rGTuPLKIRqy1sI-iae4UMh5OwVQHrNBlohRbhqPH9Z2MRu69ygO8H1ZItxsXkGm94QlmpMsxCg7FGC3asuladOaT5RUDn4PQ0Ik5ijlq8GywitItQMuDdSxterG3NpZa2ytxoyC9oxXIrtha2TxQAISYkFXbBlnYKyhxFggMkLCYRkg3uXeogtWCJF7rYDdeR2Cp11EMPysTBwQHzXIRwhgACMB8D7f0fo-M+B8ACsB9DBkEcKwJkhFdoIBvfmqe3bMRzoXVNJdNFV3h3XZu9g27ii7toPuw9LgT36I3X8VOnYkDvHkJMQw96n0vrfR+79Z8-0AaAzawjxGlZIEnloRlq0oPzptUKowmVl3rszGunDKGd0QsYNqrDx7kOCwvTrTAZHbYUdfe+z9P66OAcIgpiDoroM8cXfx+DQnEMifXWJvdqcD0HmwzJ89+GN1TBUKwHJimH3PpU9R9T-7NM2smNQNgLmdNFr09GikvG4MruM3cJDp6zNofE5h6z0nYt2cvRQIcMBAjsXI+5qjanaPeYY6Fsk6XpyZfYkF4SAoQBjFICveozB5gkBAFkoJxSyBNdIHIfWkhtZ0AgIUJAdAlCfjwPgZr2zmH9BRC8EAaAagjYiFo8Q3WTjCHuQN5AHhLEQvUC4MSWZGBwOMLuYsrw0CVAiJpXbBk8jiDqrrMAJWKAvdiH4AQmBmAvQQGMSxqg9gJAQOwBpu2r7Pyvo-MWYOr5ftqL1eI+BUpcjGC0dSDrLsSD6mEBRgzijEfwM-E+ZJn5frJNDx+xgzAWCEFYVQ-S0iqUkDj0oiO+CpDkPgMqZBZDsSuKQAYKBjyzbMD19b7CyHIHwPQ5QHAasLBrIUWbTO9WkAAL61fAN0Xo025hjYm1rvoZtZtqkqL0BAahFAG511YCAFvdurd6+wzbVhFtvaaFgL7yUfv4AAOQi7WyIJ3g3tvvZu-tiQGHjFCB94YPnIABdC7G6QehVujdy-5xQRXSfyDCAUWr9XCw5CEItfIeYmIutA4D3153w2Zdx8m9rtPOINcJ9l1wEA-vHcogl6idP8fM9t4WAeAAVkUZ4IAC+kEEKsNPBBmsO7Fyifrg3a+jfb-X1PM3s+d8X5eZ3Iemhh+XId9wcD89y5a5oJKBgMDYDG0QUgdB+uW320-3AuBh8OXYJ1-vWf2-jw8jjz82EBmC9Fm0kg8Gxw8GnwKQqF2H2GoSsWaV2HEBgLEBRB4V4RuEQCcBcBbi528AbikSqF2zDmi1bkOS8VuxxzOVILqFoGYDGCLxgBLwUEmFu3uRDBx3eySDUVYDGHe2wOyHaAUEbQSGkEmBlwUHiUx3OQkF6g8iCAiG6BcCkLUlUC+S5DgXUggC6FsFnjj2YTgWVh-xAMH35xqHgJaTESUQ2T8BQI+3W3QN1w138lsCzFm3tyKAQP2X+3sLH0cJny31V0nxAAX0DyXxr0W3f0nCzDaQeF4P8VMIH1mwANsCAMcykGcKmB-zKAmTADoBniKB-2hDCFm3COrxX0WzjwV3MJz16BVz7wb0Ny33b3mwiEW2qHyAqKDy2zkkPxqDcIO0j2O3wFO3Owx2u0GNyHyAe0vme1ezNXew92+1+3ez8MB2BymIiHJyh3B1h3qwgARyRyEBR3u3Ryy0x0QGxz1Vx3x0J2J1J3J0p3MEsFSEqCGSIwkFz1uJZ1K3ZwiAILkFjz72YNYPmDMNCLQICDoDyI6FmzjxkToEIVP1aIWHaPwAAANoT5BYSRDMSxFsoawxgkAPJbABCmglEiSHAAdjxsjjB6EIB3BmYyD2kngvEVBtirEOD2FdtMS4SCiiioACTmissyAxg8hPhbjdtqTTF3APJxBEi9UDCJ8NcjDKwTC9d+cpA6jVAHEIgkgpklSD0HAtBJFS8+83CPDs85BqcyxbjDlVlfiPBkCx988Ndmjrd384REBhtugGATg7s6hki-8Fg0iMjNgzYOstSQABTCjzESjlBQhZtPS08W8Ujs9ldWAN8bkWjdd28TdAgzcLdUyMDbdmYeiyzBtFAZc3cPtPdjwxg-dK8u999g9+jmYhiI8jtKwY848wTtgISdSoSVhYCCiBThcWzd8bd2ydtBjw8T8o9ES5EhsUTqA0Tk8mTICahsTRyxBcSBSCTnUxIzkgyeQbsRCOEsTSjQgCTQ8dzSybACSuT+SRD4yihMTZ5Oo7cHzN8nzCTr8ll8BP8wBgc2AVzqBmZMSbyCSXAbBedVSFh1Sq5TCdTPCdycTxz8SdBmTKCzzOzLyfSIh3sWgPBMTHykBMS48rS6i+TMK8T8iCSzzmSLz8iDkvsIhDFyK-zKL3SFgKL39aiAzNCUBgyYzajUi+B0i+9gCsiozci3yhTEyyjs8KKaiMz28sycyptZ8FhCzizLdczrdrAfyIhKy2zJdXclj3dPtVjfcd8IiLKpgOyj9hiezo8QSNcByLSCBISNd6KJzt8pzHKZy+i5zsgFyRjKxlzJhkTHFdLNyWKMK9yYTDynBBghlPE+TaiRSighltgQcdy4yhTPy1c1TehjDGtxK0Ls86KUqDzsKER4gZdtyOi8rKkFBMScrqLq5aLkqnDUrsK-hbtICfhdsuhNkOqsTuqJ9QiBLcAyo5BRkbBJxE858M9QzSBwyZLMjQChgFL8j3yoBlLkzVKeL1LNr6i88mjzrs99LygSyeKTKKzgqNtqyrK4gbKGzvdmzRcQrrBZz7yIrj8oqPL+yEBi9Byxs-KFgAqRDJy-q3qwqga9sQb3KYrVz4qNyQAICoK4bGLrAkAltG1xBVAlqbg4R+kIggkKaOkpKFBKDG0KxAixyXLVkyLirzFSrELSBkLNT1r48ar28ybOQKbVrqbaJLwkh6aYVxAmblD6qFAoDcCsger3C+qFaBqMD9lyaVqqa+LSB5qxDXASg2EfLxsNq6jtqNdZK9qciYzObiiYybyUzbr0zLqtKbqjKEqQB7rzdDKdKyzTK5TEbeiXdazrL6y7Lfqq8w6D9OzIr3K+zQSIaWCobfLhz-LFaGL4SgrQ6qzkaBjga3LT9oq+8kS1yfbca6qBqGqCaCDyF-AKhggKTUhAg4jxBDg4AxhSC11IhBAVTQi+aqqBazD0KIhdza6sKCbfD8BjaJC2EMCZDKDudG7iCgL1j26AQu6e6ahWSltBA1brT28a6Z866OhnyPBV6iDm6Qg96+6ngDbNdvaUR39bc1BHguR2Bx9R6NKwypKIyQDsjoyBbHbjrnakzXaX6XD5c-66sfjsyvbA78y9LTcHqA7G8g6Xr86nKayaA6yVivcmyHKkbnLwrUaS6o9k6vLU7wTobM7Ybs7Ar28SG462bi7uzS6hAMa4rUSUHErWrMdEN+7sA9sjw1J2BSTJgJkHA5AiDmYbiOo+SwHcrcyxSxgbhmZ9SOkplW1AcDgr8kCF59BiEnhB7yq+QULqq3Bx6hHyDIBcLYV8BJGWCibqYskO5ib9kBTMCtG8CDTdGySKgu6jHHJTHD7LTerbH97nHtJpHqY5GKFtzvH4bZqPSeL387Dvs18Lbf8raAGdrIywCHbFKEyIGVL281K+8JLMyEHtLMH+Hfa0H-aKLnqvCcHQrw78HI7CHGz7LXq2HyGuzFy4FqHC9aH07IgGGp8mHUmWGBmC6yGUbhnQaeHK7sbGSkqJ78aL6xGTzQQXFqdOKVaW5e7hHr6kn8A8RDkDTwgIUi6sSVGxFMTvKwBMSmRzGkKKqNSR7cmx7arBjLz9ljTqZqSSSyTW6uDbi9T-GWS+6Ln-BozXComAXhC2LNR+gedBHtGznyCEWDAn75qeS6AmrMq0Tmsan-8CmbbdrgGDqOgjqTqoHkHe93a6jPb0noHe8CzmnHquW2nLCFncGPrljbKiH+mOmAbC6E60auGxmK9IbzaYaZmp6c6wAEbY7Fn47XLOGlzy6VzeH1zGnNnBHJ6z7p7dnSWZdOyZjxB3t8N1tJhWgWFelb6oKKLMTd6Nh6CGguqB9PWHlmZoTtbaWoyrn2J9U8HshbWxhgZxTlF4AtI4AssqxVkvAPmyqvnLH+a-mhb5d+rzW1WCSrWaBBGXXOxgnbXW4HWRAnWkWFgaLbGzWxyi2JBkQyA8jBGeTA2a2VyCXZrVcL8XFigAA1AuGwe-RwR9CfIAA" target="_blank" rel="noopener noreferrer">在 TypeSafe 演练场打开本次验证 →</a></p>
+<ul>
+<li>TypeSafe 把信号集中到真正出错的字段上。</li>
+<li>我们的结果是校准过的：在出错的字段上高，在正确的字段上低，在看起来有问题但不能明确判定为错的字段上居中。</li>
+<li>这就是一个 typesafe 验证器相对于粗暴的&quot;整条记录好不好？&quot;判断所能带来的好处</li>
+</ul>
+<h2 id="step-4-the-escalation-gate">Step 4: 升级闸门</h2>
+<ul>
+<li>现在我们以 <strong><code>any_flag</code></strong> 兜底：只要 <em>任何</em> 字段的 flag 超过 <code>FIRE_T</code>（0.7，在上面设置，并与 Step 3 中的 <code>&lt;== FIRES</code> 标记共用）就升级</li>
+<li>这是一种 <code>max</code> 风格的闸门（任一字段触发即升级），而非取平均——所以一个确定性的红灯就足够触发，而不会被平均成沉默</li>
+</ul>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-comment"># any_flag is a per-field gate: the holistic __overall__ head is shown above but not part of it</span>
+fired = {
+    qid: p
+    <span class="hljs-keyword">for</span> qid, p <span class="hljs-keyword">in</span> checks.items()
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> qid.startswith(<span class="hljs-string">&quot;__overall__&quot;</span>) <span class="hljs-keyword">and</span> p &gt; FIRE_T
+}
+escalate = <span class="hljs-built_in">bool</span>(fired)
+
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;any_flag gate (threshold <span class="hljs-subst">{FIRE_T}</span>): <span class="hljs-subst">{<span class="hljs-string">&#x27;ESCALATE&#x27;</span> <span class="hljs-keyword">if</span> escalate <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;ACCEPT cheap result&#x27;</span>}</span>&quot;</span>
+)
+<span class="hljs-keyword">for</span> qid, p <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(fired.items(), key=<span class="hljs-keyword">lambda</span> c: -c[<span class="hljs-number">1</span>]):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  fired: <span class="hljs-subst">{qid}</span>  (P=<span class="hljs-subst">{p:<span class="hljs-number">.2</span>f}</span>)&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">any_flag gate (threshold 0.7): ESCALATE
+  fired: description::hallucinated  (P=0.95)
+  fired: description::off_target  (P=0.85)</code></pre></div>
+<h2 id="step-5-escalate-to-the-reasoning-model">Step 5: 升级到推理模型</h2>
+<p>由于有信号触发，我们调用强模型（<code>gpt-5.5</code>，<code>reasoning_effort=&quot;high&quot;</code>）</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">final_record = (
+    extract(REASONING, prompt, schema, content, reasoning_effort=<span class="hljs-string">&quot;high&quot;</span>)
+    <span class="hljs-keyword">if</span> escalate
+    <span class="hljs-keyword">else</span> mini_record
+)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;mini      :&quot;</span>, json.dumps(mini_record))
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;reasoning :&quot;</span>, json.dumps(final_record))
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nfield-level diff (mini -&gt; final):&quot;</span>)
+<span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> mini_record:
+    <span class="hljs-keyword">if</span> mini_record[name] != final_record.get(name):
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  <span class="hljs-subst">{name}</span>: <span class="hljs-subst">{mini_record[name]!r}</span>  -&gt;  <span class="hljs-subst">{final_record.get(name)!r}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">mini      : {&quot;registration_open_date&quot;: &quot;&quot;, &quot;description&quot;: &quot;Registration opens for the fall semester&quot;}
+reasoning : {&quot;description&quot;: &quot;&quot;, &quot;registration_open_date&quot;: &quot;&quot;}
+
+field-level diff (mini -&gt; final):
+  description: &#39;Registration opens for the fall semester&#39;  -&gt;  &#39;&#39;</code></pre></div>
+<ul>
+<li><strong>改进之处</strong><ul>
+<li>推理模型丢弃了编造的 <code>description</code>，返回 <code>&quot;&quot;</code></li>
+<li>它识别出页面从未描述过注册日期，并拒绝凭空捏造</li>
+<li>级联把一个「自信、符合 schema 的编造」变成了「诚实的空字段」</li>
+<li>而且它只在 <em>被验证器点了名</em> 的这一项上花了推理模型的钱</li>
+</ul>
+</li>
+</ul>
+<h2 id="step-6-what-this-looks-like-on-100-prompts">Step 6: 在 100 条 prompt 上的实际表现</h2>
+<ul>
+<li><strong>这些是 TypeSafe 的内部结果</strong>，用上面的通用方法得到：<ul>
+<li>同一个 <code>extract → verify → escalate</code> 循环，<code>gpt-5.4-mini → gpt-5.5-reasoning</code>，在每字段 head 上用 <code>any_flag</code> 闸门，在 100 条 scrapegraphai prompt 上跑一轮</li>
+<li>每一项的廉价层抽取都由 TypeSafe 评分；闸门阈值（&quot;cut&quot;）从 0 扫到 1，每个配置都画到（成本，质量）空间中</li>
+<li>图表是历史快照，其成本未按上方列出的当前 Jev 费率重新计算</li>
+</ul>
+</li>
+</ul>
+<img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/sde_cascade/pareto_100prompts.png?fit=max&auto=format&n=2NirYCl-v96cw05F&q=85&s=ca6731507e07b501a6627616ba0b767a" alt="内部结果：100 条 prompt 上的成本/质量前沿" width="1299" height="655" data-path="cookbooks/sde_cascade/pareto_100prompts.png" />
+
+<ul>
+<li>如何读这张图：<ul>
+<li><strong>黑色菱形</strong> = 四个模型各自独立运行（成本随能力上升；最强的 <code>gpt-5.5-reasoning</code> 位于右上方，质量 ≈0.81，单次抽取成本 ≈$0.10）</li>
+<li><strong>蓝色点</strong> = 不同闸门阈值下的级联；虚线是 <strong>Pareto 前沿（pareto frontier）</strong></li>
+<li>级联前沿 <strong>位于所有单个模型的左上方</strong>：扫一遍闸门就能以一小部分成本获得顶级模型的大部分质量</li>
+<li>廉价层近乎免费地处理简单项，被标记的项才需要支付推理模型的费用</li>
+</ul>
+</li>
+</ul>
+<h2 id="appendix-a-what-makes-a-good-verifier-signal">Appendix A: 什么是好的验证器信号</h2>
+<ul>
+<li>级联好不好完全取决于验证器；区分有用信号和无用信号的标准是：<ul>
+<li><strong>窄而接地。</strong><ul>
+<li>针对源文本、针对单个字段的一个可检查的是/否问题（例如「这个值在源文本中是否缺失？」），而不是含糊的「这次抽取好不好？」</li>
+<li>含糊的问题会给出含糊、且未校准过的分数</li>
+</ul>
+</li>
+<li><strong>坏 = TRUE，并写出明确的判定标准（criteria）。</strong><ul>
+<li>设计问题时让 <em>升级</em> 的情况对应 <code>true</code>，并明确说明 <code>true</code>/<code>false</code> 各自的含义</li>
+</ul>
+</li>
+<li><strong>先按字段分析，再用 <code>max</code> 聚合。</strong><ul>
+<li>按字段的 flag 能定位错误，并保持稀疏和强劲</li>
+<li><code>max</code>（「任一 flag 触发」）保证一个确定性的红灯就能升级，而不会被平均成沉默</li>
+</ul>
+</li>
+<li><strong>独立且廉价。</strong><ul>
+<li>一个独立的验证器（这里是 TypeSafe）来评判输出，能补上抽取器自身的盲点</li>
+<li>它必须足够廉价，否则也就没什么节省空间了</li>
+</ul>
+</li>
+<li><strong>可区分 / 已校准。</strong><ul>
+<li>好的信号在真实错误上是高的、在正确答案上是低的，因此单一阈值就能干净地切分「接受 vs 升级」</li>
+<li>这种区分度正是把 Pareto 曲线推向左上方的原因</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建和托管。Mintlify 是一个面向开发者的文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-twitch-chat-filter/"><span>上一篇</span><strong>Twitch 聊天过滤器</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-date-extraction/"><span>下一篇</span><strong>日期提取</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">环境准备</a><a class="toc-link depth-2" href="#step-1-the-data">第 1 步：数据</a><a class="toc-link depth-2" href="#step-2-extract-with-the-mini-model-text-mode">第 2 步：用 mini 模型抽取（文本模式）</a><a class="toc-link depth-2" href="#step-3-verify-with-typesafe">步骤 3：用 TypeSafe 验证</a><a class="toc-link depth-3" href="#run-the-whole-battery-over-the-mini-extraction">对小型抽取运行整个检测组</a><a class="toc-link depth-2" href="#step-4-the-escalation-gate">Step 4: 升级闸门</a><a class="toc-link depth-2" href="#step-5-escalate-to-the-reasoning-model">Step 5: 升级到推理模型</a><a class="toc-link depth-2" href="#step-6-what-this-looks-like-on-100-prompts">Step 6: 在 100 条 prompt 上的实际表现</a><a class="toc-link depth-2" href="#appendix-a-what-makes-a-good-verifier-signal">Appendix A: 什么是好的验证器信号</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

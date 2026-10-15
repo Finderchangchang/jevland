@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>快速开始 · JevLand</title>
+<meta name="description" content="5 分钟内上手 Jev。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/quickstart/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="快速开始">
+<meta property="og:description" content="5 分钟内上手 Jev。">
+<meta property="og:url" content="https://jevland.com/docs/quickstart/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="快速开始">
+<meta name="twitter:description" content="5 分钟内上手 Jev。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"快速开始","url":"https://jevland.com/docs/quickstart/","inLanguage":"zh-CN","description":"5 分钟内上手 Jev。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link is-current" href="/docs/quickstart/" aria-current="page">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link is-current" href="/docs/quickstart/" aria-current="page">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 入门</p>
+        <h1>快速开始</h1>
+        <p class="lead">5 分钟内上手 Jev。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/introduction/quickstart" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>本指南介绍使用 Jev（TypeSafe 的 <a href="../system-one/">System One 模型</a>）的四种方式：<a href="#code-it-your-first-request">使用我们的 SDK</a>、<a href="#call-it-the-api">调用我们的 API</a>、<a href="#vibe-it-the-agent-skill">使用我们的 agent skill</a>，或<a href="#try-it-the-playground">试用浏览器版 Playground</a>。</p>
+<p>前往 <a href="https://console.typesafe.ai/keys" target="_blank" rel="noopener noreferrer">TypeSafe 控制台</a> 获取 API key。</p>
+<h2 id="the-minimum-you-should-know-to-use-jev-effectively">你需要了解的最少知识</h2>
+<p>每次调用 Jev 都会接收一个 <a href="../state/">state（上下文状态）</a>（简单的字符串或结构化对象）和一组<a href="../primitives/">问题</a>，并对每个问题返回一个答案：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">mermaid</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">%%{init: {&quot;fontFamily&quot;: &quot;Inter, sans-serif&quot;, &quot;flowchart&quot;: {&quot;rankSpacing&quot;: 35, &quot;wrappingWidth&quot;: 300, &quot;subGraphTitleMargin&quot;: {&quot;top&quot;: 12, &quot;bottom&quot;: 12}}}}%%
+flowchart LR
+    doc[&quot;state&lt;br/&gt;&lt;i&gt;input text or object&lt;br/&gt;to evaluate&lt;/i&gt;&quot;]
+    quest[&quot;questions&lt;br/&gt;&lt;i&gt;what you want to know&lt;br/&gt;about the state&lt;/i&gt;&quot;]
+
+    subgraph call[&quot;one call to Jev&quot;]
+        direction LR
+        doc --&gt; api[&quot;TypeSafeClient&lt;br/&gt;.system_one()&quot;]
+        quest --&gt; api
+    end
+
+    api --&gt; ans[&quot;answers&lt;br/&gt;&lt;i&gt;one result per question&lt;/i&gt;&quot;]</code></pre></div>
+<p>Jev 可以回答三种类型的问题，统称为题型（primitives）：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>问题类型</th>
+<th>目标</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="../choice/">Choice</a></td>
+<td>从列表中选择一个选项</td>
+<td><code>choice</code>、<code>probabilities</code>、<code>confidence</code></td>
+</tr>
+<tr>
+<td><a href="../score/">Score</a></td>
+<td>按评分标准对 state 评分</td>
+<td><code>score</code>、<code>probabilities</code>、<code>confidence</code></td>
+</tr>
+<tr>
+<td><a href="../noul/">Noul</a></td>
+<td>这个陈述是否为真？</td>
+<td><code>noul</code>（0–1）</td>
+</tr>
+</tbody></table></div>
+<h2 id="vibe-it-the-agent-skill">Vibe it: Agent Skill</h2>
+<p>最快的方式是为你的项目安装 TypeSafe skill，让编程智能体（coding agent）编写集成代码。</p>
+<ol>
+<li><strong><a href="https://docs.typesafe.ai/agent-skill#installation" target="_blank" rel="noopener noreferrer">安装 TypeSafe skill</a></strong> ，可使用 Claude Code 插件或运行 <code>npx skills add typesafe-ai/skills --skill typesafe-ai</code>。你也可以<a href="https://github.com/typesafe-ai/skills/blob/main/skills/typesafe-ai/SKILL.md" target="_blank" rel="noopener noreferrer">在 GitHub 上阅读 SKILL.md</a>。</li>
+</ol>
+<h3 id="Claude-Code">Claude Code</h3>
+<p>在终端运行下面两条命令：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">claude plugin marketplace add typesafe-ai/skills
+claude plugin install typesafe@typesafe-ai</code></pre></div>
+<h3 id="其他智能体">其他智能体</h3>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">npx skills add typesafe-ai/skills --skill typesafe-ai</code></pre></div>
+<p>按提示选择你的智能体。默认安装到当前项目，加 <code>-g</code> 可全局安装。</p>
+<h3 id="复制给你的智能体">复制给你的智能体</h3>
+<p>把这段提示粘贴到你的编程智能体中：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">Install the TypeSafe skill. If you&#39;re in Claude Code, run `claude plugin marketplace add typesafe-ai/skills`, then `claude plugin install typesafe@typesafe-ai`. If you&#39;re in another agent, run `npx skills add typesafe-ai/skills --skill typesafe-ai` and select your agent. Use one installation method. You can read the skill directly at https://github.com/typesafe-ai/skills/blob/main/skills/typesafe-ai/SKILL.md (raw: https://raw.githubusercontent.com/typesafe-ai/skills/main/skills/typesafe-ai/SKILL.md). Then use the TypeSafe skill when working on this project.</code></pre></div>
+<ol start="2">
+<li><strong>告诉你的编程智能体</strong>，在开发过程中使用 TypeSafe skill。</li>
+</ol>
+<div class="code-block"><div class="code-bar"><span class="code-lang">plaintext</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">Let&#39;s build a simple CLI that uses Jev to evaluate a set of supplied texts on multiple dimensions. Use the TypeSafe skill to understand how to use the TypeSafe API and how to structure the system. Ask me questions about what kinds of texts I want to evaluate and on what dimensions.</code></pre></div>
+<aside class="callout callout-tip"><p><strong>提示：</strong> 我们建议你把 TypeSafe API key 生成并存储在环境变量中（例如 <code>TYPESAFE_API_KEY</code>）。</p>
+</aside>
+<p><a href="https://docs.typesafe.ai/agent-skill" target="_blank" rel="noopener noreferrer">Agent Skill</a> 页面提供了更多示例提示以及常见问题（例如智能体没有使用 skill）的解决方法。</p>
+<h2 id="code-it-your-first-request">Code it: 你的第一个请求</h2>
+<p>下面演示如何在你喜欢的编程语言中调用 Jev。Python、JavaScript 和 TypeScript 示例使用我们的 SDK；Bash 示例直接调用 API。</p>
+<p>创建一个工作目录并设置你的 API key。下面这些 setup 命令使用 Bash，可运行在 macOS、Linux 或装有 WSL 的 Windows 上：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-built_in">mkdir</span> typesafe-quickstart
+<span class="hljs-built_in">cd</span> typesafe-quickstart
+<span class="hljs-built_in">export</span> TYPESAFE_API_KEY=<span class="hljs-string">&quot;your-api-key&quot;</span></code></pre></div>
+<p>下面的示例发送一张客户支持工单，并在一次请求中向 Jev 提出三个问题：哪个团队应该处理它、客户的挫败感有多强，以及问题是否紧急。</p>
+<h3 id="Python">Python</h3>
+<p>需要 Python 3.10 或更高版本。选择一个包管理器来安装 SDK：</p>
+<h4 id="pip">pip</h4>
+<p>已<a href="https://pip.pypa.io/en/stable/installation/" target="_blank" rel="noopener noreferrer">安装 pip</a> 后，创建虚拟环境并安装 SDK：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">python3 -m venv .venv
+.venv/bin/pip install typesafe-sdk</code></pre></div>
+<h4 id="uv">uv</h4>
+<p>已<a href="https://docs.astral.sh/uv/getting-started/installation/" target="_blank" rel="noopener noreferrer">安装 uv</a> 后，初始化项目并安装 SDK：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">uv init --bare
+uv add typesafe-sdk</code></pre></div>
+<p>保存为 <code>route_ticket.py</code>：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, Noul, Score, TypeSafeClient
+
+ticket = <span class="hljs-string">&quot;Our API integration started returning 500 errors on every request about 20 minutes ago, and we can&#x27;t process any customer orders until this is fixed.&quot;</span>
+
+<span class="hljs-keyword">with</span> TypeSafeClient(model=<span class="hljs-string">&quot;jev-latest&quot;</span>) <span class="hljs-keyword">as</span> client:  <span class="hljs-comment"># Reads TYPESAFE_API_KEY.</span>
+    response = client.system_one(
+        state=ticket,
+        questions={
+            <span class="hljs-string">&quot;department&quot;</span>: Choice(
+                instructions=<span class="hljs-string">&quot;Which team should handle this&quot;</span>,
+                criteria={
+                    <span class="hljs-string">&quot;billing&quot;</span>: <span class="hljs-string">&quot;Payment or subscription issues&quot;</span>,
+                    <span class="hljs-string">&quot;technical&quot;</span>: <span class="hljs-string">&quot;Bugs or integration problems&quot;</span>,
+                    <span class="hljs-string">&quot;sales&quot;</span>: <span class="hljs-string">&quot;Pricing or account questions&quot;</span>,
+                },
+            ),
+            <span class="hljs-string">&quot;frustration&quot;</span>: Score(
+                instructions=<span class="hljs-string">&quot;How frustrated the customer appears&quot;</span>,
+                criteria=[
+                    <span class="hljs-string">&quot;Calm, just stating facts&quot;</span>,
+                    <span class="hljs-string">&quot;Frustrated but civil&quot;</span>,
+                    <span class="hljs-string">&quot;Very angry, strong language&quot;</span>,
+                ],
+            ),
+            <span class="hljs-string">&quot;is_urgent&quot;</span>: Noul(
+                instructions=<span class="hljs-string">&quot;The message conveys urgency or time-sensitivity&quot;</span>,
+            ),
+        },
+    )
+
+<span class="hljs-built_in">print</span>(response.choices[<span class="hljs-string">&quot;department&quot;</span>].choice)
+<span class="hljs-built_in">print</span>(response.scores[<span class="hljs-string">&quot;frustration&quot;</span>].score)
+<span class="hljs-built_in">print</span>(response.nouls[<span class="hljs-string">&quot;is_urgent&quot;</span>].noul)</code></pre></div>
+<p>用任意一种安装方式运行：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">.venv/bin/python route_ticket.py</code></pre></div>
+<h3 id="JavaScript">JavaScript</h3>
+<p>需要 Node.js 20 或更高版本。安装 SDK 并把项目标记为 ES 模块：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">npm install @typesafe-ai/sdk
+npm pkg <span class="hljs-built_in">set</span> <span class="hljs-built_in">type</span>=module</code></pre></div>
+<p>保存为 <code>route_ticket.js</code>：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">javascript</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> { choice, noul, score, <span class="hljs-title class_">TypeSafeClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@typesafe-ai/sdk&quot;</span>;
+
+<span class="hljs-keyword">const</span> ticket = <span class="hljs-string">&quot;Our API integration started returning 500 errors on every request about 20 minutes ago, and we can&#x27;t process any customer orders until this is fixed.&quot;</span>;
+
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeSafeClient</span>({ <span class="hljs-attr">defaultModel</span>: <span class="hljs-string">&quot;jev-latest&quot;</span> }); <span class="hljs-comment">// Reads TYPESAFE_API_KEY.</span>
+<span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">systemOne</span>({
+  <span class="hljs-attr">state</span>: ticket,
+  <span class="hljs-attr">questions</span>: {
+    <span class="hljs-attr">department</span>: <span class="hljs-title function_">choice</span>(<span class="hljs-string">&quot;Which team should handle this&quot;</span>, {
+      <span class="hljs-attr">billing</span>: <span class="hljs-string">&quot;Payment or subscription issues&quot;</span>,
+      <span class="hljs-attr">technical</span>: <span class="hljs-string">&quot;Bugs or integration problems&quot;</span>,
+      <span class="hljs-attr">sales</span>: <span class="hljs-string">&quot;Pricing or account questions&quot;</span>,
+    }),
+    <span class="hljs-attr">frustration</span>: <span class="hljs-title function_">score</span>(<span class="hljs-string">&quot;How frustrated the customer appears&quot;</span>, [
+      <span class="hljs-string">&quot;Calm, just stating facts&quot;</span>,
+      <span class="hljs-string">&quot;Frustrated but civil&quot;</span>,
+      <span class="hljs-string">&quot;Very angry, strong language&quot;</span>,
+    ]),
+    <span class="hljs-attr">is_urgent</span>: <span class="hljs-title function_">noul</span>(<span class="hljs-string">&quot;The message conveys urgency or time-sensitivity&quot;</span>),
+  },
+});
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(response.<span class="hljs-property">answers</span>.<span class="hljs-property">department</span>.<span class="hljs-property">choice</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(response.<span class="hljs-property">answers</span>.<span class="hljs-property">frustration</span>.<span class="hljs-property">score</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(response.<span class="hljs-property">answers</span>.<span class="hljs-property">is_urgent</span>.<span class="hljs-property">noul</span>);</code></pre></div>
+<p>运行：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">node route_ticket.js</code></pre></div>
+<h3 id="TypeScript">TypeScript</h3>
+<p>需要 Node.js 22.18 或更高版本才能直接运行 TypeScript。安装 SDK 并把项目标记为 ES 模块：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">npm install @typesafe-ai/sdk
+npm pkg <span class="hljs-built_in">set</span> <span class="hljs-built_in">type</span>=module</code></pre></div>
+<p>保存为 <code>route_ticket.ts</code>：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">typescript</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> { choice, noul, score, <span class="hljs-title class_">TypeSafeClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@typesafe-ai/sdk&quot;</span>;
+
+<span class="hljs-keyword">const</span> ticket = <span class="hljs-string">&quot;Our API integration started returning 500 errors on every request about 20 minutes ago, and we can&#x27;t process any customer orders until this is fixed.&quot;</span>;
+
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeSafeClient</span>({ <span class="hljs-attr">defaultModel</span>: <span class="hljs-string">&quot;jev-latest&quot;</span> }); <span class="hljs-comment">// Reads TYPESAFE_API_KEY.</span>
+<span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">systemOne</span>({
+  <span class="hljs-attr">state</span>: ticket,
+  <span class="hljs-attr">questions</span>: {
+    <span class="hljs-attr">department</span>: <span class="hljs-title function_">choice</span>(<span class="hljs-string">&quot;Which team should handle this&quot;</span>, {
+      <span class="hljs-attr">billing</span>: <span class="hljs-string">&quot;Payment or subscription issues&quot;</span>,
+      <span class="hljs-attr">technical</span>: <span class="hljs-string">&quot;Bugs or integration problems&quot;</span>,
+      <span class="hljs-attr">sales</span>: <span class="hljs-string">&quot;Pricing or account questions&quot;</span>,
+    }),
+    <span class="hljs-attr">frustration</span>: <span class="hljs-title function_">score</span>(<span class="hljs-string">&quot;How frustrated the customer appears&quot;</span>, [
+      <span class="hljs-string">&quot;Calm, just stating facts&quot;</span>,
+      <span class="hljs-string">&quot;Frustrated but civil&quot;</span>,
+      <span class="hljs-string">&quot;Very angry, strong language&quot;</span>,
+    ]),
+    <span class="hljs-attr">is_urgent</span>: <span class="hljs-title function_">noul</span>(<span class="hljs-string">&quot;The message conveys urgency or time-sensitivity&quot;</span>),
+  },
+});
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(response.<span class="hljs-property">answers</span>.<span class="hljs-property">department</span>.<span class="hljs-property">choice</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(response.<span class="hljs-property">answers</span>.<span class="hljs-property">frustration</span>.<span class="hljs-property">score</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(response.<span class="hljs-property">answers</span>.<span class="hljs-property">is_urgent</span>.<span class="hljs-property">noul</span>);</code></pre></div>
+<p>运行：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">node route_ticket.ts</code></pre></div>
+<p>SDK 会根据你的问题推导答案类型，因此 <code>response.answers.department.choice</code> 的类型为 <code>&quot;billing&quot; | &quot;technical&quot; | &quot;sales&quot;</code>。</p>
+<h3 id="Bash">Bash</h3>
+<p>需要 curl 7.76 或更高版本。保存为 <code>route_ticket.sh</code>：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-meta">#!/usr/bin/env bash</span>
+<span class="hljs-built_in">set</span> -euo pipefail
+: <span class="hljs-string">&quot;<span class="hljs-variable">${TYPESAFE_API_KEY:?Set TYPESAFE_API_KEY first.}</span>&quot;</span>
+
+curl --fail-with-body --silent --show-error \
+  https://api.typesafe.ai/v1/systemone \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$TYPESAFE_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  --data-binary @- &lt;&lt;<span class="hljs-string">&#x27;JSON&#x27;</span>
+{
+  <span class="hljs-string">&quot;state&quot;</span>: <span class="hljs-string">&quot;Our API integration started returning 500 errors on every request about 20 minutes ago, and we can&#x27;t process any customer orders until this is fixed.&quot;</span>,
+  <span class="hljs-string">&quot;model&quot;</span>: <span class="hljs-string">&quot;jev-latest&quot;</span>,
+  <span class="hljs-string">&quot;questions&quot;</span>: {
+    <span class="hljs-string">&quot;department&quot;</span>: {
+      <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;choice&quot;</span>,
+      <span class="hljs-string">&quot;instructions&quot;</span>: <span class="hljs-string">&quot;Which team should handle this&quot;</span>,
+      <span class="hljs-string">&quot;criteria&quot;</span>: {
+        <span class="hljs-string">&quot;billing&quot;</span>: <span class="hljs-string">&quot;Payment or subscription issues&quot;</span>,
+        <span class="hljs-string">&quot;technical&quot;</span>: <span class="hljs-string">&quot;Bugs or integration problems&quot;</span>,
+        <span class="hljs-string">&quot;sales&quot;</span>: <span class="hljs-string">&quot;Pricing or account questions&quot;</span>
+      }
+    },
+    <span class="hljs-string">&quot;frustration&quot;</span>: {
+      <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;score&quot;</span>,
+      <span class="hljs-string">&quot;instructions&quot;</span>: <span class="hljs-string">&quot;How frustrated the customer appears&quot;</span>,
+      <span class="hljs-string">&quot;criteria&quot;</span>: [
+        <span class="hljs-string">&quot;Calm, just stating facts&quot;</span>,
+        <span class="hljs-string">&quot;Frustrated but civil&quot;</span>,
+        <span class="hljs-string">&quot;Very angry, strong language&quot;</span>
+      ]
+    },
+    <span class="hljs-string">&quot;is_urgent&quot;</span>: {
+      <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;noul&quot;</span>,
+      <span class="hljs-string">&quot;instructions&quot;</span>: <span class="hljs-string">&quot;The message conveys urgency or time-sensitivity&quot;</span>
+    }
+  }
+}
+JSON</code></pre></div>
+<p>运行：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">bash route_ticket.sh</code></pre></div>
+<p>Jev 会针对同一份 state 评估每个问题，并在你提供的 ID 下返回答案。<code>choice</code> 是团队标签，<code>score</code> 是三档挫败感评分标准上的位置（0–2），<code>noul</code> 是紧急程度的概率（0–1）。</p>
+<p>Python、JavaScript 和 TypeScript 示例会输出这三个值：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">technical
+0.67
+0.99</code></pre></div>
+<p>Bash 示例会单行输出原始 JSON 响应。下一节中的 Raw Response 显示了其格式化后的样子，包含每个答案的 confidence 和 probabilities。以上为示例结果，Jev 不同版本之间的值可能会有所变化。</p>
+<p><a href="../sdk/">客户端 SDK</a> 页面介绍了 Python 和 JavaScript SDK 的安装、强类型答案以及它们的重试策略。</p>
+<h2 id="call-it-the-api">调用：API</h2>
+<p>上一节中所有四个代码示例都使用了这个接口。上方的 Bash 标签展示了不使用 SDK 的完整 HTTP 请求。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">http</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">POST https://api.typesafe.ai/v1/systemone
+<span class="hljs-attribute">Authorization</span><span class="hljs-punctuation">: </span>Bearer &lt;API_KEY&gt;
+<span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json</code></pre></div>
+<h4 id="原始响应">原始响应</h4>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;technical&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;technical&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;billing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;sales&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;frustration&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.67</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.5</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;legend&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Calm, just stating facts&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Frustrated but civil&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Very angry, strong language&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.33</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.67</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;is_urgent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.99</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">428</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">73</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p><a href="../api/">API 参考文档</a> 列出了每个请求字段、问题类型和答案类型。</p>
+<h2 id="try-it-the-playground">在 Playground 中试一试</h2>
+<p>Playground 可以在浏览器中直接运行 Jev：粘贴一段 state，添加问题并查看答案，无需编写代码。</p>
+<ol>
+<li><strong>打开 <a href="https://console.typesafe.ai/playground" target="_blank" rel="noopener noreferrer">Playground</a></strong> 并登录。</li>
+<li><strong>粘贴任意文本</strong> 作为 state。</li>
+</ol>
+<div class="code-block"><div class="code-bar"><span class="code-lang">plaintext</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">Our API integration started returning 500 errors on every request about 20 minutes ago, and we can&#39;t process any customer orders until this is fixed.</code></pre></div>
+<ol start="3">
+<li><strong>添加一个问题。</strong> 试一个 Noul 问题：<code>&quot;Does this message express urgency?&quot;</code></li>
+</ol>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;urgency&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Does this message express urgency?&quot;</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<ol start="4">
+<li><strong>添加更多问题。</strong> 在一次调用中混合使用 Noul、Choice 和 Score 问题，一次性查看所有结果。</li>
+</ol>
+<hr>
+<h2 id="next-steps">后续步骤</h2>
+<p>把 primitives 组合成更大的系统需要一些练习，即使你已经熟悉 LLM。<a href="../ai-primer/">机器学习入门</a> 解释了为什么 Jev 返回的是校准过的概率，而不是生成的文本，以及这会如何改变你基于它进行构建的方式。</p>
+<p>我们还建议你看看 <a href="../primitives/">Primitives</a> 和 <a href="../use-cases/">用例地图</a>。</p>
+<ol>
+<li><a href="https://docs.typesafe.ai/sdk/python/usage/basic#error-handling" target="_blank" rel="noopener noreferrer">错误处理与重试</a></li>
+<li><a href="../cookbook-parallel-questions/">并行问题</a></li>
+</ol>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建和托管，Mintlify 是一个面向开发者的文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/introduction/"><span>上一篇</span><strong>简介</strong></a>
+    <a class="pager-link is-next" href="/docs/coding-agents/"><span>下一篇</span><strong>Jev 与编程智能体</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#the-minimum-you-should-know-to-use-jev-effectively">你需要了解的最少知识</a><a class="toc-link depth-2" href="#vibe-it-the-agent-skill">Vibe it: Agent Skill</a><a class="toc-link depth-3" href="#Claude-Code">Claude Code</a><a class="toc-link depth-3" href="#%E5%85%B6%E4%BB%96%E6%99%BA%E8%83%BD%E4%BD%93">其他智能体</a><a class="toc-link depth-3" href="#%E5%A4%8D%E5%88%B6%E7%BB%99%E4%BD%A0%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93">复制给你的智能体</a><a class="toc-link depth-2" href="#code-it-your-first-request">Code it: 你的第一个请求</a><a class="toc-link depth-3" href="#Python">Python</a><a class="toc-link depth-3" href="#JavaScript">JavaScript</a><a class="toc-link depth-3" href="#TypeScript">TypeScript</a><a class="toc-link depth-3" href="#Bash">Bash</a><a class="toc-link depth-2" href="#call-it-the-api">调用：API</a><a class="toc-link depth-2" href="#try-it-the-playground">在 Playground 中试一试</a><a class="toc-link depth-2" href="#next-steps">后续步骤</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

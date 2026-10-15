@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noul（是非题） · JevLand</title>
+<meta name="description" content="Noul（是非题）问题要求 TypeSafe 模型对一个是非问题进行判断，并返回答案为&quot;是&quot;的概率。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/noul/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="Noul（是非题）">
+<meta property="og:description" content="Noul（是非题）问题要求 TypeSafe 模型对一个是非问题进行判断，并返回答案为&quot;是&quot;的概率。">
+<meta property="og:url" content="https://jevland.com/docs/noul/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Noul（是非题）">
+<meta name="twitter:description" content="Noul（是非题）问题要求 TypeSafe 模型对一个是非问题进行判断，并返回答案为&quot;是&quot;的概率。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"Noul（是非题）","url":"https://jevland.com/docs/noul/","inLanguage":"zh-CN","description":"Noul（是非题）问题要求 TypeSafe 模型对一个是非问题进行判断，并返回答案为\"是\"的概率。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link is-current" href="/docs/noul/" aria-current="page">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link is-current" href="/docs/noul/" aria-current="page">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 题型</p>
+        <h1>Noul（是非题）</h1>
+        <p class="lead">Noul（是非题）问题要求 TypeSafe 模型对一个是非问题进行判断，并返回答案为&quot;是&quot;的概率。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/primitives/noul" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>当答案只有&quot;是&quot;或&quot;否&quot;时，请使用 Noul。例如：这条消息是否要求退款、这份简历是否提到过分布式系统、这条评论是否包含个人数据。如果答案是若干个选项之一，请使用 <a href="../choice/">Choice</a>。如果答案是某个连续区间上的某个位置，请使用 <a href="../score/">Score</a>。<a href="../primitives/#choose-a-question-type">选择题型</a> 一文对三者进行了比较。</p>
+<p>Noul 的答案是一个数字，表示答案为&quot;是&quot;的概率，其中 0 表示&quot;否&quot;，1 表示&quot;是&quot;。</p>
+<h2 id="request-structure">Request structure</h2>
+<p>向 <a href="../api/">TypeSafe API</a> 发出的 POST 请求正文与任何其他题型一样，包含三个顶层字段：<code>state</code>，即需要评估的内容；<code>model</code>；以及 <code>questions</code>。每个 Noul 问题包含以下字段：</p>
+<ul>
+<li><code>type</code>：始终为 <code>&quot;noul&quot;</code>。</li>
+<li><code>instructions</code>：模型回答的是非题，或需要它判断的陈述句。</li>
+<li><code>criteria</code>：可选。一个对象，包含 <code>true</code> 和 <code>false</code> 描述，分别说明&quot;是&quot;和&quot;否&quot;的含义。</li>
+</ul>
+<p>下面是一个请求示例，其中 state 是一条客户支持消息，两个问题分别是客户是否想要真人服务，以及客户之前是否联系过客服：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;I have asked three times now. Can I please just talk to a real person?&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;is_human_escalation&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Is the customer asking for a human agent?&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;is_repeat_contact&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Has the customer contacted support about this before?&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;true&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Mentions a prior attempt, ticket, or that they have asked before&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;false&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;No sign of any previous contact&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>这里的 question id（<code>is_human_escalation</code> 和 <code>is_repeat_contact</code>）由你自行决定。这些 id 不会发送给模型，每个答案会通过相同的 id 返回。第一个问题仅依赖 <code>instructions</code>，第二个问题额外加入了 <code>criteria</code>，用以说明什么算作&quot;是&quot;、什么算作&quot;否&quot;。</p>
+<p>使用 <a href="../sdk-python/">Python SDK</a> 时，同样这些问题表示为 <code>Noul</code> 对象：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Noul, NoulCriteria, TypeSafeClient
+
+<span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+    response = client.system_one(
+        model=<span class="hljs-string">&quot;jev-latest&quot;</span>,
+        state=<span class="hljs-string">&quot;I have asked three times now. Can I please just talk to a real person?&quot;</span>,
+        questions={
+            <span class="hljs-string">&quot;is_human_escalation&quot;</span>: Noul(
+                instructions=<span class="hljs-string">&quot;Is the customer asking for a human agent?&quot;</span>,
+            ),
+            <span class="hljs-string">&quot;is_repeat_contact&quot;</span>: Noul(
+                instructions=<span class="hljs-string">&quot;Has the customer contacted support about this before?&quot;</span>,
+                criteria=NoulCriteria(
+                    true=<span class="hljs-string">&quot;Mentions a prior attempt, ticket, or that they have asked before&quot;</span>,
+                    false=<span class="hljs-string">&quot;No sign of any previous contact&quot;</span>,
+                ),
+            ),
+        },
+    )
+
+    <span class="hljs-built_in">print</span>(response.answers[<span class="hljs-string">&quot;is_human_escalation&quot;</span>].noul)
+    <span class="hljs-built_in">print</span>(response.answers[<span class="hljs-string">&quot;is_repeat_contact&quot;</span>].noul)</code></pre></div>
+<p><code>system_one</code> 方法以及 <code>https://api.typesafe.ai/v1/systemone</code> 接口都以 <a href="../system-one/">System One</a>（TypeSafe 的 AI 模型）命名。<a href="../how-to-build/">如何使用 TypeSafe 构建</a> 一文介绍了在代码中何时使用它。</p>
+<p>如果你正在使用编程智能体（coding agent），请先安装 <a href="https://docs.typesafe.ai/agent-skill#installation" target="_blank" rel="noopener noreferrer">TypeSafe agent skill</a>，以便它了解请求和响应的结构。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong> <code>instructions</code> 可以是字符串、对象或数组。建议先从字符串开始。当问题需要附带数据一起传入（例如需要与 state 进行对比的记录），或者问题的某些部分由你的代码拼装而成时，可以使用对象。<a href="../how-to-build/#use-structure-in-the-questions">在问题中使用结构化字段</a> 一文说明了结构化字段何时有用，<a href="#structured-instructions">下面的示例</a> 展示了由代码拼装的问题。</p>
+</aside>
+<h2 id="response-structure">Response structure</h2>
+<p>响应中每个问题对应 <code>answers</code> 中的一条记录，使用的 id 与请求中保持一致：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;is_human_escalation&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.99</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;is_repeat_contact&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.93</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">360</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">39</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>此处两个答案都接近 1。客户说 &quot;talk to a real person&quot;（我要和真人说话），因此 <code>is_human_escalation</code> 为 0.99。&quot;I have asked three times now&quot;（我已经问过三次了）符合 <code>is_repeat_contact</code> 的 <code>true</code> 描述，因此该值为 0.93。</p>
+<h2 id="reading-a-noul">Reading a Noul</h2>
+<p>这个数字既代表了答案，也体现了置信度（confidence）。接近 1 表示强烈的&quot;是&quot;，接近 0 表示强烈的&quot;否&quot;，接近 0.5 则意味着模型对&quot;是&quot;和&quot;否&quot;赋予了相近的概率。</p>
+<p>下表展示了在不同客户消息下，<code>jev-1.13.0</code> 对 <code>is_human_escalation</code> 问题给出的实际答案：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>state</th>
+<th><code>noul</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>谢谢，已经解决了！</td>
+<td>0.02</td>
+</tr>
+<tr>
+<td>我该怎么重置密码？</td>
+<td>0.07</td>
+</tr>
+<tr>
+<td>今天必须把这件事搞定，无论如何都行。</td>
+<td>0.26</td>
+</tr>
+<tr>
+<td>你是机器人吗？</td>
+<td>0.40</td>
+</tr>
+<tr>
+<td>有没有办法让我找个人聊聊我的发票问题？</td>
+<td>0.84</td>
+</tr>
+<tr>
+<td>我已经问过三次了，求求你让我跟真人说句话可以吗？</td>
+<td>0.99</td>
+</tr>
+</tbody></table></div>
+<p>前后两组消息的答案都是明确的。&quot;今天必须把这件事搞定&quot;虽然语气很急，但并未要求真人介入，因此得分为 0.26。&quot;你是机器人吗？&quot;虽然流露出希望与真人沟通的意味，但并未明确提出要求，模型在 0.40 处分成了几乎均等的两半。这两类消息都属于需要由你的代码根据阈值来做出决策的情形。</p>
+<p>Noul 没有像 <a href="../choice/">Choice</a> 或 <a href="../score/">Score</a> 那样单独的 <code>confidence</code>（置信度）字段。Noul 的概率分布只有两个结果：&quot;是&quot;和&quot;否&quot;，因此单个 <code>noul</code> 值便能完整描述其分布。Choice 或 Score 会将概率分散到若干选项或档位上，而 <code>confidence</code> 则是对这种分散程度的概括。</p>
+<p>最常见的做法是，你的代码将 <code>noul</code> 阈值化为布尔值：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">wants_human = response.answers[<span class="hljs-string">&quot;is_human_escalation&quot;</span>].noul &gt; <span class="hljs-number">0.9</span>
+
+<span class="hljs-keyword">if</span> wants_human:
+    route_to_agent(ticket)
+<span class="hljs-keyword">else</span>:
+    route_to_bot(ticket)</code></pre></div>
+<p>阈值应该设在哪里，取决于误判的成本。当&quot;是&quot;和&quot;否&quot;两种情况同样容易处理时，可以使用 0.5。如果误判为&quot;是&quot;的代价很高（例如触发寻呼或发放退款），则应提高阈值。如果漏掉一个真正的&quot;是&quot;代价很高（例如未能标记出一个安全隐患），则应降低阈值。处于中间区间的值可以转交给人工处理，而不是走任一代码分支。这与 <a href="../confidence/#three-paths-for-using-confidence-in-your-code">置信度（Confidence）</a> 一文中针对 Choice 和 Score 答案所描述的三分法相同。</p>
+<p>Noul 的取值范围是 0 到 1，但它并不是对所问事物程度的度量，而是答案为&quot;是&quot;的概率。如果问题真正关心的是某种程度，那么这个值就无法衡量那种程度。下面针对四位候选人同时提出 &quot;Is the candidate strong in Python?&quot;（该候选人是否精通 Python？），并附带一个分为四档的 <a href="../score/">Score</a>：无经验、有一定了解、在工作中经常使用、精通。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>候选人</th>
+<th>Noul：「该候选人是否精通 Python？」</th>
+<th>Score：「该候选人有多少 Python 经验？」</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>我的经验主要在 Java 和 Go 上，没有用过 Python。</td>
+<td>0.03</td>
+<td>0.0（无经验）</td>
+</tr>
+<tr>
+<td>在主要从事 Java 工作的同时，我偶尔会用 Python 写一些小脚本。</td>
+<td>0.14</td>
+<td>1.0（有一定了解）</td>
+</tr>
+<tr>
+<td>上一份工作里我每天使用 Python，持续了两年，主要做数据管道。</td>
+<td>0.81</td>
+<td>2.05（在工作中经常使用）</td>
+</tr>
+<tr>
+<td>我已连续八年每天用 Python 写代码，包括维护一个大型 Django 代码库。</td>
+<td>0.92</td>
+<td>2.89（精通）</td>
+</tr>
+</tbody></table></div>
+<p>Noul 只判断&quot;精通&quot;这一个命题，得到的值是该命题为真的概率。你可以在自己的代码里人为地把 0 到 1 划分成几个区间，比如用 0.3 到 0.7 表示&quot;有一定经验&quot;，但模型并不会看到这些区间，因此答案中没有任何部分是依据这些区间评判的。一个中间值可能表示中等程度的经验，也可能表示一个拿不准的案例，而且不同候选人之间的数值间距也不是由你设定的。Score 则会针对每一档的描述独立进行判断，因此每位候选人都会落点在你所写的某一档附近，返回的概率反映了模型在各个档位之间如何分配判断。如果你不同意它的结论，可以修改某一档的措辞后再次运行。<a href="../primitives/#choose-a-question-type">选择题型</a> 一文详细解释了两者的区别。</p>
+<h2 id="writing-a-noul-question">Writing a Noul question</h2>
+<p>每个 Noul 只问一个是非问题。如果一个问题里包含两个条件（例如 &quot;Is the customer angry and asking for a refund?&quot;——客户是否生气且要求退款？），模型就不得不同时判断这两件事，得到的数值含义也会被稀释。正确做法是使用两个 Noul，然后在代码中将它们的结论组合起来。</p>
+<p>问题的措辞应当让数值越大表示答案为&quot;是&quot;。&quot;Does the message contain personal data?&quot;（这条消息是否包含个人数据？）表达得很清楚。而 &quot;Is the message free of personal data?&quot;（这条消息是否不包含个人数据？）则把含义反过来了，后续读取这个值的代码很容易把它理解反。</p>
+<p>用陈述句提问和用疑问句提问效果相同。对于 &quot;The customer is requesting a refund&quot;（客户正在申请退款）这样的陈述，接近 1 的值表示该陈述为真。建议用你自己的数据分别尝试两种措辞，看看哪种效果更好。</p>
+<p>&quot;是&quot;和&quot;否&quot;之间的边界要尽量明确。&quot;Does this candidate have any Python experience?&quot;（这位候选人是否有过任何 Python 经验？）就很好，因为 &quot;any&quot;（任何）排除了中间地带。当边界较为模糊时，可以像上面 <code>is_repeat_contact</code> 那样，加入带有 <code>true</code> 和 <code>false</code> 描述的 <code>criteria</code>。对大多数 Noul 而言，仅使用 instructions 就足够了，所以最好在你的文档上同时测试有 <code>criteria</code> 和没有 <code>criteria</code> 两个版本，保留答案质量更好的那一个。</p>
+<h2 id="good-practice-ask-more-than-one-question-per-call">最佳实践：每次请求中包含多个问题</h2>
+<p>对于条件清单，建议在同一次请求中提出多个 Noul 问题：每个条件对应一个问题，由代码决定这种组合的含义。问题会被并行评估，因此增加 Noul 几乎不会影响响应时间。<a href="../primitives/#ask-multiple-questions-together">Ask multiple questions together</a> 详细介绍了这种做法。</p>
+<h2 id="handling-multiple-noul-answers-in-code">在代码中处理多个 Noul 答案</h2>
+<p>上面这个包含两个问题的请求已经为代码提供了足够的信息来路由消息。下面的示例在客户要求人工服务时升级到人工处理，并在客户之前联系过的情况下提高优先级。如果某个问题的答案落在中间区间，则交给复核人员处理，而不是走代码分支：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Noul, NoulCriteria, TypeSafeClient
+
+SUPPORT_QUESTIONS = {
+    <span class="hljs-string">&quot;is_human_escalation&quot;</span>: Noul(
+        instructions=<span class="hljs-string">&quot;Is the customer asking for a human agent?&quot;</span>,
+    ),
+    <span class="hljs-string">&quot;is_repeat_contact&quot;</span>: Noul(
+        instructions=<span class="hljs-string">&quot;Has the customer contacted support about this before?&quot;</span>,
+        criteria=NoulCriteria(
+            true=<span class="hljs-string">&quot;Mentions a prior attempt, ticket, or that they have asked before&quot;</span>,
+            false=<span class="hljs-string">&quot;No sign of any previous contact&quot;</span>,
+        ),
+    ),
+}
+
+YES = <span class="hljs-number">0.8</span>
+NO = <span class="hljs-number">0.2</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">route</span>(<span class="hljs-params">message: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
+    <span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+        response = client.system_one(
+            model=<span class="hljs-string">&quot;jev-latest&quot;</span>,
+            state=message,
+            questions=SUPPORT_QUESTIONS,
+        )
+    answers = response.answers
+
+    wants_human = answers[<span class="hljs-string">&quot;is_human_escalation&quot;</span>].noul
+    repeat = answers[<span class="hljs-string">&quot;is_repeat_contact&quot;</span>].noul
+
+    <span class="hljs-keyword">if</span> NO &lt; wants_human &lt; YES <span class="hljs-keyword">or</span> NO &lt; repeat &lt; YES:
+        <span class="hljs-comment"># The model isn&#x27;t sure either way. Let a person decide.</span>
+        send_to_review(message)
+        <span class="hljs-keyword">return</span>
+
+    priority = <span class="hljs-string">&quot;high&quot;</span> <span class="hljs-keyword">if</span> repeat &gt; YES <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;normal&quot;</span>
+    <span class="hljs-keyword">if</span> wants_human &gt; YES:
+        route_to_agent(message, priority=priority)
+    <span class="hljs-keyword">else</span>:
+        route_to_bot(message, priority=priority)</code></pre></div>
+<p>对于上面的这条消息，<code>is_human_escalation</code> 的 noul 答案值为 0.99，<code>is_repeat_contact</code> 为 0.93，因此代码会以高优先级将其路由到人工坐席。而消息 &quot;How do I reset my password?&quot; 在两个问题上的答案均为 0.07，会被路由到机器人。</p>
+<p>阈值由你的代码决定。如果复核人员收到的消息过多，可以缩小 <code>NO</code> 和 <code>YES</code> 之间的间隔。如果有太多错误路由漏过，则可以扩大该间隔。如果之后需要知道消息是否涉及支付，或者是否包含个人数据，可以向 <code>SUPPORT_QUESTIONS</code> 中再添加一个 Noul。请求数量仍然保持在一次。</p>
+<h2 id="structured-instructions">结构化指令</h2>
+<p>instructions 除了是字符串外，也可以是一个对象，其中一个问题字段中存放问题本身，其他字段存放补充数据。<a href="../how-to-build/#use-structure-in-the-questions">Use structure in the questions</a> 介绍了在哪些场景下这种做法会有帮助。这里展示的是用代码构建的问题：将刚刚收到的简历与候选人数据库中可能是同一个人的记录进行比对。每条记录都按原样放入 <code>potential_duplicate</code> 字段，<code>question</code> 对每条记录都相同，所有记录在一次请求中一并检查。由代码生成的问题键包含每条记录的数据库 ID：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;resume&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;John Smith&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;location&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Oakland, CA&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;summary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Backend engineer with eight years of Python and Go experience.&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;experience&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;employer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Google&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Senior Backend Engineer&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;years&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2021-2025&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;employer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Microsoft&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Software Engineer&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;years&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2017-2021&quot;</span>
+        <span class="hljs-punctuation">}</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;same_as_record_18&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;potential_duplicate&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Jon Smith&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;location&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Oakland, CA&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;last_employer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Google&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Is the resume for the same person as `potential_duplicate`?&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;same_as_record_42&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;potential_duplicate&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;John Smith&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;location&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Austin, TX&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;last_employer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Lone Star Freight&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Is the resume for the same person as `potential_duplicate`?&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;same_as_record_77&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;potential_duplicate&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;John Smithers&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;location&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Oakland, CA&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;last_employer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Bay Health Clinic&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;question&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Is the resume for the same person as `potential_duplicate`?&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>对应的响应：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.13.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;same_as_record_18&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.74</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;same_as_record_42&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.09</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;same_as_record_77&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.08</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">535</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">58</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>每个答案代表简历属于该记录中那个人的概率。记录 18 虽然名字拼写略有不同，但地点和雇主匹配，得到 0.74。记录 42 姓名相同但城市和雇主不同，得到 0.09。记录 77 名字类似、地点相同但雇主不同，得到 0.08。正如 <a href="#handling-multiple-noul-answers-in-code">Handling multiple Noul answers in code</a> 所示，在代码中对每个值设置阈值，并将中间值交给人工处理。</p>
+<p>在使用 Python SDK 时，问题可以根据候选人记录动态构建。问题文本保持不变，记录内容会随之变化：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Noul, TypeSafeClient
+
+SAME_PERSON = <span class="hljs-string">&quot;Is the resume for the same person as `potential_duplicate`?&quot;</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">duplicate_questions</span>(<span class="hljs-params">candidates: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, Noul]:
+    <span class="hljs-string">&quot;&quot;&quot;One Noul per candidate record, all asking the same question.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">f&quot;same_as_record_<span class="hljs-subst">{candidate[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>: Noul(
+            instructions={
+                <span class="hljs-string">&quot;potential_duplicate&quot;</span>: {
+                    <span class="hljs-string">&quot;name&quot;</span>: candidate[<span class="hljs-string">&quot;name&quot;</span>],
+                    <span class="hljs-string">&quot;location&quot;</span>: candidate[<span class="hljs-string">&quot;location&quot;</span>],
+                    <span class="hljs-string">&quot;last_employer&quot;</span>: candidate[<span class="hljs-string">&quot;last_employer&quot;</span>],
+                },
+                <span class="hljs-string">&quot;question&quot;</span>: SAME_PERSON,
+            },
+        )
+        <span class="hljs-keyword">for</span> candidate <span class="hljs-keyword">in</span> candidates
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">find_duplicates</span>(<span class="hljs-params">resume: <span class="hljs-built_in">dict</span>, candidates: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]:
+    <span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+        response = client.system_one(
+            model=<span class="hljs-string">&quot;jev-latest&quot;</span>,
+            state={<span class="hljs-string">&quot;resume&quot;</span>: resume},
+            questions=duplicate_questions(candidates),
+        )
+    <span class="hljs-keyword">return</span> [
+        question_id
+        <span class="hljs-keyword">for</span> question_id, answer <span class="hljs-keyword">in</span> response.answers.items()
+        <span class="hljs-keyword">if</span> answer.noul &gt; <span class="hljs-number">0.7</span>
+    ]</code></pre></div>
+<p><a href="../cookbook-sde-cascade/">structured-data-extraction cascade cookbook</a> 使用结构化指令来验证已抽取的记录。每个字段都会收到同一组问题。每个问题的 <code>instructions</code> 对象将问题文本放在 <code>main_question</code> 属性中。还有 <code>field_spec</code> 和 <code>extracted_field</code> 属性，会随着字段的不同而变化。</p>
+<h2 id="noul-in-the-cookbooks">实战示例中的 Noul</h2>
+<p>查看我们的实战示例，了解使用 Noul 问题的应用：</p>
+<ul>
+<li><a href="../cookbook-parallel-questions/">Parallel questions</a> 在一次请求中针对一篇文章运行包含 13 个问题的合规清单。</li>
+<li><a href="../cookbook-consistency-noul/">Self-consistency: nouls</a> 根据包含 15 个问题的评分表对保险理赔进行打分，并衡量多次运行之间分值的稳定性。</li>
+<li><a href="../cookbook-rerank-typesafe/">Re-ranking</a> 直接使用概率本身，而不是阈值：每个查询-候选对对应一个 Noul，然后按分值对候选项进行排序。</li>
+<li><a href="../cookbook-semantic-find/">Line-by-line search</a> 将一个用于定位匹配行的 Choice 与一个用于检查文档是否包含答案的 Noul 配对使用。</li>
+<li><a href="../cookbook-autoformat/">Structure recovery</a> 针对每一对相邻行问一个 Noul，判断换行符是否打断了句子，从而从纯文本中重建段落。</li>
+</ul>
+<p>This documentation is built and hosted on <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a>, a developer documentation platform.</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/score/"><span>上一篇</span><strong>Score（打分题）</strong></a>
+    <a class="pager-link is-next" href="/docs/box/"><span>下一篇</span><strong>Box（框选题）</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#request-structure">Request structure</a><a class="toc-link depth-2" href="#response-structure">Response structure</a><a class="toc-link depth-2" href="#reading-a-noul">Reading a Noul</a><a class="toc-link depth-2" href="#writing-a-noul-question">Writing a Noul question</a><a class="toc-link depth-2" href="#good-practice-ask-more-than-one-question-per-call">最佳实践：每次请求中包含多个问题</a><a class="toc-link depth-2" href="#handling-multiple-noul-answers-in-code">在代码中处理多个 Noul 答案</a><a class="toc-link depth-2" href="#structured-instructions">结构化指令</a><a class="toc-link depth-2" href="#noul-in-the-cookbooks">实战示例中的 Noul</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

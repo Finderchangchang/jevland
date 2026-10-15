@@ -1,0 +1,65 @@
+# JevLand · Jev 非官方中文社区
+
+TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。
+
+文档翻译自 TypeSafe 官方文档，以英文原文为准。
+
+## 文档
+- [简介](https://jevland.com/docs/introduction/): Jev 是 TypeSafe 的旗舰模型，也是首个 System One 模型。传入 state（上下文状态）和类型化的 question（问题），即可获得代码可直接使用的结构化 answer（答案）。
+- [快速开始](https://jevland.com/docs/quickstart/): 5 分钟内上手 Jev。
+- [Jev 与编程智能体](https://jevland.com/docs/coding-agents/): 在使用编程智能体时，Jev 是什么（以及不是什么）。
+- [用例地图](https://jevland.com/docs/use-cases/): 按行业探索 TypeSafe 的用例，把有潜力的想法转化为软件工作流。
+- [System One](https://jevland.com/docs/system-one/): System One 模型为软件做快速、结构化的判断。Jev 是 TypeSafe 的旗舰模型，也是第一个 System One 模型。
+- [State（上下文状态）](https://jevland.com/docs/state/): state 是什么、如何组织它，以及如何为 System One 模型提供所需的上下文。
+- [怎样用 TypeSafe 构建](https://jevland.com/docs/how-to-build/): 通过让代码掌握控制权，并交给 System One 做出窄而结构化的判断，来设计 AI 驱动的软件。
+- [AI 入门](https://jevland.com/docs/ai-primer/): 介绍 TypeSafe 为何训练决策模型时使用校准过的概率，而非针对生成文本做优化。
+- [置信度](https://jevland.com/docs/confidence/): TypeSafe 如何报告确定性、与概率的区别，以及如何用它来控制系统行为。
+- [题型总览](https://jevland.com/docs/primitives/): TypeSafe 的题型、它们返回的带类型答案、如何在它们之间选择，以及如何一次性提出多个问题。
+- [Choice（选择题）](https://jevland.com/docs/choice/): Choice 是 System One 的题型（question type），用于从一组预定义选项中选出一个。答案包含所选选项、每个选项的概率以及置信度。
+- [Score（打分题）](https://jevland.com/docs/score/): Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。
+- [Noul（是非题）](https://jevland.com/docs/noul/): Noul（是非题）问题要求 TypeSafe 模型对一个是非问题进行判断，并返回答案为"是"的概率。
+- [Box（框选题）](https://jevland.com/docs/box/): Box（框选题）是 System One 的一种题型，用于识别某物在图像中的位置。答案是包住目标的矩形的四条边，以图像宽高的比例表示。
+- [进阶：结构化写法](https://jevland.com/docs/advanced-structure/): instructions（指令）字段、Choice（选择题）选项、Score（打分题）档位以及 Noul（是非题）的 criteria（判定标准）字段，都接受 JSON 结构。
+- [图片](https://jevland.com/docs/images/): 在 System One 请求中发送图片：放在 state 中、问题的 instructions 里，或者作为评判该问题的 criteria。
+- [设计模式](https://jevland.com/docs/patterns/): 使用 TypeSafe 构建系统的架构设计模式。
+- [推测式扇出](https://jevland.com/docs/fan-out/): 一次调用发送多个问题，包括推测式问题，再由代码决定哪些相关。
+- [置信度分流](https://jevland.com/docs/confidence-routing/): 把置信度作为第二条判断轴。答案告诉你「是什么」，置信度告诉你「能不能直接行动」。
+- [组合打分](https://jevland.com/docs/composite-scoring/): 把一个复杂的判断拆成若干独立的子项打分，再用你在代码里指定的权重组合起来。
+- [意图路由](https://jevland.com/docs/intent-routing/): 对传入的请求进行分类，并将每条请求路由到最优处理方：确定性的逻辑、专业的大语言模型（LLM），或人工。
+- [模型](https://jevland.com/docs/models/): 当前可用的 Jev 模型、价格、上下文长度和限流说明。
+- [API 参考](https://jevland.com/docs/api/): TypeSafe 评估接口的完整 HTTP API 参考。
+- [Jev 1.13 能力短板](https://jevland.com/docs/jev-1-13-jaggedness/): Jev 并不完美。以下是我们已知的 `jev-1.13` 能力短板，其中很多会在后续版本中修复。
+- [客户端 SDK](https://jevland.com/docs/sdk/): 安装 TypeSafe 客户端 SDK，在应用中使用带类型的问答。
+- [Python SDK](https://jevland.com/docs/sdk-python/): 安装 TypeSafe Python SDK，开始用异步或同步方式调用 API。
+- [实战示例](https://jevland.com/docs/cookbooks/): 从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。
+- [函数调用](https://jevland.com/docs/cookbook-function-calling/): 通过把函数名和闭合取值集合的参数映射到带置信度的 TypeSafe 问题，把自然语言的交易请求转为对普通带类型函数的调用。
+- [技能建议](https://jevland.com/docs/cookbook-skill-suggestion/): 每次智能体回合从 Nous Research 的 Hermes 目录中 182 个技能里至多选出一个技能，使用两次 TypeSafe 请求对排名靠前的候选进行排序和复检。
+- [大语言模型的安全护栏](https://jevland.com/docs/cookbook-llm-guardrails/): 用一次 TypeSafe 请求对进出大语言模型（LLM）应用的每一条消息进行筛查，按各风险成立的概率（probability）和严重程度做阈值（threshold）判断，决定是放行、复核、拦截，还是路由。
+- [二次核对引用](https://jevland.com/docs/cookbook-citation-check/): 通过与源文档比对，找出错误或虚构的引用。一道 Choice（选择题）问题决定引文的上下文是否支撑该声明。
+- [为 RAG 段落分类](https://jevland.com/docs/cookbook-classifying-rag-passages/): 用一次 TypeSafe 请求为每条检索到的段落打分，再用代码决定哪些段落最终进入生成答案的模型。
+- [简单记忆系统](https://jevland.com/docs/cookbook-basic-memory/): 让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。
+- [层次分类](https://jevland.com/docs/cookbook-hierarchical-classification/): 通过基于 TypeSafe Choice（选择题）概率的并行束搜索，跨越专利、零售商品、生物医学和源代码等深层次结构对文档进行分类。
+- [使用置信度进行分类](https://jevland.com/docs/cookbook-classification-using-confidence/): 用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。
+- [Twitch 聊天过滤器](https://jevland.com/docs/cookbook-twitch-chat-filter/): 在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。
+- [SDE（结构化数据抽取）级联](https://jevland.com/docs/cookbook-sde-cascade/): 用一个 2 阶段的结构化数据抽取级联（mini → verify → reasoning），以小成本获得接近大型推理模型的质量。
+- [日期提取](https://jevland.com/docs/cookbook-date-extraction/): 从文档中提取绝对日期和相对日期：先用 TypeSafe 读取被点名的日期片段，再在代码里完成解析和校验，并按置信度触发复核。
+- [预先解析的值抽取](https://jevland.com/docs/cookbook-pre-parsed-value-extraction/): 用正则找出候选的电子邮箱、电话号码和金额，再让 TypeSafe 选出问题所问的那段文本，让代码能规范化一个原样的值。
+- [结构恢复](https://jevland.com/docs/cookbook-autoformat/): 用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。
+- [重排序](https://jevland.com/docs/cookbook-rerank-typesafe/): 为 40 条 CLERC 法律查询各构建 30 篇文档的 BM25 候选短列表，再为每个「查询-候选」对使用一个 TypeSafe 问题（question），将 top-1 准确率从 5% 提升到 18%，top-10 准确率从 38% 提升到 62%。
+- [逐行搜索](https://jevland.com/docs/cookbook-semantic-find/): 为 GitHub 服务条款构建语义搜索。在一次请求中，用 `Choice`（选择题）给 218 个行 ID 评分，再用 `Noul`（是非题）检查文档是否包含答案。
+- [知识图谱实体对齐](https://jevland.com/docs/cookbook-entity-alignment/): 用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。
+- [自一致性：Choice](https://jevland.com/docs/cookbook-consistency-choice/): 为内容审核决策引入不确定结果（uncertain outcome），并比较标签一致性与自动处理占比。
+- [自一致性：Noul](https://jevland.com/docs/cookbook-consistency-noul/): 将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。
+- [并行提问](https://jevland.com/docs/cookbook-parallel-questions/): 基于 Wikipedia 上的 GDPR 词条运行一个 13 问题的合规简报，结果显示把所有问题批量放进一次 TypeSafe 调用既便宜 12.2 倍又快 10.0 倍，且答案完全一致。
+- [自动研究：特征发现](https://jevland.com/docs/cookbook-autoresearch-feature-discovery/): 运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。
+
+## 教程
+- [跑通第一个 Jev 请求：两条路都能走](https://jevland.com/guides/first-request/): 只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。
+- [用 OpenRouter 调 Jev 看图，图片根本没送到模型那里](https://jevland.com/guides/openrouter-images/): OpenRouter 的 alpha/decisions 接口不转发图片，要测 Jev 看图请走 TypeSafe 官方接口。
+- [Jev 1.14 看图实测：判断可以直接用，框选要看置信度](https://jevland.com/guides/vision-test/): 看截图做判断，结果和读文字几乎一致；Box 框选用置信度兜底。
+- [Jev 处理中文：题目用英文，state 保留中文](https://jevland.com/guides/chinese-prompts/): 中文内容能判断。题目英文写、state 留原文，上线前用 20–30 条真实数据校准。
+
+## 入口
+- [文档首页](https://jevland.com/docs/)
+- [社区](https://jevland.com/community/)
+- [官方文档](https://docs.typesafe.ai/)

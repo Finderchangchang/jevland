@@ -1,0 +1,766 @@
+[
+  {
+    "title": "简介",
+    "description": "Jev 是 TypeSafe 的旗舰模型，也是首个 System One 模型。传入 state（上下文状态）和类型化的 question（问题），即可获得代码可直接使用的结构化 answer（答案）。",
+    "section": "入门",
+    "url": "/docs/introduction/",
+    "headings": [
+      "TypeSafe primitives",
+      "用代码组合原子化的问题",
+      "下一步"
+    ]
+  },
+  {
+    "title": "快速开始",
+    "description": "5 分钟内上手 Jev。",
+    "section": "入门",
+    "url": "/docs/quickstart/",
+    "headings": [
+      "你需要了解的最少知识",
+      "Vibe it: Agent Skill",
+      "Claude Code",
+      "其他智能体",
+      "复制给你的智能体",
+      "Code it: 你的第一个请求",
+      "Python",
+      "JavaScript",
+      "TypeScript",
+      "Bash",
+      "调用：API",
+      "在 Playground 中试一试",
+      "后续步骤"
+    ]
+  },
+  {
+    "title": "Jev 与编程智能体",
+    "description": "在使用编程智能体时，Jev 是什么（以及不是什么）。",
+    "section": "入门",
+    "url": "/docs/coding-agents/",
+    "headings": [
+      "Jev 不是聊天或代码补全 LLM",
+      "你可能真正想要的",
+      "什么时候值得使用 Jev",
+      "下一步"
+    ]
+  },
+  {
+    "title": "用例地图",
+    "description": "按行业探索 TypeSafe 的用例，把有潜力的想法转化为软件工作流。",
+    "section": "入门",
+    "url": "/docs/use-cases/",
+    "headings": [
+      "示例用例分类",
+      "示例自动化用例",
+      "示例任务类别"
+    ]
+  },
+  {
+    "title": "System One",
+    "description": "System One 模型为软件做快速、结构化的判断。Jev 是 TypeSafe 的旗舰模型，也是第一个 System One 模型。",
+    "section": "核心概念",
+    "url": "/docs/system-one/",
+    "headings": [
+      "与 LLM 的区别",
+      "在更大工作流中做快速判断",
+      "调用 System One 模型"
+    ]
+  },
+  {
+    "title": "State（上下文状态）",
+    "description": "state 是什么、如何组织它，以及如何为 System One 模型提供所需的上下文。",
+    "section": "核心概念",
+    "url": "/docs/state/",
+    "headings": [
+      "state 可以是一个简单字符串，也可以是一个结构化的 JSON 值",
+      "把内容与问题分开"
+    ]
+  },
+  {
+    "title": "怎样用 TypeSafe 构建",
+    "description": "通过让代码掌握控制权，并交给 System One 做出窄而结构化的判断，来设计 AI 驱动的软件。",
+    "section": "核心概念",
+    "url": "/docs/how-to-build/",
+    "headings": [
+      "三种软件架构",
+      "System One 可组合的原因",
+      "设计一个 System One 工作流",
+      "整合到一起"
+    ]
+  },
+  {
+    "title": "AI 入门",
+    "description": "介绍 TypeSafe 为何训练决策模型时使用校准过的概率，而非针对生成文本做优化。",
+    "section": "核心概念",
+    "url": "/docs/ai-primer/",
+    "headings": [
+      "构建生产系统，而非造神",
+      "三种后训练方法",
+      "RLCD 与校准过的决策",
+      "RLHF 存在的问题"
+    ]
+  },
+  {
+    "title": "置信度",
+    "description": "TypeSafe 如何报告确定性、与概率的区别，以及如何用它来控制系统行为。",
+    "section": "核心概念",
+    "url": "/docs/confidence/",
+    "headings": [
+      "置信度由概率派生",
+      "\"我不知道\"是有用的信号",
+      "在代码中使用置信度的三条路径",
+      "阈值随风险而变化",
+      "置信度是如何计算的",
+      "Noul",
+      "Choice",
+      "Score"
+    ]
+  },
+  {
+    "title": "题型总览",
+    "description": "TypeSafe 的题型、它们返回的带类型答案、如何在它们之间选择，以及如何一次性提出多个问题。",
+    "section": "题型",
+    "url": "/docs/primitives/",
+    "headings": [
+      "一次提问一个问题，获得单一快速判断",
+      "定义一个问题",
+      "选择问题类型",
+      "返回结果",
+      "引用具体字段",
+      "一次性提出多个问题",
+      "提出推测式问题",
+      "你可以问多少个问题",
+      "把一个复杂判断拆成多个问题",
+      "一个问题依赖于另一个问题时",
+      "下一步"
+    ]
+  },
+  {
+    "title": "Choice（选择题）",
+    "description": "Choice 是 System One 的题型（question type），用于从一组预定义选项中选出一个。答案包含所选选项、每个选项的概率以及置信度。",
+    "section": "题型",
+    "url": "/docs/choice/",
+    "headings": [
+      "请求结构",
+      "响应结构",
+      "最佳实践：每次调用多问几个问题",
+      "一个更复杂的示例"
+    ]
+  },
+  {
+    "title": "Score（打分题）",
+    "description": "Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。",
+    "section": "题型",
+    "url": "/docs/score/",
+    "headings": [
+      "请求结构",
+      "档位（level）",
+      "响应结构",
+      "阅读 Score",
+      "写出好的档位",
+      "把复杂判断拆成多道 Score 题",
+      "结构化档位描述"
+    ]
+  },
+  {
+    "title": "Noul（是非题）",
+    "description": "Noul（是非题）问题要求 TypeSafe 模型对一个是非问题进行判断，并返回答案为\"是\"的概率。",
+    "section": "题型",
+    "url": "/docs/noul/",
+    "headings": [
+      "Request structure",
+      "Response structure",
+      "Reading a Noul",
+      "Writing a Noul question",
+      "最佳实践：每次请求中包含多个问题",
+      "在代码中处理多个 Noul 答案",
+      "结构化指令",
+      "实战示例中的 Noul"
+    ]
+  },
+  {
+    "title": "Box（框选题）",
+    "description": "Box（框选题）是 System One 的一种题型，用于识别某物在图像中的位置。答案是包住目标的矩形的四条边，以图像宽高的比例表示。",
+    "section": "题型",
+    "url": "/docs/box/",
+    "headings": [
+      "请求结构",
+      "响应结构",
+      "读取 Box 答案",
+      "使用置信度",
+      "编写 Box 题目",
+      "用边缘问题复核边界框"
+    ]
+  },
+  {
+    "title": "进阶：结构化写法",
+    "description": "instructions（指令）字段、Choice（选择题）选项、Score（打分题）档位以及 Noul（是非题）的 criteria（判定标准）字段，都接受 JSON 结构。",
+    "section": "题型",
+    "url": "/docs/advanced-structure/",
+    "headings": [
+      "哪些字段支持结构化",
+      "何时应当把问题结构化",
+      "结构化 instructions",
+      "结构化 Choice 选项",
+      "用 JSON 量表澄清选项边界",
+      "遍历分类树",
+      "结构化 Score 档位"
+    ]
+  },
+  {
+    "title": "图片",
+    "description": "在 System One 请求中发送图片：放在 state 中、问题的 instructions 里，或者作为评判该问题的 criteria。",
+    "section": "题型",
+    "url": "/docs/images/",
+    "headings": [
+      "开启图片",
+      "在请求中发送图片",
+      "Asset 字段",
+      "引用规则",
+      "上传图片",
+      "直接通过 HTTP",
+      "图像放置",
+      "上下文状态（state）",
+      "指令（instructions）",
+      "判定标准（criteria）",
+      "结构化数据",
+      "设计模式",
+      "大小限制",
+      "图像预处理",
+      "图像 token",
+      "错误"
+    ]
+  },
+  {
+    "title": "设计模式",
+    "description": "使用 TypeSafe 构建系统的架构设计模式。",
+    "section": "设计模式",
+    "url": "/docs/patterns/",
+    "headings": [
+      "设计模式一览"
+    ]
+  },
+  {
+    "title": "推测式扇出",
+    "description": "一次调用发送多个问题，包括推测式问题，再由代码决定哪些相关。",
+    "section": "设计模式",
+    "url": "/docs/fan-out/",
+    "headings": [
+      "示例：客服工单分流",
+      "步骤 1：推测式扇出",
+      "步骤 2：用代码路由"
+    ]
+  },
+  {
+    "title": "置信度分流",
+    "description": "把置信度作为第二条判断轴。答案告诉你「是什么」，置信度告诉你「能不能直接行动」。",
+    "section": "设计模式",
+    "url": "/docs/confidence-routing/",
+    "headings": [
+      "示例：语音银行业务指令",
+      "步骤 1：确定用户意图",
+      "步骤 2：基于置信度的分流"
+    ]
+  },
+  {
+    "title": "组合打分",
+    "description": "把一个复杂的判断拆成若干独立的子项打分，再用你在代码里指定的权重组合起来。",
+    "section": "设计模式",
+    "url": "/docs/composite-scoring/",
+    "headings": [
+      "示例：简历筛选",
+      "第一步：独立打分每个维度",
+      "第二步：按权重组合"
+    ]
+  },
+  {
+    "title": "意图路由",
+    "description": "对传入的请求进行分类，并将每条请求路由到最优处理方：确定性的逻辑、专业的大语言模型（LLM），或人工。",
+    "section": "设计模式",
+    "url": "/docs/intent-routing/",
+    "headings": [
+      "示例：客服路由",
+      "第 1 步：分类意图与复杂度",
+      "第 2 步：路由到最优处理方"
+    ]
+  },
+  {
+    "title": "模型",
+    "description": "当前可用的 Jev 模型、价格、上下文长度和限流说明。",
+    "section": "参考",
+    "url": "/docs/models/",
+    "headings": [
+      "当前模型",
+      "上下文长度",
+      "长上下文",
+      "限流",
+      "别名",
+      "定制 Jev",
+      "语言支持",
+      "数据处理",
+      "模型列表"
+    ]
+  },
+  {
+    "title": "API 参考",
+    "description": "TypeSafe 评估接口的完整 HTTP API 参考。",
+    "section": "参考",
+    "url": "/docs/api/",
+    "headings": [
+      "评估接口",
+      "请求体",
+      "请求规则",
+      "压缩",
+      "题型",
+      "Noul（是非题）",
+      "Choice（选择题）",
+      "Score（打分题）",
+      "响应体",
+      "答案类型",
+      "Noul（是非题）答案",
+      "Choice（选择题）答案",
+      "Score（打分题）答案",
+      "错误",
+      "处理限流"
+    ]
+  },
+  {
+    "title": "Jev 1.13 能力短板",
+    "description": "Jev 并不完美。以下是我们已知的 `jev-1.13` 能力短板，其中很多会在后续版本中修复。",
+    "section": "参考",
+    "url": "/docs/jev-1-13-jaggedness/",
+    "headings": [
+      "失败模式的详细说明",
+      "字面阅读",
+      "数学与数字",
+      "计数",
+      "数值表示",
+      "用 score 做数学",
+      "日期与时间比较",
+      "间接引用",
+      "状态过大且充满无关细节",
+      "对抗性内容",
+      "指令与判定标准相互矛盾",
+      "选择题选项顺序",
+      "生成"
+    ]
+  },
+  {
+    "title": "客户端 SDK",
+    "description": "安装 TypeSafe 客户端 SDK，在应用中使用带类型的问答。",
+    "section": "参考",
+    "url": "/docs/sdk/",
+    "headings": []
+  },
+  {
+    "title": "Python SDK",
+    "description": "安装 TypeSafe Python SDK，开始用异步或同步方式调用 API。",
+    "section": "参考",
+    "url": "/docs/sdk-python/",
+    "headings": [
+      "快速开始",
+      "下一步"
+    ]
+  },
+  {
+    "title": "实战示例",
+    "description": "从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。",
+    "section": "实战示例",
+    "url": "/docs/cookbooks/",
+    "headings": [
+      "LLM 与智能体",
+      "分类",
+      "抽取",
+      "搜索与匹配",
+      "技巧"
+    ]
+  },
+  {
+    "title": "函数调用",
+    "description": "通过把函数名和闭合取值集合的参数映射到带置信度的 TypeSafe 问题，把自然语言的交易请求转为对普通带类型函数的调用。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-function-calling/",
+    "headings": [
+      "设置环境",
+      "在签名中查找闭合取值集合",
+      "编写 spec",
+      "把 spec 转化为问题",
+      "运行十四条命令",
+      "读取置信度",
+      "在 playground 中打开它"
+    ]
+  },
+  {
+    "title": "技能建议",
+    "description": "每次智能体回合从 Nous Research 的 Hermes 目录中 182 个技能里至多选出一个技能，使用两次 TypeSafe 请求对排名靠前的候选进行排序和复检。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-skill-suggestion/",
+    "headings": [
+      "环境配置",
+      "缓存结果",
+      "步骤 1：加载清单",
+      "Step 2: 独立评分智能体",
+      "Step 3: 对整个 skill 列表排序",
+      "Step 4：重排前三名",
+      "Step 5：衡量这条建议",
+      "结果说明了什么",
+      "在 playground 里打开它",
+      "接下来"
+    ]
+  },
+  {
+    "title": "大语言模型的安全护栏",
+    "description": "用一次 TypeSafe 请求对进出大语言模型（LLM）应用的每一条消息进行筛查，按各风险成立的概率（probability）和严重程度做阈值（threshold）判断，决定是放行、复核、拦截，还是路由。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-llm-guardrails/",
+    "headings": [
+      "安装与准备",
+      "加载示例消息",
+      "定义安全护栏",
+      "把评估结果转化为决策",
+      "逐条筛检每条消息",
+      "相同的概率，不同的决策",
+      "完整查看一条决策",
+      "在 playground 中打开"
+    ]
+  },
+  {
+    "title": "二次核对引用",
+    "description": "通过与源文档比对，找出错误或虚构的引用。一道 Choice（选择题）问题决定引文的上下文是否支撑该声明。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-citation-check/",
+    "headings": [
+      "Setup",
+      "Load the source and the citations",
+      "Find each quote in the source",
+      "Verify whether the source supports the claim",
+      "逐条核查引用",
+      "在 playground 中打开"
+    ]
+  },
+  {
+    "title": "为 RAG 段落分类",
+    "description": "用一次 TypeSafe 请求为每条检索到的段落打分，再用代码决定哪些段落最终进入生成答案的模型。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-classifying-rag-passages/",
+    "headings": [
+      "环境准备",
+      "加载文档语料库",
+      "检索靠前的段落",
+      "针对每篇 passage 问四个问题",
+      "在代码中对每段 passage 做路由",
+      "用接受的证据构建 prompt",
+      "对比六个查询",
+      "在 Playground 中打开"
+    ]
+  },
+  {
+    "title": "简单记忆系统",
+    "description": "让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-basic-memory/",
+    "headings": [
+      "设置",
+      "定义工单",
+      "为工单选路",
+      "询问 Jev 这张工单是否值得记住",
+      "将调用包成会记住上下文的版本",
+      "依次发送早些时候的工单，观察答案如何变化",
+      "为两个客户路由相同消息",
+      "在 playground 中打开它",
+      "后续步骤",
+      "保存的答案会强化错误吗",
+      "阈值该怎么选"
+    ]
+  },
+  {
+    "title": "层次分类",
+    "description": "通过基于 TypeSafe Choice（选择题）概率的并行束搜索，跨越专利、零售商品、生物医学和源代码等深层次结构对文档进行分类。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-hierarchical-classification/",
+    "headings": [
+      "本实战示例用到的层次结构",
+      "方法",
+      "加载并可视化示例层次结构",
+      "对比两种方法",
+      "结果",
+      "CPC patents",
+      "Shopify products",
+      "MeSH biomedical subjects",
+      "CookSafe files"
+    ]
+  },
+  {
+    "title": "使用置信度进行分类",
+    "description": "用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-classification-using-confidence/",
+    "headings": [
+      "环境配置",
+      "构建分类法的两个层级",
+      "申报材料",
+      "提出一道 Choice 问题，并读取置信度",
+      "确定时返回行业组，不确定时返回其门类",
+      "更宽泛的答案能带来什么",
+      "在 playground 中打开"
+    ]
+  },
+  {
+    "title": "Twitch 聊天过滤器",
+    "description": "在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-twitch-chat-filter/",
+    "headings": [
+      "环境准备",
+      "加载一段聊天",
+      "编写问题",
+      "对单条消息进行分类",
+      "决定观众看到什么",
+      "过滤整个聊天",
+      "不发起新请求地修改规则",
+      "在直播频道使用前",
+      "在 playground 中打开它"
+    ]
+  },
+  {
+    "title": "SDE（结构化数据抽取）级联",
+    "description": "用一个 2 阶段的结构化数据抽取级联（mini → verify → reasoning），以小成本获得接近大型推理模型的质量。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-sde-cascade/",
+    "headings": [
+      "环境准备",
+      "第 1 步：数据",
+      "第 2 步：用 mini 模型抽取（文本模式）",
+      "步骤 3：用 TypeSafe 验证",
+      "对小型抽取运行整个检测组",
+      "Step 4: 升级闸门",
+      "Step 5: 升级到推理模型",
+      "Step 6: 在 100 条 prompt 上的实际表现",
+      "Appendix A: 什么是好的验证器信号"
+    ]
+  },
+  {
+    "title": "日期提取",
+    "description": "从文档中提取绝对日期和相对日期：先用 TypeSafe 读取被点名的日期片段，再在代码里完成解析和校验，并按置信度触发复核。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-date-extraction/",
+    "headings": [
+      "环境准备",
+      "问题定义",
+      "在代码中解析",
+      "运行一下",
+      "用置信度来分流",
+      "在 TypeSafe playground 中打开"
+    ]
+  },
+  {
+    "title": "预先解析的值抽取",
+    "description": "用正则找出候选的电子邮箱、电话号码和金额，再让 TypeSafe 选出问题所问的那段文本，让代码能规范化一个原样的值。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-pre-parsed-value-extraction/",
+    "headings": [
+      "环境配置",
+      "辅助函数",
+      "邮箱：按角色挑出正确的地址",
+      "电话：挑出手机号并规范化为 E.164",
+      "金额：挑出金额、识别货币、标记抵扣与扣款",
+      "在 TypeSafe playground 中打开",
+      "两个限制"
+    ]
+  },
+  {
+    "title": "结构恢复",
+    "description": "用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-autoformat/",
+    "headings": [
+      "安装与配置",
+      "测试文档：一份丢失格式的团队备忘录",
+      "Pass 1：拼接断句",
+      "Pass 2：块的分类",
+      "Rendering",
+      "成本与延迟",
+      "join 阈值的来源",
+      "为什么问的是\"mid-sentence\"而不是\"same paragraph\"",
+      "置信度最低的块"
+    ]
+  },
+  {
+    "title": "重排序",
+    "description": "为 40 条 CLERC 法律查询各构建 30 篇文档的 BM25 候选短列表，再为每个「查询-候选」对使用一个 TypeSafe 问题（question），将 top-1 准确率从 5% 提升到 18%，top-10 准确率从 38% 提升到 62%。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-rerank-typesafe/",
+    "headings": [
+      "自己动手试一试",
+      "如何在成千上万份文档中找出需要的那一份？",
+      "什么是 fast search？",
+      "什么是 re-ranking？",
+      "使用 TypeSafe 进行重排序",
+      "TypeSafe 的返回值",
+      "一个重排序示例",
+      "准备工作",
+      "用快速搜索为段落排序",
+      "快速搜索不太可能把正确段落排在第一位",
+      "用 TypeSafe 完成重排序",
+      "重排序将正确答案往顶部推",
+      "下一步"
+    ]
+  },
+  {
+    "title": "逐行搜索",
+    "description": "为 GitHub 服务条款构建语义搜索。在一次请求中，用 `Choice`（选择题）给 218 个行 ID 评分，再用 `Noul`（是非题）检查文档是否包含答案。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-semantic-find/",
+    "headings": [
+      "准备工作",
+      "获取 TypeSafe API 密钥",
+      "安装依赖",
+      "创建脚本",
+      "步骤 1：给每一行打上一个 ID",
+      "步骤 2：询问答案在哪里",
+      "步骤 3：检查答案是否存在",
+      "步骤 4：把两个问题放在同一次请求里发出",
+      "步骤 5：解读结果",
+      "步骤 6：跑一次搜索",
+      "分数的含义",
+      "尝试你自己的文档"
+    ]
+  },
+  {
+    "title": "知识图谱实体对齐",
+    "description": "用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-entity-alignment/",
+    "headings": [
+      "Setup",
+      "Load the candidate pairs",
+      "Ask one Score question and three Noul questions per candidate pair",
+      "路由每一对候选",
+      "在 playground 中打开"
+    ]
+  },
+  {
+    "title": "自一致性：Choice",
+    "description": "为内容审核决策引入不确定结果（uncertain outcome），并比较标签一致性与自动处理占比。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-consistency-choice/",
+    "headings": [
+      "准备工作",
+      "上下文状态（state）：一条边界状态的用户帖子，JSON 格式",
+      "评分表：8 个 Choice 问题",
+      "我们如何提问",
+      "实验条件",
+      "实验网格",
+      "成本 + 速度（按每次评分量表（rubric）查询计）",
+      "图表：每次采样的判定结果热力图",
+      "图：含不确定结果的决策一致性",
+      "让不确定概率产生不确定决策",
+      "在 TypeSafe playground 中打开它"
+    ]
+  },
+  {
+    "title": "自一致性：Noul",
+    "description": "将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-consistency-noul/",
+    "headings": [
+      "准备工作",
+      "state（上下文状态）：一份 JSON 格式的车险理赔",
+      "评分标准：14 道 Noul 题",
+      "提问方式",
+      "实验条件",
+      "实验矩阵",
+      "成本与速度（每次 rubric 查询）",
+      "图表：每次抽样绘制为热图",
+      "允许不确定决策，替代强制的是或否",
+      "在 TypeSafe playground 中打开它"
+    ]
+  },
+  {
+    "title": "并行提问",
+    "description": "基于 Wikipedia 上的 GDPR 词条运行一个 13 问题的合规简报，结果显示把所有问题批量放进一次 TypeSafe 调用既便宜 12.2 倍又快 10.0 倍，且答案完全一致。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-parallel-questions/",
+    "headings": [
+      "环境准备",
+      "文档：Wikipedia 上的 GDPR 词条",
+      "问题集合：8 个 noul 题 + 2 个 choice 题 + 3 个 score 题",
+      "两种方式各问 5 次",
+      "批处理不会改变答案",
+      "唯一的区别：成本和速度",
+      "在 TypeSafe playground 中打开"
+    ]
+  },
+  {
+    "title": "自动研究：特征发现",
+    "description": "运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。",
+    "section": "实战示例",
+    "url": "/docs/cookbook-autoresearch-feature-discovery/",
+    "headings": [
+      "配置",
+      "两种题型",
+      "方法",
+      "自主研究循环",
+      "指向你自己的数据",
+      "问题看到的是什么",
+      "自动研究的几轮有帮助吗？",
+      "下一步",
+      "在 playground 中打开"
+    ]
+  },
+  {
+    "title": "跑通第一个 Jev 请求：两条路都能走",
+    "description": "只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。",
+    "section": "入门",
+    "url": "/guides/first-request/",
+    "headings": [
+      "先给结论",
+      "官方接口三字段搞定",
+      "Python 用 SDK 跑一次",
+      "OpenRouter 同样能跑通",
+      "价格、长度、限流心里有数",
+      "报错码对号入座就行"
+    ]
+  },
+  {
+    "title": "用 OpenRouter 调 Jev 看图，图片根本没送到模型那里",
+    "description": "OpenRouter 的 alpha/decisions 接口不转发图片，要测 Jev 看图请走 TypeSafe 官方接口。",
+    "section": "实测",
+    "url": "/guides/openrouter-images/",
+    "headings": [
+      "结论：OpenRouter 当前不通图片",
+      "Jev 1.14 看图的请求格式",
+      "我怎么发现图片没送过去",
+      "对比官方接口：图真的进了模型",
+      "自查方法",
+      "官方接口的实测和参数"
+    ]
+  },
+  {
+    "title": "Jev 1.14 看图实测：判断可以直接用，框选要看置信度",
+    "description": "看截图做判断，结果和读文字几乎一致；Box 框选用置信度兜底。",
+    "section": "实测",
+    "url": "/guides/vision-test/",
+    "headings": [
+      "先说结论",
+      "怎么测的",
+      "判断类问题：直接用",
+      "Box 框选题：用置信度兜底",
+      "成本和怎么用"
+    ]
+  },
+  {
+    "title": "Jev 处理中文：题目用英文，state 保留中文",
+    "description": "中文内容能判断。题目英文写、state 留原文，上线前用 20–30 条真实数据校准。",
+    "section": "实测",
+    "url": "/guides/chinese-prompts/",
+    "headings": [
+      "先说结论",
+      "官方怎么说",
+      "我的实测",
+      "同一次请求里题目会互相打架",
+      "怎么搭标注集",
+      "置信度分三档用",
+      "写题小抄"
+    ]
+  }
+]

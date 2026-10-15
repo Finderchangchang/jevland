@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>预先解析的值抽取 · JevLand</title>
+<meta name="description" content="用正则找出候选的电子邮箱、电话号码和金额，再让 TypeSafe 选出问题所问的那段文本，让代码能规范化一个原样的值。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-pre-parsed-value-extraction/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="预先解析的值抽取">
+<meta property="og:description" content="用正则找出候选的电子邮箱、电话号码和金额，再让 TypeSafe 选出问题所问的那段文本，让代码能规范化一个原样的值。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-pre-parsed-value-extraction/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="预先解析的值抽取">
+<meta name="twitter:description" content="用正则找出候选的电子邮箱、电话号码和金额，再让 TypeSafe 选出问题所问的那段文本，让代码能规范化一个原样的值。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"预先解析的值抽取","url":"https://jevland.com/docs/cookbook-pre-parsed-value-extraction/","inLanguage":"zh-CN","description":"用正则找出候选的电子邮箱、电话号码和金额，再让 TypeSafe 选出问题所问的那段文本，让代码能规范化一个原样的值。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link is-current" href="/docs/cookbook-pre-parsed-value-extraction/" aria-current="page">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link is-current" href="/docs/cookbook-pre-parsed-value-extraction/" aria-current="page">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>预先解析的值抽取</h1>
+        <p class="lead">用正则找出候选的电子邮箱、电话号码和金额，再让 TypeSafe 选出问题所问的那段文本，让代码能规范化一个原样的值。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/pre_parsed_value_extraction_cookbook" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p><em>正则找出候选值，TypeSafe 选出问题所问的那一个，代码按原样复制它。</em></p>
+<p>这里的 <code>find</code> 和 <code>pick</code> 组合可以直接套用到你自己的文档上，下面三个示例展示用法：寄件人希望回执发往的地址、一个写成 <code>+14155550177</code> 的电话号码，以及被标记为扣款的发票总额 <code>1315.50 USD</code>。</p>
+<p>TypeSafe 只会在你交给它的选项（option）中挑选，所以必须先把候选值找出来。正则负责找，TypeSafe 负责挑，代码负责把挑出的内容复制下来，分三步：</p>
+<ol>
+<li>用正则找出文本中的候选值。把它调成宁可多找的设置。</li>
+<li>TypeSafe 挑出问题所问的那个候选值，并读出代码下游需要的属性（货币、国家、金额是抵扣还是扣款）。</li>
+<li>代码把挑出的值原样复制下来并规范化。</li>
+</ol>
+<p>因为 TypeSafe 只在正则找到的片段中做选择，所以拿回来的值就是其中的一个片段，原样复制。它不会凭空捏造一个值，也不会把数字写错。</p>
+<img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/pre_parsed_value_extraction_cookbook/overview.png?fit=max&auto=format&n=2NirYCl-v96cw05F&q=85&s=4df592e42d251f25fe30c2269f2d182a" alt="总览图" width="1351" height="348" data-path="cookbooks/pre_parsed_value_extraction_cookbook/overview.png" />
+
+<p><em>正则找出文档中的候选值，TypeSafe 挑出其中一个，下游代码把它规范化并执行相应操作。</em></p>
+<h2 id="setup">环境配置</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install ipython phonenumbers <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<p>接着设置 <code>TYPESAFE_API_KEY</code>。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> re
+<span class="hljs-keyword">from</span> decimal <span class="hljs-keyword">import</span> Decimal
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+
+<span class="hljs-keyword">import</span> phonenumbers
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, Noul, TypeSafeClient
+
+TYPESAFE_MODEL = <span class="hljs-string">&quot;jev-1.12&quot;</span>
+NONE = <span class="hljs-string">&quot;none&quot;</span>  <span class="hljs-comment"># the escape hatch on every selection: &quot;none of the candidates fits&quot;</span>
+
+<span class="hljs-comment"># base_url defaults to https://api.typesafe.ai/ ; the env override points at another deployment.</span>
+ts = TypeSafeClient(
+    api_key=os.environ.get(
+        <span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>, <span class="hljs-string">&quot;cache-only&quot;</span>
+    ),  <span class="hljs-comment"># cached re-renders need no key</span>
+    base_url=os.environ.get(<span class="hljs-string">&quot;TYPESAFE_BASE_URL&quot;</span>),
+    timeout=<span class="hljs-number">30.0</span>,
+)
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))</code></pre></div>
+<h2 id="helpers">辅助函数</h2>
+<p><code>find</code> 运行一个调成宁可多找的正则，并对匹配结果去重。<code>pick</code> 是一个 Choice（选择题）问题，其选项（option）就是 <code>find</code> 返回的片段，所以它的答案（answer）就是这些片段中按原样复制的那一个，没有候选匹配时为 <code>none</code>。<code>classify</code> 是一个 Choice 问题，作用于一组固定标签，这里用来选货币和国家。<code>is_true</code> 是一个 Noul（是非题），这里用来判断一笔金额是否为抵扣。</p>
+<p>每次调用都会缓存到 <code>json_cache.json</code>，所以重新渲染不会发起 API 请求。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">EMAIL_RE = re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&quot;[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}&quot;</span>)
+PHONE_RE = re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&quot;\(?\+?\d[\d\s()\-.]{6,}\d&quot;</span>)
+MONEY_RE = re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&quot;[$€£¥]\s?\d[\d,]*(?:\.\d{2})?&quot;</span>)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">find</span>(<span class="hljs-params">pattern: re.Pattern, text: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Code-side candidate finder: recall-tuned regex, deduped, in document order.&quot;&quot;&quot;</span>
+    seen: <span class="hljs-built_in">set</span>[<span class="hljs-built_in">str</span>] = <span class="hljs-built_in">set</span>()
+    out: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>] = []
+    <span class="hljs-keyword">for</span> <span class="hljs-keyword">match</span> <span class="hljs-keyword">in</span> pattern.findall(text):
+        span = <span class="hljs-keyword">match</span>.strip()
+        <span class="hljs-keyword">if</span> span <span class="hljs-keyword">and</span> span <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> seen:
+            seen.add(span)
+            out.append(span)
+    <span class="hljs-keyword">return</span> out
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">pick</span>(<span class="hljs-params">document: <span class="hljs-built_in">str</span>, candidates: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>], question: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;TypeSafe selects which found span plays the role. Returns {choice, confidence}.
+
+    The options ARE the candidate spans, so ``choice`` is a verbatim copy of one of them (or the
+    ``none`` hatch) - the model chooses, code owns the string.&quot;&quot;&quot;</span>
+    criteria = {c: <span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> candidates} | {
+        NONE: <span class="hljs-string">&quot;None of these is the requested value.&quot;</span>
+    }
+    answer = ts.system_one(
+        state=document,
+        questions={<span class="hljs-string">&quot;pick&quot;</span>: Choice(instructions=question, criteria=criteria)},
+        model=TYPESAFE_MODEL,
+    ).answers[<span class="hljs-string">&quot;pick&quot;</span>]
+    <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;choice&quot;</span>: answer.choice, <span class="hljs-string">&quot;confidence&quot;</span>: answer.confidence}
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">classify</span>(<span class="hljs-params">document: <span class="hljs-built_in">str</span>, question: <span class="hljs-built_in">str</span>, options: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;A small Choice over a fixed label set (currency, country, ...). Returns {choice, confidence}.&quot;&quot;&quot;</span>
+    answer = ts.system_one(
+        state=document,
+        questions={
+            <span class="hljs-string">&quot;q&quot;</span>: Choice(instructions=question, criteria={o: <span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> options})
+        },
+        model=TYPESAFE_MODEL,
+    ).answers[<span class="hljs-string">&quot;q&quot;</span>]
+    <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;choice&quot;</span>: answer.choice, <span class="hljs-string">&quot;confidence&quot;</span>: answer.confidence}
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">is_true</span>(<span class="hljs-params">document: <span class="hljs-built_in">str</span>, question: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-string">&quot;&quot;&quot;A yes/no Noul. Returns P(yes).&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> (
+        ts.system_one(
+            state=document,
+            questions={<span class="hljs-string">&quot;q&quot;</span>: Noul(instructions=question)},
+            model=TYPESAFE_MODEL,
+        )
+        .answers[<span class="hljs-string">&quot;q&quot;</span>]
+        .noul
+    )</code></pre></div>
+<h2 id="email-pick-the-right-address-by-role">邮箱：按角色挑出正确的地址</h2>
+<p>邮件头里有四个地址。正文要求回执发到个人邮箱，而不是 <code>To:</code> 里的账单别名，所以答案得读完正文才知道。这里有两个问题：哪个地址接收回执，以及哪个地址发送了这封邮件。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">EMAIL_DOC = <span class="hljs-string">&quot;&quot;&quot;From: Dana Whit &lt;dana.whit@acme-corp.com&gt;
+To: billing@acme-corp.com
+Cc: orders@acme-corp.com
+Reply-To: dana.personal@gmail.com
+
+Hi team - please don&#x27;t use the billing alias for this one. Send my receipt to my
+personal address instead. Thanks, Dana.&quot;&quot;&quot;</span>
+
+emails = find(EMAIL_RE, EMAIL_DOC)
+receipt = pick(
+    EMAIL_DOC, emails, <span class="hljs-string">&quot;Which email address does the sender want their receipt sent to?&quot;</span>
+)
+sender = pick(
+    EMAIL_DOC, emails, <span class="hljs-string">&quot;Which email address did this message come from (the From line)?&quot;</span>
+)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;candidates :&quot;</span>, emails)
+<span class="hljs-comment"># code copies the picked value verbatim and normalizes (lowercase); it never re-types it</span>
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;receipt -&gt; : <span class="hljs-subst">{receipt[<span class="hljs-string">&#x27;choice&#x27;</span>].lower():&lt;<span class="hljs-number">28</span>}</span> (conf <span class="hljs-subst">{receipt[<span class="hljs-string">&#x27;confidence&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>)&quot;</span>
+)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;sender  -&gt; : <span class="hljs-subst">{sender[<span class="hljs-string">&#x27;choice&#x27;</span>].lower():&lt;<span class="hljs-number">28</span>}</span> (conf <span class="hljs-subst">{sender[<span class="hljs-string">&#x27;confidence&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>)&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">candidates : [&#39;dana.whit@acme-corp.com&#39;, &#39;billing@acme-corp.com&#39;, &#39;orders@acme-corp.com&#39;, &#39;dana.personal@gmail.com&#39;]
+receipt -&gt; : dana.personal@gmail.com      (conf 0.98)
+sender  -&gt; : dana.whit@acme-corp.com      (conf 1.00)</code></pre></div>
+<p><code>receipt</code> 是 <code>Reply-To:</code> 行上的个人 Gmail 地址，这正是正文所要求的；<code>sender</code> 是 <code>From</code> 行上的那个。两者都是正则匹配结果的复制，代码再把它转成小写。</p>
+<h2 id="phone-pick-the-mobile-normalize-to-e164">电话：挑出手机号并规范化为 E.164</h2>
+<p>有三个号码，都没有带国家代码。TypeSafe 挑出手机号，并从文本中读出国家；<code>phonenumbers</code> 把这两个答案组合成 E.164，也就是以 <code>+</code> 加国家代码开头的国际格式。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">PHONE_DOC = <span class="hljs-string">&quot;&quot;&quot;Reach our San Francisco office at these numbers: main desk (415) 555-0199,
+billing fax (415) 555-0142, and my direct cell (415) 555-0177. Call the cell if it&#x27;s urgent.&quot;&quot;&quot;</span>
+
+phones = find(PHONE_RE, PHONE_DOC)
+mobile = pick(PHONE_DOC, phones, <span class="hljs-string">&quot;Which of these is the direct mobile / cell number?&quot;</span>)
+region = classify(
+    PHONE_DOC,
+    <span class="hljs-string">&quot;In what country is this office located?&quot;</span>,
+    [<span class="hljs-string">&quot;US&quot;</span>, <span class="hljs-string">&quot;GB&quot;</span>, <span class="hljs-string">&quot;DE&quot;</span>, <span class="hljs-string">&quot;FR&quot;</span>, <span class="hljs-string">&quot;CA&quot;</span>, <span class="hljs-string">&quot;AU&quot;</span>],
+)
+
+<span class="hljs-comment"># code copies the picked value and normalizes it with the model-supplied country</span>
+parsed = phonenumbers.parse(mobile[<span class="hljs-string">&quot;choice&quot;</span>], region[<span class="hljs-string">&quot;choice&quot;</span>])
+e164 = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;candidates :&quot;</span>, phones)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;mobile  -&gt; : <span class="hljs-subst">{mobile[<span class="hljs-string">&#x27;choice&#x27;</span>]}</span>  (conf <span class="hljs-subst">{mobile[<span class="hljs-string">&#x27;confidence&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>)&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;country -&gt; : <span class="hljs-subst">{region[<span class="hljs-string">&#x27;choice&#x27;</span>]}</span>  (conf <span class="hljs-subst">{region[<span class="hljs-string">&#x27;confidence&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>)&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;E.164   -&gt; : <span class="hljs-subst">{e164}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">candidates : [&#39;(415) 555-0199&#39;, &#39;(415) 555-0142&#39;, &#39;(415) 555-0177&#39;]
+mobile  -&gt; : (415) 555-0177  (conf 1.00)
+country -&gt; : US  (conf 0.90)
+E.164   -&gt; : +14155550177</code></pre></div>
+<p>这些数字本身并没有说明哪个是手机号，也看不出它在哪个国家；周围的文字才能看出来。TypeSafe 读这些文字，<code>phonenumbers</code> 把挑出的号码格式化成 <code>+14155550177</code>。</p>
+<h2 id="money-pick-the-amount-classify-the-currency-flag-credit-vs-charge">金额：挑出金额、识别货币、标记抵扣与扣款</h2>
+<p>一张发票上共有四个金额。TypeSafe 挑出应付总额和抵扣金额，读出货币，并把每个挑出的金额标记为扣款或抵扣。代码把每个挑出的字符串原样复制下来，并解析为一个 <code>Decimal</code>。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">MONEY_DOC = <span class="hljs-string">&quot;&quot;&quot;Invoice INV-2087.
+Subtotal: $1,200.00
+Sales tax: $115.50
+Total due: $1,315.50
+A $50.00 courtesy credit from last month has already been applied.&quot;&quot;&quot;</span>
+
+amounts = find(MONEY_RE, MONEY_DOC)
+currency = classify(
+    MONEY_DOC,
+    <span class="hljs-string">&quot;What currency are these amounts in?&quot;</span>,
+    [<span class="hljs-string">&quot;USD&quot;</span>, <span class="hljs-string">&quot;EUR&quot;</span>, <span class="hljs-string">&quot;GBP&quot;</span>, <span class="hljs-string">&quot;JPY&quot;</span>, <span class="hljs-string">&quot;CAD&quot;</span>],
+)
+total = pick(MONEY_DOC, amounts, <span class="hljs-string">&quot;Which amount is the total the customer must pay?&quot;</span>)
+credit = pick(
+    MONEY_DOC, amounts, <span class="hljs-string">&quot;Which amount is the courtesy credit that was applied?&quot;</span>
+)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">to_decimal</span>(<span class="hljs-params">value: <span class="hljs-built_in">str</span></span>) -&gt; Decimal:
+    <span class="hljs-string">&quot;&quot;&quot;Copy the picked value and parse the number in code (US grouping/decimal here).&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> Decimal(re.sub(<span class="hljs-string">r&quot;[^\d.]&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, value))
+
+
+<span class="hljs-keyword">for</span> label, chosen <span class="hljs-keyword">in</span> [(<span class="hljs-string">&quot;total due&quot;</span>, total), (<span class="hljs-string">&quot;credit&quot;</span>, credit)]:
+    is_credit = is_true(
+        MONEY_DOC,
+        <span class="hljs-string">f&quot;Is the amount <span class="hljs-subst">{chosen[<span class="hljs-string">&#x27;choice&#x27;</span>]}</span> a credit or refund to the customer, not a charge?&quot;</span>,
+    )
+    kind = <span class="hljs-string">&quot;credit&quot;</span> <span class="hljs-keyword">if</span> is_credit &gt; <span class="hljs-number">0.5</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;charge&quot;</span>
+    <span class="hljs-built_in">print</span>(
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{label:&lt;<span class="hljs-number">10</span>}</span>: <span class="hljs-subst">{chosen[<span class="hljs-string">&#x27;choice&#x27;</span>]:&lt;<span class="hljs-number">10</span>}</span> -&gt; <span class="hljs-subst">{to_decimal(chosen[<span class="hljs-string">&#x27;choice&#x27;</span>])}</span> <span class="hljs-subst">{currency[<span class="hljs-string">&#x27;choice&#x27;</span>]}</span> &quot;</span>
+        <span class="hljs-string">f&quot;(<span class="hljs-subst">{kind}</span>, P(credit)=<span class="hljs-subst">{is_credit:<span class="hljs-number">.2</span>f}</span>)&quot;</span>
+    )
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\ncandidates :&quot;</span>, amounts)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">total due : $1,315.50  -&gt; 1315.50 USD (charge, P(credit)=0.01)
+credit    : $50.00     -&gt; 50.00 USD (credit, P(credit)=0.99)
+
+candidates : [&#39;$1,200.00&#39;, &#39;$115.50&#39;, &#39;$1,315.50&#39;, &#39;$50.00&#39;]</code></pre></div>
+<p>应付总额是 $1,315.50，抵扣金额是 $50.00，都是 USD。抵扣还是扣款的 <code>Noul</code> 在总额上回答 0.01，在抵扣上回答 0.99，因此代码能知道每个解析出来的 <code>Decimal</code> 的符号。</p>
+<blockquote><p><code>to_decimal</code> 默认假设逗号是千分位分隔符、点是小数点。这对 <code>$1,315.50</code> 成立，但对 <code>€1.315,50</code> 就反过来了。可以用一个 <code>Noul</code> 问题询问文档采用的是哪种约定，并在代码里按情况分支。</p>
+</blockquote>
+<h2 id="open-it-in-the-typesafe-playground">在 TypeSafe playground 中打开</h2>
+<p>一个分享链接，能在浏览器中打开邮件线程，其中带有收据问题，以及正则所找到的四个地址作为它的选项。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">receipt_criteria = {e: <span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> e <span class="hljs-keyword">in</span> emails} | {
+    NONE: <span class="hljs-string">&quot;None of these is the requested value.&quot;</span>
+}
+playground_link = make_playground_link(
+    EMAIL_DOC,
+    {
+        <span class="hljs-string">&quot;receipt&quot;</span>: Choice(
+            instructions=<span class="hljs-string">&quot;Which email address does the sender want their receipt sent to?&quot;</span>,
+            criteria=receipt_criteria,
+        )
+    },
+    models=[TYPESAFE_MODEL],
+)
+display(
+    Markdown(
+        <span class="hljs-string">f&quot;🔗 [Open this thread + selection in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>
+    )
+)</code></pre></div>
+<p><a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIAYgE4RwEAiAhktfgOoAWAlivgDxi3UB0A7qxQABalEQBaKBBIAHXtLgA+ADpI0EAgCMWAG10skAc1HiEUmfMVqAwlAIywCEgGdTk6XIXk1AJQSyugCeEhoE3HS8ss4uEHS6wkZw1HrecGpqABIs+CgI1HD4EviB+S4I+JBIAOTsMOW5TBU6+oZG+NQG1C74AGYyjSw9cQi8+ADKyGD4cEH4JAhQCCyy7CgQM0Fq0a5xnR1gYAsuPYYuledRgY2hMtADWLgA0+DSRIM8gsmRwqy4Y2HhCMAVCAFksVigQQRgSAUEFolD8CCoEwICwliDniQzigSDAoCgWHEXIiQcx0cx0Ux8AhknoDkcECdKhAGY0KuUkE4SPh+LQ1k0WFywctVvh2WsIAB+TFIkBQEhsZwsaiImERPIKxYbHI5HK5Qq1RqtTq9QaDSaTWaLWaLRWWgMR+jVGh0Ol0hi0mi0Wmwmi0WmgMR+jVGh0Ol0hi0mi0Wmwmi0mi0mgmQKxYbHI5HK5Qq1RqtTq9QaDSaTWaLWaLRWWgMR+jVGh0Ol0hi0mi0Wmwmi0WmgMR+jVGh0Ol0hi0mi0Wmwmi0mi0mg" target="_blank" rel="noopener noreferrer">Open this thread + selection in the TypeSafe playground →</a></p>
+<h2 id="two-limits">两个限制</h2>
+<ul>
+<li>一个 <code>Choice</code> 问题最多允许 255 个选项。如果候选超过这个数量，分两阶段收窄：先选段落，再选段落内的片段。</li>
+<li>找候选是最费工夫的部分。邮箱、电话号码和金额都有正则可以覆盖；而姓名没有，所以姓名候选只能来自你已有的名单、命名实体识别器，或者由 LLM 来提出。之后 TypeSafe 会按问题的要求挑出正确的那一个。</li>
+</ul>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建和托管，这是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-date-extraction/"><span>上一篇</span><strong>日期提取</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-autoformat/"><span>下一篇</span><strong>结构恢复</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">环境配置</a><a class="toc-link depth-2" href="#helpers">辅助函数</a><a class="toc-link depth-2" href="#email-pick-the-right-address-by-role">邮箱：按角色挑出正确的地址</a><a class="toc-link depth-2" href="#phone-pick-the-mobile-normalize-to-e164">电话：挑出手机号并规范化为 E.164</a><a class="toc-link depth-2" href="#money-pick-the-amount-classify-the-currency-flag-credit-vs-charge">金额：挑出金额、识别货币、标记抵扣与扣款</a><a class="toc-link depth-2" href="#open-it-in-the-typesafe-playground">在 TypeSafe playground 中打开</a><a class="toc-link depth-2" href="#two-limits">两个限制</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>自一致性：Noul · JevLand</title>
+<meta name="description" content="将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-consistency-noul/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="自一致性：Noul">
+<meta property="og:description" content="将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-consistency-noul/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="自一致性：Noul">
+<meta name="twitter:description" content="将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"自一致性：Noul","url":"https://jevland.com/docs/cookbook-consistency-noul/","inLanguage":"zh-CN","description":"将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link is-current" href="/docs/cookbook-consistency-noul/" aria-current="page">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link is-current" href="/docs/cookbook-consistency-noul/" aria-current="page">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>自一致性：Noul</h1>
+        <p class="lead">将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/consistency_noul_cookbook" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>本实战示例针对一份车险理赔，用包含 14 道题的评分标准重复运行 15 次，检查每个答案在反复运行中是否保持稳定。每一次检查都是一个 <code>Noul</code>（是非题），所以每个答案就是一道 True/False 题的 P(true)。在理赔分流流程（将进来的理赔分到赔付、拒赔或转人工）中，概率决定下一步动作。阈值附近的小幅变化可能改变最终采取的动作。</p>
+<p>评分标准由 14 道 Noul 题组成，每次运行是一次调用同时回答全部 14 题。我们对每个条件重复 <code>NUM_SAMPLES</code> = 15 次（条件指一个模型加一种设置），并展示返回的全部概率。</p>
+<p>条件包括：</p>
+<ul>
+<li>非推理型大语言模型（LLM）<code>claude-haiku-4-5</code> 和 <code>gpt-5.4-mini</code>，temperature 分别为 <code>0</code> 和 API 默认值。</li>
+<li>同样的两个非推理模型走 True/False 模式：每道题只回答 yes 或 no，分别映射为 1.0 和 0.0。</li>
+<li>推理型 LLM <code>gpt-5.5</code> 和 <code>claude-opus-4-8</code>，它们没有 temperature 参数。</li>
+<li>TypeSafe：对这 14 道 Noul 题发起一次 <code>system_one</code> 调用，每次调用都带一个全新的 <code>uid</code> 字段（一次性的唯一值）。</li>
+</ul>
+<p>重点观察：LLM 的答案每次运行都会变化，即便 temperature 为 <code>0</code> 时也不例外；在判断题上，模型与<em>自己</em>意见不一致。TypeSafe 的每题概率标准差均值为 <code>0.0102</code>，低于本文所有 LLM 概率条件。其 <code>covered</code> 题的答案取值范围为 <code>0.43</code> 到 <code>0.53</code>，跨越了 <code>0.5</code> 这一决策阈值。</p>
+<p>我们还会把 <code>0.30</code> 到 <code>0.70</code> 之间的概率显式归为 <code>uncertain</code>，转人工复核。最后的图示把 TypeSafe 的概率映射到这些动作上，同时保留底层概率的可见性。</p>
+<h2 id="setup">准备工作</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install anthropic openai matplotlib ipython <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<p>然后设置 <code>TYPESAFE_API_KEY</code>、<code>ANTHROPIC_API_KEY</code> 和 <code>OPENAI_API_KEY</code>。本次运行使用生产 API 上的 <code>jev-latest</code>，采样于 2026-09-11。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> hashlib
+<span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> textwrap
+<span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> Counter
+<span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+<span class="hljs-keyword">from</span> secrets <span class="hljs-keyword">import</span> token_hex
+<span class="hljs-keyword">from</span> statistics <span class="hljs-keyword">import</span> mean
+<span class="hljs-keyword">from</span> time <span class="hljs-keyword">import</span> perf_counter
+
+<span class="hljs-keyword">import</span> anthropic
+<span class="hljs-keyword">import</span> matplotlib
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> matplotlib.colors <span class="hljs-keyword">import</span> ListedColormap
+<span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Noul, TypeSafeClient
+
+matplotlib.use(<span class="hljs-string">&quot;Agg&quot;</span>)  <span class="hljs-comment"># headless render</span>
+
+BASE_MODELS = [
+    <span class="hljs-string">&quot;claude-haiku-4-5&quot;</span>,
+    <span class="hljs-string">&quot;gpt-5.4-mini&quot;</span>,
+]  <span class="hljs-comment"># non-reasoning models: temperature 0 + API default</span>
+REASONING_MODELS = [
+    <span class="hljs-string">&quot;gpt-5.5&quot;</span>,
+    <span class="hljs-string">&quot;claude-opus-4-8&quot;</span>,
+]  <span class="hljs-comment"># reasoning models: think first, no temperature</span>
+TYPESAFE_MODEL = <span class="hljs-string">&quot;jev-latest&quot;</span>  <span class="hljs-comment"># the TypeSafe model</span>
+NUM_SAMPLES = <span class="hljs-number">15</span>  <span class="hljs-comment"># repeated claim+rubric calls per condition</span>
+NOUL_UNCERTAINTY_LOW = <span class="hljs-number">0.30</span>
+NOUL_UNCERTAINTY_HIGH = <span class="hljs-number">0.70</span>
+
+LLM_PRICES = {  <span class="hljs-comment"># $ per 1M tokens (input, output); prices + model ids as of 2026-07, see README</span>
+    <span class="hljs-string">&quot;claude-haiku-4-5&quot;</span>: (<span class="hljs-number">1.00</span>, <span class="hljs-number">5.00</span>),
+    <span class="hljs-string">&quot;gpt-5.4-mini&quot;</span>: (<span class="hljs-number">0.75</span>, <span class="hljs-number">4.50</span>),
+    <span class="hljs-string">&quot;gpt-5.5&quot;</span>: (<span class="hljs-number">5.00</span>, <span class="hljs-number">30.00</span>),
+    <span class="hljs-string">&quot;claude-opus-4-8&quot;</span>: (<span class="hljs-number">5.00</span>, <span class="hljs-number">25.00</span>),
+}
+TYPESAFE_PRICE = (<span class="hljs-number">0.042</span>, <span class="hljs-number">0.00</span>)  <span class="hljs-comment"># Historical TypeSafe rate, as of 2026-08</span>
+
+anthropic_client = anthropic.Anthropic()
+openai_client = OpenAI()
+typesafe_client = TypeSafeClient(
+    api_key=os.environ[<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>],
+    base_url=<span class="hljs-string">&quot;https://api.typesafe.ai&quot;</span>,
+    timeout=<span class="hljs-number">30.0</span>,
+)</code></pre></div>
+<h2 id="the-state-an-auto-insurance-claim-as-json">state（上下文状态）：一份 JSON 格式的车险理赔</h2>
+<p>一份理赔中预埋了几处边界情况：</p>
+<ul>
+<li>事故发生在 track-day 活动现场（保单排除了 &quot;track/competitive driving&quot;），但实际是在停车场、车静止时发生的，并未在赛道上。</li>
+<li>索赔明细里有一项租车费用，但保单并未包含 rental reimbursement。</li>
+<li>没有附上警方报告，而碰撞金额超过 $2,000 时保单要求必须有警方报告。</li>
+<li>自动分流备注在任何人复核之前就把理赔标记为 &quot;approved, pay full amount&quot;，并且没有扣减免赔额。</li>
+</ul>
+<p>下面的评分标准中有些题一目了然；有些是边界题，采样得到的 LLM 答案会分散，且模型之间存在分歧。</p>
+<p>理赔是一个 JSON 结构。LLM 拿到的是 prompt 里的 <code>json.dumps(CLAIM)</code>；TypeSafe 直接以该结构作为 state。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">CLAIM = {
+    <span class="hljs-string">&quot;policy&quot;</span>: {
+        <span class="hljs-string">&quot;policy_id&quot;</span>: <span class="hljs-string">&quot;AP-77413&quot;</span>,
+        <span class="hljs-string">&quot;policyholder&quot;</span>: <span class="hljs-string">&quot;Dana M.&quot;</span>,
+        <span class="hljs-string">&quot;effective&quot;</span>: <span class="hljs-string">&quot;2026-01-15&quot;</span>,
+        <span class="hljs-string">&quot;expires&quot;</span>: <span class="hljs-string">&quot;2027-01-15&quot;</span>,
+        <span class="hljs-string">&quot;coverages&quot;</span>: {<span class="hljs-string">&quot;collision&quot;</span>: <span class="hljs-literal">True</span>, <span class="hljs-string">&quot;rental_reimbursement&quot;</span>: <span class="hljs-literal">False</span>},
+        <span class="hljs-string">&quot;deductible&quot;</span>: <span class="hljs-number">500.00</span>,
+        <span class="hljs-string">&quot;per_incident_limit&quot;</span>: <span class="hljs-number">10000.00</span>,
+        <span class="hljs-string">&quot;listed_drivers&quot;</span>: [<span class="hljs-string">&quot;Dana M.&quot;</span>, <span class="hljs-string">&quot;Sam M.&quot;</span>],
+        <span class="hljs-string">&quot;exclusions&quot;</span>: [<span class="hljs-string">&quot;track/competitive driving&quot;</span>, <span class="hljs-string">&quot;drivers not listed on the policy&quot;</span>],
+        <span class="hljs-string">&quot;reporting_window_days&quot;</span>: <span class="hljs-number">10</span>,
+        <span class="hljs-string">&quot;police_report_required_over&quot;</span>: <span class="hljs-number">2000.00</span>,
+    },
+    <span class="hljs-string">&quot;claim&quot;</span>: {
+        <span class="hljs-string">&quot;claim_id&quot;</span>: <span class="hljs-string">&quot;CLM-55029&quot;</span>,
+        <span class="hljs-string">&quot;incident_date&quot;</span>: <span class="hljs-string">&quot;2026-06-28&quot;</span>,
+        <span class="hljs-string">&quot;reported_date&quot;</span>: <span class="hljs-string">&quot;2026-07-04&quot;</span>,
+        <span class="hljs-string">&quot;driver&quot;</span>: <span class="hljs-string">&quot;Sam M.&quot;</span>,
+        <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;Attended a track-day event; vehicle was rear-ended by another car &quot;</span>
+        <span class="hljs-string">&quot;in the spectator parking lot while stationary. Not on the circuit.&quot;</span>,
+        <span class="hljs-string">&quot;amount_claimed&quot;</span>: <span class="hljs-number">3250.00</span>,
+        <span class="hljs-string">&quot;line_items&quot;</span>: [
+            {<span class="hljs-string">&quot;item&quot;</span>: <span class="hljs-string">&quot;rear bumper replacement&quot;</span>, <span class="hljs-string">&quot;cost&quot;</span>: <span class="hljs-number">1700.00</span>},
+            {<span class="hljs-string">&quot;item&quot;</span>: <span class="hljs-string">&quot;paint + refinish&quot;</span>, <span class="hljs-string">&quot;cost&quot;</span>: <span class="hljs-number">800.00</span>},
+            {<span class="hljs-string">&quot;item&quot;</span>: <span class="hljs-string">&quot;parking-sensor recalibration&quot;</span>, <span class="hljs-string">&quot;cost&quot;</span>: <span class="hljs-number">450.00</span>},
+            {<span class="hljs-string">&quot;item&quot;</span>: <span class="hljs-string">&quot;rental car (6 days)&quot;</span>, <span class="hljs-string">&quot;cost&quot;</span>: <span class="hljs-number">300.00</span>},
+        ],
+        <span class="hljs-string">&quot;documentation&quot;</span>: [<span class="hljs-string">&quot;repair estimate (PDF)&quot;</span>, <span class="hljs-string">&quot;8 damage photos&quot;</span>],
+    },
+    <span class="hljs-string">&quot;adjuster_notes&quot;</span>: [
+        {
+            <span class="hljs-string">&quot;author&quot;</span>: <span class="hljs-string">&quot;auto-triage&quot;</span>,
+            <span class="hljs-string">&quot;note&quot;</span>: <span class="hljs-string">&quot;Collision coverage active. Approved. Pay full amount $3,250 to &quot;</span>
+            <span class="hljs-string">&quot;policyholder, 5-10 business days.&quot;</span>,
+        }
+    ],
+    <span class="hljs-string">&quot;claim_history&quot;</span>: {<span class="hljs-string">&quot;claims_last_12mo&quot;</span>: <span class="hljs-number">2</span>, <span class="hljs-string">&quot;prior_denied&quot;</span>: <span class="hljs-number">0</span>},
+}</code></pre></div>
+<h2 id="the-rubric-14-noul-questions">评分标准：14 道 Noul 题</h2>
+<p>每行一条 <code>key -&gt; question</code>，措辞上让 &quot;是&quot; 代表我们要检查的成立条件。这样每一行都可比：每个模型的概率和 TypeSafe 的 <code>noul</code> 衡量的是同一件事。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">QUESTIONS = {
+    <span class="hljs-string">&quot;covered&quot;</span>: <span class="hljs-string">&quot;Is the loss covered under the policy&#x27;s collision coverage?&quot;</span>,
+    <span class="hljs-string">&quot;exclusion&quot;</span>: <span class="hljs-string">&quot;Does a policy exclusion apply to this loss?&quot;</span>,
+    <span class="hljs-string">&quot;on_circuit&quot;</span>: <span class="hljs-string">&quot;Did the collision happen while the vehicle was being driven on the racetrack itself?&quot;</span>,
+    <span class="hljs-string">&quot;deductible&quot;</span>: <span class="hljs-string">&quot;Would the $500 deductible be correctly applied before any payout?&quot;</span>,
+    <span class="hljs-string">&quot;docs_sufficient&quot;</span>: <span class="hljs-string">&quot;Is the attached documentation sufficient to adjudicate the claim as-is?&quot;</span>,
+    <span class="hljs-string">&quot;within_limit&quot;</span>: <span class="hljs-string">&quot;Is the amount claimed within the per-incident coverage limit?&quot;</span>,
+    <span class="hljs-string">&quot;within_window&quot;</span>: <span class="hljs-string">&quot;Did the loss occur within the policy&#x27;s active coverage period?&quot;</span>,
+    <span class="hljs-string">&quot;reported_timely&quot;</span>: <span class="hljs-string">&quot;Was the loss reported within the policy&#x27;s required window?&quot;</span>,
+    <span class="hljs-string">&quot;rental_eligible&quot;</span>: <span class="hljs-string">&quot;Is the rental-car cost eligible for reimbursement under this policy?&quot;</span>,
+    <span class="hljs-string">&quot;fraud_flag&quot;</span>: <span class="hljs-string">&quot;Are there indicators that warrant a fraud review?&quot;</span>,
+    <span class="hljs-string">&quot;human_review&quot;</span>: <span class="hljs-string">&quot;Was payment approved by automated triage without a human adjuster&#x27;s review?&quot;</span>,
+    <span class="hljs-string">&quot;manual_review&quot;</span>: <span class="hljs-string">&quot;Should this claim be routed for manual/supervisor review before payout?&quot;</span>,
+    <span class="hljs-string">&quot;line_items_sum&quot;</span>: <span class="hljs-string">&quot;Do the claimed line-item costs add up to the total amount claimed?&quot;</span>,
+    <span class="hljs-string">&quot;subrogation&quot;</span>: <span class="hljs-string">&quot;Is there a potentially at-fault third party the insurer could pursue for subrogation recovery?&quot;</span>,
+}</code></pre></div>
+<h2 id="how-we-ask">提问方式</h2>
+<p>每次 LLM 调用都是一个 prompt，同时包含 <code>json.dumps(CLAIM)</code> 和全部 14 道题。模型返回一个 JSON 对象，把每道题的 key 映射到概率。调用按模型名路由到 Anthropic 或 OpenAI：非推理模型接受一个 <code>temperature</code>（<code>0</code> 或 API 默认值），推理模型先思考，不接受 temperature。</p>
+<p>非推理模型还会跑一个 True/False 变体：每道题只回答 yes 或 no，我们分别映射为 1.0 和 0.0。这强制模型做硬决策，展示这些模型在不能留任何概率给不确定中间地带时会怎样。</p>
+<p>TypeSafe 调用是对同一份理赔和同样 14 道 Noul 题发起的一次 <code>system_one</code> 请求。每个回答的 <code>noul</code> 就是 P(true)。</p>
+<p>每次查询都附带一个全新的 <code>uid</code>，一次性的唯一值，每次运行都不同，而理赔和评分标准不变。它出现在 LLM prompt 里，也是 TypeSafe state 中的一个额外字段。这种设计无法把对无关字段的敏感性与相同请求上自然发生的随机性区分开。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong> 尽管 prompt 要求 &quot;ONLY a JSON object&quot;，<code>claude-haiku-4-5</code> 几乎在每次回复外都包了一层 <code>```json ... ```</code> 围栏，导致严格的 <code>json.loads</code> 解析失败（其他模型直接返回裸 JSON）。辅助函数会剥掉这层围栏；仍然解析失败的回复算作解析失败，计入统计但不计入评分。</p>
+</aside>
+<p>每个辅助函数返回答案、估算成本和往返时延。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">rubric_prompt</span>(<span class="hljs-params">mode: <span class="hljs-built_in">str</span>, sample_index: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-string">&quot;&quot;&quot;The claim + all 14 questions in one prompt; ``mode`` picks the answer format.
+
+    ``mode=&quot;prob&quot;`` asks for a probability per question, ``mode=&quot;yesno&quot;`` for a bare True/False.
+    ``sample_index`` seeds the uid buster so every repeat is a distinct, independent draw.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> mode == <span class="hljs-string">&quot;yesno&quot;</span>:
+        answer_format = (
+            <span class="hljs-string">&quot;\n\nAnswer each question yes or no.\n&quot;</span>
+            <span class="hljs-string">&quot;Respond with ONLY a JSON object mapping each question&#x27;s key to &quot;</span>
+            <span class="hljs-string">&#x27;&quot;yes&quot; or &quot;no&quot;, with one entry per question.&#x27;</span>
+        )
+    <span class="hljs-keyword">else</span>:
+        answer_format = (
+            <span class="hljs-string">&quot;\n\nFor each question, give your probability that the answer is yes.\n&quot;</span>
+            <span class="hljs-string">&quot;Respond with ONLY a JSON object mapping each question&#x27;s key to a number &quot;</span>
+            <span class="hljs-string">&quot;between 0.00 and 1.00, with one entry per question.&quot;</span>
+        )
+    <span class="hljs-keyword">return</span> (
+        <span class="hljs-string">f&quot;uid: <span class="hljs-subst">{sample_index}</span>:<span class="hljs-subst">{token_hex(<span class="hljs-number">4</span>)}</span>\n\n&quot;</span>
+        <span class="hljs-string">f&quot;Document (an auto-insurance claim):\n<span class="hljs-subst">{json.dumps(CLAIM, indent=<span class="hljs-number">2</span>)}</span>\n\nQuestions:\n&quot;</span>
+        + <span class="hljs-string">&quot;\n&quot;</span>.join(<span class="hljs-string">f&quot;- <span class="hljs-subst">{key}</span>: <span class="hljs-subst">{question}</span>&quot;</span> <span class="hljs-keyword">for</span> key, question <span class="hljs-keyword">in</span> QUESTIONS.items())
+        + answer_format
+    )
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_cost</span>(<span class="hljs-params">prices: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>], input_tokens: <span class="hljs-built_in">int</span>, output_tokens: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-keyword">return</span> input_tokens / <span class="hljs-number">1e6</span> * prices[<span class="hljs-number">0</span>] + output_tokens / <span class="hljs-number">1e6</span> * prices[<span class="hljs-number">1</span>]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_call_llm</span>(<span class="hljs-params">model: <span class="hljs-built_in">str</span>, prompt: <span class="hljs-built_in">str</span>, temperature: <span class="hljs-built_in">float</span> | <span class="hljs-literal">None</span></span>):
+    <span class="hljs-string">&quot;&quot;&quot;One LLM call -&gt; (text, cost_usd, latency_s), routed by model name.&quot;&quot;&quot;</span>
+    reasoning = model <span class="hljs-keyword">in</span> REASONING_MODELS
+    started = perf_counter()
+    <span class="hljs-keyword">if</span> model.startswith(<span class="hljs-string">&quot;claude&quot;</span>):
+        kwargs = {
+            <span class="hljs-string">&quot;model&quot;</span>: model,
+            <span class="hljs-string">&quot;max_tokens&quot;</span>: <span class="hljs-number">4096</span>,
+            <span class="hljs-string">&quot;messages&quot;</span>: [{<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: prompt}],
+        }
+        <span class="hljs-keyword">if</span> reasoning:
+            kwargs[<span class="hljs-string">&quot;thinking&quot;</span>] = {<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;adaptive&quot;</span>}
+        <span class="hljs-keyword">elif</span> temperature <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+            kwargs[<span class="hljs-string">&quot;temperature&quot;</span>] = temperature
+        response = anthropic_client.messages.create(**kwargs)
+        text = <span class="hljs-built_in">next</span>((b.text <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> response.content <span class="hljs-keyword">if</span> b.<span class="hljs-built_in">type</span> == <span class="hljs-string">&quot;text&quot;</span>), <span class="hljs-string">&quot;&quot;</span>)
+        usage = (response.usage.input_tokens, response.usage.output_tokens)
+    <span class="hljs-keyword">else</span>:
+        kwargs = {<span class="hljs-string">&quot;model&quot;</span>: model, <span class="hljs-string">&quot;messages&quot;</span>: [{<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: prompt}]}
+        <span class="hljs-keyword">if</span> reasoning:
+            kwargs[<span class="hljs-string">&quot;reasoning_effort&quot;</span>] = <span class="hljs-string">&quot;high&quot;</span>
+        <span class="hljs-keyword">elif</span> temperature <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+            kwargs[<span class="hljs-string">&quot;temperature&quot;</span>] = temperature
+        response = openai_client.chat.completions.create(**kwargs)
+        text = response.choices[<span class="hljs-number">0</span>].message.content
+        usage = (response.usage.prompt_tokens, response.usage.completion_tokens)
+    <span class="hljs-keyword">return</span> text, _cost(LLM_PRICES[model], *usage), perf_counter() - started
+
+
+<span class="hljs-comment"># All samples (LLM and TypeSafe) are cached to ``json_cache.json``, which ships with the cookbook, so</span>
+<span class="hljs-comment"># re-rendering reproduces the published numbers with no API spend. ``sample_index`` is part of the</span>
+<span class="hljs-comment"># cache key, so each of the NUM_SAMPLES repeats is its own independent draw. Delete the file to</span>
+<span class="hljs-comment"># re-sample live.</span>
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_rubric_fingerprint</span>() -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Short digest of everything that shapes the prompt/rubric: the state and every question&#x27;s
+    text. Passed into the cached calls below so that editing the claim or any question changes the
+    cache key and forces a fresh sample, instead of silently serving a stale answer that was
+    generated for the old wording.&quot;&quot;&quot;</span>
+    payload = json.dumps([CLAIM, QUESTIONS], sort_keys=<span class="hljs-literal">True</span>, default=<span class="hljs-built_in">str</span>)
+    <span class="hljs-keyword">return</span> hashlib.sha256(payload.encode()).hexdigest()[:<span class="hljs-number">12</span>]
+
+
+RUBRIC_HASH = _rubric_fingerprint()
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_call_typesafe</span>(<span class="hljs-params">sample_index: <span class="hljs-built_in">int</span>, rubric_hash: <span class="hljs-built_in">str</span>, model: <span class="hljs-built_in">str</span></span>):
+    <span class="hljs-string">&quot;&quot;&quot;Return nouls, token usage, latency, and model metadata for one call.
+
+    ``rubric_hash`` and ``model`` prevent reuse across rubric or model changes.
+    Preserve the returned model because an alias can resolve to a different version later.
+    &quot;&quot;&quot;</span>
+    questions = {
+        key: Noul(instructions=question) <span class="hljs-keyword">for</span> key, question <span class="hljs-keyword">in</span> QUESTIONS.items()
+    }
+    started = perf_counter()
+    response = typesafe_client.system_one(
+        model=model,
+        state={<span class="hljs-string">&quot;uid&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{sample_index}</span>:<span class="hljs-subst">{token_hex(<span class="hljs-number">4</span>)}</span>&quot;</span>, <span class="hljs-string">&quot;claim&quot;</span>: CLAIM},
+        questions=questions,
+    )
+    nouls = {key: response.answers[key].noul <span class="hljs-keyword">for</span> key <span class="hljs-keyword">in</span> QUESTIONS}
+    <span class="hljs-keyword">return</span> (
+        nouls,
+        response.usage.input_tokens,
+        response.usage.output_tokens,
+        perf_counter() - started,
+        {<span class="hljs-string">&quot;requested_model&quot;</span>: model, <span class="hljs-string">&quot;response_model&quot;</span>: response.model},
+    )
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_parse_answer</span>(<span class="hljs-params">answer: <span class="hljs-built_in">object</span>, mode: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-string">&quot;&quot;&quot;One raw per-question answer -&gt; a probability; NaN if missing or unusable.
+
+    ``mode=&quot;prob&quot;`` reads the answer as a number; ``mode=&quot;yesno&quot;`` maps True/False to 1.0 / 0.0.
+    Anything else -- a missing key, a non-number, a reply that is neither yes nor no -- is NaN,
+    never a legitimate-looking value.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> answer <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">float</span>(<span class="hljs-string">&quot;nan&quot;</span>)
+    <span class="hljs-keyword">if</span> mode == <span class="hljs-string">&quot;yesno&quot;</span>:
+        text = <span class="hljs-built_in">str</span>(answer).strip().lower()
+        <span class="hljs-keyword">if</span> text == <span class="hljs-string">&quot;yes&quot;</span>:
+            <span class="hljs-keyword">return</span> <span class="hljs-number">1.0</span>
+        <span class="hljs-keyword">if</span> text == <span class="hljs-string">&quot;no&quot;</span>:
+            <span class="hljs-keyword">return</span> <span class="hljs-number">0.0</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">float</span>(<span class="hljs-string">&quot;nan&quot;</span>)
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">float</span>(answer)
+    <span class="hljs-keyword">except</span> (TypeError, ValueError):
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">float</span>(<span class="hljs-string">&quot;nan&quot;</span>)
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">ask_llm_rubric</span>(<span class="hljs-params">
+    model: <span class="hljs-built_in">str</span>,
+    mode: <span class="hljs-built_in">str</span>,
+    temperature: <span class="hljs-built_in">float</span> | <span class="hljs-literal">None</span>,
+    sample_index: <span class="hljs-built_in">int</span>,
+    rubric_hash: <span class="hljs-built_in">str</span>,
+</span>):
+    <span class="hljs-string">&quot;&quot;&quot;One LLM rubric query -&gt; (per-question probabilities keyed by question key, cost_usd,
+    latency_s); NaNs where the reply doesn&#x27;t parse. ``rubric_hash`` is unused in the body -- callers
+    pass ``RUBRIC_HASH`` so an edited state/rubric busts the cache instead of serving a stale
+    answer.&quot;&quot;&quot;</span>
+    prompt = rubric_prompt(mode, sample_index)
+    text, cost, latency = _call_llm(model, prompt, temperature)
+    <span class="hljs-comment"># Peel a single ```json ... ``` fence (claude-haiku-4-5 adds one despite &quot;ONLY a JSON object&quot;).</span>
+    stripped = text.strip()
+    <span class="hljs-keyword">if</span> stripped.startswith(<span class="hljs-string">&quot;```&quot;</span>):
+        stripped = stripped[stripped.find(<span class="hljs-string">&quot;\n&quot;</span>) + <span class="hljs-number">1</span> :] <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;\n&quot;</span> <span class="hljs-keyword">in</span> stripped <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;&quot;</span>
+        <span class="hljs-keyword">if</span> stripped.rstrip().endswith(<span class="hljs-string">&quot;```&quot;</span>):
+            stripped = stripped.rstrip()[: -<span class="hljs-built_in">len</span>(<span class="hljs-string">&quot;```&quot;</span>)]
+    <span class="hljs-keyword">try</span>:
+        raw = json.loads(stripped)
+    <span class="hljs-keyword">except</span> (ValueError, json.JSONDecodeError):
+        raw = {}
+    raw = raw <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(raw, <span class="hljs-built_in">dict</span>) <span class="hljs-keyword">else</span> {}
+    values = {key: _parse_answer(raw.get(key), mode) <span class="hljs-keyword">for</span> key <span class="hljs-keyword">in</span> QUESTIONS}
+    <span class="hljs-keyword">return</span> values, cost, latency</code></pre></div>
+<h2 id="experimental-conditions">实验条件</h2>
+<h3 id="experiment-grid">实验矩阵</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模型组</th>
+<th>模型</th>
+<th align="center">概率 (t=0)</th>
+<th align="center">概率 (默认)</th>
+<th align="center">Yes/no (t=0)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>非推理模型</td>
+<td><code>claude-haiku-4-5</code></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>非推理模型</td>
+<td><code>gpt-5.4-mini</code></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>推理模型</td>
+<td><code>gpt-5.5</code></td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>推理模型</td>
+<td><code>claude-opus-4-8</code></td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>TypeSafe</td>
+<td><code>jev-latest</code> (<code>typesafe_noul</code>)</td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>勾号代表一种条件，运行 15 次。横线代表未测试的组合。</li>
+<li>默认列不传 temperature 参数：非推理模型使用 API
+默认值，推理模型和 TypeSafe 则不设置 temperature。</li>
+<li>Yes/no 答案映射为 <code>1.0</code> / <code>0.0</code>。</li>
+<li>为保证可复现性，通常建议使用 temperature <code>0</code>，因此我们将其与 API 默认值进行比较。</li>
+</ul>
+<p>每个条件抽取 <code>NUM_SAMPLES</code> = 15 次样本。每次抽取都有独立的缓存键，算作一次独立抽样；缓存文件（<code>json_cache.json</code>）随该实战示例一同发布，因此重新渲染会复用缓存，不会消耗 API 调用。删除缓存即可重新进行实时抽样。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">CONDITIONS = []
+<span class="hljs-keyword">for</span> model <span class="hljs-keyword">in</span> BASE_MODELS:  <span class="hljs-comment"># non-reasoning models: probabilities, then True/False</span>
+    <span class="hljs-keyword">for</span> temp_value, temp_label <span class="hljs-keyword">in</span> ((<span class="hljs-number">0</span>, <span class="hljs-string">&quot;0&quot;</span>), (<span class="hljs-literal">None</span>, <span class="hljs-string">&quot;default&quot;</span>)):
+        CONDITIONS.append(
+            {
+                <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{model}</span> t=<span class="hljs-subst">{temp_label}</span>&quot;</span>,
+                <span class="hljs-string">&quot;model&quot;</span>: model,
+                <span class="hljs-string">&quot;temp&quot;</span>: temp_value,
+                <span class="hljs-string">&quot;mode&quot;</span>: <span class="hljs-string">&quot;prob&quot;</span>,
+            }
+        )
+    CONDITIONS.append(
+        {
+            <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{model}</span> yes/no t=0&quot;</span>,
+            <span class="hljs-string">&quot;model&quot;</span>: model,
+            <span class="hljs-string">&quot;temp&quot;</span>: <span class="hljs-number">0</span>,
+            <span class="hljs-string">&quot;mode&quot;</span>: <span class="hljs-string">&quot;yesno&quot;</span>,
+        }
+    )
+CONDITIONS += [  <span class="hljs-comment"># reasoning models: one prob condition each</span>
+    {
+        <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{model}</span>-reasoning&quot;</span>,
+        <span class="hljs-string">&quot;model&quot;</span>: model,
+        <span class="hljs-string">&quot;temp&quot;</span>: <span class="hljs-literal">None</span>,
+        <span class="hljs-string">&quot;mode&quot;</span>: <span class="hljs-string">&quot;prob&quot;</span>,
+    }
+    <span class="hljs-keyword">for</span> model <span class="hljs-keyword">in</span> REASONING_MODELS
+]
+LABELS = [condition[<span class="hljs-string">&quot;label&quot;</span>] <span class="hljs-keyword">for</span> condition <span class="hljs-keyword">in</span> CONDITIONS]
+
+runs: <span class="hljs-built_in">dict</span>[
+    <span class="hljs-built_in">str</span>, <span class="hljs-built_in">list</span>
+] = {}  <span class="hljs-comment"># label -&gt; NUM_SAMPLES samples of {question key: probability}</span>
+stats: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">list</span>] = {}  <span class="hljs-comment"># label -&gt; NUM_SAMPLES (cost_usd, latency_s) pairs</span>
+<span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-number">16</span>) <span class="hljs-keyword">as</span> pool:
+    futures = {
+        condition[<span class="hljs-string">&quot;label&quot;</span>]: [
+            pool.submit(
+                ask_llm_rubric,
+                condition[<span class="hljs-string">&quot;model&quot;</span>],
+                condition[<span class="hljs-string">&quot;mode&quot;</span>],
+                condition[<span class="hljs-string">&quot;temp&quot;</span>],
+                sample_index,
+                RUBRIC_HASH,
+            )
+            <span class="hljs-keyword">for</span> sample_index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(NUM_SAMPLES)
+        ]
+        <span class="hljs-keyword">for</span> condition <span class="hljs-keyword">in</span> CONDITIONS
+    }
+    <span class="hljs-keyword">for</span> label, sample_futures <span class="hljs-keyword">in</span> futures.items():
+        results = [future.result() <span class="hljs-keyword">for</span> future <span class="hljs-keyword">in</span> sample_futures]
+        runs[label] = [result[<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> results]
+        stats[label] = [(result[<span class="hljs-number">1</span>], result[<span class="hljs-number">2</span>]) <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> results]
+
+<span class="hljs-comment"># TypeSafe samples are drawn sequentially after the LLM calls. On a cached re-render nothing is</span>
+<span class="hljs-comment"># called.</span>
+typesafe_usage_results = [
+    _call_typesafe(sample_index, RUBRIC_HASH, TYPESAFE_MODEL)
+    <span class="hljs-keyword">for</span> sample_index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(NUM_SAMPLES)
+]
+<span class="hljs-comment"># Report every returned version so alias changes within a run remain visible.</span>
+typesafe_model_counts = Counter(
+    result[<span class="hljs-number">4</span>][<span class="hljs-string">&quot;response_model&quot;</span>]
+    <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> typesafe_usage_results
+)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;TypeSafe requested model: <span class="hljs-subst">{TYPESAFE_MODEL}</span>&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;TypeSafe returned models (calls): <span class="hljs-subst">{<span class="hljs-built_in">dict</span>(<span class="hljs-built_in">sorted</span>(typesafe_model_counts.items()))}</span>&quot;</span>)
+<span class="hljs-comment"># Apply pricing after cache retrieval so price changes do not require new samples.</span>
+typesafe_results = [
+    (nouls, _cost(TYPESAFE_PRICE, input_tokens, output_tokens), latency)
+    <span class="hljs-keyword">for</span> nouls, input_tokens, output_tokens, latency, _metadata <span class="hljs-keyword">in</span> typesafe_usage_results
+]
+typesafe_runs = [result[<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> typesafe_results]
+stats[<span class="hljs-string">&quot;typesafe_noul&quot;</span>] = [(result[<span class="hljs-number">1</span>], result[<span class="hljs-number">2</span>]) <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> typesafe_results]</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">TypeSafe requested model: jev-latest
+TypeSafe returned models (calls): {&#39;jev-1.13.0&#39;: 15}</code></pre></div>
+<h3 id="cost-speed-per-rubric-query">成本与速度（每次 rubric 查询）</h3>
+<p>下方成本数据沿用 Setup 中的历史价格假设，包括 TypeSafe 的 <code>speed_latest</code>
+费率。这些并非已核验的 <code>jev-latest</code> 价格，也不是当前的计费金额。</p>
+<p>每一行代表一次完整的 14 题 rubric 调用。<code>time/call</code> 和 <code>cost/call</code> 是 15
+次调用的平均值，<code>vs ts_noul</code> 两列是与 TypeSafe 数值的比值。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">typesafe_cost = mean([cost <span class="hljs-keyword">for</span> cost, _latency <span class="hljs-keyword">in</span> stats[<span class="hljs-string">&quot;typesafe_noul&quot;</span>]])
+typesafe_latency = mean([latency <span class="hljs-keyword">for</span> _cost, latency <span class="hljs-keyword">in</span> stats[<span class="hljs-string">&quot;typesafe_noul&quot;</span>]])
+name_w = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">len</span>(name) <span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> [*LABELS, <span class="hljs-string">&quot;typesafe_noul&quot;</span>]) + <span class="hljs-number">2</span>
+<span class="hljs-comment"># Stack comparison headers so the relative speed and cost columns can stay narrow.</span>
+<span class="hljs-built_in">print</span>(
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;&#x27;</span>:&lt;{name_w + <span class="hljs-number">31</span>}</span>}<span class="hljs-subst">{<span class="hljs-string">&#x27;speed vs&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;cost vs&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span>\n&quot;</span>
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;condition&#x27;</span>:&lt;{name_w}</span>}<span class="hljs-subst">{<span class="hljs-string">&#x27;calls&#x27;</span>:&gt;<span class="hljs-number">7</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;time/call&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;cost/call&#x27;</span>:&gt;<span class="hljs-number">13</span>}</span>&quot;</span>
+    <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;ts_noul&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;ts_noul&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span>&quot;</span>
+)
+<span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> LABELS + [<span class="hljs-string">&quot;typesafe_noul&quot;</span>]:
+    costs, latencies = <span class="hljs-built_in">zip</span>(*stats[name])
+    cost = mean(costs)
+    latency = mean(latencies)
+    <span class="hljs-built_in">print</span>(
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{name:&lt;{name_w}</span>}<span class="hljs-subst">{<span class="hljs-built_in">len</span>(costs):&gt;<span class="hljs-number">7</span>}</span><span class="hljs-subst">{latency * <span class="hljs-number">1000</span>:&gt;<span class="hljs-number">9.0</span>f}</span>ms&quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;$&#x27;</span> + <span class="hljs-built_in">format</span>(cost, <span class="hljs-string">&#x27;.6f&#x27;</span>):&gt;<span class="hljs-number">13</span>}</span>&quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">format</span>(latency / typesafe_latency, <span class="hljs-string">&#x27;.1f&#x27;</span>) + <span class="hljs-string">&#x27;x&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span>&quot;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">format</span>(cost / typesafe_cost, <span class="hljs-string">&#x27;.1f&#x27;</span>) + <span class="hljs-string">&#x27;x&#x27;</span>:&gt;<span class="hljs-number">11</span>}</span>&quot;</span>
+    )</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">                                                               speed vs    cost vs
+condition                      calls  time/call    cost/call    ts_noul    ts_noul
+claude-haiku-4-5 t=0              15     1780ms    $0.001798      16.0x      42.2x
+claude-haiku-4-5 t=default        15     1644ms    $0.001798      14.8x      42.2x
+claude-haiku-4-5 yes/no t=0       15     1485ms    $0.001650      13.4x      38.8x
+gpt-5.4-mini t=0                  15     1405ms    $0.001089      12.7x      25.6x
+gpt-5.4-mini t=default            15     1177ms    $0.001179      10.6x      27.7x
+gpt-5.4-mini yes/no t=0           15     1113ms    $0.000950      10.0x      22.3x
+gpt-5.5-reasoning                 15    11125ms    $0.033157     100.2x     778.9x
+claude-opus-4-8-reasoning         15    13886ms    $0.034275     125.0x     805.1x
+typesafe_noul                     15      111ms    $0.000043       1.0x       1.0x</code></pre></div>
+<p>本次运行中，TypeSafe 的平均往返延迟为 111 ms。在上述并发设置下，各 LLM
+条件每次调用耗时在 1.1 到 13.9 秒之间。</p>
+<h2 id="plot-every-sample-as-a-heatmap">图表：每次抽样绘制为热图</h2>
+<p>如何阅读：</p>
+<ul>
+<li>外层行组：问题。</li>
+<li>内层行：条件。</li>
+<li>列：一次完整的 rubric 调用。</li>
+<li>单元格颜色：红色代表更高的 P(yes)，绿色代表更低。对于风险类问题，
+rubric 标记为 yes 的格子显示为红色。</li>
+</ul>
+<p><code>typesafe_noul</code> 在 <code>covered</code>（<code>0.43</code> 到 <code>0.53</code>）和 <code>exclusion</code>（<code>0.53</code> 到 <code>0.62</code>）上波动最大。
+部分 LLM 行在 temperature <code>0</code> 下也有波动。各条件在判断类问题上存在分歧。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">rows_per_block = <span class="hljs-built_in">len</span>(LABELS) + <span class="hljs-number">1</span>  <span class="hljs-comment"># rows per question block</span>
+GAP = <span class="hljs-number">1</span>  <span class="hljs-comment"># blank spacer row(s) between question blocks</span>
+row_values, row_labels, blocks = [], [], []
+<span class="hljs-keyword">for</span> question_index, (question_key, question_text) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(QUESTIONS.items()):
+    <span class="hljs-keyword">if</span> question_index:  <span class="hljs-comment"># blank spacer rows (NaN -&gt; rendered white) separate the blocks</span>
+        row_values.extend([np.nan] * NUM_SAMPLES <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(GAP))
+        row_labels.extend([<span class="hljs-string">&quot;&quot;</span>] * GAP)
+    blocks.append(
+        (<span class="hljs-built_in">len</span>(row_values), question_key, question_text)
+    )  <span class="hljs-comment"># (first row of this block, question key, question text)</span>
+    <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> LABELS:
+        row_values.append(
+            [runs[label][sample][question_key] <span class="hljs-keyword">for</span> sample <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(NUM_SAMPLES)]
+        )
+        row_labels.append(label)
+    row_values.append(
+        [typesafe_runs[sample][question_key] <span class="hljs-keyword">for</span> sample <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(NUM_SAMPLES)]
+    )
+    row_labels.append(<span class="hljs-string">&quot;typesafe_noul&quot;</span>)
+heatmap_matrix = np.array(row_values)
+cmap = plt.get_cmap(<span class="hljs-string">&quot;RdYlGn_r&quot;</span>).copy()  <span class="hljs-comment"># red = higher P(yes), green = lower P(yes)</span>
+cmap.set_bad(<span class="hljs-string">&quot;white&quot;</span>)  <span class="hljs-comment"># spacer (NaN) rows render as blank</span>
+
+fig, ax = plt.subplots(figsize=(<span class="hljs-number">11</span>, <span class="hljs-number">0.26</span> * <span class="hljs-built_in">len</span>(row_values) + <span class="hljs-number">1</span>))
+ax.imshow(heatmap_matrix, cmap=cmap, vmin=<span class="hljs-number">0</span>, vmax=<span class="hljs-number">1</span>, aspect=<span class="hljs-string">&quot;auto&quot;</span>)
+<span class="hljs-keyword">for</span> row_index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(heatmap_matrix.shape[<span class="hljs-number">0</span>]):
+    <span class="hljs-keyword">for</span> col_index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(heatmap_matrix.shape[<span class="hljs-number">1</span>]):
+        value = heatmap_matrix[row_index, col_index]
+        <span class="hljs-keyword">if</span> np.isnan(value):
+            <span class="hljs-keyword">continue</span>
+        ax.text(
+            col_index,
+            row_index,
+            <span class="hljs-string">f&quot;<span class="hljs-subst">{value:<span class="hljs-number">.2</span>f}</span>&quot;</span>,
+            ha=<span class="hljs-string">&quot;center&quot;</span>,
+            va=<span class="hljs-string">&quot;center&quot;</span>,
+            fontsize=<span class="hljs-number">6</span>,
+            family=<span class="hljs-string">&quot;monospace&quot;</span>,
+            color=<span class="hljs-string">&quot;white&quot;</span> <span class="hljs-keyword">if</span> value &lt; <span class="hljs-number">0.22</span> <span class="hljs-keyword">or</span> value &gt; <span class="hljs-number">0.78</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;black&quot;</span>,
+        )
+
+ax.set_xticks(<span class="hljs-built_in">range</span>(NUM_SAMPLES))
+ax.set_xticklabels(<span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, NUM_SAMPLES + <span class="hljs-number">1</span>), fontsize=<span class="hljs-number">7</span>)
+ax.set_xlabel(<span class="hljs-string">&quot;rubric query&quot;</span>)
+ax.set_yticks(<span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(row_labels)))
+ax.set_yticklabels(row_labels, fontsize=<span class="hljs-number">7</span>)
+ax.tick_params(length=<span class="hljs-number">0</span>)
+<span class="hljs-keyword">for</span> edge <span class="hljs-keyword">in</span> (<span class="hljs-string">&quot;top&quot;</span>, <span class="hljs-string">&quot;right&quot;</span>, <span class="hljs-string">&quot;left&quot;</span>, <span class="hljs-string">&quot;bottom&quot;</span>):
+    ax.spines[edge].set_visible(<span class="hljs-literal">False</span>)
+
+<span class="hljs-comment"># outer level of the multi-index: the question key, printed once per block and centered, with the</span>
+<span class="hljs-comment"># question text wrapped right under it</span>
+y_axis_transform = ax.get_yaxis_transform()
+<span class="hljs-keyword">for</span> start, question_key, question_text <span class="hljs-keyword">in</span> blocks:
+    center = start + (rows_per_block - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>
+    ax.text(
+        -<span class="hljs-number">0.2</span>,
+        center - <span class="hljs-number">0.7</span>,
+        question_key,
+        transform=y_axis_transform,
+        ha=<span class="hljs-string">&quot;right&quot;</span>,
+        va=<span class="hljs-string">&quot;center&quot;</span>,
+        fontsize=<span class="hljs-number">8</span>,
+        fontweight=<span class="hljs-string">&quot;bold&quot;</span>,
+    )
+    ax.text(
+        -<span class="hljs-number">0.2</span>,
+        center + <span class="hljs-number">0.1</span>,
+        textwrap.fill(question_text, <span class="hljs-number">34</span>),
+        transform=y_axis_transform,
+        ha=<span class="hljs-string">&quot;right&quot;</span>,
+        va=<span class="hljs-string">&quot;top&quot;</span>,
+        fontsize=<span class="hljs-number">6</span>,
+        style=<span class="hljs-string">&quot;italic&quot;</span>,
+        color=<span class="hljs-string">&quot;gray&quot;</span>,
+    )
+
+ax.set_title(
+    <span class="hljs-string">f&quot;Every sample as a heatmap (rows = rubric question x condition, <span class="hljs-subst">{NUM_SAMPLES}</span> columns)&quot;</span>,
+    pad=<span class="hljs-number">12</span>,
+)
+fig.tight_layout()
+display(fig)</code></pre></div>
+<img src="https://mintcdn.com/ts-docs/BBcnWK7wRF0qekMh/cookbooks/consistency_noul_cookbook/consistency_noul_cookbook.executed.1.png?fit=max&auto=format&n=BBcnWK7wRF0qekMh&q=85&s=a50edf2fb3abafd64374936a630d57bc" alt="输出" width="1616" height="5555" data-path="cookbooks/consistency_noul_cookbook/consistency_noul_cookbook.executed.1.png" />
+
+<p>事实性检查在大多数条件下保持稳定。需要主观判断的题目是 LLM 行波动的地方：<code>exclusion</code>、<code>rental_eligible</code>、<code>fraud_flag</code> 和 <code>manual_review</code> 在不同抽样之间漂移，或在不同模型之间出现分歧。TypeSafe 的 <code>covered</code> 行跨越了 <code>0.5</code>；其另外 13 个问题在本次运行中始终保持在阈值同一侧。</p>
+<h2 id="allow-an-uncertain-decision-instead-of-forcing-yes-or-no">允许不确定决策，替代强制的是或否</h2>
+<p>在 <code>0.5</code> 这个阈值（threshold）下，概率（probability）<code>0.49</code> 和 <code>0.51</code> 会触发相反的操作，尽管两者都表达了相当大的不确定性。应用可以改为返回：</p>
+<ul>
+<li><code>no</code>，低于 <code>0.30</code>；</li>
+<li><code>uncertain</code>，从 <code>0.30</code> 到 <code>0.70</code>，包含两端边界；</li>
+<li><code>yes</code>，高于 <code>0.70</code>。</li>
+</ul>
+<p>不确定的情况进入人工。这种升级属于应用层逻辑，基于返回的 probability 做出判断：不需要新增 question，也不需要再次发起 API 调用。区间仅作示意，既不是校准过的保证（calibrated guarantee），也不是优化过的阈值。生产环境的边界应当根据标注样本，并结合错误决策的成本与复核成本来确定。</p>
+<p>下面的示意图将这个区间应用于记录下来的 TypeSafe probabilities。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">noul_decision_with_uncertainty</span>(<span class="hljs-params">probability: <span class="hljs-built_in">float</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Map valid TypeSafe probabilities through an inclusive uncertainty band.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> probability &lt; NOUL_UNCERTAINTY_LOW:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;no&quot;</span>
+    <span class="hljs-keyword">if</span> probability &gt; NOUL_UNCERTAINTY_HIGH:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;yes&quot;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;uncertain&quot;</span>
+
+
+<span class="hljs-comment"># Keep the probabilities visible beneath each TypeSafe application decision.</span>
+policy_decisions = [
+    [noul_decision_with_uncertainty(sample[key]) <span class="hljs-keyword">for</span> sample <span class="hljs-keyword">in</span> typesafe_runs]
+    <span class="hljs-keyword">for</span> key <span class="hljs-keyword">in</span> QUESTIONS
+]
+decision_codes = {<span class="hljs-string">&quot;no&quot;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&quot;uncertain&quot;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&quot;yes&quot;</span>: <span class="hljs-number">2</span>}
+policy_values = [
+    [decision_codes[value] <span class="hljs-keyword">for</span> value <span class="hljs-keyword">in</span> row] <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> policy_decisions
+]
+policy_cmap = ListedColormap([<span class="hljs-string">&quot;#a6dba0&quot;</span>, <span class="hljs-string">&quot;#dddddd&quot;</span>, <span class="hljs-string">&quot;#92c5de&quot;</span>])
+fig_policy, ax_policy = plt.subplots(figsize=(<span class="hljs-number">13</span>, <span class="hljs-number">6</span>))
+ax_policy.imshow(policy_values, cmap=policy_cmap, vmin=<span class="hljs-number">0</span>, vmax=<span class="hljs-number">2</span>, aspect=<span class="hljs-string">&quot;auto&quot;</span>)
+<span class="hljs-keyword">for</span> row_index, key <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(QUESTIONS):
+    <span class="hljs-keyword">for</span> sample_index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(NUM_SAMPLES):
+        decision = policy_decisions[row_index][sample_index]
+        probability = typesafe_runs[sample_index][key]
+        ax_policy.text(sample_index, row_index, <span class="hljs-string">f&quot;<span class="hljs-subst">{decision}</span>\n<span class="hljs-subst">{probability:<span class="hljs-number">.2</span>f}</span>&quot;</span>,
+                       ha=<span class="hljs-string">&quot;center&quot;</span>, va=<span class="hljs-string">&quot;center&quot;</span>, fontsize=<span class="hljs-number">6</span>)
+ax_policy.set_yticks(<span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(QUESTIONS)), <span class="hljs-built_in">list</span>(QUESTIONS))
+ax_policy.set_xticks(<span class="hljs-built_in">range</span>(NUM_SAMPLES), <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, NUM_SAMPLES + <span class="hljs-number">1</span>))
+ax_policy.set_xlabel(<span class="hljs-string">&quot;rubric query&quot;</span>)
+ax_policy.set_title(
+    <span class="hljs-string">&quot;TypeSafe application decisions: gray means uncertain &quot;</span>
+    <span class="hljs-string">f&quot;(<span class="hljs-subst">{NOUL_UNCERTAINTY_LOW:<span class="hljs-number">.2</span>f}</span> to <span class="hljs-subst">{NOUL_UNCERTAINTY_HIGH:<span class="hljs-number">.2</span>f}</span> inclusive)&quot;</span>
+)
+fig_policy.tight_layout()
+display(fig_policy)</code></pre></div>
+<img src="https://mintcdn.com/ts-docs/BBcnWK7wRF0qekMh/cookbooks/consistency_noul_cookbook/consistency_noul_cookbook.executed.2.png?fit=max&auto=format&n=BBcnWK7wRF0qekMh&q=85&s=5f41dccb24038661ad751bb550f9dd19" alt="输出" width="1932" height="883" data-path="cookbooks/consistency_noul_cookbook/consistency_noul_cookbook.executed.2.png" />
+
+<p>复核区间吸收了 <code>0.5</code> 附近的波动，避免触发相反的自动动作。不过它本身也有边界。靠近任一外侧边界的取值，仍然可能在 <code>uncertain</code> 与 yes 或 no 之间切换。模型并未因此变得更确定（deterministic），而通过复核区间的自动决策也无法证明其正确性。</p>
+<h2 id="open-it-in-the-typesafe-playground">在 TypeSafe playground 中打开它</h2>
+<p>下方链接在 playground 中打开同一条 claim 和 rubric：一条 claim、相同的 14 个 <code>Noul</code> questions，以及 TypeSafe <code>jev-latest</code>。它省略了上面用到的会变化的 <code>uid</code> 字段。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">playground_link = make_playground_link(
+    {<span class="hljs-string">&quot;claim&quot;</span>: CLAIM},
+    {key: Noul(instructions=question) <span class="hljs-keyword">for</span> key, question <span class="hljs-keyword">in</span> QUESTIONS.items()},
+    models=[TYPESAFE_MODEL],
+)
+display(
+    Markdown(
+        <span class="hljs-string">f&quot;🔗 [Open this claim + rubric in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>
+    )
+)</code></pre></div>
+<p><a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIwAOiFADYCGAlnKQSSAA4TnVQCe9+jLbnAfWphupAIIAFALQB2GQBYAjAGZSAGnyk+7DgAtWYBACdRIACKUklfAFkAdOs0gEAMxcIoKagDcEpgEwADP4AbFKBilKKAKyOpFhM1EYIAM4BwTLhkTFxZBC+RpQA5qncjFCsbCnUEEjcKEYwCBqkyaiU5ALJtABGMEYpCIio3C4dgwC+LeAIYDCe1D3kfnj40YGBdoHTTMZCSFDCyCgCbHDUKNyKGxtb01UoswJgRj7GaasA2qQWVrYOIGmAGVKHB-qQALrTLAUGDVWofAjfEANShQADWAHoKnBdl4vL58C8fNQkEVcsSCil8EgICh8A9ZvhavgULoEPhtJxIdNkiwjF4yQIAO6kyDC56UDiI-DXHasdgILoIfknZIARxgSSe+WM3CCt0CUycFBodFW5SotCEIlWpAAwgAZGxSaLrfwATlypMOhlQkse6VC4TC-gAHLk+RABU8wJRA3aQEFg4FMoF5BTXgVTCCwfYKakoK8mF5aqYxChHkhDGB8NZURipHGOPgEL5UABufC+XTsZb4YWUanJShGKTIGv4Hotyx09lGfRQUf4Ums9n4FK7Tzx6Oc0fo0lFBl0ge9-spFDxmpWIwcOz4AByJ5ZbI5hyMsAuAOmoIgMH9pq0LM3DKP46x3E4bBIEqFxDDKnyMLB5oEK0CDLn0uLGPgfJUFAQzHLkFQXlcMiGsaiGPMhThMDQqD4AA1NhriktQKS6IREDEasYZkRoFFDKYNFGAeZJSIMSApLuyRLmwPSFKWdSAianGXKs8jgUafGkEhphtJe5CLsuAAUIRElKKQAJQcVxBDKGRUJOJAsDDJeCncMifI0AuqReHA8YckZEhmAAYlZSmkGGZl+SUnL6CgnGQsapCUGAABWcKPEYAi0o88GMJQMBstGpgFfFUgNNQxQrNMOUrChID2pUrHXouuqFDFaIEgg95iEwTBGLqYD3hIUr4C4MDkAZv7-vSAAkyhqGBgSshAnIKpw+jkIYRgaNEUTLX01TQSk1LNikAITA5pCAXAAi9he0ZcBa11WnAKSnEOJyKP4cAQPqOyvNGzzINQwGrEaEwTEpzADbiKApBg2CrEQ11tWDDCkCgHC7KYtITd6EkNPMCkyqQACS1KvseJ2tQUTL-tta4clyHAAOTUhUk3NSyFQFFVAD8pBJc4mCwvCikYyi2N1U4ePkATF6NAsCKmGYECpHWa38C2MLkHCLWUH15AtvFa6sdTKSCyAwu1AI76fqpktYzjiZywrRPKxJqvCEzrVc+L+C6IbuxIKe1D9lTPZ9hyg7Uj0CCHkSWbIMyodU4UeENuiK7wwg5AuFbws1sTizLGUmPS7jf7y+FICkorJcq4mADq1e1lTs3rMtxcLEsHLx61RjSSgxt1kboO1vHLjRhylgtjRHB-ighfTE570pDAbjsKDIzPVLLv1W7tf1x7JOmBTvvxpeUDsrWTnwMcV4shvW+HMcK11mlMBgOw-m+zddYUhSFYivJwoo2SklOLQC45d94y1IEfaYJ8lZn0TBfKm006I3SZOA3sad1y7DHD6I4WC2pVQZNA5eQtpi4MgaKasEBhSwOdvAkAiCnDIMbl7RMZgfZU3IJxak0BYALlofg5m602bUk6m8WmxhyGEJqGAUBqFVRPF8nnJ6TtK6u2ru7FB15SYgGbkOX2AiaZRhjLWMRvsWbsyYpqbU1ixSMJUSAPSHQBB52oEUUuMtGAsKrvjY+hMDFN3qug9cHjyBSCXAuIi9JvG+L7mNKSCc4B9AGPhOiDMsIQOpCzNxLhCjfwEC4Kg5I96BN0cEpBoSuFGLEMkJmzSxS-3igMNc8YByjkKHRawxSCq1mSN4UGwo3G6HgJYZUoyEBMKqTow+eiQkN09kYkxBSpQuTHv1QaU4ZyFQgH5R47dXjkNwUvTWky-KhxSulC8xh7EjLGW4m5MBPHPLmcwxZstll1NWag+qQJ9ATXbvdRcr0pwcgGoVJk08FxvI6JiDehDRmSQXJ84UUL4XMylEvNxUEYKUXXvAb5B9fm1I4fUtZqtVpU2wbWQlwDKKtQvNIsAtYYBMA-lTeK+k6y-RmhCs0sw3EbzkhAIoT8JY8AruShBfyqUAsMefSm85Z5rSrF4Doo94xSDGBNekECjC1iEljX29d+hYQqKCzk-QN4cnhRuGAEqpUKSYrzYwHBC5Qw0CAQ21AABq7xrzI28IoaGgxlieFmDYCAhhyApC+CAVKbYpBUFyjgCEEwgA" target="_blank" rel="noreferrer noopener noreferrer" className="text-primary">在 TypeSafe playground 中打开此 claim + rubric →</a></p>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建并托管，这是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-consistency-choice/"><span>上一篇</span><strong>自一致性：Choice</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-parallel-questions/"><span>下一篇</span><strong>并行提问</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">准备工作</a><a class="toc-link depth-2" href="#the-state-an-auto-insurance-claim-as-json">state（上下文状态）：一份 JSON 格式的车险理赔</a><a class="toc-link depth-2" href="#the-rubric-14-noul-questions">评分标准：14 道 Noul 题</a><a class="toc-link depth-2" href="#how-we-ask">提问方式</a><a class="toc-link depth-2" href="#experimental-conditions">实验条件</a><a class="toc-link depth-3" href="#experiment-grid">实验矩阵</a><a class="toc-link depth-3" href="#cost-speed-per-rubric-query">成本与速度（每次 rubric 查询）</a><a class="toc-link depth-2" href="#plot-every-sample-as-a-heatmap">图表：每次抽样绘制为热图</a><a class="toc-link depth-2" href="#allow-an-uncertain-decision-instead-of-forcing-yes-or-no">允许不确定决策，替代强制的是或否</a><a class="toc-link depth-2" href="#open-it-in-the-typesafe-playground">在 TypeSafe playground 中打开它</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

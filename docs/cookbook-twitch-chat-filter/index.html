@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Twitch 聊天过滤器 · JevLand</title>
+<meta name="description" content="在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-twitch-chat-filter/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="Twitch 聊天过滤器">
+<meta property="og:description" content="在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-twitch-chat-filter/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Twitch 聊天过滤器">
+<meta name="twitter:description" content="在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"Twitch 聊天过滤器","url":"https://jevland.com/docs/cookbook-twitch-chat-filter/","inLanguage":"zh-CN","description":"在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link is-current" href="/docs/cookbook-twitch-chat-filter/" aria-current="page">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link is-current" href="/docs/cookbook-twitch-chat-filter/" aria-current="page">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>Twitch 聊天过滤器</h1>
+        <p class="lead">在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/twitch_chat_filter" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>你正在观看一场 Twitch 直播，聊天刷得太快根本看不过来。本实战示例会对每条到达的消息进行分类：把问题高亮显示，把垃圾信息、侮辱和未经请求的游戏攻略隐藏起来，并对剧透内容进行模糊处理。一份关键词列表或许能拦下垃圾链接，但「走左边，那棵树后面有个宝箱」里没有任何违规词，剧情反转发言也一样。</p>
+<p>把每条消息各自放进一次 Jev 请求，连同直播标题和当前游戏一起发送。我们会针对它提出三个问题：消息属于什么类型、是否带攻击性、是否会剧透游戏。少量代码就能把这些答案转化为观众看到的效果。
+下面这段视频演示展示了一个由 Jev 驱动的 Chrome 扩展在实时过滤 Twitch 聊天：</p>
+<iframe src="https://player.vimeo.com/video/1230896366" title="Twitch 聊天过滤 Chrome 扩展演示" allow="fullscreen; picture-in-picture"></iframe>
+
+<p>本实战示例涵盖了如何用 Jev 对 29 条示例聊天消息进行分类与过滤。其中 7 条被隐藏，2 条被模糊处理，6 条被高亮为问题。</p>
+<img className="block dark:hidden" src="https://mintcdn.com/ts-docs/TYTnI8jOLDlVpJfa/cookbooks/twitch_chat_filter/twitch-chat-filter-hero-light.gif?s=b2b03e7fd60ef3d43c74bb21cc7404f4" alt="五条聊天消息同时送入 Jev，每条各自发起一次请求并附带直播所玩的游戏。category、toxic、spoiler 三个答案返回后，`decide()` 在观众看到的聊天中分别对每条消息进行显示、高亮、隐藏或模糊处理。" width="1120" height="520" data-path="cookbooks/twitch_chat_filter/twitch-chat-filter-hero-light.gif" />
+
+<img className="hidden dark:block" src="https://mintcdn.com/ts-docs/TYTnI8jOLDlVpJfa/cookbooks/twitch_chat_filter/twitch-chat-filter-hero.gif?s=03dbb45a89b33b923ee60f97ea6e33a6" alt="五条聊天消息同时送入 Jev，每条各自发起一次请求并附带直播所玩的游戏。category、toxic、spoiler 三个答案返回后，`decide()` 在观众看到的聊天中分别对每条消息进行显示、高亮、隐藏或模糊处理。" width="1120" height="520" data-path="cookbooks/twitch_chat_filter/twitch-chat-filter-hero.gif" />
+
+<p>最终，你将拥有 <code>classify()</code>（它会对一条消息提出三个问题）以及 <code>decide()</code>（把答案转化为显示、高亮、变暗、隐藏或模糊处理）。当你修改某条规则（例如「如果属于 spam 则隐藏」），只有 <code>decide()</code> 会再次运行，不需要再向 Jev 发起请求。如果想要过滤 Twitch 或其他平台上的实时聊天，可以把这段逻辑接入自定义聊天查看器、审核工具或浏览器扩展，并按你的直播场景调整消息输入与问题。</p>
+<h2 id="setup">环境准备</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install <span class="hljs-string">&#x27;typesafe-sdk&gt;=0.7.1,&lt;0.8.0&#x27;</span> ipython <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<p>新建一个名为 <code>twitch_chat_filter.py</code> 的文件。跟随本实战示例时，按顺序把每个 Python 代码块复制到该文件中。若想实跑，请在环境中设置 <code>TYPESAFE_API_KEY</code>。把所有代码块都加进去后，在该文件所在目录下运行下面这条命令：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">python twitch_chat_filter.py</code></pre></div>
+<p>每个 API 响应都会保存到 <a href="https://github.com/typesafe-ai/typesafe-public-examples/blob/main/cookbooks/twitch_chat_filter/json_cache.json" target="_blank" rel="noopener noreferrer"><code>json_cache.json</code></a> 中，与脚本放在同一目录。把这个缓存放到那里，无需再次调用 API 就能复现本文给出的数值。在 notebook 环境下，把缓存放到 notebook 的工作目录即可。想要重新实跑时，把缓存文件挪开并设置好 key。修改 <code>TYPESAFE_MODEL</code> 时也需要这样做，因为下面的缓存键只包含 state（上下文状态）和问题，而不包括模型。</p>
+<p>以下数据来自 <code>jev-1.13.0</code>，采集日期为 2026-09-25。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+<span class="hljs-keyword">from</span> time <span class="hljs-keyword">import</span> perf_counter
+
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, Noul, NoulCriteria, TypeSafeClient
+
+TYPESAFE_MODEL = <span class="hljs-string">&quot;jev-1.13.0&quot;</span>
+
+client = TypeSafeClient(
+    api_key=os.environ.get(<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>, <span class="hljs-string">&quot;cache-only&quot;</span>),  <span class="hljs-comment"># cached re-renders need no key</span>
+    base_url=os.environ.get(<span class="hljs-string">&quot;TYPESAFE_ENDPOINT&quot;</span>),
+    timeout=<span class="hljs-number">60.0</span>,
+)
+CACHE_DIR = Path(__file__).resolve().parent <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;__file__&quot;</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">globals</span>() <span class="hljs-keyword">else</span> Path.cwd()
+json_cache = JsonCache(CACHE_DIR / <span class="hljs-string">&quot;json_cache.json&quot;</span>)</code></pre></div>
+<h2 id="load-a-stretch-of-chat">加载一段聊天</h2>
+<p>这 29 条消息是我们为一场 Elden Ring 直播亲自编写的，因此每种消息类型至少出现两次。其中两条是纯表情消息（emote 即 Twitch 上的小型聊天图片，输入时以 <code>PogChamp</code> 这种单词形式表示）。</p>
+<p>一条消息究竟算不算剧透，或算不算主动支招（未经主播索求的游戏攻略），取决于当前在玩的是哪一款游戏。所以每条请求都要带上直播标题与游戏名称。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">STREAM = {<span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">&quot;Elden Ring first playthrough! No spoilers please&quot;</span>, <span class="hljs-string">&quot;game&quot;</span>: <span class="hljs-string">&quot;Elden Ring&quot;</span>}
+
+CHAT = [
+    (<span class="hljs-string">&quot;NightOwl_22&quot;</span>, <span class="hljs-string">&quot;hi chat, first time catching a stream live&quot;</span>),
+    (<span class="hljs-string">&quot;ggwp_andy&quot;</span>, <span class="hljs-string">&quot;PogChamp PogChamp PogChamp&quot;</span>),
+    (<span class="hljs-string">&quot;mira_plays&quot;</span>, <span class="hljs-string">&quot;how many hours have you played so far?&quot;</span>),
+    (<span class="hljs-string">&quot;tarnished_tom&quot;</span>, <span class="hljs-string">&quot;this area looks so good at night&quot;</span>),
+    (<span class="hljs-string">&quot;backseat_bert&quot;</span>, <span class="hljs-string">&quot;go left, there&#x27;s a site of grace behind the tree&quot;</span>),
+    (<span class="hljs-string">&quot;follow4follow_bot&quot;</span>, <span class="hljs-string">&quot;Want more viewers? Buy 1000 followers for $5 at cheapviewz dot com&quot;</span>),
+    (<span class="hljs-string">&quot;LoreHound&quot;</span>, <span class="hljs-string">&quot;wait till you find out Ranni planned the Night of Black Knives&quot;</span>),
+    (<span class="hljs-string">&quot;kappa_kev&quot;</span>, <span class="hljs-string">&quot;LUL LUL LUL&quot;</span>),
+    (<span class="hljs-string">&quot;sunny_d&quot;</span>, <span class="hljs-string">&quot;are you going to do a no-hit run after this?&quot;</span>),
+    (<span class="hljs-string">&quot;rage_ryan&quot;</span>, <span class="hljs-string">&quot;you&#x27;re genuinely the worst player i&#x27;ve ever seen, uninstall trash&quot;</span>),
+    (<span class="hljs-string">&quot;cozy_cat&quot;</span>, <span class="hljs-string">&quot;the music in this area is so good&quot;</span>),
+    (<span class="hljs-string">&quot;backseat_bert&quot;</span>, <span class="hljs-string">&quot;use your flask NOW, why are you not healing&quot;</span>),
+    (<span class="hljs-string">&quot;mira_plays&quot;</span>, <span class="hljs-string">&quot;W streamer&quot;</span>),
+    (<span class="hljs-string">&quot;ggwp_andy&quot;</span>, <span class="hljs-string">&quot;GG that was insane&quot;</span>),
+    (<span class="hljs-string">&quot;quiet_quinn&quot;</span>, <span class="hljs-string">&quot;anyone else watching from Brazil?&quot;</span>),
+    (<span class="hljs-string">&quot;tarnished_tom&quot;</span>, <span class="hljs-string">&quot;what build are you going for?&quot;</span>),
+    (<span class="hljs-string">&quot;LoreHound&quot;</span>, <span class="hljs-string">&quot;the ending where you become Elden Lord with Ranni is the best one&quot;</span>),
+    (<span class="hljs-string">&quot;kappa_kev&quot;</span>, <span class="hljs-string">&quot;chat is wild today lol&quot;</span>),
+    (<span class="hljs-string">&quot;backseat_bert&quot;</span>, <span class="hljs-string">&quot;the boss is weak to fire, equip the torch before you go in&quot;</span>),
+    (<span class="hljs-string">&quot;rage_ryan&quot;</span>, <span class="hljs-string">&quot;nobody cares about your opinion, go back to your basement&quot;</span>),
+    (<span class="hljs-string">&quot;cozy_cat&quot;</span>, <span class="hljs-string">&quot;you&#x27;re so bad at this boss lmao, love you tho&quot;</span>),
+    (<span class="hljs-string">&quot;sunny_d&quot;</span>, <span class="hljs-string">&quot;who is the final boss?&quot;</span>),
+    (<span class="hljs-string">&quot;ggwp_andy&quot;</span>, <span class="hljs-string">&quot;LETS GOOOO&quot;</span>),
+    (<span class="hljs-string">&quot;NightOwl_22&quot;</span>, <span class="hljs-string">&quot;i just got this game too, it&#x27;s so hard&quot;</span>),
+    (<span class="hljs-string">&quot;promo_pete&quot;</span>, <span class="hljs-string">&quot;check out my channel, I stream every day, follow me!&quot;</span>),
+    (<span class="hljs-string">&quot;quiet_quinn&quot;</span>, <span class="hljs-string">&quot;dodge rolling through that was clean&quot;</span>),
+    (<span class="hljs-string">&quot;mira_plays&quot;</span>, <span class="hljs-string">&quot;is the DLC worth it?&quot;</span>),
+    (<span class="hljs-string">&quot;cozy_cat&quot;</span>, <span class="hljs-string">&quot;your character looks so cool&quot;</span>),
+    (<span class="hljs-string">&quot;NightOwl_22&quot;</span>, <span class="hljs-string">&quot;this boss took me 40 tries lol&quot;</span>),
+]
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(CHAT)}</span> messages. What one request sends as its state:&quot;</span>)
+<span class="hljs-built_in">print</span>({<span class="hljs-string">&quot;stream&quot;</span>: STREAM, <span class="hljs-string">&quot;message&quot;</span>: {<span class="hljs-string">&quot;user&quot;</span>: CHAT[<span class="hljs-number">4</span>][<span class="hljs-number">0</span>], <span class="hljs-string">&quot;text&quot;</span>: CHAT[<span class="hljs-number">4</span>][<span class="hljs-number">1</span>]}})</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">29 messages. What one request sends as its state:
+{&#39;stream&#39;: {&#39;title&#39;: &#39;Elden Ring first playthrough! No spoilers please&#39;, &#39;game&#39;: &#39;Elden Ring&#39;}, &#39;message&#39;: {&#39;user&#39;: &#39;backseat_bert&#39;, &#39;text&#39;: &quot;go left, there&#39;s a site of grace behind the tree&quot;}}</code></pre></div>
+<h2 id="write-the-questions">编写问题</h2>
+<p>我们会针对同一份 state（直播信息加上单条消息），在一次请求中提出三个问题，并一起作答。</p>
+<ul>
+<li><code>category</code> 问题是一个 <code>Choice</code>（选择题），覆盖五种消息类型。它所选中的标签（label）决定了该消息的处理方式：显示、高亮、变暗或隐藏。</li>
+<li><code>toxic</code> 问题是一个 <code>Noul</code>（是非题）。若其概率（probability）达到 0.7 或更高（即下方设置的阈值 <code>TOXIC_AT</code>），无论属于哪一类别，消息都会被隐藏。</li>
+<li><code>spoiler</code> 问题是一个 <code>Noul</code>（是非题）。若其概率达到 0.7 或更高（即阈值 <code>SPOILER_AT</code>），消息会被模糊处理，除非它已经被隐藏。</li>
+</ul>
+<p>category 描述的是消息的主要意图。重复的表情符号和欢呼归入 <code>hype</code>；未经请求的推广归入 <code>spam</code>。仅含一个链接并不算 spam。若一条消息不属于其他任何类别，则归入 <code>conversation</code> 作为兜底。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">QUESTIONS = {
+    <span class="hljs-string">&quot;category&quot;</span>: Choice(
+        instructions=<span class="hljs-string">&quot;Which category best describes the main purpose of `message.text`?&quot;</span>,
+        criteria={
+            <span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;A genuine request for information from the streamer or chat, &quot;</span>
+            <span class="hljs-string">&quot;not gameplay instructions phrased as a question or a promotional pitch&quot;</span>,
+            <span class="hljs-string">&quot;hype&quot;</span>: <span class="hljs-string">&quot;Cheering, reactions, or repeated emotes (PogChamp, LUL, GG, W, &quot;</span>
+            <span class="hljs-string">&quot;lets gooo); repetition alone does not make cheering spam&quot;</span>,
+            <span class="hljs-string">&quot;conversation&quot;</span>: <span class="hljs-string">&quot;Ordinary chatter, opinions, replies, useful shared links, &quot;</span>
+            <span class="hljs-string">&quot;or any message whose main purpose does not fit the other categories&quot;</span>,
+            <span class="hljs-string">&quot;backseat&quot;</span>: <span class="hljs-string">&quot;Unrequested gameplay advice telling the streamer what to do, &quot;</span>
+            <span class="hljs-string">&quot;including instructions phrased as a question; not a request for information&quot;</span>,
+            <span class="hljs-string">&quot;spam&quot;</span>: <span class="hljs-string">&quot;Unsolicited advertising, self-promotion, follower selling, or &quot;</span>
+            <span class="hljs-string">&quot;promotional links; not ordinary cheering, repeated emotes, or a useful link&quot;</span>,
+        },
+    ),
+    <span class="hljs-string">&quot;toxic&quot;</span>: Noul(
+        instructions=<span class="hljs-string">&quot;Is this message insulting, hateful or harassing towards someone?&quot;</span>,
+        criteria=NoulCriteria(
+            true=<span class="hljs-string">&quot;Insults, slurs, threats or personal attacks on the streamer or another viewer&quot;</span>,
+            false=<span class="hljs-string">&quot;Friendly, neutral, or light banter with no target&quot;</span>,
+        ),
+    ),
+    <span class="hljs-string">&quot;spoiler&quot;</span>: Noul(
+        instructions=<span class="hljs-string">&quot;Does this message reveal a plot point or ending of the game being played?&quot;</span>
+    ),
+}</code></pre></div>
+<h2 id="classify-one-message">对单条消息进行分类</h2>
+<p>下面的 <code>classify()</code> 函数根据一条消息构建上下文状态（state）并发起请求。缓存以 state 和 questions 派生出一个键，把每个答案写入缓存，写成 JSON 格式。修改问题会改变这个键，所以下一次运行会发送新请求，而不是复用旧的答案。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">classify</span>(<span class="hljs-params">user: <span class="hljs-built_in">str</span>, text: <span class="hljs-built_in">str</span>, stream: <span class="hljs-built_in">dict</span> | <span class="hljs-literal">None</span> = <span class="hljs-literal">None</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    state = {
+        <span class="hljs-string">&quot;stream&quot;</span>: STREAM <span class="hljs-keyword">if</span> stream <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">else</span> stream,
+        <span class="hljs-string">&quot;message&quot;</span>: {<span class="hljs-string">&quot;user&quot;</span>: user, <span class="hljs-string">&quot;text&quot;</span>: text},
+    }
+    questions = {key: q.model_dump(mode=<span class="hljs-string">&quot;json&quot;</span>, exclude_none=<span class="hljs-literal">True</span>) <span class="hljs-keyword">for</span> key, q <span class="hljs-keyword">in</span> QUESTIONS.items()}
+    <span class="hljs-keyword">return</span> _ask(state, questions)
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_ask</span>(<span class="hljs-params">state: <span class="hljs-built_in">dict</span>, questions: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.environ.get(<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>):
+        <span class="hljs-keyword">raise</span> RuntimeError(
+            <span class="hljs-string">&quot;Set TYPESAFE_API_KEY for a live request, or put the cookbook&#x27;s &quot;</span>
+            <span class="hljs-string">&quot;json_cache.json beside your script (in the working directory for a notebook).&quot;</span>
+        )
+    started = perf_counter()
+    response = client.system_one(state=state, questions=questions, model=TYPESAFE_MODEL)
+    category = response.answers[<span class="hljs-string">&quot;category&quot;</span>]
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;category&quot;</span>: category.choice,
+        <span class="hljs-string">&quot;probabilities&quot;</span>: <span class="hljs-built_in">dict</span>(category.probabilities),
+        <span class="hljs-string">&quot;toxic&quot;</span>: response.answers[<span class="hljs-string">&quot;toxic&quot;</span>].noul,
+        <span class="hljs-string">&quot;spoiler&quot;</span>: response.answers[<span class="hljs-string">&quot;spoiler&quot;</span>].noul,
+        <span class="hljs-string">&quot;model&quot;</span>: response.model,
+        <span class="hljs-string">&quot;seconds&quot;</span>: <span class="hljs-built_in">round</span>(perf_counter() - started, <span class="hljs-number">2</span>),
+        <span class="hljs-string">&quot;input_tokens&quot;</span>: response.usage.input_tokens,
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">show</span>(<span class="hljs-params">user: <span class="hljs-built_in">str</span>, text: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
+    result = classify(user, text)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{user}</span>: <span class="hljs-subst">{text}</span>&quot;</span>)
+    <span class="hljs-keyword">for</span> label, p <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(result[<span class="hljs-string">&quot;probabilities&quot;</span>].items(), key=<span class="hljs-keyword">lambda</span> kv: -kv[<span class="hljs-number">1</span>]):
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  <span class="hljs-subst">{label:&lt;<span class="hljs-number">13</span>}</span><span class="hljs-subst">{p:<span class="hljs-number">5.2</span>f}</span>  <span class="hljs-subst">{<span class="hljs-string">&#x27;#&#x27;</span> * <span class="hljs-built_in">round</span>(p * <span class="hljs-number">30</span>)}</span>&quot;</span>.rstrip())
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  <span class="hljs-subst">{<span class="hljs-string">&#x27;toxic&#x27;</span>:&lt;<span class="hljs-number">13</span>}</span><span class="hljs-subst">{result[<span class="hljs-string">&#x27;toxic&#x27;</span>]:<span class="hljs-number">5.2</span>f}</span>&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  <span class="hljs-subst">{<span class="hljs-string">&#x27;spoiler&#x27;</span>:&lt;<span class="hljs-number">13</span>}</span><span class="hljs-subst">{result[<span class="hljs-string">&#x27;spoiler&#x27;</span>]:<span class="hljs-number">5.2</span>f}</span>\n&quot;</span>)
+
+
+show(<span class="hljs-string">&quot;backseat_bert&quot;</span>, <span class="hljs-string">&quot;go left, there&#x27;s a site of grace behind the tree&quot;</span>)
+show(<span class="hljs-string">&quot;LoreHound&quot;</span>, <span class="hljs-string">&quot;wait till you find out Ranni planned the Night of Black Knives&quot;</span>)
+show(<span class="hljs-string">&quot;cozy_cat&quot;</span>, <span class="hljs-string">&quot;you&#x27;re so bad at this boss lmao, love you tho&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">backseat_bert: go left, there&#39;s a site of grace behind the tree
+  backseat      1.00  ##############################
+  question      0.00
+  hype          0.00
+  conversation  0.00
+  spam          0.00
+  toxic         0.02
+  spoiler       0.09
+
+LoreHound: wait till you find out Ranni planned the Night of Black Knives
+  conversation  0.57  #################
+  backseat      0.42  #############
+  hype          0.01
+  spam          0.00
+  question      0.00
+  toxic         0.03
+  spoiler       0.94
+
+cozy_cat: you&#39;re so bad at this boss lmao, love you tho
+  conversation  0.81  ########################
+  hype          0.18  #####
+  backseat      0.01
+  question      0.00
+  spam          0.00
+  toxic         0.21
+  spoiler       0.02</code></pre></div>
+<p>backseat 建议被归为 <code>backseat</code>，概率为 1.00，且 <code>toxic</code> 与 <code>spoiler</code> 都较低。关于「Night of Black Knives」的那条消息以微弱优势被归为 <code>conversation</code> 而不是 <code>backseat</code>，同时被 <code>spoiler</code> 这一题命中。最后一条消息看起来像是在骂人，但 <code>toxic</code> 概率仍然很低；由于结尾带了「love you tho」，它符合问题中「轻度调侃」的描述。</p>
+<h2 id="decide-what-the-viewer-sees">决定观众看到什么</h2>
+<p>下面的 <code>decide()</code> 函数只读取答案，不发起请求。它会检查三项内容，并按一组规则决定如何处理：</p>
+<ol>
+<li>达到或超过 <code>TOXIC_AT</code> 阈值的消息会被隐藏。</li>
+<li>category 对应规则为 <code>hide</code> 的消息会被隐藏。</li>
+<li>达到或超过 <code>SPOILER_AT</code> 阈值的消息会被打码。</li>
+</ol>
+<p>剩余的消息则按其 category 对应的规则处理。</p>
+<p>在示例消息中，每条 toxic 概率要么不低于 0.97，要么不高于 0.24；每条 spoiler 概率要么不低于 0.94，要么不高于 0.20。因此在这两组数值之间任选一个阈值，结果都一样。你自己频道的聊天概率会落在中间区间；在实际使用之前，请把两个阈值都对照它跑一遍再上线。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">RULES = {
+    <span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;highlight&quot;</span>,
+    <span class="hljs-string">&quot;hype&quot;</span>: <span class="hljs-string">&quot;show&quot;</span>,
+    <span class="hljs-string">&quot;conversation&quot;</span>: <span class="hljs-string">&quot;show&quot;</span>,
+    <span class="hljs-string">&quot;backseat&quot;</span>: <span class="hljs-string">&quot;hide&quot;</span>,
+    <span class="hljs-string">&quot;spam&quot;</span>: <span class="hljs-string">&quot;hide&quot;</span>,
+}
+TOXIC_AT = <span class="hljs-number">0.7</span>  <span class="hljs-comment"># hide at or above this chance of toxic</span>
+SPOILER_AT = <span class="hljs-number">0.7</span>  <span class="hljs-comment"># blur at or above this chance of a spoiler</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">decide</span>(<span class="hljs-params">result: <span class="hljs-built_in">dict</span>, rules: <span class="hljs-built_in">dict</span> = RULES</span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-keyword">if</span> result[<span class="hljs-string">&quot;toxic&quot;</span>] &gt;= TOXIC_AT:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hide (toxic)&quot;</span>
+    action = rules[result[<span class="hljs-string">&quot;category&quot;</span>]]
+    <span class="hljs-keyword">if</span> action == <span class="hljs-string">&quot;hide&quot;</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;hide (<span class="hljs-subst">{result[<span class="hljs-string">&#x27;category&#x27;</span>]}</span>)&quot;</span>
+    <span class="hljs-keyword">if</span> result[<span class="hljs-string">&quot;spoiler&quot;</span>] &gt;= SPOILER_AT:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;blur (spoiler)&quot;</span>
+    <span class="hljs-keyword">return</span> action</code></pre></div>
+<h2 id="filter-the-whole-chat">过滤整个聊天</h2>
+<p>上面的三条消息会被缓存起来，首次实际运行时还剩 26 个新请求。消息之间没有相互依赖，因此请求以八个为一组并发执行，<code>pool.map</code> 会按聊天顺序返回答案。</p>
+<p>下面的输出就是观众看到的样子：被隐藏的消息只显示隐藏原因，被打码的消息只显示作者，高亮的问题用 <code>&gt;&gt;</code> 标记。每行右侧的标签就是 <code>category</code> 答案。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-number">8</span>) <span class="hljs-keyword">as</span> pool:  <span class="hljs-comment"># 29 requests, one per message, 8 at once</span>
+    results = <span class="hljs-built_in">list</span>(pool.<span class="hljs-built_in">map</span>(<span class="hljs-keyword">lambda</span> message: classify(*message), CHAT))
+
+counts: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">int</span>] = {}
+<span class="hljs-keyword">for</span> (user, text), result <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(CHAT, results):
+    action = decide(result)
+    counts[action] = counts.get(action, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span>
+    <span class="hljs-keyword">if</span> action.startswith(<span class="hljs-string">&quot;hide&quot;</span>):
+        line = <span class="hljs-string">f&quot;   · hidden, <span class="hljs-subst">{action[<span class="hljs-number">6</span>:-<span class="hljs-number">1</span>]}</span>&quot;</span>
+    <span class="hljs-keyword">elif</span> action == <span class="hljs-string">&quot;blur (spoiler)&quot;</span>:
+        line = <span class="hljs-string">f&quot;   <span class="hljs-subst">{user}</span>: ░░░░░░░░ spoiler&quot;</span>
+    <span class="hljs-keyword">else</span>:
+        mark = {<span class="hljs-string">&quot;highlight&quot;</span>: <span class="hljs-string">&quot;&gt;&gt;&quot;</span>, <span class="hljs-string">&quot;dim&quot;</span>: <span class="hljs-string">&quot;..&quot;</span>, <span class="hljs-string">&quot;show&quot;</span>: <span class="hljs-string">&quot;  &quot;</span>}[action]
+        line = <span class="hljs-string">f&quot;<span class="hljs-subst">{mark}</span> <span class="hljs-subst">{user}</span>: <span class="hljs-subst">{text}</span>&quot;</span>
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{line[:<span class="hljs-number">78</span>]:&lt;<span class="hljs-number">80</span>}</span><span class="hljs-subst">{result[<span class="hljs-string">&#x27;category&#x27;</span>]}</span>&quot;</span>)
+
+<span class="hljs-built_in">print</span>()
+<span class="hljs-keyword">for</span> action, n <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(counts.items(), key=<span class="hljs-keyword">lambda</span> kv: -kv[<span class="hljs-number">1</span>]):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{action:&lt;<span class="hljs-number">20</span>}</span><span class="hljs-subst">{n:&gt;<span class="hljs-number">3</span>}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">   NightOwl_22: hi chat, first time catching a stream live                      conversation
+   ggwp_andy: PogChamp PogChamp PogChamp                                        hype
+&gt;&gt; mira_plays: how many hours have you played so far?                           question
+   tarnished_tom: this area looks so good at night                              conversation
+   · hidden, backseat                                                           backseat
+   · hidden, spam                                                               spam
+   LoreHound: ░░░░░░░░ spoiler                                                  conversation
+   kappa_kev: LUL LUL LUL                                                       hype
+&gt;&gt; sunny_d: are you going to do a no-hit run after this?                        question
+   · hidden, toxic                                                              conversation
+   cozy_cat: the music in this area is so good                                  conversation
+   · hidden, backseat                                                           backseat
+   mira_plays: W streamer                                                       hype
+   ggwp_andy: GG that was insane                                                hype
+&gt;&gt; quiet_quinn: anyone else watching from Brazil?                               question
+&gt;&gt; tarnished_tom: what build are you going for?                                 question
+   LoreHound: ░░░░░░░░ spoiler                                                  conversation
+   kappa_kev: chat is wild today lol                                            conversation
+   · hidden, backseat                                                           backseat
+   · hidden, toxic                                                              conversation
+   cozy_cat: you&#39;re so bad at this boss lmao, love you tho                      conversation
+&gt;&gt; sunny_d: who is the final boss?                                              question
+   ggwp_andy: LETS GOOOO                                                        hype
+   NightOwl_22: i just got this game too, it&#39;s so hard                          conversation
+   · hidden, spam                                                               spam
+   quiet_quinn: dodge rolling through that was clean                            hype
+&gt;&gt; mira_plays: is the DLC worth it?                                             question
+   cozy_cat: your character looks so cool                                       conversation
+   NightOwl_22: this boss took me 40 tries lol                                  conversation
+
+show                 14
+highlight             6
+hide (backseat)       3
+hide (spam)           2
+blur (spoiler)        2
+hide (toxic)          2</code></pre></div>
+<p>整个过滤器就是 <code>QUESTIONS</code>、<code>classify()</code> 和 <code>decide()</code> 这三部分。要在自己的聊天数据上运行，只需替换 <code>STREAM</code> 和 <code>CHAT</code>，或者针对每个频道给 <code>classify()</code> 传入不同的 <code>stream</code>。</p>
+<p>如果遇到限流，把 <code>max_workers</code> 调小后再运行；已经完成的答案都已缓存。这里 <code>pool.map()</code> 会保持聊天顺序，所以每个结果都按列表中的位置与对应的消息一一对应。在实际集成中，你也可以改为把平台的消息 ID 或消息页面元素的引用与每个请求绑定在一起，这样在答案返回时就能更新到正确的消息上。</p>
+<h2 id="change-a-rule-without-a-new-request">不发起新请求地修改规则</h2>
+<p>答案描述了消息，<code>decide()</code> 把它们转换为动作。下面的示例隐藏 hype（欢呼和纯表情行）并弱化对话，复用上一步的 29 个结果。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">QUIET = RULES | {<span class="hljs-string">&quot;hype&quot;</span>: <span class="hljs-string">&quot;hide&quot;</span>, <span class="hljs-string">&quot;conversation&quot;</span>: <span class="hljs-string">&quot;dim&quot;</span>}
+
+changed = <span class="hljs-number">0</span>
+<span class="hljs-keyword">for</span> (user, text), result <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(CHAT, results):
+    before, after = decide(result), decide(result, QUIET)
+    <span class="hljs-keyword">if</span> before != after:
+        changed += <span class="hljs-number">1</span>
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{user + <span class="hljs-string">&#x27;: &#x27;</span> + text:&lt;<span class="hljs-number">62.62</span>}</span>  <span class="hljs-subst">{before:&lt;<span class="hljs-number">10</span>}</span> -&gt; <span class="hljs-subst">{after}</span>&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\n<span class="hljs-subst">{changed}</span> messages changed, 0 new requests&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">NightOwl_22: hi chat, first time catching a stream live         show       -&gt; dim
+ggwp_andy: PogChamp PogChamp PogChamp                           show       -&gt; hide (hype)
+tarnished_tom: this area looks so good at night                 show       -&gt; dim
+kappa_kev: LUL LUL LUL                                          show       -&gt; hide (hype)
+cozy_cat: the music in this area is so good                     show       -&gt; dim
+mira_plays: W streamer                                          show       -&gt; hide (hype)
+ggwp_andy: GG that was insane                                   show       -&gt; hide (hype)
+kappa_kev: chat is wild today lol                               show       -&gt; dim
+cozy_cat: you&#39;re so bad at this boss lmao, love you tho         show       -&gt; dim
+ggwp_andy: LETS GOOOO                                           show       -&gt; hide (hype)
+NightOwl_22: i just got this game too, it&#39;s so hard             show       -&gt; dim
+quiet_quinn: dodge rolling through that was clean               show       -&gt; hide (hype)
+cozy_cat: your character looks so cool                          show       -&gt; dim
+NightOwl_22: this boss took me 40 tries lol                     show       -&gt; dim
+
+14 messages changed, 0 new requests</code></pre></div>
+<h2 id="before-you-use-it-on-a-live-channel">在直播频道使用前</h2>
+<ul>
+<li><strong>每条消息都要等待它的答案。</strong> 本 cookbook 中请求的中位数约为 0.4 秒，因此新行出现在聊天中时，它的答案还没回来。要么先把每条新行隐藏起来等答案返回，要么接受一条不良消息会在屏幕上停留那么久。</li>
+<li><strong>单次请求跟不上繁忙聊天的节奏。</strong> 同时发起多个请求，例如 <em>Filter the whole chat</em> 中的八个。</li>
+<li><strong>本 cookbook 发布时，Jev 主要用英语训练。</strong> 它能接受其他语言，但对它们的回答准确度较低，因此非英语频道上的漏检会更多。</li>
+<li><strong>获胜类别仍可能不确定。</strong> 本示例始终套用获胜标签的规则。在上线直播前，请决定如何处理接近的类别概率和接近 0.5 的 Noul 值。可以把这类消息标记为待复核，或者保持可见而不是自动隐藏。在你自己频道的聊天里测试该策略。</li>
+<li><strong>剧透检查没有主播进度的记录。</strong> 它根据游戏标题和模型的知识来识别可能的剧情透露，而不是判断该观众或主播是否已经知道。要仅过滤尚未看到的剧情点，请提供当前进度和相关剧情信息，并调整 question 来使用这些上下文。</li>
+</ul>
+<h2 id="open-it-in-the-playground">在 playground 中打开它</h2>
+<p>下面的链接会用场外指挥消息的 state 和填好的三个 question 打开 playground。在那里实时运行该调用，或编辑 question 后再次运行。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">playground_link = make_playground_link(
+    {<span class="hljs-string">&quot;stream&quot;</span>: STREAM, <span class="hljs-string">&quot;message&quot;</span>: {<span class="hljs-string">&quot;user&quot;</span>: CHAT[<span class="hljs-number">4</span>][<span class="hljs-number">0</span>], <span class="hljs-string">&quot;text&quot;</span>: CHAT[<span class="hljs-number">4</span>][<span class="hljs-number">1</span>]}},
+    QUESTIONS,
+    models=[TYPESAFE_MODEL],
+)
+<span class="hljs-comment"># Print a usable URL in a script; render a clickable link in a notebook.</span>
+<span class="hljs-keyword">if</span> <span class="hljs-string">&quot;__file__&quot;</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">globals</span>():
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Open the state + questions in the TypeSafe playground:\n<span class="hljs-subst">{playground_link}</span>&quot;</span>)
+<span class="hljs-keyword">else</span>:
+    display(Markdown(<span class="hljs-string">f&quot;🔗 [Open the state + questions in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>))</code></pre></div>
+<p><a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIwAOiAM4oBOCAhnKQSSCgJYoA2CD+pAou2GT4ASiyQBzfADMWlCvgAO7GgE8UAC0oQY49QEJ8AOQj4yCiC05zFnGmS4gANDxDi6DgnwFDRE0gF9nUkQyMhpxD3wmGHtKblIAIxooAGt7GhQAfQSEShRSIOYsfLwXcRNOKRRnDVyEAHIyfBpTNgR8CCl8cUpk9pz1MTB8WpHqB39-J0IFLTgFFDIMbFKiUigMhHLKFW4mFBUFSPX1CygHQrEKShgoVggkMniQAHVBqHV8DZQtiB38HLyQRkKCUFiAkbqdpwGhiRQwSjmewdLoAAxCYQiADofthUQB+AouUFtME0PakACOMAQFBYD2eAEFusgYGJ2tRqbSUNI-vgxFI-jD7khpHNIe1rrREJQOrKPhlnEgIDy3IglKp+Y8qLcRU0FJo7AhhnZmvguXSHnKzbMIHAVfSkDR2Io2B8iaR1IdjiAAMJQ3JicTOajJPXOPnUI6bYYIe0gJoACgAChBxP66ApnAAZACq2ecAHFC84Xs5OItuhBqwBKADc+CjCFYIua7Ae7UgtPwyp5MJS7Q+CEDElMCjoHpAUAeADdcmERc8APKUMBiGj-BUoH6UCMKMSOsghhBKFi05wxBBSGAusjqDfG-DsMRpCOymhIFT4DHhdoAd1OZEYThBQESRTsIG7XtpDYCUOlqeVNmM8nmmRJkjSWgSk8EBcyQTkaQoR81RPZQvxoMAZxYc4RgQdhn1HUYpXcWUAIyEYTEgZwxCgdgYDXUcrh1O5D0UQ17BNJoWgtEUG2gloCO5XlZQFIUMkdSczAnUpSDwsgIGfKA2hNSjclYMgg2cex2CkABaW140dZxBXoiA-1yUw6IY4NrQch0HmdJ8XzIOSVTlASNy-IcRx8psY3wOMVXPa0Wkva8XQYlIAkCFwUAgTBqIpZhvWeZUb0nISbhEh5UJwgBJJoNBYJofwiLUyBvVgJGce8fnS61716UIgw4v8NzAJp9MQDtCTQqcwR3FhyVKfYbh9OrHk6o9TD4uQak0LCmj5I45ACl0MhQDCjtFJiqGlDy+Q-FUoVlKiEHcuI5qkZ17GeAAxMFkDAdgVCVBAYCoZ03yC3QeSSVAPL-NhPmVEYNwiEpJkKMwLCsIqDiOUrtHYCrtSqvVngAEUgxrBha2lMQ5BA50ClolDC8wxB5PkgZGzo4JIgEEBGjUVGNWbJmmEAaH3AA1edHVWGcAEYpeshA7mNABZCBBHYMhSgAbRAAArZnbOVrFlYAZixAAGEAAF1-CAA" target="_blank" rel="noopener noreferrer">在 TypeSafe playground 中打开 state + questions →</a></p>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建并托管，它是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-classification-using-confidence/"><span>上一篇</span><strong>使用置信度进行分类</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-sde-cascade/"><span>下一篇</span><strong>SDE（结构化数据抽取）级联</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">环境准备</a><a class="toc-link depth-2" href="#load-a-stretch-of-chat">加载一段聊天</a><a class="toc-link depth-2" href="#write-the-questions">编写问题</a><a class="toc-link depth-2" href="#classify-one-message">对单条消息进行分类</a><a class="toc-link depth-2" href="#decide-what-the-viewer-sees">决定观众看到什么</a><a class="toc-link depth-2" href="#filter-the-whole-chat">过滤整个聊天</a><a class="toc-link depth-2" href="#change-a-rule-without-a-new-request">不发起新请求地修改规则</a><a class="toc-link depth-2" href="#before-you-use-it-on-a-live-channel">在直播频道使用前</a><a class="toc-link depth-2" href="#open-it-in-the-playground">在 playground 中打开它</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

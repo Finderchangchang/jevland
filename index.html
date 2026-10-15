@@ -3,24 +3,304 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JevLand · Jev 非官方中文社区</title>
-<meta name="description" content="TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。即将上线。">
+<title>JevLand · Jev 非官方中文社区 · JevLand</title>
+<meta name="description" content="TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。">
+<meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
-<style>
-html,body{margin:0;height:100%;background:#07080B;color:#E8EAED;font-family:"PingFang SC","Microsoft YaHei UI","Noto Sans SC",system-ui,sans-serif}
-body{display:grid;place-items:center;background-image:radial-gradient(600px 300px at 50% 30%,rgba(61,245,176,.12),transparent 70%),radial-gradient(500px 260px at 60% 40%,rgba(124,156,255,.10),transparent 70%)}
-main{text-align:center;padding:24px}
-.tag{font-family:ui-monospace,Consolas,monospace;font-size:12px;letter-spacing:.12em;color:#6B7380}
-h1{font-size:clamp(40px,7vw,72px);margin:16px 0 8px;font-weight:800;letter-spacing:-.02em}
-h1 span{background:linear-gradient(90deg,#fff,#3DF5B0);-webkit-background-clip:text;background-clip:text;color:transparent}
-p{color:#9AA3AE;margin:0}
-</style>
+
+<link rel="canonical" href="https://jevland.com/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="JevLand · Jev 非官方中文社区">
+<meta property="og:description" content="TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。">
+<meta property="og:url" content="https://jevland.com/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="JevLand · Jev 非官方中文社区">
+<meta name="twitter:description" content="TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"WebPage","name":"JevLand · Jev 非官方中文社区","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
 </head>
 <body>
-<main>
-<div class="tag">TYPESAFE JEV · 非官方中文社区</div>
-<h1>Jev<span>Land</span></h1>
-<p>中文文档、实战教程、更新速递，即将上线。</p>
-</main>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="hero-wrap">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><i></i>TYPESAFE JEV · 非官方中文社区</p>
+        <h1>Jev 不写字，<br>只做<span class="grad">判断。</span></h1>
+        <p class="hero-lead">TypeSafe 出品的 System One 判断模型。给它上下文和一道题，返回带概率和置信度的结构化答案。JevLand 是它的非官方中文社区：中文文档、实战教程、更新速递。</p>
+        <div class="hero-actions">
+          <a class="btn" href="/docs/">阅读中文文档 →</a>
+          <a class="btn btn-ghost" href="/docs/quickstart/">3 分钟跑通第一个请求</a>
+        </div>
+        <div class="facts"><div class="fact"><strong class="mono">$0.042</strong><span>每百万输入 token</span></div><div class="fact"><strong class="mono">0</strong><span>输出 token 费用</span></div><div class="fact"><strong class="mono">64k</strong><span>单次请求上下文</span></div><div class="fact"><strong class="mono">4</strong><span>种题型：Choice / Score / Noul / Box</span></div></div>
+      </div>
+      <div class="demo-wrap">
+    <aside class="demo-card" data-demo>
+      <div class="demo-chrome">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="demo-path">POST /v1/systemone</span>
+      </div>
+      <div class="demo-tabs" role="tablist"><button type="button" class="demo-tab is-active" role="tab" data-demo-tab="0" aria-selected="true">Choice</button><button type="button" class="demo-tab" role="tab" data-demo-tab="1" aria-selected="false">Noul</button><button type="button" class="demo-tab" role="tab" data-demo-tab="2" aria-selected="false">Score</button></div>
+      <div class="demo-panel is-active" data-demo-panel >
+    <div class="demo-bubbles"><div class="bubble"><span class="bubble-from">对方</span><p>你昨天说好要来的，结果呢</p></div><div class="bubble"><span class="bubble-from">对方</span><p>算了，没事</p></div></div>
+    <p class="demo-q">对方现在真正想要的是？</p>
+    <div class="demo-probs"><div class="prob-row">
+      <span class="prob-label">你解释并道歉</span>
+      <div class="prob-bar"><span class="is-top" style="--p:86%"></span></div>
+      <span class="prob-num">86%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">真的没事了</span>
+      <div class="prob-bar"><span class="" style="--p:7%"></span></div>
+      <span class="prob-num">7%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">想结束对话</span>
+      <div class="prob-bar"><span class="" style="--p:5%"></span></div>
+      <span class="prob-num">5%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">其他</span>
+      <div class="prob-bar"><span class="" style="--p:2%"></span></div>
+      <span class="prob-num">2%</span>
+    </div></div>
+    
+    <div class="demo-foot">
+      <span class="conf is-high">confidence 0.81</span>
+      <span class="route is-high">高置信 · 可以自动执行</span>
+    </div>
+  </div><div class="demo-panel" data-demo-panel hidden>
+    <div class="demo-bubbles"><div class="bubble"><span class="bubble-from">用户</span><p>这个订单能今天发货吗？我明天一早出差。</p></div></div>
+    <p class="demo-q">用户是在催促发货吗？</p>
+    <div class="demo-probs"><div class="prob-row">
+      <span class="prob-label">是</span>
+      <div class="prob-bar"><span class="is-top" style="--p:94%"></span></div>
+      <span class="prob-num">94%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">否</span>
+      <div class="prob-bar"><span class="" style="--p:6%"></span></div>
+      <span class="prob-num">6%</span>
+    </div></div>
+    
+    <div class="demo-foot">
+      <span class="conf is-high">confidence 0.88</span>
+      <span class="route is-high">高置信 · 可以自动执行</span>
+    </div>
+  </div><div class="demo-panel" data-demo-panel hidden>
+    <div class="demo-bubbles"><div class="bubble"><span class="bubble-from">用户</span><p>你们客服再不回，我就去 12315 投诉了</p></div></div>
+    <p class="demo-q">投诉升级风险有多高？</p>
+    <div class="demo-probs"><div class="prob-row">
+      <span class="prob-label">没有风险</span>
+      <div class="prob-bar"><span class="" style="--p:1%"></span></div>
+      <span class="prob-num">1%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">轻微不满</span>
+      <div class="prob-bar"><span class="" style="--p:4%"></span></div>
+      <span class="prob-num">4%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">明确不满</span>
+      <div class="prob-bar"><span class="" style="--p:17%"></span></div>
+      <span class="prob-num">17%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">威胁投诉或曝光</span>
+      <div class="prob-bar"><span class="is-top" style="--p:71%"></span></div>
+      <span class="prob-num">71%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">已经投诉</span>
+      <div class="prob-bar"><span class="" style="--p:7%"></span></div>
+      <span class="prob-num">7%</span>
+    </div></div>
+    <p class="demo-score">加权分数 <strong>0.70</strong></p>
+    <div class="demo-foot">
+      <span class="conf is-mid">confidence 0.64</span>
+      <span class="route is-mid">中置信 · 建议人工确认</span>
+    </div>
+  </div>
+    </aside>
+    <p class="demo-caption">示意数据，演示返回结构，不是真实调用结果</p>
+  </div>
+    </div>
+  </div>
+  <div class="container">
+    <section class="section">
+      <p class="kicker">Primitives</p>
+      <h2 class="section-title">四种题型，一个接口</h2>
+      <div class="type-grid"><a class="card type-card" href="/docs/choice/">
+    <div class="type-head"><h3>Choice</h3></div>
+    <p>从一组固定选项里选出一个，返回每个选项的概率和置信度。</p>
+    <pre class="type-sample">choice · probabilities · confidence</pre>
+  </a><a class="card type-card" href="/docs/score/">
+    <div class="type-head"><h3>Score</h3></div>
+    <p>按你给的量表打分，返回加权分数、各档概率和置信度。</p>
+    <pre class="type-sample">score · probabilities · confidence</pre>
+  </a><a class="card type-card" href="/docs/noul/">
+    <div class="type-head"><h3>Noul</h3></div>
+    <p>判断一个命题是真是假，返回 0–1 的概率和置信度。</p>
+    <pre class="type-sample">noul · confidence</pre>
+  </a><a class="card type-card" href="/docs/box/">
+    <div class="type-head"><h3>Box</h3><span class="badge">1.14 新增</span></div>
+    <p>从选项里勾选多个，返回选中集合、各选项概率和置信度。</p>
+    <pre class="type-sample">selected[] · probabilities · confidence</pre>
+  </a></div>
+    </section>
+    <section class="section">
+      <div class="section-heading">
+        <div><p class="kicker">Docs</p><h2 class="section-title">中文文档</h2></div>
+        <a class="text-link" href="/docs/">全部文档</a>
+      </div>
+      <div class="home-docs"><section class="card home-doc-group">
+    <h3>入门</h3>
+    <ul><li><a href="/docs/introduction/">简介</a><p>Jev 是 TypeSafe 的旗舰模型，也是首个 System One 模型。传入 state（上下文状态）和类型化的 question（问题），即可获得代码可直接使用的结构化 answer（答案）。</p></li><li><a href="/docs/quickstart/">快速开始</a><p>5 分钟内上手 Jev。</p></li><li><a href="/docs/coding-agents/">Jev 与编程智能体</a><p>在使用编程智能体时，Jev 是什么（以及不是什么）。</p></li><li><a href="/docs/use-cases/">用例地图</a><p>按行业探索 TypeSafe 的用例，把有潜力的想法转化为软件工作流。</p></li></ul>
+    <a class="text-link" href="/docs/#sec-%E5%85%A5%E9%97%A8">全部 4 篇</a>
+  </section><section class="card home-doc-group">
+    <h3>核心概念</h3>
+    <ul><li><a href="/docs/system-one/">System One</a><p>System One 模型为软件做快速、结构化的判断。Jev 是 TypeSafe 的旗舰模型，也是第一个 System One 模型。</p></li><li><a href="/docs/state/">State（上下文状态）</a><p>state 是什么、如何组织它，以及如何为 System One 模型提供所需的上下文。</p></li><li><a href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><p>通过让代码掌握控制权，并交给 System One 做出窄而结构化的判断，来设计 AI 驱动的软件。</p></li><li><a href="/docs/ai-primer/">AI 入门</a><p>介绍 TypeSafe 为何训练决策模型时使用校准过的概率，而非针对生成文本做优化。</p></li></ul>
+    <a class="text-link" href="/docs/#sec-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5">全部 5 篇</a>
+  </section><section class="card home-doc-group">
+    <h3>题型</h3>
+    <ul><li><a href="/docs/primitives/">题型总览</a><p>TypeSafe 的题型、它们返回的带类型答案、如何在它们之间选择，以及如何一次性提出多个问题。</p></li><li><a href="/docs/choice/">Choice（选择题）</a><p>Choice 是 System One 的题型（question type），用于从一组预定义选项中选出一个。答案包含所选选项、每个选项的概率以及置信度。</p></li><li><a href="/docs/score/">Score（打分题）</a><p>Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。</p></li><li><a href="/docs/noul/">Noul（是非题）</a><p>Noul（是非题）问题要求 TypeSafe 模型对一个是非问题进行判断，并返回答案为&quot;是&quot;的概率。</p></li></ul>
+    <a class="text-link" href="/docs/#sec-%E9%A2%98%E5%9E%8B">全部 7 篇</a>
+  </section><section class="card home-doc-group">
+    <h3>设计模式</h3>
+    <ul><li><a href="/docs/patterns/">设计模式</a><p>使用 TypeSafe 构建系统的架构设计模式。</p></li><li><a href="/docs/fan-out/">推测式扇出</a><p>一次调用发送多个问题，包括推测式问题，再由代码决定哪些相关。</p></li><li><a href="/docs/confidence-routing/">置信度分流</a><p>把置信度作为第二条判断轴。答案告诉你「是什么」，置信度告诉你「能不能直接行动」。</p></li><li><a href="/docs/composite-scoring/">组合打分</a><p>把一个复杂的判断拆成若干独立的子项打分，再用你在代码里指定的权重组合起来。</p></li></ul>
+    <a class="text-link" href="/docs/#sec-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">全部 5 篇</a>
+  </section><section class="card home-doc-group">
+    <h3>参考</h3>
+    <ul><li><a href="/docs/models/">模型</a><p>当前可用的 Jev 模型、价格、上下文长度和限流说明。</p></li><li><a href="/docs/api/">API 参考</a><p>TypeSafe 评估接口的完整 HTTP API 参考。</p></li><li><a href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><p>Jev 并不完美。以下是我们已知的 `jev-1.13` 能力短板，其中很多会在后续版本中修复。</p></li><li><a href="/docs/sdk/">客户端 SDK</a><p>安装 TypeSafe 客户端 SDK，在应用中使用带类型的问答。</p></li></ul>
+    <a class="text-link" href="/docs/#sec-%E5%8F%82%E8%80%83">全部 5 篇</a>
+  </section><section class="card home-doc-group">
+    <h3>实战示例</h3>
+    <ul><li><a href="/docs/cookbooks/">实战示例</a><p>从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。</p></li><li><a href="/docs/cookbook-function-calling/">函数调用</a><p>通过把函数名和闭合取值集合的参数映射到带置信度的 TypeSafe 问题，把自然语言的交易请求转为对普通带类型函数的调用。</p></li><li><a href="/docs/cookbook-skill-suggestion/">技能建议</a><p>每次智能体回合从 Nous Research 的 Hermes 目录中 182 个技能里至多选出一个技能，使用两次 TypeSafe 请求对排名靠前的候选进行排序和复检。</p></li><li><a href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><p>用一次 TypeSafe 请求对进出大语言模型（LLM）应用的每一条消息进行筛查，按各风险成立的概率（probability）和严重程度做阈值（threshold）判断，决定是放行、复核、拦截，还是路由。</p></li></ul>
+    <a class="text-link" href="/docs/#sec-%E5%AE%9E%E6%88%98%E7%A4%BA%E4%BE%8B">全部 21 篇</a>
+  </section></div>
+    </section>
+    <section class="section">
+      <div class="section-heading">
+        <div><p class="kicker">Guides</p><h2 class="section-title">实战教程</h2></div>
+        <a class="text-link" href="/guides/">全部教程</a>
+      </div>
+      <div class="guide-grid"><a class="card guide-card" data-guide-card data-category="入门" data-search="跑通第一个 Jev 请求：两条路都能走 只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。 入门 快速开始 OpenRouter API" href="/guides/first-request/">
+    <div class="guide-card-top"><span class="chip">入门</span><span class="muted">6 分钟</span></div>
+    <h3>跑通第一个 Jev 请求：两条路都能走</h3>
+    <p>只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。</p>
+    <div class="guide-card-meta"><time datetime="2026-10-15">2026-10-15</time></div>
+  </a><a class="card guide-card" data-guide-card data-category="实测" data-search="用 OpenRouter 调 Jev 看图，图片根本没送到模型那里 OpenRouter 的 alpha/decisions 接口不转发图片，要测 Jev 看图请走 TypeSafe 官方接口。 实测 看图 OpenRouter 踩坑" href="/guides/openrouter-images/">
+    <div class="guide-card-top"><span class="chip">实测</span><span class="muted">4 分钟</span></div>
+    <h3>用 OpenRouter 调 Jev 看图，图片根本没送到模型那里</h3>
+    <p>OpenRouter 的 alpha/decisions 接口不转发图片，要测 Jev 看图请走 TypeSafe 官方接口。</p>
+    <div class="guide-card-meta"><time datetime="2026-10-15">2026-10-15</time></div>
+  </a><a class="card guide-card" data-guide-card data-category="实测" data-search="Jev 1.14 看图实测：判断可以直接用，框选要看置信度 看截图做判断，结果和读文字几乎一致；Box 框选用置信度兜底。 实测 看图 Box Jev 1.14" href="/guides/vision-test/">
+    <div class="guide-card-top"><span class="chip">实测</span><span class="muted">7 分钟</span></div>
+    <h3>Jev 1.14 看图实测：判断可以直接用，框选要看置信度</h3>
+    <p>看截图做判断，结果和读文字几乎一致；Box 框选用置信度兜底。</p>
+    <div class="guide-card-meta"><time datetime="2026-10-15">2026-10-15</time></div>
+  </a></div>
+    </section>
+    <section class="section">
+      <div class="section-heading">
+        <div><p class="kicker">News</p><h2 class="section-title">更新速递</h2></div>
+        <a class="text-link" href="/news/">全部更新</a>
+      </div>
+      <ol class="timeline"><li>
+        <time datetime="2026-10-15">2026-10-15</time>
+        <span class="chip">社区</span>
+        <a href="/news/#2026-10-15-jevland-launch">JevLand 上线：Jev 官方文档有了中文版</a>
+        <p>Jev 的非官方中文社区，文档和实测教程同步上线。</p>
+      </li><li>
+        <time datetime="2026-10-14">2026-10-14</time>
+        <span class="chip">版本发布</span>
+        <a href="/news/#2026-10-14-jev-1-14">Jev 1.14 发布：能看图，新增 Box 框选题</a>
+        <p>1.14 看图进入实验阶段，新增 Box 框选题，价格与 1.13 持平。</p>
+      </li></ol>
+    </section>
+    <section class="section">
+      <p class="kicker">Showcase</p>
+      <h2 class="section-title">案例</h2>
+      <article class="card showcase-card is-featured">
+    <div class="showcase-top">
+      <div>
+        <h3>jev-chat</h3>
+        <p class="showcase-by">by 杰哥</p>
+      </div>
+      <p class="stars">★ <span data-stars data-repo="jev-chat/jev-chat-jarvis">7756</span></p>
+    </div>
+    <p>开源的聊天副驾。读懂对话后，用 Jev 判断对方意图、该不该马上回，再给出候选回复，发不发由你决定。</p>
+    <div class="tag-row"><span class="chip">开源</span><span class="chip">Android</span><span class="chip">Windows</span><span class="chip">macOS</span></div>
+    <div class="showcase-actions">
+      <a class="btn btn-ghost" href="https://chatjevs.com/" target="_blank" rel="noopener noreferrer">官网</a>
+      <a class="btn" href="https://github.com/jev-chat/jev-chat-jarvis" target="_blank" rel="noopener noreferrer">GitHub 点个 Star</a>
+    </div>
+  </article>
+    </section>
+    <section class="section">
+      <p class="kicker">Maintainer</p>
+      <h2 class="section-title">维护者</h2>
+      <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block">
+          <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+          <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+        </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+    </section>
+  </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
 </body>
 </html>

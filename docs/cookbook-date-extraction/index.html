@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>日期提取 · JevLand</title>
+<meta name="description" content="从文档中提取绝对日期和相对日期：先用 TypeSafe 读取被点名的日期片段，再在代码里完成解析和校验，并按置信度触发复核。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-date-extraction/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="日期提取">
+<meta property="og:description" content="从文档中提取绝对日期和相对日期：先用 TypeSafe 读取被点名的日期片段，再在代码里完成解析和校验，并按置信度触发复核。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-date-extraction/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="日期提取">
+<meta name="twitter:description" content="从文档中提取绝对日期和相对日期：先用 TypeSafe 读取被点名的日期片段，再在代码里完成解析和校验，并按置信度触发复核。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"日期提取","url":"https://jevland.com/docs/cookbook-date-extraction/","inLanguage":"zh-CN","description":"从文档中提取绝对日期和相对日期：先用 TypeSafe 读取被点名的日期片段，再在代码里完成解析和校验，并按置信度触发复核。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link is-current" href="/docs/cookbook-date-extraction/" aria-current="page">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link is-current" href="/docs/cookbook-date-extraction/" aria-current="page">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>日期提取</h1>
+        <p class="lead">从文档中提取绝对日期和相对日期：先用 TypeSafe 读取被点名的日期片段，再在代码里完成解析和校验，并按置信度触发复核。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/date_extraction_cookbook" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p><em>让 TypeSafe 读出文档中日期的各个部分，再在代码里解析成一个 <code>date</code>。</em></p>
+<p>本节构建的函数 <code>extract_date(document, role)</code> 接受一段文档以及一个指明目标日期的短语（例如「the deadline to return the form」），并返回一个附带置信度的 <code>date</code>。它会把低置信度的读数标记出来，也会把根本无法拼成日期的情况标记出来——包括文档根本没提到这个日期的情况。日期可以写成绝对形式（例如「August 14, 2027」），也可以写成相对今天的形式（例如「tomorrow」「next Thursday」）。</p>
+<p>TypeSafe 在一次调用中用 <code>Choice</code>（选择题）回答关于日期的若干问题：日期属于哪种类型，以及文本中点出了哪一个月份、日子、年份或星期几。代码再把这些答案拼成一个 <code>date</code>。模型只负责读文本里写了什么，绝不去做日历运算。</p>
+<p>下面几个单元格用四段简短文档跑这个函数，打印出每个日期及其置信度，并把结果分成「代码直接接受」和「应交由人工复核」两组。</p>
+<img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/date_extraction_cookbook/overview.png?fit=max&auto=format&n=2NirYCl-v96cw05F&q=85&s=4d1d1d4d446eefafb556505d9834e7a0" alt="概览图" width="1351" height="348" data-path="cookbooks/date_extraction_cookbook/overview.png" />
+
+<p><em>TypeSafe 读取日期的写法以及文本中点出了哪些部分。代码把这些答案拼成一个 <code>date</code>；若是相对日期，则自今日起算，之后要么直接采纳，要么送交复核。</em></p>
+<h2 id="setup">环境准备</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install ipython <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<p>然后设置 <code>TYPESAFE_API_KEY</code>。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> date, timedelta
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, TypeSafeClient
+
+TYPESAFE_MODEL = <span class="hljs-string">&quot;jev-1.12&quot;</span>
+TODAY = date(
+    <span class="hljs-number">2026</span>, <span class="hljs-number">7</span>, <span class="hljs-number">30</span>
+)  <span class="hljs-comment"># fixed reference &quot;today&quot; so relative dates resolve reproducibly</span>
+REVIEW_BELOW = <span class="hljs-number">0.60</span>  <span class="hljs-comment"># gate: a date below this confidence is flagged for a human</span>
+
+MONTHS = {
+    <span class="hljs-string">&quot;January&quot;</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">&quot;February&quot;</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-string">&quot;March&quot;</span>: <span class="hljs-number">3</span>,
+    <span class="hljs-string">&quot;April&quot;</span>: <span class="hljs-number">4</span>,
+    <span class="hljs-string">&quot;May&quot;</span>: <span class="hljs-number">5</span>,
+    <span class="hljs-string">&quot;June&quot;</span>: <span class="hljs-number">6</span>,
+    <span class="hljs-string">&quot;July&quot;</span>: <span class="hljs-number">7</span>,
+    <span class="hljs-string">&quot;August&quot;</span>: <span class="hljs-number">8</span>,
+    <span class="hljs-string">&quot;September&quot;</span>: <span class="hljs-number">9</span>,
+    <span class="hljs-string">&quot;October&quot;</span>: <span class="hljs-number">10</span>,
+    <span class="hljs-string">&quot;November&quot;</span>: <span class="hljs-number">11</span>,
+    <span class="hljs-string">&quot;December&quot;</span>: <span class="hljs-number">12</span>,
+}
+WEEKDAYS = [
+    <span class="hljs-string">&quot;Monday&quot;</span>,
+    <span class="hljs-string">&quot;Tuesday&quot;</span>,
+    <span class="hljs-string">&quot;Wednesday&quot;</span>,
+    <span class="hljs-string">&quot;Thursday&quot;</span>,
+    <span class="hljs-string">&quot;Friday&quot;</span>,
+    <span class="hljs-string">&quot;Saturday&quot;</span>,
+    <span class="hljs-string">&quot;Sunday&quot;</span>,
+]
+YEAR_WINDOW = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">1900</span>, <span class="hljs-number">2051</span>))  <span class="hljs-comment"># 1900..2050</span>
+
+<span class="hljs-comment"># Cached to json_cache.json (shipped with the cookbook, so re-rendering replays the published</span>
+<span class="hljs-comment"># results with no API spend); delete it to re-run live.</span>
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-comment"># The demo cells below run when this file is executed as the cookbook; the constants and the pure</span>
+<span class="hljs-comment"># resolve/assemble code stay importable, so the calendar math can be unit-tested on its own.</span>
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__cookbook__&quot;</span>:
+    client = TypeSafeClient(
+        api_key=os.environ.get(
+            <span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>, <span class="hljs-string">&quot;cache-only&quot;</span>
+        ),  <span class="hljs-comment"># cached re-renders need no key</span>
+        base_url=os.environ.get(<span class="hljs-string">&quot;TYPESAFE_BASE_URL&quot;</span>),
+        timeout=<span class="hljs-number">30.0</span>,
+    )</code></pre></div>
+<h2 id="the-questions">问题定义</h2>
+<p>七个 <code>Choice</code>（选择题）会在一次调用中发出。<code>mode</code> 描述日期的写法：<code>absolute</code> 表示写明了月份的日历日期，<code>relative</code> 表示相对今天的写法，<code>none</code> 则表示文档根本没提到这个日期。</p>
+<p>其余六个问题负责读取各个组成部分。绝对日期需要 <code>month</code>、<code>day</code>、<code>year</code>；相对日期需要 <code>day_anchor</code>：今天、明天、后天，或者一个具名的星期几。指明星期几时，<code>weekday</code> 和 <code>week_offset</code> 共同说明是哪个星期几、是哪一周。代码只读取 <code>mode</code> 实际声明要用到的部分。</p>
+<p><code>year</code> 列出了 1900 到 2050 之间每一年一个选项，再加两个兜底项。<code>none</code> 表示文本中没写年份，代码会自动补上；<code>out_of_range</code> 则表示文本中写了一个不在列表里的年份，代码会标记这种情况而不是猜测。如果你觉得这样的列表太长，可以先把文本中的年份数字抽出来，只把这些候选交给模型。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">date_questions</span>(<span class="hljs-params">role: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, Choice]:
+    <span class="hljs-string">&quot;&quot;&quot;Seven typed choices that read a date&#x27;s shape and parts off the text -- no math.&quot;&quot;&quot;</span>
+    absent = <span class="hljs-string">&quot;The document does not state this, or it is not this kind of date.&quot;</span>
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;mode&quot;</span>: Choice(
+            instructions=(
+                <span class="hljs-string">f&quot;How is <span class="hljs-subst">{role}</span> written? &#x27;absolute&#x27; = a calendar date naming a month (e.g. &quot;</span>
+                <span class="hljs-string">&quot;&#x27;August 14&#x27;, &#x27;the 3rd of March&#x27;); &#x27;relative&#x27; = given relative to today (today, &quot;</span>
+                <span class="hljs-string">&quot;tomorrow, the day after tomorrow, or a named weekday such as &#x27;next Thursday&#x27;); &quot;</span>
+                <span class="hljs-string">&quot;&#x27;none&#x27; = the document does not state this date.&quot;</span>
+            ),
+            criteria={<span class="hljs-string">&quot;absolute&quot;</span>: <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;relative&quot;</span>: <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;none&quot;</span>: <span class="hljs-literal">None</span>},
+        ),
+        <span class="hljs-string">&quot;month&quot;</span>: Choice(
+            instructions=<span class="hljs-string">f&quot;If <span class="hljs-subst">{role}</span> is an absolute calendar date, which month is it in?&quot;</span>,
+            criteria={m: <span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> m <span class="hljs-keyword">in</span> MONTHS} | {<span class="hljs-string">&quot;none&quot;</span>: absent},
+        ),
+        <span class="hljs-string">&quot;day&quot;</span>: Choice(
+            instructions=<span class="hljs-string">f&quot;If <span class="hljs-subst">{role}</span> is an absolute calendar date, which day of the month (1-31)?&quot;</span>,
+            criteria={<span class="hljs-built_in">str</span>(d): <span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">32</span>)} | {<span class="hljs-string">&quot;none&quot;</span>: absent},
+        ),
+        <span class="hljs-string">&quot;year&quot;</span>: Choice(
+            instructions=(
+                <span class="hljs-string">f&quot;If <span class="hljs-subst">{role}</span> is an absolute calendar date, which year? Pick &#x27;none&#x27; if the document &quot;</span>
+                <span class="hljs-string">&quot;states no year (code infers it), or &#x27;out_of_range&#x27; if a year is stated but not &quot;</span>
+                <span class="hljs-string">&quot;in the list.&quot;</span>
+            ),
+            criteria={<span class="hljs-built_in">str</span>(y): <span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> YEAR_WINDOW}
+            | {
+                <span class="hljs-string">&quot;out_of_range&quot;</span>: <span class="hljs-string">&quot;A year is stated for this date but is outside the listed range.&quot;</span>,
+                <span class="hljs-string">&quot;none&quot;</span>: <span class="hljs-string">&quot;No year is stated for this date.&quot;</span>,
+            },
+        ),
+        <span class="hljs-string">&quot;day_anchor&quot;</span>: Choice(
+            instructions=(
+                <span class="hljs-string">f&quot;If <span class="hljs-subst">{role}</span> is relative to today, which day is it? &#x27;today&#x27;, &#x27;tomorrow&#x27;, &quot;</span>
+                <span class="hljs-string">&quot;&#x27;day_after&#x27; (the day after tomorrow), or &#x27;weekday&#x27; (a named day of the week).&quot;</span>
+            ),
+            criteria={
+                <span class="hljs-string">&quot;today&quot;</span>: <span class="hljs-literal">None</span>,
+                <span class="hljs-string">&quot;tomorrow&quot;</span>: <span class="hljs-literal">None</span>,
+                <span class="hljs-string">&quot;day_after&quot;</span>: <span class="hljs-literal">None</span>,
+                <span class="hljs-string">&quot;weekday&quot;</span>: <span class="hljs-literal">None</span>,
+                <span class="hljs-string">&quot;none&quot;</span>: absent,
+            },
+        ),
+        <span class="hljs-string">&quot;weekday&quot;</span>: Choice(
+            instructions=<span class="hljs-string">f&quot;If <span class="hljs-subst">{role}</span> names a day of the week, which one?&quot;</span>,
+            criteria={w: <span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> w <span class="hljs-keyword">in</span> WEEKDAYS} | {<span class="hljs-string">&quot;none&quot;</span>: absent},
+        ),
+        <span class="hljs-string">&quot;week_offset&quot;</span>: Choice(
+            instructions=(
+                <span class="hljs-string">f&quot;If <span class="hljs-subst">{role}</span> names a weekday, which week is it in? &#x27;next&#x27; for &#x27;next Thursday&#x27; or &quot;</span>
+                <span class="hljs-string">&quot;&#x27;Thursday next week&#x27;; &#x27;current&#x27; for &#x27;this Thursday&#x27;; &#x27;none&#x27; for a bare weekday &quot;</span>
+                <span class="hljs-string">&quot;with no qualifier (just &#x27;Thursday&#x27; / &#x27;on Thursday&#x27;).&quot;</span>
+            ),
+            criteria={<span class="hljs-string">&quot;current&quot;</span>: <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;next&quot;</span>: <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;none&quot;</span>: absent},
+        ),
+    }</code></pre></div>
+<h2 id="resolve-it-in-code">在代码中解析</h2>
+<p><code>read_parts</code> 负责发起调用。<code>assemble</code> 把答案拼成一个 <code>date</code>：当文本未给出年份时自动补上年份，并算出具名星期几指向哪一天。这两件事都以 <code>TODAY</code> 为基准计数，而 <code>TODAY</code> 被钉死，因此相对日期每次跑出来的结果都一样。<code>assemble</code> 还会报告实际用到的各部分中最低的置信度，因此任何一个部分的弱读数都可能把整个日期送交复核。</p>
+<p>「next Thursday」可能指向两个不同的日子，因此由代码来裁决。没有限定语的星期几，指的是自今日起下一个（含今日）；<code>next</code> 指的是下一个日历周；<code>current</code> 指的则是本周。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">read_parts</span>(<span class="hljs-params">document: <span class="hljs-built_in">str</span>, role: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;One TypeSafe call -&gt; {part: {choice, confidence}} for the seven questions.&quot;&quot;&quot;</span>
+    answers = client.system_one(
+        state=document, questions=date_questions(role), model=TYPESAFE_MODEL
+    ).answers
+    <span class="hljs-keyword">return</span> {
+        part: {<span class="hljs-string">&quot;choice&quot;</span>: ans.choice, <span class="hljs-string">&quot;confidence&quot;</span>: ans.confidence}
+        <span class="hljs-keyword">for</span> part, ans <span class="hljs-keyword">in</span> answers.items()
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">resolve_weekday</span>(<span class="hljs-params">today: date, weekday: <span class="hljs-built_in">str</span>, week_offset: <span class="hljs-built_in">str</span></span>) -&gt; date:
+    <span class="hljs-string">&quot;&quot;&quot;Which date a named weekday points to, by our stated convention: a bare weekday is the next
+    occurrence on or after today; &#x27;next&#x27; is the following calendar week; &#x27;current&#x27; is this week.&quot;&quot;&quot;</span>
+    w = WEEKDAYS.index(weekday)
+    this_monday = today - timedelta(days=today.weekday())
+    <span class="hljs-keyword">if</span> week_offset == <span class="hljs-string">&quot;next&quot;</span>:
+        <span class="hljs-keyword">return</span> this_monday + timedelta(days=<span class="hljs-number">7</span> + w)
+    <span class="hljs-keyword">if</span> week_offset == <span class="hljs-string">&quot;current&quot;</span>:
+        <span class="hljs-keyword">return</span> this_monday + timedelta(days=w)
+    <span class="hljs-keyword">return</span> today + timedelta(days=(w - today.weekday()) % <span class="hljs-number">7</span>)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">assemble</span>(<span class="hljs-params">parts: <span class="hljs-built_in">dict</span>, today: date = TODAY</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Resolve the parts TypeSafe read into a concrete date, in code. Confidence is the weakest of
+    the parts the shape actually used.&quot;&quot;&quot;</span>
+    mode = parts[<span class="hljs-string">&quot;mode&quot;</span>][<span class="hljs-string">&quot;choice&quot;</span>]
+    confs = [parts[<span class="hljs-string">&quot;mode&quot;</span>][<span class="hljs-string">&quot;confidence&quot;</span>]]
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">result</span>(<span class="hljs-params">resolved: date | <span class="hljs-literal">None</span>, note: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+        usable = [c <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> confs <span class="hljs-keyword">if</span> c <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>]
+        confidence = <span class="hljs-built_in">min</span>(usable) <span class="hljs-keyword">if</span> usable <span class="hljs-keyword">else</span> <span class="hljs-literal">None</span>
+        needs_review = (
+            resolved <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">or</span> confidence <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">or</span> confidence &lt; REVIEW_BELOW
+        )
+        <span class="hljs-keyword">return</span> {
+            <span class="hljs-string">&quot;date&quot;</span>: resolved,
+            <span class="hljs-string">&quot;confidence&quot;</span>: confidence,
+            <span class="hljs-string">&quot;needs_review&quot;</span>: needs_review,
+            <span class="hljs-string">&quot;note&quot;</span>: note,
+        }
+
+    <span class="hljs-keyword">if</span> mode == <span class="hljs-string">&quot;none&quot;</span>:
+        <span class="hljs-keyword">return</span> result(<span class="hljs-literal">None</span>, <span class="hljs-string">&quot;no such date stated&quot;</span>)
+
+    <span class="hljs-keyword">if</span> mode == <span class="hljs-string">&quot;absolute&quot;</span>:
+        month, day, year = (
+            parts[<span class="hljs-string">&quot;month&quot;</span>][<span class="hljs-string">&quot;choice&quot;</span>],
+            parts[<span class="hljs-string">&quot;day&quot;</span>][<span class="hljs-string">&quot;choice&quot;</span>],
+            parts[<span class="hljs-string">&quot;year&quot;</span>][<span class="hljs-string">&quot;choice&quot;</span>],
+        )
+        confs += [
+            parts[<span class="hljs-string">&quot;month&quot;</span>][<span class="hljs-string">&quot;confidence&quot;</span>],
+            parts[<span class="hljs-string">&quot;day&quot;</span>][<span class="hljs-string">&quot;confidence&quot;</span>],
+            parts[<span class="hljs-string">&quot;year&quot;</span>][<span class="hljs-string">&quot;confidence&quot;</span>],
+        ]
+        <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;none&quot;</span> <span class="hljs-keyword">in</span> (month, day) <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span> day.isdigit() <span class="hljs-keyword">or</span> month <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> MONTHS:
+            <span class="hljs-keyword">return</span> result(<span class="hljs-literal">None</span>, <span class="hljs-string">&quot;absolute date incomplete&quot;</span>)
+        <span class="hljs-keyword">if</span> (
+            year == <span class="hljs-string">&quot;out_of_range&quot;</span>
+        ):  <span class="hljs-comment"># a year is stated but off the list -&gt; flag, don&#x27;t guess</span>
+            <span class="hljs-keyword">return</span> result(<span class="hljs-literal">None</span>, <span class="hljs-string">f&quot;year outside <span class="hljs-subst">{YEAR_WINDOW[<span class="hljs-number">0</span>]}</span>-<span class="hljs-subst">{YEAR_WINDOW[-<span class="hljs-number">1</span>]}</span>&quot;</span>)
+        <span class="hljs-keyword">if</span> (
+            year == <span class="hljs-string">&quot;none&quot;</span>
+        ):  <span class="hljs-comment"># no year stated -&gt; infer this year, bumped to next if well past</span>
+            <span class="hljs-keyword">try</span>:
+                resolved = date(today.year, MONTHS[month], <span class="hljs-built_in">int</span>(day))
+            <span class="hljs-keyword">except</span> (
+                ValueError
+            ):  <span class="hljs-comment"># e.g. February 30 -- an inconsistent read, not a real date</span>
+                <span class="hljs-keyword">return</span> result(<span class="hljs-literal">None</span>, <span class="hljs-string">f&quot;impossible date: <span class="hljs-subst">{month}</span> <span class="hljs-subst">{day}</span>&quot;</span>)
+            <span class="hljs-keyword">if</span> resolved &lt; today - timedelta(days=<span class="hljs-number">31</span>):
+                resolved = date(today.year + <span class="hljs-number">1</span>, MONTHS[month], <span class="hljs-built_in">int</span>(day))
+            <span class="hljs-keyword">return</span> result(resolved, <span class="hljs-string">&quot;&quot;</span>)
+        <span class="hljs-keyword">try</span>:  <span class="hljs-comment"># a stated, in-range year</span>
+            <span class="hljs-keyword">return</span> result(date(<span class="hljs-built_in">int</span>(year), MONTHS[month], <span class="hljs-built_in">int</span>(day)), <span class="hljs-string">&quot;&quot;</span>)
+        <span class="hljs-keyword">except</span> ValueError:
+            <span class="hljs-keyword">return</span> result(<span class="hljs-literal">None</span>, <span class="hljs-string">f&quot;impossible date: <span class="hljs-subst">{year}</span>-<span class="hljs-subst">{month}</span>-<span class="hljs-subst">{day}</span>&quot;</span>)
+
+    <span class="hljs-keyword">if</span> mode == <span class="hljs-string">&quot;relative&quot;</span>:
+        anchor = parts[<span class="hljs-string">&quot;day_anchor&quot;</span>][<span class="hljs-string">&quot;choice&quot;</span>]
+        confs.append(parts[<span class="hljs-string">&quot;day_anchor&quot;</span>][<span class="hljs-string">&quot;confidence&quot;</span>])
+        <span class="hljs-keyword">if</span> anchor == <span class="hljs-string">&quot;today&quot;</span>:
+            <span class="hljs-keyword">return</span> result(today, <span class="hljs-string">&quot;&quot;</span>)
+        <span class="hljs-keyword">if</span> anchor == <span class="hljs-string">&quot;tomorrow&quot;</span>:
+            <span class="hljs-keyword">return</span> result(today + timedelta(days=<span class="hljs-number">1</span>), <span class="hljs-string">&quot;&quot;</span>)
+        <span class="hljs-keyword">if</span> anchor == <span class="hljs-string">&quot;day_after&quot;</span>:
+            <span class="hljs-keyword">return</span> result(today + timedelta(days=<span class="hljs-number">2</span>), <span class="hljs-string">&quot;&quot;</span>)
+        <span class="hljs-keyword">if</span> anchor == <span class="hljs-string">&quot;weekday&quot;</span>:
+            weekday, offset = parts[<span class="hljs-string">&quot;weekday&quot;</span>][<span class="hljs-string">&quot;choice&quot;</span>], parts[<span class="hljs-string">&quot;week_offset&quot;</span>][<span class="hljs-string">&quot;choice&quot;</span>]
+            confs += [
+                parts[<span class="hljs-string">&quot;weekday&quot;</span>][<span class="hljs-string">&quot;confidence&quot;</span>],
+                parts[<span class="hljs-string">&quot;week_offset&quot;</span>][<span class="hljs-string">&quot;confidence&quot;</span>],
+            ]
+            <span class="hljs-keyword">if</span> weekday <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> WEEKDAYS:
+                <span class="hljs-keyword">return</span> result(<span class="hljs-literal">None</span>, <span class="hljs-string">&quot;relative weekday not read&quot;</span>)
+            <span class="hljs-keyword">return</span> result(resolve_weekday(today, weekday, offset), <span class="hljs-string">&quot;&quot;</span>)
+        <span class="hljs-keyword">return</span> result(<span class="hljs-literal">None</span>, <span class="hljs-string">&quot;relative day not read&quot;</span>)
+
+    <span class="hljs-keyword">return</span> result(<span class="hljs-literal">None</span>, <span class="hljs-string">f&quot;unrecognized mode: <span class="hljs-subst">{mode}</span>&quot;</span>)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">extract_date</span>(<span class="hljs-params">document: <span class="hljs-built_in">str</span>, role: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-keyword">return</span> assemble(read_parts(document, role))</code></pre></div>
+<h2 id="run-it">运行一下</h2>
+<p>六个问题（question），分布在四份简短的文档中：合同里写明年份的两次日期、一份没写年份的表单截止日期、一份在「今天」关闭的问卷、一场安排在「下周四」的评审，以及表单中从未出现的那条日期。它们全部以 <code>TODAY</code> = 2026-07-30（周四）为锚点进行解析。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">CONTRACT = <span class="hljs-string">&quot;This agreement is effective January 1, 2025 and expires December 31, 2027.&quot;</span>
+FORM = <span class="hljs-string">&quot;Please return the signed form by August 14.&quot;</span>
+SURVEY = <span class="hljs-string">&quot;Heads up - the customer survey closes today at 5pm.&quot;</span>
+REVIEW = <span class="hljs-string">&quot;Let&#x27;s schedule the design review for next Thursday.&quot;</span>
+
+<span class="hljs-comment"># (document, question phrase, expected date) -- the expected value is only for the scorecard.</span>
+EXAMPLES = [
+    (CONTRACT, <span class="hljs-string">&quot;the date the agreement takes effect&quot;</span>, date(<span class="hljs-number">2025</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)),
+    (CONTRACT, <span class="hljs-string">&quot;the date the agreement expires&quot;</span>, date(<span class="hljs-number">2027</span>, <span class="hljs-number">12</span>, <span class="hljs-number">31</span>)),
+    (FORM, <span class="hljs-string">&quot;the deadline to return the form&quot;</span>, date(<span class="hljs-number">2026</span>, <span class="hljs-number">8</span>, <span class="hljs-number">14</span>)),
+    (FORM, <span class="hljs-string">&quot;the date of the kickoff call&quot;</span>, <span class="hljs-literal">None</span>),
+    (SURVEY, <span class="hljs-string">&quot;the date the survey closes&quot;</span>, date(<span class="hljs-number">2026</span>, <span class="hljs-number">7</span>, <span class="hljs-number">30</span>)),
+    (REVIEW, <span class="hljs-string">&quot;the date of the design review&quot;</span>, date(<span class="hljs-number">2026</span>, <span class="hljs-number">8</span>, <span class="hljs-number">6</span>)),
+]
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__cookbook__&quot;</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;&#x27;</span>:<span class="hljs-number">3</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;question&#x27;</span>:&lt;<span class="hljs-number">38</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;expected&#x27;</span>:&lt;<span class="hljs-number">12</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;got&#x27;</span>:&lt;<span class="hljs-number">12</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;conf&#x27;</span>:&gt;<span class="hljs-number">6</span>}</span>  flags&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;-&quot;</span> * <span class="hljs-number">84</span>)
+    <span class="hljs-keyword">for</span> document, role, expected <span class="hljs-keyword">in</span> EXAMPLES:
+        r = extract_date(document, role)
+        got = r[<span class="hljs-string">&quot;date&quot;</span>].isoformat() <span class="hljs-keyword">if</span> r[<span class="hljs-string">&quot;date&quot;</span>] <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;none&quot;</span>
+        exp = expected.isoformat() <span class="hljs-keyword">if</span> expected <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;none&quot;</span>
+        mark = <span class="hljs-string">&quot;OK&quot;</span> <span class="hljs-keyword">if</span> r[<span class="hljs-string">&quot;date&quot;</span>] == expected <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;XX&quot;</span>
+        conf = <span class="hljs-string">f&quot;<span class="hljs-subst">{r[<span class="hljs-string">&#x27;confidence&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>&quot;</span> <span class="hljs-keyword">if</span> r[<span class="hljs-string">&quot;confidence&quot;</span>] <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot; n/a&quot;</span>
+        flags = <span class="hljs-string">&quot;  &lt;== review&quot;</span> <span class="hljs-keyword">if</span> r[<span class="hljs-string">&quot;needs_review&quot;</span>] <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;&quot;</span>
+        <span class="hljs-keyword">if</span> r[<span class="hljs-string">&quot;note&quot;</span>]:
+            flags += <span class="hljs-string">f&quot;  (<span class="hljs-subst">{r[<span class="hljs-string">&#x27;note&#x27;</span>]}</span>)&quot;</span>
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{mark:&lt;<span class="hljs-number">3</span>}</span><span class="hljs-subst">{role:&lt;<span class="hljs-number">38</span>}</span><span class="hljs-subst">{exp:&lt;<span class="hljs-number">12</span>}</span><span class="hljs-subst">{got:&lt;<span class="hljs-number">12</span>}</span><span class="hljs-subst">{conf:&gt;<span class="hljs-number">6</span>}</span><span class="hljs-subst">{flags}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">   question                              expected    got           conf  flags
+------------------------------------------------------------------------------------
+OK the date the agreement takes effect   2025-01-01  2025-01-01    0.97
+OK the date the agreement expires        2027-12-31  2027-12-31    0.91
+OK the deadline to return the form       2026-08-14  2026-08-14    0.95
+OK the date of the kickoff call          none        none          0.46  &lt;== review  (absolute date incomplete)
+OK the date the survey closes            2026-07-30  2026-07-30    0.94
+OK the date of the design review         2026-08-06  2026-08-06    0.92</code></pre></div>
+<p>合同里的两个年份都写明了，所以从文本中直接取出即可。表单没有写年份，代码便填入 2026：先取当前年份，只有当原始日期已经过去一个多月时才顺延到下一年。「今天」和「下周四」走过的是同一条函数路径，和明确写明年份的日期相同。</p>
+<p>启动会的日期正是表单中从未提到的那一项。表单里其实有日期，只是不对应这个问题；注释 <code>absolute date incomplete</code> 表明 <code>mode</code> 返回了 <code>absolute</code>，但缺少月份。最终得到的日期为空，置信度为 0.46，这一行被标记转给人工复核。</p>
+<h2 id="confidence-to-route-on">用置信度来分流</h2>
+<p>每一条回答都会附带一个校准过的置信度，日期的置信度取自构成它的各个组成部分中最低的那个。置信度低于 <code>REVIEW_BELOW</code> = 0.60 的日期、以及代码完全无法组装出来的日期，都会送去人工复核。其余的直接放行。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__cookbook__&quot;</span>:
+    confident = [
+        (doc, role)
+        <span class="hljs-keyword">for</span> doc, role, _ <span class="hljs-keyword">in</span> EXAMPLES
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> extract_date(doc, role)[<span class="hljs-string">&quot;needs_review&quot;</span>]
+    ]
+    review = [
+        (doc, role)
+        <span class="hljs-keyword">for</span> doc, role, _ <span class="hljs-keyword">in</span> EXAMPLES
+        <span class="hljs-keyword">if</span> extract_date(doc, role)[<span class="hljs-string">&quot;needs_review&quot;</span>]
+    ]
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;auto-accept (<span class="hljs-subst">{<span class="hljs-built_in">len</span>(confident)}</span>):&quot;</span>)
+    <span class="hljs-keyword">for</span> _doc, role <span class="hljs-keyword">in</span> confident:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  - <span class="hljs-subst">{role}</span>&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\nsend to review (<span class="hljs-subst">{<span class="hljs-built_in">len</span>(review)}</span>):&quot;</span>)
+    <span class="hljs-keyword">for</span> _doc, role <span class="hljs-keyword">in</span> review:
+        r = extract_date(_doc, role)
+        <span class="hljs-built_in">print</span>(
+            <span class="hljs-string">f&quot;  - <span class="hljs-subst">{role}</span>  (conf <span class="hljs-subst">{r[<span class="hljs-string">&#x27;confidence&#x27;</span>]:<span class="hljs-number">.2</span>f}</span> / <span class="hljs-subst">{r[<span class="hljs-string">&#x27;note&#x27;</span>] <span class="hljs-keyword">or</span> <span class="hljs-string">&#x27;low confidence&#x27;</span>}</span>)&quot;</span>
+        )</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">auto-accept (5):
+  - the date the agreement takes effect
+  - the date the agreement expires
+  - the deadline to return the form
+  - the date the survey closes
+  - the date of the design review
+
+send to review (1):
+  - the date of the kickoff call  (conf 0.46 / absolute date incomplete)</code></pre></div>
+<h2 id="open-it-in-the-typesafe-playground">在 TypeSafe playground 中打开</h2>
+<p>下方链接已经携带了「下周四」这条消息，以及代码中发送的那些同样的问题。打开后即可看到对应的答案和置信度，并且无需编写代码就能修改措辞。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__cookbook__&quot;</span>:
+    playground_link = make_playground_link(
+        REVIEW, date_questions(<span class="hljs-string">&quot;the date of the design review&quot;</span>), models=[TYPESAFE_MODEL]
+    )
+    display(
+        Markdown(
+            <span class="hljs-string">f&quot;🔗 [Open this document + questions in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>
+        )
+    )</code></pre></div>
+<p><a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIAMgigOQDO+FUAFgmDADYL4r35gIUCWA5knwAnBADceCAO74AZhCH4kWFPjS0YQimACGATwB0IADSEADkIhxTKChmx5CwADog4ELi4LOQKXaYSe+C50EDxQAcZBIDxIFChCMFAoPBCxgS4AEhDSPFTsrDoorBAybBxcvALCYhLSkkI8KEVIAPz4ZNoARhQQTDBFZPgAvPja+FDaLEg6CoWsSNpwMXyj+G6otPgAFAj6fPrtAIIwfDBx+ACMACxkJmT5+ADMQmD4JfgAstpCdGQAlABudoiJjaZKiBCDEZ8HgQwQgsGw1goCBsdx6bYonS6EwotxCCySXHlDHaGRFBR4+SEkzyVYLRCvSQIBAAa2x1ESm20VDISmwqnUmmx-yBfNSkOGZQK0HgyBUkG4iggKjiYORtFynHV+hcJmCDQpPG0gW8XR6fSKgSQzCY+pACPBEQINqYdqiSAl1ttAF8ffb1uxTS5fP50iAQmEIvaYnEEkkUmkHC4AJKlB5zN7p8rcfjwmpSfBa7SCc29fqsCZTGbaoomSSauhrVLsItURpF1p6qJQQ0IBomhzeABSJZg3103rd9oAYghOgkJ1P3S4vj9aMv7YdzDwmJuol9Jw5XSuQMOYEp9y5z0wjy7bVuTmcUFeQABlBDWBBwTr918AeSSCBfyEV8ADkIAhH8-2PB8ogAEQQcJoNA2Dpw9L1kxANQZVgRBUE4CAlU9VUUHVMpclpBQOy1EiKKoVkYled45l1EA-XtbFgx8PxnR7WhQnCbsXFjeJEmSVIKHDNNpVrYpswKXMqhEcRC2LUtunLIpxkmZAazmetG02Dl3geQNNi2C4AFpHguP4WmEiM+wHbiLlfAAmV9HlfK5XwAVlfAA2V8AHZXwADlfABOV8LgABlity0NPC5POS+0Lm89KomuWKAuylwLmCgqQAuMKSouSKKpikr3IS2qkvvdCXHctKmtPdysva+13N82r8u6qJ3OKwaWvK0aQHcqqJvcmqJseer5saxQ4JcT1LywnDCLw+VCOIlVqDI7T2Eot5qJUWiDpOhimKzOS2I4qJdAQb5uNDPjggEqNHNE+MJKTAhUwUuS7ozJT81UnIqBLUZNMtStdOmb45MMsJNme742gABTCVl2nWyUeGByAdoItUiioT18AxhQtigdxWBiGR+3bFA-io9oIH6AB9EpuaEEs+EJ0oxhpttDvVV5On6ZULsEB4mFyFA2PtXtGn7Y1XKiuLFpW5rSu15aTwy7W2r1lLta682TbivqJoubWButnLtZG53Cu18b3YNuLpu9h24rm-2ovi2KQ6N1aDdSsPMpju3g4uJ3jZdoqY695OPcqmOg4zg26rD9yI-1h3WoLq3c5L+OK6i9yk8jku3er9z0-rmu-abnPW4WsPbJ7s3q8ecuu6rru6+LqLHkbruW-Hx5267zvx6uXXq6uIuLaufvW6uIel5Hpex43qel5njf56XxeLb8lfW789eTb8rfx783er-3q-D4f4+r9Ph-z6vy+JtAo33HoFe+LtApPwtoFV+QD35AM-hA7+QDf4QP-kAwBLsQogItiFcBHsQpQJNiFWBWD4FYMQQQ5BWDUEEPQVgzBHtwo4JNuFfBBtwpEJduFUhTDyFMMoRw6hTDaEcPoUwxhBttZhxDjIrhHsJ4yP4VIwRDsorCKkaItR4ipGSLqjrDyOt2H6PkZNHWvCzG20MXFQR+iNH6NEfonR+i9FxVDrVNxxi3GmLqrHDxuV-G2LcfYtxji3HOLca4-OHjC6GNLjEixdVepxKCcNOJYSppxNcd3Dxvdck+LioPQxjxlF1UeEEyexSwlz2Ka45ehi14NIKTvBppTbZBKuCEq4YSrgRKuK46+r4uYoF5jIfmgsPogEONTF61EqDkwYLIOk10QbSwulQYZvAuCyUVnERZAskBCxVhhDagMQAQRmcjLUCzXhyEpJqKgrEXCPRcNibmJYQioS8CGXi4ZIxCUiCJWIYkEySWksTcipkcyVAhrUcWjokRojRNiVGTYORakaG0e46JdC3HaFSAk2Q8VkDeWSCkgwtgZlJOSfsaJ8SEnZmddozI2Qim2GMBkiyTLAxZayP4xyDTqxckOEMOLXwEsJK+UlNKvne15VxEqBNwxbRJnKAiipKYHQWfRDmNFNUqBWYxaYd0nnsX9FEeVeg3q-Kwv86MURfriUTFJLCMkqXaShYpGF1RIaKEWEqMY3LZK8tRZsCUDlAVOSFZrEVIAPipAVRNNAMBuCJu9gAdQYEoLQVqSpqA0Dmu83sZwNDTbnN8YINBlsjm+C81b9ZKs2uUWU+EFREX1RLY6DzdXrNlvRfARrmKlFNS8kAvLRkyAoKQa1YZbVfQBTGYFf1nXgtkpmT1nBwY+rhZy6G+BLU4n3UZfdLI8YYrlli-k5AlkKD5MoQUBa2V0jIPm4UGIr0nrZGQMUsACTykGHc-FDyH1vtxWKAmAG6RjE6N8VgB792NE2FTAAjuORWMgJC0wAFbPnaK+wtgwAD0nNBD4ZFPyxyasjSDm+RGDQIhUCvivUxzCZyVUtt2hqvt2rro9vFnRQ1t0WI6meX6SIIBtCmB4AANRZomBwIBRAXHE1OlgSQGDxq4EwCgDgADaIAsNiCshcfQqUQAAF0fRAA" target="_blank" rel="noopener noreferrer">在 TypeSafe playground 中打开此文档和问题 →</a></p>
+<hr>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建并托管，Mintlify 是一个面向开发者的文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-sde-cascade/"><span>上一篇</span><strong>SDE（结构化数据抽取）级联</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-pre-parsed-value-extraction/"><span>下一篇</span><strong>预先解析的值抽取</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">环境准备</a><a class="toc-link depth-2" href="#the-questions">问题定义</a><a class="toc-link depth-2" href="#resolve-it-in-code">在代码中解析</a><a class="toc-link depth-2" href="#run-it">运行一下</a><a class="toc-link depth-2" href="#confidence-to-route-on">用置信度来分流</a><a class="toc-link depth-2" href="#open-it-in-the-typesafe-playground">在 TypeSafe playground 中打开</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

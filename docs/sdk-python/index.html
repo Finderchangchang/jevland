@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Python SDK · JevLand</title>
+<meta name="description" content="安装 TypeSafe Python SDK，开始用异步或同步方式调用 API。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/sdk-python/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="Python SDK">
+<meta property="og:description" content="安装 TypeSafe Python SDK，开始用异步或同步方式调用 API。">
+<meta property="og:url" content="https://jevland.com/docs/sdk-python/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Python SDK">
+<meta name="twitter:description" content="安装 TypeSafe Python SDK，开始用异步或同步方式调用 API。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"Python SDK","url":"https://jevland.com/docs/sdk-python/","inLanguage":"zh-CN","description":"安装 TypeSafe Python SDK，开始用异步或同步方式调用 API。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link is-current" href="/docs/sdk-python/" aria-current="page">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link is-current" href="/docs/sdk-python/" aria-current="page">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 参考</p>
+        <h1>Python SDK</h1>
+        <p class="lead">安装 TypeSafe Python SDK，开始用异步或同步方式调用 API。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/sdk/python" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><a id="typesafe-python-sdk" />
+
+<p>在 <a href="https://github.com/typesafe-ai/typesafe-sdk-python" target="_blank" rel="noopener noreferrer">GitHub 上浏览 Python SDK 源码</a>。</p>
+<p>面向 <a href="https://typesafe.ai" target="_blank" rel="noopener noreferrer">TypeSafe</a> API 的 Python 异步和同步客户端。在 <a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">此处</a> 学习如何使用 TypeSafe。</p>
+<h2 id="quickstart">快速开始</h2>
+<ol>
+<li><p>安装 SDK：</p>
+<h4 id="uv">uv</h4>
+<div class="code-block"><div class="code-bar"><span class="code-lang">sh</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">uv add typesafe-sdk</code></pre></div>
+<h4 id="pip">pip</h4>
+<div class="code-block"><div class="code-bar"><span class="code-lang">sh</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install typesafe-sdk</code></pre></div>
+<p>支持的 extras（例如 <code>typesafe-sdk[http2]</code>）：</p>
+<ul>
+<li><code>http2</code>：启用 <a href="https://docs.typesafe.ai/sdk/python/usage/advanced#http2" target="_blank" rel="noopener noreferrer">HTTP/2 支持</a></li>
+<li><code>pil</code>：发送 <a href="https://docs.typesafe.ai/sdk/python/api/types/assets#typesafe_sdk.Image.from_pil" target="_blank" rel="noopener noreferrer">Pillow 图片</a></li>
+<li><code>zstd</code>：在 Python 3.13 及更早版本上<a href="https://docs.typesafe.ai/sdk/python/usage/advanced#ensure-zstd-is-available" target="_blank" rel="noopener noreferrer">压缩请求体</a></li>
+</ul>
+</li>
+<li><p>在环境中设置 <code>TYPESAFE_API_KEY</code>（在 <a href="https://console.typesafe.ai/" target="_blank" rel="noopener noreferrer">此处</a> 创建）</p>
+</li>
+<li><p>调用 System One API：</p>
+<h4 id="异步">异步</h4>
+<p>使用 <a href="https://docs.typesafe.ai/sdk/python/api/clients/async" target="_blank" rel="noopener noreferrer">AsyncTypeSafeClient</a>：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> AsyncTypeSafeClient, Choice, Noul, Score
+
+
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>() -&gt; <span class="hljs-literal">None</span>:
+    <span class="hljs-keyword">async</span> <span class="hljs-keyword">with</span> AsyncTypeSafeClient() <span class="hljs-keyword">as</span> client:
+        response = <span class="hljs-keyword">await</span> client.system_one(
+            state={<span class="hljs-string">&quot;document&quot;</span>: <span class="hljs-string">&quot;I was charged twice. Please fix this ASAP.&quot;</span>},
+            questions={
+                <span class="hljs-string">&quot;billing&quot;</span>: Noul(instructions=<span class="hljs-string">&quot;Is this ticket about billing?&quot;</span>),
+                <span class="hljs-string">&quot;tone&quot;</span>: Choice(
+                    instructions=<span class="hljs-string">&quot;What is the customer&#x27;s tone?&quot;</span>,
+                    criteria={<span class="hljs-string">&quot;calm&quot;</span>: <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;frustrated&quot;</span>: <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;angry&quot;</span>: <span class="hljs-literal">None</span>},
+                ),
+                <span class="hljs-string">&quot;urgency&quot;</span>: Score(
+                    instructions=<span class="hljs-string">&quot;How urgent is this ticket?&quot;</span>,
+                    criteria=[<span class="hljs-string">&quot;can wait&quot;</span>, <span class="hljs-string">&quot;this week&quot;</span>, <span class="hljs-string">&quot;today&quot;</span>],
+                ),
+            },
+        )
+
+    <span class="hljs-built_in">print</span>(response.nouls[<span class="hljs-string">&quot;billing&quot;</span>].noul)
+    <span class="hljs-built_in">print</span>(response.choices[<span class="hljs-string">&quot;tone&quot;</span>].choice)
+    <span class="hljs-built_in">print</span>(response.scores[<span class="hljs-string">&quot;urgency&quot;</span>].score)</code></pre></div>
+<h4 id="同步">同步</h4>
+<p>使用 <a href="https://docs.typesafe.ai/sdk/python/api/clients/sync" target="_blank" rel="noopener noreferrer">TypeSafeClient</a>：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, Noul, Score, TypeSafeClient
+
+<span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+    response = client.system_one(
+        state={<span class="hljs-string">&quot;document&quot;</span>: <span class="hljs-string">&quot;I was charged twice. Please fix this ASAP.&quot;</span>},
+        questions={
+            <span class="hljs-string">&quot;billing&quot;</span>: Noul(instructions=<span class="hljs-string">&quot;Is this ticket about billing?&quot;</span>),
+            <span class="hljs-string">&quot;tone&quot;</span>: Choice(
+                instructions=<span class="hljs-string">&quot;What is the customer&#x27;s tone?&quot;</span>,
+                criteria={<span class="hljs-string">&quot;calm&quot;</span>: <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;frustrated&quot;</span>: <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;angry&quot;</span>: <span class="hljs-literal">None</span>},
+            ),
+            <span class="hljs-string">&quot;urgency&quot;</span>: Score(
+                instructions=<span class="hljs-string">&quot;How urgent is this ticket?&quot;</span>,
+                criteria=[<span class="hljs-string">&quot;can wait&quot;</span>, <span class="hljs-string">&quot;this week&quot;</span>, <span class="hljs-string">&quot;today&quot;</span>],
+            ),
+        },
+    )
+
+<span class="hljs-built_in">print</span>(response.nouls[<span class="hljs-string">&quot;billing&quot;</span>].noul)
+<span class="hljs-built_in">print</span>(response.choices[<span class="hljs-string">&quot;tone&quot;</span>].choice)
+<span class="hljs-built_in">print</span>(response.scores[<span class="hljs-string">&quot;urgency&quot;</span>].score)</code></pre></div>
+</li>
+</ol>
+<h2 id="whats-next">下一步</h2>
+<p>访问<a href="https://docs.typesafe.ai/sdk/python/usage/basic" target="_blank" rel="noopener noreferrer">使用指南</a>，了解如何：</p>
+<ul>
+<li><a href="https://docs.typesafe.ai/sdk/python/usage/basic#choosing-a-model" target="_blank" rel="noopener noreferrer">选择 System One 模型</a></li>
+<li><a href="https://docs.typesafe.ai/sdk/python/usage/basic#attaching-media-assets" target="_blank" rel="noopener noreferrer">发送媒体输入</a></li>
+<li><a href="https://docs.typesafe.ai/sdk/python/usage/basic#typed-system_one-responses" target="_blank" rel="noopener noreferrer">使用类型化响应</a></li>
+<li><a href="https://docs.typesafe.ai/sdk/python/usage/basic#retries" target="_blank" rel="noopener noreferrer">配置重试策略</a></li>
+<li><a href="https://docs.typesafe.ai/sdk/python/usage/advanced#performance" target="_blank" rel="noopener noreferrer">优化性能</a></li>
+</ul>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a>（开发者文档平台）构建和托管。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/sdk/"><span>上一篇</span><strong>客户端 SDK</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbooks/"><span>下一篇</span><strong>实战示例</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#quickstart">快速开始</a><a class="toc-link depth-2" href="#whats-next">下一步</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

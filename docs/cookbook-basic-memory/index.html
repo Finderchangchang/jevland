@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>简单记忆系统 · JevLand</title>
+<meta name="description" content="让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-basic-memory/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="简单记忆系统">
+<meta property="og:description" content="让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-basic-memory/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="简单记忆系统">
+<meta name="twitter:description" content="让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"简单记忆系统","url":"https://jevland.com/docs/cookbook-basic-memory/","inLanguage":"zh-CN","description":"让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link is-current" href="/docs/cookbook-basic-memory/" aria-current="page">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link is-current" href="/docs/cookbook-basic-memory/" aria-current="page">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>简单记忆系统</h1>
+        <p class="lead">让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/basic_memory" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>每次 Jev 请求只看得到你发给它的 state（上下文状态）。客户上个月告诉过你应用的事——比如他们的 edition 或 plan——不会出现在他们的下一次请求里，除非你的代码把它放进去。这里的记忆系统就是这么做的：每次调用多发一条 Jev 请求，外加一个 Python dict。</p>
+<p>我们的示例是把 support 工单路由到相应团队。8 月，一位客户说他们在 Windows Server 上自托管。9 月，他们发来消息「Dashboards have been really slow since this morning」。没有记忆时，Jev 会把这张工单派给 cloud 团队，而不是 self-hosted 团队。在下面的例子里，加上记忆后，6 张后续工单全部派到了预期的团队；而单独路由每张工单，6 张里只能对 2 张。</p>
+<p>这个简单记忆系统由两部分组成：</p>
+<ul>
+<li>每次调用结束后，Jev 会同时看到原始请求和它的答案。一个 <code>Noul</code> 问题（我们称之为 gate）会问：请求里是否陈述了一个关于客户的重要事实，值得被记住。如果 P(yes) 至少达到 0.5，这张工单和 Jev 的答案就会被保存为该客户的一条记忆。</li>
+<li>一个包装函数 <code>ask_with_memory()</code> 接收与 <code>ask()</code> 相同的 <code>state</code> 和 <code>questions</code> 参数（在 TypeSafe Python SDK 中，<code>ask()</code> 是 <code>client.system_one</code> 方法，已固定模型并启用调用缓存），并返回 Jev 的响应。每次调用之前，它会把该客户已保存的工单以及 Jev 对这些工单的答案一并加到 state 里。</li>
+</ul>
+<p>这个包装就是一个基础的 agent harness。harness 指模型外面那一层代码，给模型带来诸如工具调用和循环运行之类的额外能力。这个简易版 harness 只给它一份记忆，存放于一个普通的 Python dict 中，每个客户 ID 对应一个列表。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">mermaid</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">  %%{init: {&quot;fontFamily&quot;: &quot;Inter, sans-serif&quot;, &quot;flowchart&quot;: {&quot;rankSpacing&quot;: 25, &quot;wrappingWidth&quot;: 300, &quot;subGraphTitleMargin&quot;: {&quot;top&quot;: 8, &quot;bottom&quot;: 20}}}}%%
+flowchart TB
+    IN[&quot;ask_with_memory(state, questions)&quot;]
+    subgraph R[&quot;Jev: answer the question&quot;]
+        Q1[&quot;&lt;b&gt;Choice:&lt;/b&gt; which support team?&quot;]
+    end
+    subgraph G[&quot;Jev: judge the routed ticket&quot;]
+        Q2[&quot;&lt;b&gt;Noul:&lt;/b&gt; does the request state&lt;br/&gt;an important fact about the customer?&quot;]
+    end
+    DEC{&quot;P(yes) ≥ 0.5?&lt;br/&gt;your code&quot;}
+    SAVE[&quot;save the memory&lt;br/&gt;under this customer&#39;s ID&quot;]
+    OUT[&quot;handle the support ticket response in your code&quot;]
+    MEM[(&quot;MEMORIES&lt;br/&gt;saved memories per customer&quot;)]
+    IN -- &quot;state with memories&lt;br/&gt;+ routing question&quot; --&gt; R
+    R -- &quot;original request + answer&lt;br/&gt;+ memory question&quot; --&gt; G
+    G -- &quot;P(yes)&quot; --&gt; DEC
+    DEC -- &quot;yes: save&quot; --&gt; SAVE
+    DEC -- &quot;no: don&#39;t save&quot; --&gt; OUT
+    SAVE --&gt; OUT
+    SAVE --&gt; MEM
+    IN -. &quot;added to the state&lt;br/&gt;on this customer&#39;s&lt;br/&gt;next support tickets&quot; .- MEM</code></pre></div>
+<p>包装会发出两条 Jev 请求，一前一后：先是路由请求，然后是 gate，gate 会结合 Jev 给出的答案一起评判这张工单。无论是否保存了任何东西，包装都返回路由的响应。</p>
+<p>由于 <code>ask_with_memory()</code> 接收与 <code>ask()</code> 相同的参数并返回相同的响应，你可以把它们互换，而不用改动任何其他代码。包装会自己找出该客户的记忆，加到 state 里，并保存新的记忆。</p>
+<p>这个例子先让两位客户的 5 张早期工单经过包装，然后对每位客户的 3 条后续消息分别路由两次：一次带上包装保存的记忆，一次不带。一张表格把这两种答法并排列出，共 6 条。</p>
+<h2 id="setup">设置</h2>
+<div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">pip install ipython <span class="hljs-string">&#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</span></code></pre></div>
+<p>设置 <code>TYPESAFE_API_KEY</code>。每次 API 调用都会缓存到 <a href="https://github.com/typesafe-ai/typesafe-public-examples/blob/main/cookbooks/basic_memory/json_cache.json" target="_blank" rel="noopener noreferrer"><code>json_cache.json</code></a>。把它下载到你运行这段代码的目录里，就能复现文档里给出的数字，而无需调用 API；也可以不放它，让所有调用实时运行。</p>
+<p>下面的数字来自 <code>jev-1.13.0</code>，时间为 2026-09-28。0.5 的记忆阈值只是一个起点，你应该结合自己的样例来评估它。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache, make_playground_link
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, Noul, NoulCriteria, SystemOneResponse, TypeSafeClient
+
+TYPESAFE_MODEL = <span class="hljs-string">&quot;jev-1.13.0&quot;</span>
+REMEMBER_AT = <span class="hljs-number">0.5</span>  <span class="hljs-comment"># save when P(lasting customer fact) reaches this starting threshold</span>
+MEMORY_KEY = <span class="hljs-string">&quot;earlier_tickets_from_this_customer&quot;</span>  <span class="hljs-comment"># where saved tickets go in the state</span>
+
+client = TypeSafeClient(
+    api_key=os.environ.get(<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>, <span class="hljs-string">&quot;cache-only&quot;</span>),  <span class="hljs-comment"># keyless kernels replay the cache</span>
+    base_url=os.environ.get(<span class="hljs-string">&quot;TYPESAFE_ENDPOINT&quot;</span>),
+    timeout=<span class="hljs-number">120.0</span>,
+)
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))</code></pre></div>
+<h2 id="define-the-tickets">定义工单</h2>
+<p>两位客户、5 张早期工单和 3 条后续消息，全部是为这份 cookbook 编写的。C-1042（Harbor Logistics）在 Windows Server 上运行 self-hosted edition，签的是 Enterprise 合同。C-2210（Fernwood Studio）使用 cloud edition 的自助 Team plan。5 张早期工单中有 3 张陈述了一个长期事实：一项 edition、一份 plan、一份合同。另外 2 张则没有：在机场用手机、公共假期。没有后续消息提及客户的部署情况，所以没有记忆时，Jev 只能靠猜。</p>
+<p>每张工单变成一个由两部分组成的 state：<code>customer</code>（客户是谁）和 <code>ticket</code>（工单会话）。<code>ticket_state()</code> 函数构造一张简化版的工单，就像 helpdesk 里的工单。在你的应用中，state 就是你的 helpdesk 发来的每张工单，<code>ask_with_memory()</code> 会把该客户已保存的工单加到它里面。早期工单与后续消息的拆分只是为了本例的演示。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">DATA = {
+    <span class="hljs-string">&quot;customers&quot;</span>: {
+        <span class="hljs-string">&quot;C-1042&quot;</span>: {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;C-1042&quot;</span>, <span class="hljs-string">&quot;company&quot;</span>: <span class="hljs-string">&quot;Harbor Logistics&quot;</span>},
+        <span class="hljs-string">&quot;C-2210&quot;</span>: {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;C-2210&quot;</span>, <span class="hljs-string">&quot;company&quot;</span>: <span class="hljs-string">&quot;Fernwood Studio&quot;</span>},
+    },
+    <span class="hljs-string">&quot;earlier_tickets&quot;</span>: [
+        {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;T-101&quot;</span>, <span class="hljs-string">&quot;customer_id&quot;</span>: <span class="hljs-string">&quot;C-1042&quot;</span>, <span class="hljs-string">&quot;received_on&quot;</span>: <span class="hljs-string">&quot;2026-08-04&quot;</span>,
+         <span class="hljs-string">&quot;subject&quot;</span>: <span class="hljs-string">&quot;Adding an admin&quot;</span>,
+         <span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;Hi, we run your self-hosted edition on Windows Server 2022 in our own data &quot;</span>
+                 <span class="hljs-string">&quot;centre. How do I add a new admin user?&quot;</span>},
+        {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;T-102&quot;</span>, <span class="hljs-string">&quot;customer_id&quot;</span>: <span class="hljs-string">&quot;C-2210&quot;</span>, <span class="hljs-string">&quot;received_on&quot;</span>: <span class="hljs-string">&quot;2026-08-11&quot;</span>,
+         <span class="hljs-string">&quot;subject&quot;</span>: <span class="hljs-string">&quot;Exporting to PDF&quot;</span>,
+         <span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;We&#x27;re a small design studio on your cloud edition, paying monthly on the &quot;</span>
+                 <span class="hljs-string">&quot;self-serve Team plan. How do I export a dashboard as a PDF?&quot;</span>},
+        {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;T-103&quot;</span>, <span class="hljs-string">&quot;customer_id&quot;</span>: <span class="hljs-string">&quot;C-1042&quot;</span>, <span class="hljs-string">&quot;received_on&quot;</span>: <span class="hljs-string">&quot;2026-08-19&quot;</span>,
+         <span class="hljs-string">&quot;subject&quot;</span>: <span class="hljs-string">&quot;Invoice download&quot;</span>,
+         <span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;Sorry for the typos, typing this on my phone at the airport. Where can I &quot;</span>
+                 <span class="hljs-string">&quot;download last month&#x27;s invoice?&quot;</span>},
+        {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;T-104&quot;</span>, <span class="hljs-string">&quot;customer_id&quot;</span>: <span class="hljs-string">&quot;C-2210&quot;</span>, <span class="hljs-string">&quot;received_on&quot;</span>: <span class="hljs-string">&quot;2026-09-02&quot;</span>,
+         <span class="hljs-string">&quot;subject&quot;</span>: <span class="hljs-string">&quot;Dark mode?&quot;</span>,
+         <span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;Our whole team is out on Friday for a public holiday, so no rush on this &quot;</span>
+                 <span class="hljs-string">&quot;one. Is there a dark mode?&quot;</span>},
+        {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;T-105&quot;</span>, <span class="hljs-string">&quot;customer_id&quot;</span>: <span class="hljs-string">&quot;C-1042&quot;</span>, <span class="hljs-string">&quot;received_on&quot;</span>: <span class="hljs-string">&quot;2026-09-10&quot;</span>,
+         <span class="hljs-string">&quot;subject&quot;</span>: <span class="hljs-string">&quot;Sandbox environment&quot;</span>,
+         <span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;For context, we signed an Enterprise contract with you in March. Can we get &quot;</span>
+                 <span class="hljs-string">&quot;a sandbox environment for testing?&quot;</span>},
+    ],
+    <span class="hljs-string">&quot;later_messages&quot;</span>: [
+        {<span class="hljs-string">&quot;subject&quot;</span>: <span class="hljs-string">&quot;Slow dashboards&quot;</span>,
+         <span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;Dashboards have been really slow since this morning.&quot;</span>},
+        {<span class="hljs-string">&quot;subject&quot;</span>: <span class="hljs-string">&quot;Upgrade failing&quot;</span>,
+         <span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;The upgrade to version 5.2 keeps failing halfway through.&quot;</span>},
+        {<span class="hljs-string">&quot;subject&quot;</span>: <span class="hljs-string">&quot;More seats&quot;</span>,
+         <span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;We&#x27;d like to add 20 more seats before next quarter.&quot;</span>},
+    ],
+    <span class="hljs-string">&quot;later_received_on&quot;</span>: <span class="hljs-string">&quot;2026-09-28&quot;</span>,
+    <span class="hljs-comment"># Labelled by hand from what each customer said in the earlier tickets.</span>
+    <span class="hljs-string">&quot;expected_team&quot;</span>: {
+        <span class="hljs-string">&quot;C-1042&quot;</span>: {<span class="hljs-string">&quot;Slow dashboards&quot;</span>: <span class="hljs-string">&quot;selfhosted_windows&quot;</span>,
+                   <span class="hljs-string">&quot;Upgrade failing&quot;</span>: <span class="hljs-string">&quot;selfhosted_windows&quot;</span>, <span class="hljs-string">&quot;More seats&quot;</span>: <span class="hljs-string">&quot;enterprise_desk&quot;</span>},
+        <span class="hljs-string">&quot;C-2210&quot;</span>: {<span class="hljs-string">&quot;Slow dashboards&quot;</span>: <span class="hljs-string">&quot;cloud_ops&quot;</span>, <span class="hljs-string">&quot;Upgrade failing&quot;</span>: <span class="hljs-string">&quot;cloud_ops&quot;</span>,
+                   <span class="hljs-string">&quot;More seats&quot;</span>: <span class="hljs-string">&quot;billing&quot;</span>},
+    },
+}
+CUSTOMERS = DATA[<span class="hljs-string">&quot;customers&quot;</span>]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">ticket_state</span>(<span class="hljs-params">customer_id: <span class="hljs-built_in">str</span>, ticket_id: <span class="hljs-built_in">str</span>, received_on: <span class="hljs-built_in">str</span>, subject: <span class="hljs-built_in">str</span>,
+                 text: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;The state Jev sees for one ticket: a simplified ticket, like one from a helpdesk.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;customer&quot;</span>: CUSTOMERS[customer_id],
+        <span class="hljs-string">&quot;ticket&quot;</span>: {
+            <span class="hljs-string">&quot;id&quot;</span>: ticket_id,
+            <span class="hljs-string">&quot;received_on&quot;</span>: received_on,
+            <span class="hljs-string">&quot;subject&quot;</span>: subject,
+            <span class="hljs-string">&quot;messages&quot;</span>: [{<span class="hljs-string">&quot;from&quot;</span>: <span class="hljs-string">&quot;customer&quot;</span>, <span class="hljs-string">&quot;text&quot;</span>: text}],
+        },
+    }
+
+
+EARLIER = [
+    ticket_state(t[<span class="hljs-string">&quot;customer_id&quot;</span>], t[<span class="hljs-string">&quot;id&quot;</span>], t[<span class="hljs-string">&quot;received_on&quot;</span>], t[<span class="hljs-string">&quot;subject&quot;</span>], t[<span class="hljs-string">&quot;text&quot;</span>])
+    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> DATA[<span class="hljs-string">&quot;earlier_tickets&quot;</span>]
+]
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(CUSTOMERS)}</span> customers, <span class="hljs-subst">{<span class="hljs-built_in">len</span>(EARLIER)}</span> earlier tickets, &quot;</span>
+      <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(DATA[<span class="hljs-string">&#x27;later_messages&#x27;</span>])}</span> later messages. The first ticket as Jev sees it:\n&quot;</span>)
+<span class="hljs-built_in">print</span>(json.dumps(EARLIER[<span class="hljs-number">0</span>], indent=<span class="hljs-number">2</span>))</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">2 customers, 5 earlier tickets, 3 later messages. The first ticket as Jev sees it:
+
+{
+  &quot;customer&quot;: {
+    &quot;id&quot;: &quot;C-1042&quot;,
+    &quot;company&quot;: &quot;Harbor Logistics&quot;
+  },
+  &quot;ticket&quot;: {
+    &quot;id&quot;: &quot;T-101&quot;,
+    &quot;received_on&quot;: &quot;2026-08-04&quot;,
+    &quot;subject&quot;: &quot;Adding an admin&quot;,
+    &quot;messages&quot;: [
+      {
+        &quot;from&quot;: &quot;customer&quot;,
+        &quot;text&quot;: &quot;Hi, we run your self-hosted edition on Windows Server 2022 in our own data centre. How do I add a new admin user?&quot;
+      }
+    ]
+  }
+}</code></pre></div>
+<h2 id="route-a-ticket">为工单选路</h2>
+<p>一道 Choice（选择题）题型用来决定工单交给哪个支持团队。<code>none_suitable</code> 选项给 Jev 留了一条退路：没有任何团队合适时，可以选它；一张上下文太少的工单也可能落到这一项。</p>
+<p><code>ask()</code> 这个辅助函数相当于 <code>client.system_one</code>，只是把模型版本固定下来，并缓存每一次调用结果。它接受一个 state（上下文状态）和一个题型字典，返回 SDK 自带的响应对象；所以那些已经习惯于读 <code>client.system_one</code> 响应的代码，可以原样使用它。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">ROUTE = {
+    <span class="hljs-string">&quot;team&quot;</span>: Choice(
+        instructions=<span class="hljs-string">&quot;Which support team should handle `ticket`?&quot;</span>,
+        criteria={
+            <span class="hljs-string">&quot;cloud_ops&quot;</span>: <span class="hljs-string">&quot;Cloud team: problems with the hosted cloud edition, run by us&quot;</span>,
+            <span class="hljs-string">&quot;selfhosted_linux&quot;</span>: <span class="hljs-string">&quot;Self-hosted team, Linux: installs, upgrades and &quot;</span>
+            <span class="hljs-string">&quot;performance of the self-hosted edition on Linux servers&quot;</span>,
+            <span class="hljs-string">&quot;selfhosted_windows&quot;</span>: <span class="hljs-string">&quot;Self-hosted team, Windows: installs, upgrades and &quot;</span>
+            <span class="hljs-string">&quot;performance of the self-hosted edition on Windows Server&quot;</span>,
+            <span class="hljs-string">&quot;billing&quot;</span>: <span class="hljs-string">&quot;Billing: invoices, payments, seats and plan changes for &quot;</span>
+            <span class="hljs-string">&quot;self-serve plans&quot;</span>,
+            <span class="hljs-string">&quot;enterprise_desk&quot;</span>: <span class="hljs-string">&quot;Enterprise desk: seats, contracts and account changes for &quot;</span>
+            <span class="hljs-string">&quot;customers on an Enterprise contract (their technical problems go to the &quot;</span>
+            <span class="hljs-string">&quot;technical teams)&quot;</span>,
+            <span class="hljs-string">&quot;general&quot;</span>: <span class="hljs-string">&quot;General product questions: features, how-to, settings&quot;</span>,
+            <span class="hljs-string">&quot;none_suitable&quot;</span>: <span class="hljs-string">&quot;None of these teams fits the ticket&quot;</span>,
+        },
+    ),
+}
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_system_one</span>(<span class="hljs-params">model: <span class="hljs-built_in">str</span>, state: <span class="hljs-built_in">str</span>, questions: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    response = client.system_one(
+        state=json.loads(state), questions=json.loads(questions), model=model
+    )
+    <span class="hljs-keyword">return</span> response.model_dump(mode=<span class="hljs-string">&quot;json&quot;</span>)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">ask</span>(<span class="hljs-params">state: <span class="hljs-built_in">dict</span>, questions: <span class="hljs-built_in">dict</span></span>) -&gt; SystemOneResponse:
+    <span class="hljs-string">&quot;&quot;&quot;client.system_one, with the model pinned and the call cached.&quot;&quot;&quot;</span>
+    as_json = {qid: q.model_dump(mode=<span class="hljs-string">&quot;json&quot;</span>, exclude_none=<span class="hljs-literal">True</span>) <span class="hljs-keyword">for</span> qid, q <span class="hljs-keyword">in</span> questions.items()}
+    raw = _system_one(TYPESAFE_MODEL, json.dumps(state), json.dumps(as_json))
+    <span class="hljs-keyword">return</span> SystemOneResponse.model_validate(raw)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">later_state</span>(<span class="hljs-params">customer_id: <span class="hljs-built_in">str</span>, message_index: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;One of the later messages, sent by this customer, with a fixed ticket ID.&quot;&quot;&quot;</span>
+    n = <span class="hljs-number">201</span> + <span class="hljs-number">3</span> * <span class="hljs-built_in">list</span>(CUSTOMERS).index(customer_id) + message_index
+    message = DATA[<span class="hljs-string">&quot;later_messages&quot;</span>][message_index]
+    <span class="hljs-keyword">return</span> ticket_state(customer_id, <span class="hljs-string">f&quot;T-<span class="hljs-subst">{n}</span>&quot;</span>, DATA[<span class="hljs-string">&quot;later_received_on&quot;</span>], message[<span class="hljs-string">&quot;subject&quot;</span>],
+                        message[<span class="hljs-string">&quot;text&quot;</span>])
+
+
+slow = later_state(<span class="hljs-string">&quot;C-1042&quot;</span>, <span class="hljs-number">0</span>)
+team = ask(slow, ROUTE).answers[<span class="hljs-string">&quot;team&quot;</span>]
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;C-1042: <span class="hljs-subst">{slow[<span class="hljs-string">&#x27;ticket&#x27;</span>][<span class="hljs-string">&#x27;messages&#x27;</span>][<span class="hljs-number">0</span>][<span class="hljs-string">&#x27;text&#x27;</span>]!r}</span>&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  plain Jev -&gt; <span class="hljs-subst">{team.choice}</span> <span class="hljs-subst">{team.probabilities[team.choice]:<span class="hljs-number">.2</span>f}</span>&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">C-1042: &#39;Dashboards have been really slow since this morning.&#39;
+  plain Jev -&gt; cloud_ops 0.80</code></pre></div>
+<p>直接用 Jev 为 C-1042 选路时，slow dashboards 这条工单会被派给 cloud 团队。仅凭这一张工单，它没有理由把它派到别处。</p>
+<h2 id="ask-jev-whether-the-ticket-is-worth-remembering">询问 Jev 这张工单是否值得记住</h2>
+<p>首先，<code>as_memory()</code> 把原始 state 与 Jev 的答案配成一对——也就是封装层可能会保存的那条 memory。其中 <code>request</code> 键保存的是注入 memory 之前的 state，<code>jev_answered</code> 把每道题映射到它的答案。这样的结构是为了避免把旧的 memory 嵌套进每一条新 memory 里面。</p>
+<p>第二次 Jev 调用读取这个配对。闸门要问的是：request 中是否陈述了一个关于该客户的重要事实，例如他们的版本、操作系统、套餐或合同。Jev 的答案也作为上下文提供，但<strong>只</strong>出现在答案里、而没有出现在 request 中的事实，不算数。这条规则是必需的：否则像 &quot;General product questions&quot; 这种泛泛的答案，会盖过 request 里真实陈述的事实；而那些依赖早期 memory 的答案，又会被当作新信息再存一遍。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">GATE = {
+    <span class="hljs-string">&quot;remember&quot;</span>: Noul(
+        instructions=(
+            <span class="hljs-string">&quot;In `request.ticket`, does the thread state a lasting fact about the customer that &quot;</span>
+            <span class="hljs-string">&quot;should change how their future, unrelated tickets are handled? Count what the &quot;</span>
+            <span class="hljs-string">&quot;customer or our support staff wrote in `request.ticket`. `jev_answered` shows how &quot;</span>
+            <span class="hljs-string">&quot;the ticket was routed, which may rely on things learned earlier: do not count &quot;</span>
+            <span class="hljs-string">&quot;anything it says or implies.&quot;</span>
+        ),
+        criteria=NoulCriteria(
+            true=(
+                <span class="hljs-string">&quot;Yes: in `request.ticket` the customer or our support staff state something &quot;</span>
+                <span class="hljs-string">&quot;about the customer that stays true after this ticket, such as the product &quot;</span>
+                <span class="hljs-string">&quot;edition or operating system they run, their plan or contract, or a standing &quot;</span>
+                <span class="hljs-string">&quot;preference.&quot;</span>
+            ),
+            false=(
+                <span class="hljs-string">&quot;No: `request.ticket` only contains things specific to this one ticket or &quot;</span>
+                <span class="hljs-string">&quot;moment, such as a one-off request, today&#x27;s schedule, or the device they &quot;</span>
+                <span class="hljs-string">&quot;happen to be typing on; or the lasting fact appears only in `jev_answered`.&quot;</span>
+            ),
+        ),
+    ),
+}
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">answer_text</span>(<span class="hljs-params">question, answer</span>):
+    <span class="hljs-string">&quot;&quot;&quot;The readable part of an answer: the chosen option&#x27;s description, or the number.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> answer.<span class="hljs-built_in">type</span> == <span class="hljs-string">&quot;choice&quot;</span>:
+        <span class="hljs-keyword">return</span> question.criteria[answer.choice]
+    <span class="hljs-keyword">return</span> answer.noul <span class="hljs-keyword">if</span> answer.<span class="hljs-built_in">type</span> == <span class="hljs-string">&quot;noul&quot;</span> <span class="hljs-keyword">else</span> answer.score
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">as_memory</span>(<span class="hljs-params">state: <span class="hljs-built_in">dict</span>, questions: <span class="hljs-built_in">dict</span>, response: SystemOneResponse</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;request&quot;</span>: state,
+        <span class="hljs-string">&quot;jev_answered&quot;</span>: {
+            q.instructions: answer_text(q, response.answers[qid])
+            <span class="hljs-keyword">for</span> qid, q <span class="hljs-keyword">in</span> questions.items()
+        },
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">remember_probability</span>(<span class="hljs-params">memory: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+    <span class="hljs-string">&quot;&quot;&quot;P(the request states an important fact about the customer), with the answer as context.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> ask(memory, GATE).answers[<span class="hljs-string">&quot;remember&quot;</span>].noul</code></pre></div>
+<h2 id="wrap-the-call-so-it-remembers">将调用包成会记住上下文的版本</h2>
+<p>封装函数 <code>ask_with_memory()</code> 与 <code>ask()</code> 的参数和返回值完全相同。memory 存储就是一个普通字典，每个客户 ID 对应一个列表。封装函数用 state 里的 ID 去挑出该客户的 memory。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">MEMORIES: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]] = {}  <span class="hljs-comment"># customer ID -&gt; that customer&#x27;s saved memories</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">customer_id</span>(<span class="hljs-params">state: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-keyword">return</span> state[<span class="hljs-string">&quot;customer&quot;</span>][<span class="hljs-string">&quot;id&quot;</span>]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">ask_with_memory</span>(<span class="hljs-params">state: <span class="hljs-built_in">dict</span>, questions: <span class="hljs-built_in">dict</span></span>) -&gt; SystemOneResponse:
+    <span class="hljs-string">&quot;&quot;&quot;ask(), plus memory: same arguments, same return value.&quot;&quot;&quot;</span>
+    <span class="hljs-comment"># 1. Answer the call with this customer&#x27;s existing memories.</span>
+    saved = MEMORIES.get(customer_id(state), [])
+    response = ask({**state, MEMORY_KEY: saved} <span class="hljs-keyword">if</span> saved <span class="hljs-keyword">else</span> state, questions)
+
+    <span class="hljs-comment"># 2. Ask Jev whether the original request states an important fact worth keeping.</span>
+    memory = as_memory(state, questions, response)
+    <span class="hljs-keyword">if</span> remember_probability(memory) &gt;= REMEMBER_AT:
+        MEMORIES.setdefault(customer_id(state), []).append(memory)
+    <span class="hljs-keyword">return</span> response</code></pre></div>
+<p>按这种方式加上 memory，会给你的应用带来四点影响：</p>
+<ul>
+<li><strong>每次调用包含两次顺序请求</strong>：你的调用在前，记忆闸门在后。闸门是把工单连同 Jev 的答案一起来判定的，所以它必须排在选路请求之后。如果你的闸门只看工单本身、不关心答案，它完全可以并入选路请求的另一个问题里（参见 <a href="../fan-out/">fan-out</a>）。</li>
+<li><strong>memory 只会越积越多。</strong> 每一条被保存的 memory 都会追加到该客户之后每一次调用中。这里既没有容量上限，也没有相关性检查，更没有过期机制。下一节会针对每一项给出优化思路。</li>
+<li><strong>你的问题里完全不需要提到 memory。</strong> memory 被放进 state 下的 <code>earlier_tickets_from_this_customer</code> 字段，Jev 会读整个 state。<code>ROUTE</code> 完全不用改。</li>
+<li><strong>state 必须有 <code>customer.id</code>。</strong> 直接调用 Jev 时，state 也可以是一个字符串，但这个封装函数需要靠 ID 来找到该客户的列表。</li>
+</ul>
+<h2 id="send-the-earlier-tickets-and-watch-the-answers-change">依次发送早些时候的工单，观察答案如何变化</h2>
+<p>按到达顺序，把五张较早的工单通过 <code>ask_with_memory()</code> 送出去。同一位客户还会再发两次后到的消息：slow dashboards，以及追加 20 个席位。这样能看出每一条保存下来的 memory 如何改变 Jev 的答案。重复出现的那两条消息也走封装函数，所以闸门同样会判它们。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">PROBES = {<span class="hljs-string">&quot;Slow dashboards&quot;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&quot;More seats&quot;</span>: <span class="hljs-number">2</span>}  <span class="hljs-comment"># later messages to send after each ticket</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">memory_ids</span>(<span class="hljs-params">cid: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;, &quot;</span>.join(m[<span class="hljs-string">&quot;request&quot;</span>][<span class="hljs-string">&quot;ticket&quot;</span>][<span class="hljs-string">&quot;id&quot;</span>] <span class="hljs-keyword">for</span> m <span class="hljs-keyword">in</span> MEMORIES.get(cid, [])) <span class="hljs-keyword">or</span> <span class="hljs-string">&quot;none&quot;</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">send_probes</span>(<span class="hljs-params">cid: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
+    <span class="hljs-keyword">for</span> subject, i <span class="hljs-keyword">in</span> PROBES.items():
+        team = ask_with_memory(later_state(cid, i), ROUTE).answers[<span class="hljs-string">&quot;team&quot;</span>]
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;      <span class="hljs-subst">{subject:&lt;<span class="hljs-number">16</span>}</span> -&gt; <span class="hljs-subst">{team.choice:&lt;<span class="hljs-number">19</span>}</span> <span class="hljs-subst">{team.probabilities[team.choice]:<span class="hljs-number">.2</span>f}</span>&quot;</span>)
+
+
+<span class="hljs-keyword">for</span> cid <span class="hljs-keyword">in</span> CUSTOMERS:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{cid}</span>, memories: <span class="hljs-subst">{memory_ids(cid)}</span>&quot;</span>)
+    send_probes(cid)
+
+<span class="hljs-keyword">for</span> state <span class="hljs-keyword">in</span> EARLIER:
+    cid = customer_id(state)
+    response = ask_with_memory(state, ROUTE)
+    p = remember_probability(as_memory(state, ROUTE, response))  <span class="hljs-comment"># cached: the wrapper&#x27;s call</span>
+    verdict = <span class="hljs-string">&quot;saved&quot;</span> <span class="hljs-keyword">if</span> p &gt;= REMEMBER_AT <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;not saved&quot;</span>
+    text = state[<span class="hljs-string">&quot;ticket&quot;</span>][<span class="hljs-string">&quot;messages&quot;</span>][<span class="hljs-number">0</span>][<span class="hljs-string">&quot;text&quot;</span>]
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\n<span class="hljs-subst">{cid}</span> <span class="hljs-subst">{state[<span class="hljs-string">&#x27;ticket&#x27;</span>][<span class="hljs-string">&#x27;id&#x27;</span>]}</span>  <span class="hljs-subst">{response.answers[<span class="hljs-string">&#x27;team&#x27;</span>].choice:&lt;<span class="hljs-number">19</span>}</span> &quot;</span>
+          <span class="hljs-string">f&quot;P(remember) <span class="hljs-subst">{p:<span class="hljs-number">.2</span>f}</span>  <span class="hljs-subst">{verdict}</span>&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;    <span class="hljs-subst">{text[:<span class="hljs-number">84</span>]}</span>&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{cid}</span>, memories: <span class="hljs-subst">{memory_ids(cid)}</span>&quot;</span>)
+    send_probes(cid)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">C-1042, memories: none
+      Slow dashboards  -&gt; cloud_ops           0.80
+      More seats       -&gt; enterprise_desk     0.62
+C-2210, memories: none
+      Slow dashboards  -&gt; cloud_ops           0.75
+      More seats       -&gt; enterprise_desk     0.52
+
+C-1042 T-101  selfhosted_windows  P(remember) 0.91  saved
+    Hi, we run your self-hosted edition on Windows Server 2022 in our own data centre. H
+C-1042, memories: T-101
+      Slow dashboards  -&gt; selfhosted_windows  0.99
+      More seats       -&gt; enterprise_desk     0.44
+
+C-2210 T-102  general             P(remember) 0.91  saved
+    We&#39;re a small design studio on your cloud edition, paying monthly on the self-serve 
+C-2210, memories: T-102
+      Slow dashboards  -&gt; cloud_ops           0.91
+      More seats       -&gt; billing             0.98
+
+C-1042 T-103  billing             P(remember) 0.07  not saved
+    Sorry for the typos, typing this on my phone at the airport. Where can I download la
+C-1042, memories: T-101
+      Slow dashboards  -&gt; selfhosted_windows  0.99
+      More seats       -&gt; enterprise_desk     0.44
+
+C-2210 T-104  general             P(remember) 0.10  not saved
+    Our whole team is out on Friday for a public holiday, so no rush on this one. Is the
+C-2210, memories: T-102
+      Slow dashboards  -&gt; cloud_ops           0.91
+      More seats       -&gt; billing             0.98
+
+C-1042 T-105  enterprise_desk     P(remember) 0.92  saved
+    For context, we signed an Enterprise contract with you in March. Can we get a sandbo
+C-1042, memories: T-101, T-105
+      Slow dashboards  -&gt; selfhosted_windows  0.94
+      More seats       -&gt; enterprise_desk     0.99</code></pre></div>
+<p>陈述了版本、套餐或合同的那三张工单，分别以 0.91 至 0.92 的概率被保存下来。T-102 虽然被 Jev 派给了 general 团队，仍然被保存——因为闸门数的是客户自己说的话，而不是那条答案。机场、公共假期那两张工单分别得到 0.07 和 0.10，不会被保存，所以它们之后答案也不会变。</p>
+<p>每一条保存下来的 memory 都会改变它相关的那些答案。C-1042 这边，Windows 那张工单把 slow dashboards 从 cloud 团队（0.80）挪到了 Windows 团队（0.99）。Enterprise 合同那条 memory 落地之后，席位问题稳定在 0.99。C-2210 这边，Team-plan 那条工单把 cloud 团队的概率从 0.75 抬到 0.91，并把席位问题从 Enterprise 团队（0.52）挪到 billing（0.98）。加上 Enterprise 那条 memory 之后，C-1042 的 slow dashboards 概率会从 0.99 略微降到 0.94——这正是为什么要挑选该存哪些 memory（见下一节）。另外，闸门没有保存那两条重复出现的消息。</p>
+<h2 id="route-the-same-messages-for-both-customers">为两个客户路由相同消息</h2>
+<p>现在每个客户都会发送后面的三条消息。每条消息既会走普通的 <code>ask()</code>，也会走 <code>ask_with_memory()</code>，使用相同的 state 和同一个问题。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">EXPECTED = DATA[<span class="hljs-string">&quot;expected_team&quot;</span>]
+plain_correct = memory_correct = total = <span class="hljs-number">0</span>
+example_state = <span class="hljs-literal">None</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">cell</span>(<span class="hljs-params">answer, expected: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    mark = <span class="hljs-string">&quot;✓&quot;</span> <span class="hljs-keyword">if</span> answer.choice == expected <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;✗&quot;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;<span class="hljs-subst">{mark}</span> <span class="hljs-subst">{answer.choice}</span> <span class="hljs-subst">{answer.probabilities[answer.choice]:<span class="hljs-number">.2</span>f}</span>&quot;</span>
+
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-string">&#x27;customer&#x27;</span>:&lt;<span class="hljs-number">9</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;message&#x27;</span>:&lt;<span class="hljs-number">17</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;expected&#x27;</span>:&lt;<span class="hljs-number">20</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;plain Jev&#x27;</span>:&lt;<span class="hljs-number">27</span>}</span><span class="hljs-subst">{<span class="hljs-string">&#x27;with memory&#x27;</span>:&lt;<span class="hljs-number">27</span>}</span>&quot;</span>)
+<span class="hljs-keyword">for</span> cid <span class="hljs-keyword">in</span> CUSTOMERS:
+    <span class="hljs-keyword">for</span> i, message <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(DATA[<span class="hljs-string">&quot;later_messages&quot;</span>]):
+        state = later_state(cid, i)
+        expected = EXPECTED[cid][message[<span class="hljs-string">&quot;subject&quot;</span>]]
+        plain = ask(state, ROUTE).answers[<span class="hljs-string">&quot;team&quot;</span>]
+        <span class="hljs-keyword">if</span> example_state <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+            <span class="hljs-comment"># Keep the exact state used for this call for the playground link.</span>
+            saved = MEMORIES.get(cid, [])
+            example_state = json.loads(json.dumps({**state, MEMORY_KEY: saved} <span class="hljs-keyword">if</span> saved <span class="hljs-keyword">else</span> state))
+        response = ask_with_memory(state, ROUTE)
+        remembered = response.answers[<span class="hljs-string">&quot;team&quot;</span>]
+        plain_correct += plain.choice == expected
+        memory_correct += remembered.choice == expected
+        total += <span class="hljs-number">1</span>
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{cid:&lt;<span class="hljs-number">9</span>}</span><span class="hljs-subst">{message[<span class="hljs-string">&#x27;subject&#x27;</span>]:&lt;<span class="hljs-number">17</span>}</span><span class="hljs-subst">{expected:&lt;<span class="hljs-number">20</span>}</span><span class="hljs-subst">{cell(plain, expected):&lt;<span class="hljs-number">27</span>}</span>&quot;</span>
+              <span class="hljs-string">f&quot;<span class="hljs-subst">{cell(remembered, expected):&lt;<span class="hljs-number">27</span>}</span>&quot;</span>)
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\nExpected routes: <span class="hljs-subst">{plain_correct}</span>/<span class="hljs-subst">{total}</span> without memory, &quot;</span>
+      <span class="hljs-string">f&quot;<span class="hljs-subst">{memory_correct}</span>/<span class="hljs-subst">{total}</span> with memory.&quot;</span>)</code></pre></div>
+<div class="code-block"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">customer message          expected            plain Jev                  with memory                
+C-1042   Slow dashboards  selfhosted_windows  ✗ cloud_ops 0.80           ✓ selfhosted_windows 0.94  
+C-1042   Upgrade failing  selfhosted_windows  ✗ none_suitable 0.60       ✓ selfhosted_windows 1.00  
+C-1042   More seats       enterprise_desk     ✓ enterprise_desk 0.62     ✓ enterprise_desk 0.99     
+C-2210   Slow dashboards  cloud_ops           ✓ cloud_ops 0.75           ✓ cloud_ops 0.91           
+C-2210   Upgrade failing  cloud_ops           ✗ none_suitable 0.63       ✓ cloud_ops 0.86           
+C-2210   More seats       billing             ✗ enterprise_desk 0.52     ✓ billing 0.98             
+
+Expected routes: 2/6 without memory, 6/6 with memory.</code></pre></div>
+<p>加上记忆后，六条消息全部命中预期团队，而不加记忆只有两条命中。同一条消息现在被路由到不同团队：slow dashboards 对 C-1042 走 Windows 团队，对 C-2210 仍走云团队；多要 20 个席位对 C-1042 走 Enterprise 坐席，对 C-2210 走 billing。原本普通 Jev 已经答对的情况，记忆把概率抬高了，比如 C-1042 的席位从 0.62 升到 0.99。包装函数也评估了后面这六条消息，但一条都没保存：这六条都没有陈述重要事实。</p>
+<p>每一行预期的团队都来自这些客户在更早工单中确立的设置：C-1042 的自托管版本与企业版合同，C-2210 的云端 Team 套餐。</p>
+<h2 id="open-it-in-the-playground">在 playground 中打开它</h2>
+<p>该链接保存的是 C-1042 第一次 slow-dashboards 调用所用的精确路由 state，包括当时的记忆，以及路由问题本身。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">playground_link = make_playground_link(example_state, ROUTE, models=[TYPESAFE_MODEL])
+display(Markdown(
+    <span class="hljs-string">f&quot;🔗 [Open C-1042&#x27;s ticket with its memories in the TypeSafe playground](<span class="hljs-subst">{playground_link}</span>)&quot;</span>
+))</code></pre></div>
+<p><a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIwAOiLAM4oSIBOpBJIAlmPfqQMIC0AjAAwAWAEykANOzLUADgEMkATzakAEjJoAjCDXwAZCAHMmlJlHKkAvuNIoTAawQo2jFkpBouQvjzESaCKAhMAG4IYAD6EEiunkIAbFx8AJweABw+pOQw6gBW-o54EgDKADYQAO74YDLkABaaamBmIFYgiOTkMvoITQQA2owAZjTUrhRUtOkgKFj5BKQAItV1EA3k+DUyIfjqCMj4fjLFxfL45KUV5ExIAfgoNUb4cFpIV-oAdBYAupYSCGrFTAQNDCNig9hQ5DCQ2oIPukLG1CBbH6pD8AEcYN1ZvhGAiJgVnKwCpxeIIRM0JFBpHJFMSQKoNFpdAYjKCmj9rHYHE5SC46e5+N4Kaj-IEQuFItE+HEEikEgJJpkcnlXABBMBgV74OTasBwK6TNodLo9fAokDQuCjGCURF0YVTGauZRMcRlBD7GBIfDyCAwbTkBDFAZcGoQSihfChJg2SL4OMAdSukDKa0KQJC2hiQnwV3j-vjZW9VRQMnwAVQfje+GU5UqEHwAEldWBtfgkAgKjI9XmbUCAPxfcwckC5IJhOTkd1+IkMUgJ+5QGqnGBSKRaFC3P5wU5hmDFVsbJBgYoegAGoPBZ8HdPTwdD4emremMjg4iTx-K5AIV0oh2K5DiKu+g0N23Tase+BSECAxaHAcg3BAAy3DUHqBveYYRq20axt6ibJl++DpjQmYWD8jDopilA8mQNrjEiBK8rOEjcPwwiTFScCyAozpqJo2h6IYximBYLSXtyjHMMxpACnwACskx+AEwShBEUR0jE8RJKSipZLkUDYqQhRyGAmiYFGSBBEwwxIIgqCGt0xrdMigzDFadJ4gxYlOnSABiTJUqgMxumhTD6B2rY6gAokFNBSDQRgeoFKCgQZ+BlDGy6+jAubegAsmoS7VhwOruvgXSbmWHTHmZFlWTZdmbrB2jTMYSD6De5jfCOY4TkgU5AqENELiYy6ZGuG5bq+u5+ge6wmae+AXlyKDXq4MXTHFCWBpU3S2AQgYyBC4jJalEIQZFUBUl6m5LnIJr4M15Z0XaaxxtFsXxYl5aRClMhpQAFHcgQtf4NQvFAhxQcM6innAaz6A2VAoR60xLhDUMvvDACUZHfBSIDxdIEIYNgBRENY240Sg8jQaMYYmAgky-ilMAGUwkSmvOi5jau640JuWMzfuh4Lee4mrTeLRQAlm1MDINFQKUMASlIXMgBwyvPtuBBE7DCDw+lmUo+sj6RkrfrYZquHiDQXrbCcNqKkGAyYU+YQAkgMCYK4d4hm7kZY+IOhXN7P79aWRyAfgwGgWA4EmVBMFwQhHpISb6H+2bVsxhzeHeiHXvmYGJFAk0LSZwH4QZZ+qa+y7D5YVNb74B+Kbfrlf5R0BUggWBayJ9BNDNfB1xp8hwOnA3VdRtbefxt6beEcRpEOuoTBHK8rgAEIb57+jh0EECM9HsjyI10eHedg-FDqd3teBT2Z1wJdbFIt-9ZMyCbV9gZhPH5BbDrU+ttD0AD9pTyOtHU6-1r6QX+tdVA5YjwPSep5Ggb1vQfR-qAn6lZYH4CBqhayW50YmChnrOGCMkZI1QqQ8G5DijN3ILjB0XQOygWKK4AA4sgIEFDhhgDZpuDEWI84dwGH8FA-pujiDDGULgVBxCBhQDYdq5cJBIEiAgMImQYwyH1q4AActo+ME9UI7SxmsAYMY1iTwlmRcwBMZBSCYAANTLnncmQQeAE3QnkUIeUIDxwAgUXoo4EBBF4G8HgABmN4fAQDfCAA" target="_blank" rel="noreferrer noopener noreferrer" className="text-primary">在 TypeSafe playground 中打开 C-1042 的工单及其记忆 →</a></p>
+<h2 id="next-steps">后续步骤</h2>
+<ul>
+<li><strong>选择你的应用应当记住的内容。</strong> 编辑 <code>GATE</code>，描述对你自己的任务而言哪些信息值得保存，并用你标注好的样本来测试 <code>REMEMBER_AT</code>。</li>
+<li><strong>选择要加入哪些记忆。</strong> 包装函数会添加所有已保存的记忆。当列表变长时，可以加一道相关性问题（relevance question）来筛出更小的子集。</li>
+<li><strong>替换过时的记忆。</strong> 让 Jev 判断新记忆是否替换了较旧的记忆，再在代码里适时移除旧条目。</li>
+<li><strong>跨运行保留记忆。</strong> 用按客户 ID 索引的数据库替代 <code>MEMORIES</code>。进程退出后，内存里的字典就消失了。</li>
+<li><strong>按路由采取动作。</strong> 在代码中把每个团队映射到一个处理器，例如为 Enterprise 客户预约沟通，或发送对应版本的安装说明文章。参见 <a href="../intent-routing/">意图路由</a> 与 <a href="../confidence-routing/">置信度分流</a>。把你的回复以客服消息的形式加到工单线程里，门控就能记住你做了什么。</li>
+</ul>
+<hr>
+<h1 id="附录">附录</h1>
+<h2 id="can-a-saved-answer-reinforce-a-mistake">保存的答案会强化错误吗</h2>
+<p>会的。门控会忽略只出现在 Jev 答案里的内容，所以单凭答案本身不会把工单保存下来。但工单一经保存，它的答案也会一同被保存，包括错误的推断，之后该客户的每次调用都会读到它。后面的答案于是可能重复这个错误。</p>
+<h2 id="how-should-i-choose-the-threshold">阈值该怎么选</h2>
+<p>这个包装函数里的 0.5 只是个起点。要选你自己的值，先从你的流量里把「请求-答案」对标注成值得记或不值得记，再找出能把两组最好分开的概率。在挑阈值时没有用到的另一批对上做校验。如果一条误导性记忆的代价比漏掉一条记忆更大，就调高阈值；反之就调低。关于阈值选取以及与各动作风险等级的匹配，见 <a href="../confidence/">Confidence</a> 和 <a href="../confidence-routing/">置信度分流</a>。</p>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建和托管。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-classifying-rag-passages/"><span>上一篇</span><strong>为 RAG 段落分类</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-hierarchical-classification/"><span>下一篇</span><strong>层次分类</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#setup">设置</a><a class="toc-link depth-2" href="#define-the-tickets">定义工单</a><a class="toc-link depth-2" href="#route-a-ticket">为工单选路</a><a class="toc-link depth-2" href="#ask-jev-whether-the-ticket-is-worth-remembering">询问 Jev 这张工单是否值得记住</a><a class="toc-link depth-2" href="#wrap-the-call-so-it-remembers">将调用包成会记住上下文的版本</a><a class="toc-link depth-2" href="#send-the-earlier-tickets-and-watch-the-answers-change">依次发送早些时候的工单，观察答案如何变化</a><a class="toc-link depth-2" href="#route-the-same-messages-for-both-customers">为两个客户路由相同消息</a><a class="toc-link depth-2" href="#open-it-in-the-playground">在 playground 中打开它</a><a class="toc-link depth-2" href="#next-steps">后续步骤</a><a class="toc-link depth-2" href="#can-a-saved-answer-reinforce-a-mistake">保存的答案会强化错误吗</a><a class="toc-link depth-2" href="#how-should-i-choose-the-threshold">阈值该怎么选</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

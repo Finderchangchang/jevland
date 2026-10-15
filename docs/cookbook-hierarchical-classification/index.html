@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>层次分类 · JevLand</title>
+<meta name="description" content="通过基于 TypeSafe Choice（选择题）概率的并行束搜索，跨越专利、零售商品、生物医学和源代码等深层次结构对文档进行分类。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/cookbook-hierarchical-classification/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="层次分类">
+<meta property="og:description" content="通过基于 TypeSafe Choice（选择题）概率的并行束搜索，跨越专利、零售商品、生物医学和源代码等深层次结构对文档进行分类。">
+<meta property="og:url" content="https://jevland.com/docs/cookbook-hierarchical-classification/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="层次分类">
+<meta name="twitter:description" content="通过基于 TypeSafe Choice（选择题）概率的并行束搜索，跨越专利、零售商品、生物医学和源代码等深层次结构对文档进行分类。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"层次分类","url":"https://jevland.com/docs/cookbook-hierarchical-classification/","inLanguage":"zh-CN","description":"通过基于 TypeSafe Choice（选择题）概率的并行束搜索，跨越专利、零售商品、生物医学和源代码等深层次结构对文档进行分类。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link is-current" href="/docs/cookbook-hierarchical-classification/" aria-current="page">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link" href="/docs/primitives/">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link is-current" href="/docs/cookbook-hierarchical-classification/" aria-current="page">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
+        <h1>层次分类</h1>
+        <p class="lead">通过基于 TypeSafe Choice（选择题）概率的并行束搜索，跨越专利、零售商品、生物医学和源代码等深层次结构对文档进行分类。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/hierarchical_classification" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>大量数据以结构化层次的形式存在，例如分类法、文件系统层次、站点结构、代码库、组织架构图、生物本体、LLM 技能、审核策略等。层次分类（Hierarchical Classification）的目标就是遍历层次结构直至抵达正确的叶子节点，也就是最终的分类结果。这与 TypeSafe 的 <code>Choice</code> 题型天然契合：我们会在每个节点（从根节点开始）对文档进行分类，找出概率最高的叶子节点，然后迭代前进到下一个概率最高的节点，直至抵达叶子节点（<strong>贪心搜索</strong>）。</p>
+<p>API 的并行特性也允许我们借助**束搜索（Beam Search）**通过并行问题（question）来探索多条路径，从而提升性能。实战示例中的 TypeSafe API 调用会同时评估层次结构中的 <code>K</code> 条路径。束搜索按边概率的几何平均 <code>product(edge_probabilities) ** (1 / decisions)</code> 保留最优的 <code>K</code> 条路径，并剪除其余路径。概率经过长度归一化处理，使浅层与深层叶子节点可以被公平地比较。</p>
+<p>将问题分解为这样的层次结构本身就带来了诸多好处：</p>
+<ul>
+<li>可观测性<ul>
+<li>识别误分类最常发生的节点</li>
+<li>衡量每个节点和边被遍历的次数</li>
+</ul>
+</li>
+<li>可测试性<ul>
+<li>对层次结构更新进行单元测试，并量化其对分类性能的影响</li>
+</ul>
+</li>
+<li><img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/hierarchical_classification/this_is_the_way.jpg?fit=max&auto=format&n=2NirYCl-v96cw05F&q=85&s=15d390074a4f6a97e45f19e2cf039622" alt="this is the way" width="100" height="56" data-path="cookbooks/hierarchical_classification/this_is_the_way.jpg" /></li>
+</ul>
+<h3 id="hierarchies-used-in-this-cookbook">本实战示例用到的层次结构</h3>
+<ul>
+<li><strong><a href="https://www.cooperativepatentclassification.org/sites/default/files/cpc/bulk/CPCSchemeXML202605.zip" target="_blank" rel="noopener noreferrer">CPC 2026.05</a>：</strong> 专利主题分类，从广义的技术部类到细分发明。</li>
+<li><strong><a href="https://github.com/Shopify/product-taxonomy/blob/v2026-02/dist/en/categories.txt" target="_blank" rel="noopener noreferrer">Shopify 2026-02</a>：</strong> 零售商品品类，从店铺类目到具体商品类型。</li>
+<li><strong><a href="https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/desc2026.zip" target="_blank" rel="noopener noreferrer">MeSH
+2026</a>：</strong>
+生物医学主题，从广义领域到具体疾病。MeSH 是一个 DAG，一个描述符可以出现在多个父节点下；本示例会展开其官方的树号路径。</li>
+<li><strong>CookSafe files：</strong> TypeSafe 实战示例仓库的源码层次结构，从文件夹查找到源文件。</li>
+</ul>
+<h3 id="methods">方法</h3>
+<ul>
+<li><strong>贪心搜索：</strong> 选择概率最高的子节点，舍弃所有备选项。早期的任何一次失误都无法挽回。</li>
+<li><strong>束搜索：</strong> 保留 <code>K</code> 条可能的路径，并行分类每个前沿节点。更深层的证据可以修正早期不确定的决策。几何平均概率最高的路径上的叶子节点即为最终分类。</li>
+<li><strong>TypeSafe Choice：</strong> 每个节点都是一个 <code>Choice</code> 问题（question），其完整概率分布就是它的边。束中的每条路径都作为并行问题运行，因此额外的探索几乎不会增加实际耗时。</li>
+<li><strong>公式：</strong><ul>
+<li><code>path_score = product(edge_probabilities) ** (1 / decisions)</code><ul>
+<li>用于剪枝和路径比较</li>
+</ul>
+</li>
+<li><code>separation = top_path_score / second_path_score</code><ul>
+<li>是个有用的指标，但并不用于剪枝</li>
+<li>该比率将最优路径的几何平均与其最接近的竞争路径进行比较。<ul>
+<li>接近 <code>1×</code> 表示结果含糊不清</li>
+<li>比率越大，意味着分离越明显。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>指标说明：</strong><ul>
+<li>也可以采用其他指标，例如 <code>min(top_prob/second_top_prob)</code>，它会优化在每个节点都有非常明确决策的路径。</li>
+<li>使用 <code>exp(mean(log(probs)))</code> 替代 <code>product(edge_probabilities) ** (1 / decisions)</code>，以避免在非常深的层次结构（例如超过 10 层）中出现精度误差。</li>
+</ul>
+</li>
+</ul>
+<h2 id="load-and-visualize-the-example-hierarchies">加载并可视化示例层次结构</h2>
+<p>这些辅助函数会下载固定版本的分类法源数据，将其解析为直接子节点树，并将每次搜索遍历渲染为静态 SVG。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> html
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> shutil
+<span class="hljs-keyword">import</span> textwrap
+<span class="hljs-keyword">import</span> urllib.request
+<span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> defaultdict
+<span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+<span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> NamedTuple, TypeAlias
+<span class="hljs-keyword">from</span> xml.etree <span class="hljs-keyword">import</span> ElementTree
+<span class="hljs-keyword">from</span> zipfile <span class="hljs-keyword">import</span> ZipFile
+
+<span class="hljs-keyword">from</span> cooksafe <span class="hljs-keyword">import</span> JsonCache
+<span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> Markdown, display
+<span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, RetryPolicy, TypeSafeClient
+
+Tree: TypeAlias = <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-string">&quot;Tree&quot;</span>]
+
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Hierarchy</span>(<span class="hljs-title class_ inherited__">NamedTuple</span>):
+    <span class="hljs-string">&quot;&quot;&quot;One query and a complete hierarchy.
+
+    :param slug: filename-safe taxonomy name.
+    :param name: display name.
+    :param version: pinned dataset version.
+    :param source_url: hierarchy source.
+    :param node_count: number of loaded hierarchy nodes.
+    :param document: unstructured text classified by TypeSafe.
+    :param expected_leaf: expected final classification.
+    :param tree: nested direct-child menus.
+    &quot;&quot;&quot;</span>
+
+    slug: <span class="hljs-built_in">str</span>
+    name: <span class="hljs-built_in">str</span>
+    version: <span class="hljs-built_in">str</span>
+    source_url: <span class="hljs-built_in">str</span>
+    node_count: <span class="hljs-built_in">int</span>
+    document: <span class="hljs-built_in">str</span>
+    expected_leaf: <span class="hljs-built_in">str</span>
+    tree: Tree
+
+
+CPC_URL = (
+    <span class="hljs-string">&quot;https://www.cooperativepatentclassification.org/sites/default/files/&quot;</span>
+    <span class="hljs-string">&quot;cpc/bulk/CPCSchemeXML202605.zip&quot;</span>
+)
+SHOPIFY_URL = (
+    <span class="hljs-string">&quot;https://raw.githubusercontent.com/Shopify/product-taxonomy/&quot;</span>
+    <span class="hljs-string">&quot;v2026-02/dist/en/categories.txt&quot;</span>
+)
+MESH_URL = <span class="hljs-string">&quot;https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/desc2026.zip&quot;</span>
+MESH_CATEGORIES = {
+    <span class="hljs-string">&quot;A&quot;</span>: <span class="hljs-string">&quot;Anatomy&quot;</span>,
+    <span class="hljs-string">&quot;B&quot;</span>: <span class="hljs-string">&quot;Organisms&quot;</span>,
+    <span class="hljs-string">&quot;C&quot;</span>: <span class="hljs-string">&quot;Diseases&quot;</span>,
+    <span class="hljs-string">&quot;D&quot;</span>: <span class="hljs-string">&quot;Chemicals and Drugs&quot;</span>,
+    <span class="hljs-string">&quot;E&quot;</span>: <span class="hljs-string">&quot;Analytical, Diagnostic and Therapeutic Techniques, and Equipment&quot;</span>,
+    <span class="hljs-string">&quot;F&quot;</span>: <span class="hljs-string">&quot;Psychiatry and Psychology&quot;</span>,
+    <span class="hljs-string">&quot;G&quot;</span>: <span class="hljs-string">&quot;Phenomena and Processes&quot;</span>,
+    <span class="hljs-string">&quot;H&quot;</span>: <span class="hljs-string">&quot;Disciplines and Occupations&quot;</span>,
+    <span class="hljs-string">&quot;I&quot;</span>: <span class="hljs-string">&quot;Anthropology, Education, Sociology, and Social Phenomena&quot;</span>,
+    <span class="hljs-string">&quot;J&quot;</span>: <span class="hljs-string">&quot;Technology, Industry, and Agriculture&quot;</span>,
+    <span class="hljs-string">&quot;K&quot;</span>: <span class="hljs-string">&quot;Humanities&quot;</span>,
+    <span class="hljs-string">&quot;L&quot;</span>: <span class="hljs-string">&quot;Information Science&quot;</span>,
+    <span class="hljs-string">&quot;M&quot;</span>: <span class="hljs-string">&quot;Named Groups&quot;</span>,
+    <span class="hljs-string">&quot;N&quot;</span>: <span class="hljs-string">&quot;Health Care&quot;</span>,
+    <span class="hljs-string">&quot;V&quot;</span>: <span class="hljs-string">&quot;Publication Characteristics&quot;</span>,
+    <span class="hljs-string">&quot;Z&quot;</span>: <span class="hljs-string">&quot;Geographicals&quot;</span>,
+}
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_download</span>(<span class="hljs-params">url: <span class="hljs-built_in">str</span>, path: Path</span>) -&gt; Path:
+    <span class="hljs-string">&quot;&quot;&quot;Download a pinned dataset once.
+
+    :param url: official dataset URL.
+    :param path: local cache path.
+    :returns: local dataset path.
+    &quot;&quot;&quot;</span>
+
+    <span class="hljs-keyword">if</span> path.exists():
+        <span class="hljs-keyword">return</span> path
+    path.parent.mkdir(parents=<span class="hljs-literal">True</span>, exist_ok=<span class="hljs-literal">True</span>)
+    temporary_path: Path = path.with_suffix(path.suffix + <span class="hljs-string">&quot;.tmp&quot;</span>)
+    request = urllib.request.Request(
+        url, headers={<span class="hljs-string">&quot;User-Agent&quot;</span>: <span class="hljs-string">&quot;typesafe-taxonomy/1.0&quot;</span>}
+    )
+    <span class="hljs-keyword">with</span> urllib.request.urlopen(request, timeout=<span class="hljs-number">120</span>) <span class="hljs-keyword">as</span> response:
+        <span class="hljs-keyword">with</span> temporary_path.<span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;wb&quot;</span>) <span class="hljs-keyword">as</span> file:
+            shutil.copyfileobj(response, file)
+    temporary_path.replace(path)
+    <span class="hljs-keyword">return</span> path
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_insert</span>(<span class="hljs-params">tree: Tree, path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...]</span>) -&gt; <span class="hljs-literal">None</span>:
+    subtree_value: Tree = tree
+    <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> path:
+        subtree_value = subtree_value.setdefault(label, {})
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_cpc_title</span>(<span class="hljs-params">item: ElementTree.Element</span>) -&gt; <span class="hljs-built_in">str</span>:
+    class_title: ElementTree.Element | <span class="hljs-literal">None</span> = item.find(<span class="hljs-string">&quot;class-title&quot;</span>)
+    <span class="hljs-keyword">if</span> class_title <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot; &quot;</span>.join(<span class="hljs-string">&quot; &quot;</span>.join(class_title.itertext()).split())
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_load_cpc</span>(<span class="hljs-params">path: Path</span>) -&gt; <span class="hljs-built_in">tuple</span>[Tree, <span class="hljs-built_in">int</span>]:
+    titles: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>] = {}
+    levels: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">int</span>] = {}
+    parent_by_symbol: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>] = {}
+    children_by_symbol: defaultdict[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]] = defaultdict(<span class="hljs-built_in">list</span>)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">visit</span>(<span class="hljs-params">item: ElementTree.Element, parent_symbol: <span class="hljs-built_in">str</span> | <span class="hljs-literal">None</span></span>) -&gt; <span class="hljs-literal">None</span>:
+        symbol: <span class="hljs-built_in">str</span> | <span class="hljs-literal">None</span> = item.findtext(<span class="hljs-string">&quot;classification-symbol&quot;</span>)
+        next_parent: <span class="hljs-built_in">str</span> | <span class="hljs-literal">None</span> = parent_symbol
+        <span class="hljs-keyword">if</span> symbol:
+            title: <span class="hljs-built_in">str</span> = _cpc_title(item)
+            <span class="hljs-keyword">if</span> title:
+                titles[symbol] = title
+            levels[symbol] = <span class="hljs-built_in">min</span>(levels.get(symbol, <span class="hljs-number">99</span>), <span class="hljs-built_in">int</span>(item.attrib[<span class="hljs-string">&quot;level&quot;</span>]))
+            <span class="hljs-keyword">if</span> (
+                parent_symbol
+                <span class="hljs-keyword">and</span> parent_symbol != symbol
+                <span class="hljs-keyword">and</span> symbol <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> parent_by_symbol
+            ):
+                parent_by_symbol[symbol] = parent_symbol
+                children_by_symbol[parent_symbol].append(symbol)
+            next_parent = symbol
+        <span class="hljs-keyword">for</span> child <span class="hljs-keyword">in</span> item.findall(<span class="hljs-string">&quot;classification-item&quot;</span>):
+            visit(child, next_parent)
+
+    <span class="hljs-keyword">with</span> ZipFile(path) <span class="hljs-keyword">as</span> zip_file:
+        names = <span class="hljs-built_in">sorted</span>(
+            name
+            <span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> zip_file.namelist()
+            <span class="hljs-keyword">if</span> name.startswith(<span class="hljs-string">&quot;cpc-scheme-&quot;</span>) <span class="hljs-keyword">and</span> name.endswith(<span class="hljs-string">&quot;.xml&quot;</span>)
+        )
+        <span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> names:
+            root = ElementTree.fromstring(zip_file.read(name))
+            <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> root.findall(<span class="hljs-string">&quot;classification-item&quot;</span>):
+                visit(item, <span class="hljs-literal">None</span>)
+
+    labels: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>] = {
+        symbol: <span class="hljs-string">f&quot;<span class="hljs-subst">{symbol}</span> <span class="hljs-subst">{titles.get(symbol, <span class="hljs-string">&#x27;&#x27;</span>)}</span>&quot;</span>.strip() <span class="hljs-keyword">for</span> symbol <span class="hljs-keyword">in</span> levels
+    }
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">build</span>(<span class="hljs-params">symbol: <span class="hljs-built_in">str</span></span>) -&gt; Tree:
+        <span class="hljs-keyword">return</span> {
+            labels[child]: build(child) <span class="hljs-keyword">for</span> child <span class="hljs-keyword">in</span> children_by_symbol.get(symbol, [])
+        }
+
+    root_symbols: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>] = <span class="hljs-built_in">sorted</span>(
+        symbol <span class="hljs-keyword">for</span> symbol, level <span class="hljs-keyword">in</span> levels.items() <span class="hljs-keyword">if</span> level == <span class="hljs-number">2</span>
+    )
+    tree: Tree = {labels[symbol]: build(symbol) <span class="hljs-keyword">for</span> symbol <span class="hljs-keyword">in</span> root_symbols}
+    <span class="hljs-keyword">return</span> tree, <span class="hljs-built_in">len</span>(labels)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_load_shopify</span>(<span class="hljs-params">path: Path</span>) -&gt; <span class="hljs-built_in">tuple</span>[Tree, <span class="hljs-built_in">int</span>]:
+    tree: Tree = {}
+    category_count: <span class="hljs-built_in">int</span> = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> path.read_text().splitlines():
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> line <span class="hljs-keyword">or</span> line.startswith(<span class="hljs-string">&quot;#&quot;</span>):
+            <span class="hljs-keyword">continue</span>
+        _, path_text = line.split(<span class="hljs-string">&quot; : &quot;</span>, maxsplit=<span class="hljs-number">1</span>)
+        category_path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...] = <span class="hljs-built_in">tuple</span>(path_text.strip().split(<span class="hljs-string">&quot; &gt; &quot;</span>))
+        _insert(tree, category_path)
+        category_count += <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> tree, category_count
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_load_mesh</span>(<span class="hljs-params">path: Path</span>) -&gt; <span class="hljs-built_in">tuple</span>[Tree, <span class="hljs-built_in">int</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Load every official MeSH tree-number path.
+
+    A descriptor may have multiple tree numbers because MeSH is a DAG. Expanding
+    those positions into paths makes it usable by the tree-oriented beam search.
+
+    :param path: MeSH descriptor XML ZIP.
+    :returns: expanded tree and position count.
+    &quot;&quot;&quot;</span>
+
+    <span class="hljs-keyword">with</span> ZipFile(path) <span class="hljs-keyword">as</span> zip_file:
+        root: ElementTree.Element = ElementTree.fromstring(
+            zip_file.read(<span class="hljs-string">&quot;desc2026.xml&quot;</span>)
+        )
+    names_by_tree_number: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>] = {
+        tree_number.text: descriptor_record.findtext(<span class="hljs-string">&quot;DescriptorName/String&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)
+        <span class="hljs-keyword">for</span> descriptor_record <span class="hljs-keyword">in</span> root.findall(<span class="hljs-string">&quot;DescriptorRecord&quot;</span>)
+        <span class="hljs-keyword">for</span> tree_number <span class="hljs-keyword">in</span> descriptor_record.findall(<span class="hljs-string">&quot;TreeNumberList/TreeNumber&quot;</span>)
+        <span class="hljs-keyword">if</span> tree_number.text
+    }
+    tree: Tree = {}
+    <span class="hljs-keyword">for</span> tree_number <span class="hljs-keyword">in</span> <span class="hljs-built_in">sorted</span>(names_by_tree_number):
+        parts: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>] = tree_number.split(<span class="hljs-string">&quot;.&quot;</span>)
+        prefixes: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>] = [
+            <span class="hljs-string">&quot;.&quot;</span>.join(parts[:index]) <span class="hljs-keyword">for</span> index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(parts) + <span class="hljs-number">1</span>)
+        ]
+        category_code: <span class="hljs-built_in">str</span> = tree_number[<span class="hljs-number">0</span>]
+        category_path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...] = (
+            <span class="hljs-string">f&quot;<span class="hljs-subst">{category_code}</span> <span class="hljs-subst">{MESH_CATEGORIES[category_code]}</span>&quot;</span>,
+            *(<span class="hljs-string">f&quot;<span class="hljs-subst">{prefix}</span> <span class="hljs-subst">{names_by_tree_number[prefix]}</span>&quot;</span> <span class="hljs-keyword">for</span> prefix <span class="hljs-keyword">in</span> prefixes),
+        )
+        _insert(tree, category_path)
+    position_count: <span class="hljs-built_in">int</span> = <span class="hljs-built_in">len</span>(names_by_tree_number) + <span class="hljs-built_in">len</span>(tree)
+    <span class="hljs-keyword">return</span> tree, position_count
+
+
+CODEBASE_SNAPSHOT = Path(<span class="hljs-string">&quot;codebase_files.txt&quot;</span>)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_load_codebase</span>(<span class="hljs-params">path: Path</span>) -&gt; <span class="hljs-built_in">tuple</span>[Tree, <span class="hljs-built_in">int</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Load the frozen CookSafe source-file hierarchy.
+
+    The listing is a snapshot of the repository&#x27;s source files in the order a walk found them,
+    taken when this cookbook was rendered, rather than a walk of whatever tree the cookbook
+    happens to sit in. A live walk makes the taxonomy -- and every number derived from it --
+    depend on the reader&#x27;s checkout, including untracked scratch files, so the shipped cache
+    stops describing the same tree. Line order is significant: sibling options are asked in the
+    order they appear here, so it is part of the question, not presentation.
+
+    :param path: file holding one repository-relative source path per line.
+    :returns: nested file tree and node count.
+    &quot;&quot;&quot;</span>
+
+    tree: Tree = {}
+    node_paths: <span class="hljs-built_in">set</span>[<span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...]] = <span class="hljs-built_in">set</span>()
+    <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> path.read_text(encoding=<span class="hljs-string">&quot;utf-8&quot;</span>).splitlines():
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> line.strip():
+            <span class="hljs-keyword">continue</span>
+        hierarchy_path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...] = (<span class="hljs-string">&quot;CookSafe&quot;</span>, *line.split(<span class="hljs-string">&quot;/&quot;</span>))
+        _insert(tree, hierarchy_path)
+        node_paths.update(
+            hierarchy_path[:index] <span class="hljs-keyword">for</span> index <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(hierarchy_path) + <span class="hljs-number">1</span>)
+        )
+    <span class="hljs-keyword">return</span> tree, <span class="hljs-built_in">len</span>(node_paths)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">load_hierarchies</span>(<span class="hljs-params">data_directory: Path = Path(<span class="hljs-params"><span class="hljs-string">&quot;datasets&quot;</span></span>)</span>) -&gt; <span class="hljs-built_in">tuple</span>[Hierarchy, ...]:
+    <span class="hljs-string">&quot;&quot;&quot;Load three public taxonomies and one frozen code hierarchy.
+
+    :param data_directory: cache directory for official raw files.
+    :returns: CPC, Shopify, MeSH, and CookSafe examples.
+    &quot;&quot;&quot;</span>
+
+    cpc_tree, cpc_nodes = _load_cpc(
+        _download(CPC_URL, data_directory / <span class="hljs-string">&quot;CPCSchemeXML202605.zip&quot;</span>)
+    )
+    shopify_tree, shopify_nodes = _load_shopify(
+        _download(SHOPIFY_URL, data_directory / <span class="hljs-string">&quot;shopify_categories_2026-02.txt&quot;</span>)
+    )
+    mesh_tree, mesh_nodes = _load_mesh(
+        _download(MESH_URL, data_directory / <span class="hljs-string">&quot;mesh_descriptors_2026.zip&quot;</span>)
+    )
+    codebase_tree, codebase_nodes = _load_codebase(CODEBASE_SNAPSHOT)
+    <span class="hljs-keyword">return</span> (
+        Hierarchy(
+            slug=<span class="hljs-string">&quot;cpc&quot;</span>,
+            name=<span class="hljs-string">&quot;CPC patents&quot;</span>,
+            version=<span class="hljs-string">&quot;2026.05&quot;</span>,
+            source_url=CPC_URL,
+            node_count=cpc_nodes,
+            document=(
+                <span class="hljs-string">&quot;Patent abstract: a freestanding structural wooden perch for poultry or &quot;</span>
+                <span class="hljs-string">&quot;pet birds. The elevated roost has crossbars sized for bird feet and mounts &quot;</span>
+                <span class="hljs-string">&quot;inside an aviary.&quot;</span>
+            ),
+            expected_leaf=<span class="hljs-string">&quot;A01K31/12 Perches for poultry or birds, e.g. roosts&quot;</span>,
+            tree=cpc_tree,
+        ),
+        Hierarchy(
+            slug=<span class="hljs-string">&quot;shopify&quot;</span>,
+            name=<span class="hljs-string">&quot;Shopify products&quot;</span>,
+            version=<span class="hljs-string">&quot;2026-02&quot;</span>,
+            source_url=SHOPIFY_URL,
+            node_count=shopify_nodes,
+            document=(
+                <span class="hljs-string">&quot;Furniture listing: a wall-mounted window shelf bed. This padded floating shelf &quot;</span>
+                <span class="hljs-string">&quot;uses suction cups and a washable cushion as a sunny perch for one cat.&quot;</span>
+            ),
+            expected_leaf=<span class="hljs-string">&quot;Cat Window Beds &amp; Perches&quot;</span>,
+            tree=shopify_tree,
+        ),
+        Hierarchy(
+            slug=<span class="hljs-string">&quot;mesh&quot;</span>,
+            name=<span class="hljs-string">&quot;MeSH biomedical subjects&quot;</span>,
+            version=<span class="hljs-string">&quot;2026&quot;</span>,
+            source_url=MESH_URL,
+            node_count=mesh_nodes,
+            document=(
+                <span class="hljs-string">&quot;Clinical abstract: Crohn disease with transmural ileocolonic inflammation, &quot;</span>
+                <span class="hljs-string">&quot;skip lesions, abdominal pain, and chronic diarrhea. Colonoscopy showed &quot;</span>
+                <span class="hljs-string">&quot;cobblestoning and biopsy found noncaseating granulomas; treatment with &quot;</span>
+                <span class="hljs-string">&quot;infliximab produced remission.&quot;</span>
+            ),
+            expected_leaf=<span class="hljs-string">&quot;C06.405.469.432.500 Crohn Disease&quot;</span>,
+            tree=mesh_tree,
+        ),
+        Hierarchy(
+            slug=<span class="hljs-string">&quot;codebase&quot;</span>,
+            name=<span class="hljs-string">&quot;CookSafe files&quot;</span>,
+            version=<span class="hljs-string">&quot;snapshot 2026-08-06&quot;</span>,
+            source_url=<span class="hljs-built_in">str</span>(CODEBASE_SNAPSHOT),
+            node_count=codebase_nodes,
+            document=(
+                <span class="hljs-string">&quot;Developer search: find the experimental Python module under x/eugene that &quot;</span>
+                <span class="hljs-string">&quot;implements BM25, dense, and fused retrievers for legal RAG.&quot;</span>
+            ),
+            expected_leaf=<span class="hljs-string">&quot;retrievers.py&quot;</span>,
+            tree=codebase_tree,
+        ),
+    )
+
+
+NODE_W, NODE_H = <span class="hljs-number">300</span>, <span class="hljs-number">38</span>
+COL_W, ROW_H = <span class="hljs-number">360</span>, <span class="hljs-number">50</span>
+PAD_X = <span class="hljs-number">28</span>
+EDGE_TOP_K = <span class="hljs-number">5</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">subtree</span>(<span class="hljs-params">tree: Tree, path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...]</span>) -&gt; Tree:
+    <span class="hljs-string">&quot;&quot;&quot;Return the direct-child menu below ``path``.
+
+    :param tree: taxonomy root.
+    :param path: path from the taxonomy root.
+    :returns: child mapping at the path.
+    &quot;&quot;&quot;</span>
+
+    subtree_value: Tree = tree
+    <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> path:
+        subtree_value = subtree_value[label]
+    <span class="hljs-keyword">return</span> subtree_value
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_escape</span>(<span class="hljs-params">value: <span class="hljs-built_in">object</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-keyword">return</span> html.escape(<span class="hljs-built_in">str</span>(value), quote=<span class="hljs-literal">True</span>)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_truncate</span>(<span class="hljs-params">value: <span class="hljs-built_in">str</span>, length: <span class="hljs-built_in">int</span> = <span class="hljs-number">33</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    <span class="hljs-keyword">return</span> value <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(value) &lt;= length <span class="hljs-keyword">else</span> value[: length - <span class="hljs-number">1</span>] + <span class="hljs-string">&quot;…&quot;</span>
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_build_nodes</span>(<span class="hljs-params">hierarchy: Hierarchy, result: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
+    records: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...], <span class="hljs-built_in">dict</span>] = {
+        <span class="hljs-built_in">tuple</span>(record[<span class="hljs-string">&quot;parent&quot;</span>]): record <span class="hljs-keyword">for</span> record <span class="hljs-keyword">in</span> result[<span class="hljs-string">&quot;records&quot;</span>]
+    }
+    best_path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...] = <span class="hljs-built_in">tuple</span>(result[<span class="hljs-string">&quot;beam&quot;</span>][<span class="hljs-number">0</span>][<span class="hljs-string">&quot;path&quot;</span>])
+    greedy_path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...] = <span class="hljs-built_in">tuple</span>(result[<span class="hljs-string">&quot;greedy&quot;</span>][<span class="hljs-string">&quot;path&quot;</span>])
+    retained: <span class="hljs-built_in">set</span>[<span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...]] = {<span class="hljs-built_in">tuple</span>(path) <span class="hljs-keyword">for</span> path <span class="hljs-keyword">in</span> result[<span class="hljs-string">&quot;retained_paths&quot;</span>]}
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">grow</span>(<span class="hljs-params">path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...]</span>) -&gt; <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]:
+        record: <span class="hljs-built_in">dict</span> | <span class="hljs-literal">None</span> = records.get(path)
+        <span class="hljs-keyword">if</span> record <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+            <span class="hljs-keyword">return</span> []
+        children: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>] = []
+        probabilities: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">float</span>] = record[<span class="hljs-string">&quot;probabilities&quot;</span>]
+        ranked: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">float</span>]] = <span class="hljs-built_in">sorted</span>(
+            probabilities.items(), key=<span class="hljs-keyword">lambda</span> item: item[<span class="hljs-number">1</span>], reverse=<span class="hljs-literal">True</span>
+        )
+        shown_labels: <span class="hljs-built_in">set</span>[<span class="hljs-built_in">str</span>] = {label <span class="hljs-keyword">for</span> label, _ <span class="hljs-keyword">in</span> ranked[:EDGE_TOP_K]}
+        shown_labels.update(
+            label
+            <span class="hljs-keyword">for</span> label, _ <span class="hljs-keyword">in</span> ranked
+            <span class="hljs-keyword">if</span> path + (label,) <span class="hljs-keyword">in</span> retained
+            <span class="hljs-keyword">or</span> path + (label,) == best_path[: <span class="hljs-built_in">len</span>(path) + <span class="hljs-number">1</span>]
+            <span class="hljs-keyword">or</span> path + (label,) == greedy_path[: <span class="hljs-built_in">len</span>(path) + <span class="hljs-number">1</span>]
+        )
+        <span class="hljs-keyword">for</span> label, probability <span class="hljs-keyword">in</span> ranked:
+            <span class="hljs-keyword">if</span> label <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> shown_labels:
+                <span class="hljs-keyword">continue</span>
+            child_path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...] = path + (label,)
+            on_best_path: <span class="hljs-built_in">bool</span> = child_path == best_path[: <span class="hljs-built_in">len</span>(child_path)]
+            on_greedy_path: <span class="hljs-built_in">bool</span> = child_path == greedy_path[: <span class="hljs-built_in">len</span>(child_path)]
+            kind: <span class="hljs-built_in">str</span> = (
+                <span class="hljs-string">&quot;winner&quot;</span>
+                <span class="hljs-keyword">if</span> on_best_path
+                <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;greedy&quot;</span>
+                <span class="hljs-keyword">if</span> on_greedy_path
+                <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;beam&quot;</span>
+                <span class="hljs-keyword">if</span> child_path <span class="hljs-keyword">in</span> retained
+                <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;alt&quot;</span>
+            )
+            children.append(
+                {
+                    <span class="hljs-string">&quot;label&quot;</span>: label,
+                    <span class="hljs-string">&quot;probability&quot;</span>: probability,
+                    <span class="hljs-string">&quot;kind&quot;</span>: kind,
+                    <span class="hljs-string">&quot;children&quot;</span>: grow(child_path),
+                }
+            )
+        <span class="hljs-keyword">return</span> children
+
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;label&quot;</span>: hierarchy.name,
+        <span class="hljs-string">&quot;probability&quot;</span>: <span class="hljs-literal">None</span>,
+        <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;root&quot;</span>,
+        <span class="hljs-string">&quot;children&quot;</span>: grow(()),
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">_layout</span>(<span class="hljs-params">root: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">int</span>, <span class="hljs-built_in">int</span>]:
+    rows: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">int</span>] = [<span class="hljs-number">0</span>]
+    maximum_depth: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">int</span>] = [<span class="hljs-number">0</span>]
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">walk</span>(<span class="hljs-params">node: <span class="hljs-built_in">dict</span>, depth: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-literal">None</span>:
+        node[<span class="hljs-string">&quot;depth&quot;</span>] = depth
+        maximum_depth[<span class="hljs-number">0</span>] = <span class="hljs-built_in">max</span>(maximum_depth[<span class="hljs-number">0</span>], depth)
+        <span class="hljs-keyword">if</span> node[<span class="hljs-string">&quot;children&quot;</span>]:
+            <span class="hljs-keyword">for</span> child <span class="hljs-keyword">in</span> node[<span class="hljs-string">&quot;children&quot;</span>]:
+                walk(child, depth + <span class="hljs-number">1</span>)
+            node[<span class="hljs-string">&quot;row&quot;</span>] = (node[<span class="hljs-string">&quot;children&quot;</span>][<span class="hljs-number">0</span>][<span class="hljs-string">&quot;row&quot;</span>] + node[<span class="hljs-string">&quot;children&quot;</span>][-<span class="hljs-number">1</span>][<span class="hljs-string">&quot;row&quot;</span>]) / <span class="hljs-number">2</span>
+        <span class="hljs-keyword">else</span>:
+            node[<span class="hljs-string">&quot;row&quot;</span>] = rows[<span class="hljs-number">0</span>]
+            rows[<span class="hljs-number">0</span>] += <span class="hljs-number">1</span>
+
+    walk(root, <span class="hljs-number">0</span>)
+    <span class="hljs-keyword">return</span> maximum_depth[<span class="hljs-number">0</span>], rows[<span class="hljs-number">0</span>]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">render_svg</span>(<span class="hljs-params">hierarchy: Hierarchy, result: <span class="hljs-built_in">dict</span>, path: Path</span>) -&gt; <span class="hljs-literal">None</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Write a standalone traversal SVG matching the Customer_ProdX visual language.
+
+    :param hierarchy: taxonomy demonstration.
+    :param result: beam-search result from the notebook.
+    :param path: output SVG path.
+    &quot;&quot;&quot;</span>
+
+    root: <span class="hljs-built_in">dict</span> = _build_nodes(hierarchy, result)
+    maximum_depth, row_count = _layout(root)
+    document_lines: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>] = textwrap.wrap(
+        hierarchy.document,
+        width=<span class="hljs-number">105</span>,
+        break_long_words=<span class="hljs-literal">False</span>,
+        break_on_hyphens=<span class="hljs-literal">False</span>,
+    ) <span class="hljs-keyword">or</span> [<span class="hljs-string">&quot;&quot;</span>]
+    document_y: <span class="hljs-built_in">int</span> = <span class="hljs-number">124</span>
+    greedy_y: <span class="hljs-built_in">int</span> = document_y + (<span class="hljs-built_in">len</span>(document_lines) - <span class="hljs-number">1</span>) * <span class="hljs-number">21</span> + <span class="hljs-number">34</span>
+    beam_y: <span class="hljs-built_in">int</span> = greedy_y + <span class="hljs-number">25</span>
+    method_y: <span class="hljs-built_in">int</span> = beam_y + <span class="hljs-number">29</span>
+    legend_y: <span class="hljs-built_in">int</span> = method_y + <span class="hljs-number">23</span>
+    header_height: <span class="hljs-built_in">int</span> = legend_y + <span class="hljs-number">32</span>
+    width: <span class="hljs-built_in">int</span> = PAD_X * <span class="hljs-number">2</span> + maximum_depth * COL_W + NODE_W
+    height: <span class="hljs-built_in">int</span> = header_height + <span class="hljs-built_in">max</span>(row_count, <span class="hljs-number">1</span>) * ROW_H + <span class="hljs-number">34</span>
+    edges: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>] = []
+    nodes: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>] = []
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">node_x</span>(<span class="hljs-params">node: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+        <span class="hljs-keyword">return</span> PAD_X + node[<span class="hljs-string">&quot;depth&quot;</span>] * COL_W
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">node_y</span>(<span class="hljs-params">node: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">float</span>:
+        <span class="hljs-keyword">return</span> header_height + node[<span class="hljs-string">&quot;row&quot;</span>] * ROW_H
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">walk</span>(<span class="hljs-params">node: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-literal">None</span>:
+        x_value, y_value = node_x(node), node_y(node)
+        <span class="hljs-keyword">for</span> child <span class="hljs-keyword">in</span> node[<span class="hljs-string">&quot;children&quot;</span>]:
+            child_x, child_y = node_x(child), node_y(child)
+            x1, y1 = x_value + NODE_W, y_value + NODE_H / <span class="hljs-number">2</span>
+            x2, y2 = child_x, child_y + NODE_H / <span class="hljs-number">2</span>
+            bend: <span class="hljs-built_in">float</span> = COL_W * <span class="hljs-number">0.38</span>
+            edges.append(
+                <span class="hljs-string">f&#x27;&lt;path class=&quot;edge <span class="hljs-subst">{child[<span class="hljs-string">&quot;kind&quot;</span>]}</span>&quot; &#x27;</span>
+                <span class="hljs-string">f&#x27;d=&quot;M<span class="hljs-subst">{x1:<span class="hljs-number">.0</span>f}</span>,<span class="hljs-subst">{y1:<span class="hljs-number">.0</span>f}</span> C<span class="hljs-subst">{x1 + bend:<span class="hljs-number">.0</span>f}</span>,<span class="hljs-subst">{y1:<span class="hljs-number">.0</span>f}</span> &#x27;</span>
+                <span class="hljs-string">f&#x27;<span class="hljs-subst">{x2 - bend:<span class="hljs-number">.0</span>f}</span>,<span class="hljs-subst">{y2:<span class="hljs-number">.0</span>f}</span> <span class="hljs-subst">{x2:<span class="hljs-number">.0</span>f}</span>,<span class="hljs-subst">{y2:<span class="hljs-number">.0</span>f}</span>&quot;/&gt;&#x27;</span>
+            )
+            edges.append(
+                <span class="hljs-string">f&#x27;&lt;text class=&quot;prob&quot; x=&quot;<span class="hljs-subst">{x2 - <span class="hljs-number">7</span>:<span class="hljs-number">.0</span>f}</span>&quot; y=&quot;<span class="hljs-subst">{y2 - <span class="hljs-number">5</span>:<span class="hljs-number">.0</span>f}</span>&quot; &#x27;</span>
+                <span class="hljs-string">f&#x27;text-anchor=&quot;end&quot;&gt;<span class="hljs-subst">{child[<span class="hljs-string">&quot;probability&quot;</span>]:<span class="hljs-number">.2</span>f}</span>&lt;/text&gt;&#x27;</span>
+            )
+            walk(child)
+
+        kind: <span class="hljs-built_in">str</span> = node[<span class="hljs-string">&quot;kind&quot;</span>]
+        label: <span class="hljs-built_in">str</span> = _truncate(node[<span class="hljs-string">&quot;label&quot;</span>], <span class="hljs-number">40</span>)
+        nodes.append(
+            <span class="hljs-string">f&#x27;&lt;g class=&quot;node <span class="hljs-subst">{kind}</span>&quot;&gt;&lt;title&gt;<span class="hljs-subst">{_escape(node[<span class="hljs-string">&quot;label&quot;</span>])}</span>&lt;/title&gt;&#x27;</span>
+            <span class="hljs-string">f&#x27;&lt;rect x=&quot;<span class="hljs-subst">{x_value:<span class="hljs-number">.0</span>f}</span>&quot; y=&quot;<span class="hljs-subst">{y_value:<span class="hljs-number">.0</span>f}</span>&quot; width=&quot;<span class="hljs-subst">{NODE_W}</span>&quot; &#x27;</span>
+            <span class="hljs-string">f&#x27;height=&quot;<span class="hljs-subst">{NODE_H}</span>&quot; rx=&quot;7&quot;/&gt;&#x27;</span>
+            <span class="hljs-string">f&#x27;&lt;text x=&quot;<span class="hljs-subst">{x_value + <span class="hljs-number">11</span>:<span class="hljs-number">.0</span>f}</span>&quot; y=&quot;<span class="hljs-subst">{y_value + <span class="hljs-number">24</span>:<span class="hljs-number">.0</span>f}</span>&quot;&gt;&#x27;</span>
+            <span class="hljs-string">f&quot;<span class="hljs-subst">{_escape(label)}</span>&lt;/text&gt;&lt;/g&gt;&quot;</span>
+        )
+
+    walk(root)
+    best: <span class="hljs-built_in">dict</span> = result[<span class="hljs-string">&quot;beam&quot;</span>][<span class="hljs-number">0</span>]
+    best_path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...] = <span class="hljs-built_in">tuple</span>(best[<span class="hljs-string">&quot;path&quot;</span>])
+    greedy_path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...] = <span class="hljs-built_in">tuple</span>(result[<span class="hljs-string">&quot;greedy&quot;</span>][<span class="hljs-string">&quot;path&quot;</span>])
+    beam_leaf: <span class="hljs-built_in">str</span> = best_path[-<span class="hljs-number">1</span>] <span class="hljs-keyword">if</span> best_path <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;no leaf&quot;</span>
+    greedy_leaf: <span class="hljs-built_in">str</span> = greedy_path[-<span class="hljs-number">1</span>] <span class="hljs-keyword">if</span> greedy_path <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;no leaf&quot;</span>
+    beam_width: <span class="hljs-built_in">int</span> = result[<span class="hljs-string">&quot;beam_width&quot;</span>]
+    separation_ratio: <span class="hljs-built_in">float</span> = result[<span class="hljs-string">&quot;separation_ratio&quot;</span>]
+    document_text: <span class="hljs-built_in">str</span> = <span class="hljs-string">&quot;&quot;</span>.join(
+        <span class="hljs-string">f&#x27;&lt;text class=&quot;document&quot; x=&quot;24&quot; y=&quot;<span class="hljs-subst">{document_y + index * <span class="hljs-number">21</span>}</span>&quot;&gt;&#x27;</span>
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{_escape(line)}</span>&lt;/text&gt;&quot;</span>
+        <span class="hljs-keyword">for</span> index, line <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(document_lines)
+    )
+    separation_text: <span class="hljs-built_in">str</span> = (
+        <span class="hljs-string">&quot;&gt;999×&quot;</span> <span class="hljs-keyword">if</span> separation_ratio &gt; <span class="hljs-number">999</span> <span class="hljs-keyword">else</span> <span class="hljs-string">f&quot;<span class="hljs-subst">{separation_ratio:<span class="hljs-number">.2</span>f}</span>×&quot;</span>
+    )
+
+    svg: <span class="hljs-built_in">str</span> = <span class="hljs-string">f&#x27;&#x27;&#x27;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 <span class="hljs-subst">{width}</span> <span class="hljs-subst">{height}</span>&quot;
+  width=&quot;<span class="hljs-subst">{width}</span>&quot; height=&quot;<span class="hljs-subst">{height}</span>&quot; role=&quot;img&quot; aria-label=&quot;<span class="hljs-subst">{_escape(hierarchy.name)}</span> taxonomy beam search&quot;&gt;
+&lt;style&gt;
+  .bg {{ fill:#f6f7fb }}
+  text {{ font-family:ui-monospace,&quot;SF Mono&quot;,Menlo,Consolas,monospace }}
+  .eyebrow {{ font-size:14px; font-weight:700; letter-spacing:1.2px; fill:#4f46e5 }}
+  .title {{ font:700 28px system-ui,-apple-system,&quot;Segoe UI&quot;,sans-serif; fill:#181b28 }}
+  .document-label {{ font:700 12px system-ui,-apple-system,&quot;Segoe UI&quot;,sans-serif; letter-spacing:1px; fill:#777c91 }}
+  .document {{ font:500 17px system-ui,-apple-system,&quot;Segoe UI&quot;,sans-serif; fill:#303449 }}
+  .copy {{ font-size:14px; fill:#5c6178 }}
+  .result {{ font-size:14px; font-weight:700 }}
+  .greedy-result {{ fill:#c2410c }}
+  .beam-result {{ fill:#15803d }}
+  .edge {{ fill:none; stroke:#c9cee0; stroke-width:2 }}
+  .edge.winner {{ stroke:#15803d; stroke-width:2.5 }}
+  .edge.greedy {{ stroke:#ea580c; stroke-width:2.5 }}
+  .edge.beam {{ stroke:#4f46e5; stroke-width:2.2 }}
+  .edge.alt {{ opacity:.48 }}
+  .prob {{ font-size:12px; font-weight:600; fill:#5c6178 }}
+  .node rect {{ stroke-width:1.7 }}
+  .node text {{ font-size:13px }}
+  .node.root rect {{ fill:#f0f2f8; stroke:#e2e5f0 }}
+  .node.root text {{ fill:#5c6178 }}
+  .node.winner rect {{ fill:#e4f5ea; stroke:#15803d }}
+  .node.winner text {{ fill:#15803d; font-weight:700 }}
+  .node.greedy rect {{ fill:#fff0e8; stroke:#ea580c }}
+  .node.greedy text {{ fill:#c2410c; font-weight:700 }}
+  .node.beam rect {{ fill:#ecebfd; stroke:#4f46e5 }}
+  .node.beam text {{ fill:#181b28 }}
+  .node.alt rect {{ fill:#fff; stroke:#e2e5f0; stroke-dasharray:3 3 }}
+  .node.alt text {{ fill:#5c6178 }}
+&lt;/style&gt;
+&lt;rect class=&quot;bg&quot; width=&quot;<span class="hljs-subst">{width}</span>&quot; height=&quot;<span class="hljs-subst">{height}</span>&quot; rx=&quot;14&quot;/&gt;
+&lt;text class=&quot;eyebrow&quot; x=&quot;24&quot; y=&quot;32&quot;&gt;TYPESAFE · <span class="hljs-subst">{hierarchy.name.upper()}</span> · <span class="hljs-subst">{hierarchy.version.upper()}</span> · <span class="hljs-subst">{hierarchy.node_count:,}</span> NODES&lt;/text&gt;
+&lt;text class=&quot;title&quot; x=&quot;24&quot; y=&quot;69&quot;&gt;Greedy vs parallel beam search&lt;/text&gt;
+&lt;text class=&quot;document-label&quot; x=&quot;24&quot; y=&quot;99&quot;&gt;DOCUMENT&lt;/text&gt;
+<span class="hljs-subst">{document_text}</span>
+&lt;text class=&quot;result greedy-result&quot; x=&quot;24&quot; y=&quot;<span class="hljs-subst">{greedy_y}</span>&quot;&gt;GREEDY TOP-1 → <span class="hljs-subst">{_escape(_truncate(greedy_leaf, <span class="hljs-number">105</span>))}</span>&lt;/text&gt;
+&lt;text class=&quot;result beam-result&quot; x=&quot;24&quot; y=&quot;<span class="hljs-subst">{beam_y}</span>&quot;&gt;BEAM K=<span class="hljs-subst">{beam_width}</span> → <span class="hljs-subst">{_escape(_truncate(beam_leaf, <span class="hljs-number">105</span>))}</span>&lt;/text&gt;
+&lt;text class=&quot;copy&quot; x=&quot;24&quot; y=&quot;<span class="hljs-subst">{method_y}</span>&quot;&gt;parallel sibling Choices → keep <span class="hljs-subst">{beam_width}</span> by geometric mean p → top/second = <span class="hljs-subst">{separation_text}</span>&lt;/text&gt;
+&lt;text class=&quot;copy&quot; x=&quot;24&quot; y=&quot;<span class="hljs-subst">{legend_y}</span>&quot;&gt;orange = greedy   green = beam winner   purple = retained beam   dashed = pruned&lt;/text&gt;
+<span class="hljs-subst">{<span class="hljs-string">&quot;&quot;</span>.join(edges)}</span><span class="hljs-subst">{<span class="hljs-string">&quot;&quot;</span>.join(nodes)}</span>
+&lt;/svg&gt;&#x27;&#x27;&#x27;</span>
+    path.write_text(svg)</code></pre></div>
+<h1 id="implement-greedy-and-beam-search">实现贪心搜索与束搜索</h1>
+<p>每一组兄弟节点在下一节都会成为一个 <code>Choice</code>（选择题）问题，下一节同样会实现两种遍历策略，并保留静态图表所需的概率分布。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">HIERARCHIES = load_hierarchies()
+MODEL, BEAM_WIDTH, MAX_DEPTH, EPSILON = <span class="hljs-string">&quot;jev-1.12&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-number">12</span>, <span class="hljs-number">1e-9</span>
+client = TypeSafeClient(
+    api_key=os.environ[<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>],
+    retry=RetryPolicy(max_retries=<span class="hljs-number">5</span>, backoff_initial=<span class="hljs-number">1.0</span>, backoff_max=<span class="hljs-number">20.0</span>),
+)
+json_cache = JsonCache(Path(<span class="hljs-string">&quot;json_cache.json&quot;</span>))
+
+
+<span class="hljs-meta">@json_cache</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">choose</span>(<span class="hljs-params">state: <span class="hljs-built_in">str</span>, labels: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...]</span>) -&gt; <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">float</span>]:
+    <span class="hljs-string">&quot;&quot;&quot;Ask one atomic direct-child question and return its distribution.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(labels) == <span class="hljs-number">1</span>:
+        <span class="hljs-keyword">return</span> {labels[<span class="hljs-number">0</span>]: <span class="hljs-number">1.0</span>}
+    question, keys = child_question(labels)
+    response = client.system_one(
+        state=state, questions={<span class="hljs-string">&quot;child&quot;</span>: question}, model=MODEL
+    )
+    probabilities = response.answers[<span class="hljs-string">&quot;child&quot;</span>].probabilities
+    <span class="hljs-keyword">return</span> {label: probabilities[key] <span class="hljs-keyword">for</span> key, label <span class="hljs-keyword">in</span> keys.items()}
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">child_question</span>(<span class="hljs-params">labels: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...]</span>) -&gt; <span class="hljs-built_in">tuple</span>[Choice, <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>]]:
+    <span class="hljs-string">&quot;&quot;&quot;Build the direct-child Choice and its reversible option mapping.&quot;&quot;&quot;</span>
+    keys = {<span class="hljs-string">f&quot;c<span class="hljs-subst">{i}</span>&quot;</span>: label <span class="hljs-keyword">for</span> i, label <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(labels)}
+    question = Choice(
+        instructions=<span class="hljs-string">&quot;Which direct child category best matches this document?&quot;</span>,
+        criteria=keys,
+    )
+    <span class="hljs-keyword">return</span> question, keys
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">extend_candidate</span>(<span class="hljs-params">
+    candidate: <span class="hljs-built_in">dict</span>, label: <span class="hljs-built_in">str</span>, probabilities: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">float</span>]
+</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Append one edge and recompute its geometric-mean path score.&quot;&quot;&quot;</span>
+    is_decision: <span class="hljs-built_in">bool</span> = <span class="hljs-built_in">len</span>(probabilities) &gt; <span class="hljs-number">1</span>
+    <span class="hljs-comment"># Use log space for very deep trees to avoid floating-point precision loss.</span>
+    probability_product: <span class="hljs-built_in">float</span> = candidate[<span class="hljs-string">&quot;probability_product&quot;</span>] * (
+        <span class="hljs-built_in">max</span>(probabilities[label], EPSILON) <span class="hljs-keyword">if</span> is_decision <span class="hljs-keyword">else</span> <span class="hljs-number">1.0</span>
+    )
+    decision_count: <span class="hljs-built_in">int</span> = candidate[<span class="hljs-string">&quot;decision_count&quot;</span>] + is_decision
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;path&quot;</span>: candidate[<span class="hljs-string">&quot;path&quot;</span>] + (label,),
+        <span class="hljs-string">&quot;probability_product&quot;</span>: probability_product,
+        <span class="hljs-string">&quot;decision_count&quot;</span>: decision_count,
+        <span class="hljs-string">&quot;score&quot;</span>: probability_product ** (<span class="hljs-number">1</span> / decision_count) <span class="hljs-keyword">if</span> decision_count <span class="hljs-keyword">else</span> <span class="hljs-number">1.0</span>,
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">choice_record</span>(<span class="hljs-params">path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...], probabilities: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">float</span>]</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Package one sibling decision for the traversal diagram.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;parent&quot;</span>: path, <span class="hljs-string">&quot;probabilities&quot;</span>: probabilities}
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">beam_search</span>(<span class="hljs-params">hierarchy: Hierarchy</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Parallel width-three beam search using geometric-mean probability.&quot;&quot;&quot;</span>
+    beam = [{<span class="hljs-string">&quot;path&quot;</span>: (), <span class="hljs-string">&quot;probability_product&quot;</span>: <span class="hljs-number">1.0</span>, <span class="hljs-string">&quot;decision_count&quot;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&quot;score&quot;</span>: <span class="hljs-number">1.0</span>}]
+    records, retained_paths = [], {()}
+
+    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(MAX_DEPTH):
+        expandable = [
+            candidate
+            <span class="hljs-keyword">for</span> candidate <span class="hljs-keyword">in</span> beam
+            <span class="hljs-keyword">if</span> subtree(hierarchy.tree, candidate[<span class="hljs-string">&quot;path&quot;</span>])
+        ]
+        finished = [
+            candidate
+            <span class="hljs-keyword">for</span> candidate <span class="hljs-keyword">in</span> beam
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> subtree(hierarchy.tree, candidate[<span class="hljs-string">&quot;path&quot;</span>])
+        ]
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> expandable:
+            <span class="hljs-keyword">break</span>
+        <span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=BEAM_WIDTH) <span class="hljs-keyword">as</span> executor:
+            distributions = <span class="hljs-built_in">list</span>(
+                executor.<span class="hljs-built_in">map</span>(
+                    <span class="hljs-keyword">lambda</span> candidate: choose(
+                        hierarchy.document,
+                        <span class="hljs-built_in">tuple</span>(subtree(hierarchy.tree, candidate[<span class="hljs-string">&quot;path&quot;</span>])),
+                    ),
+                    expandable,
+                )
+            )
+
+        expanded = []
+        round_records = []
+        <span class="hljs-keyword">for</span> candidate, probabilities <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(expandable, distributions, strict=<span class="hljs-literal">True</span>):
+            round_records.append(choice_record(candidate[<span class="hljs-string">&quot;path&quot;</span>], probabilities))
+            candidate_expanded = []
+            <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> probabilities:
+                candidate_expanded.append(
+                    extend_candidate(candidate, label, probabilities)
+                )
+            expanded.extend(candidate_expanded)
+        beam = <span class="hljs-built_in">sorted</span>(
+            finished + expanded,
+            key=<span class="hljs-keyword">lambda</span> candidate: candidate[<span class="hljs-string">&quot;score&quot;</span>],
+            reverse=<span class="hljs-literal">True</span>,
+        )[:BEAM_WIDTH]
+        retained_paths.update(candidate[<span class="hljs-string">&quot;path&quot;</span>] <span class="hljs-keyword">for</span> candidate <span class="hljs-keyword">in</span> beam)
+        records.extend(round_records)
+
+    beam = <span class="hljs-built_in">sorted</span>(beam, key=<span class="hljs-keyword">lambda</span> candidate: candidate[<span class="hljs-string">&quot;score&quot;</span>], reverse=<span class="hljs-literal">True</span>)
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-string">&quot;beam&quot;</span>: beam,
+        <span class="hljs-string">&quot;records&quot;</span>: records,
+        <span class="hljs-string">&quot;retained_paths&quot;</span>: <span class="hljs-built_in">sorted</span>(retained_paths, key=<span class="hljs-keyword">lambda</span> path: (<span class="hljs-built_in">len</span>(path), path)),
+    }
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">greedy_search</span>(<span class="hljs-params">hierarchy: Hierarchy</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Follow only the locally highest-probability child.&quot;&quot;&quot;</span>
+    path, probability_product, decision_count, records = (), <span class="hljs-number">1.0</span>, <span class="hljs-number">0</span>, []
+    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(MAX_DEPTH):
+        labels = <span class="hljs-built_in">tuple</span>(subtree(hierarchy.tree, path))
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> labels:
+            <span class="hljs-keyword">break</span>
+        probabilities = choose(hierarchy.document, labels)
+        records.append(choice_record(path, probabilities))
+        label = <span class="hljs-built_in">max</span>(probabilities, key=probabilities.get)
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(probabilities) &gt; <span class="hljs-number">1</span>:
+            probability_product *= <span class="hljs-built_in">max</span>(probabilities[label], EPSILON)
+            decision_count += <span class="hljs-number">1</span>
+        path += (label,)
+    score: <span class="hljs-built_in">float</span> = (
+        probability_product ** (<span class="hljs-number">1</span> / decision_count) <span class="hljs-keyword">if</span> decision_count <span class="hljs-keyword">else</span> <span class="hljs-number">1.0</span>
+    )
+    <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;path&quot;</span>: path, <span class="hljs-string">&quot;score&quot;</span>: score, <span class="hljs-string">&quot;records&quot;</span>: records}
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">compare_searches</span>(<span class="hljs-params">hierarchy: Hierarchy</span>) -&gt; <span class="hljs-built_in">dict</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Run beam and greedy, then merge their queried nodes for rendering.&quot;&quot;&quot;</span>
+    result = beam_search(hierarchy)
+    greedy = greedy_search(hierarchy)
+    recorded_paths = {<span class="hljs-built_in">tuple</span>(record[<span class="hljs-string">&quot;parent&quot;</span>]) <span class="hljs-keyword">for</span> record <span class="hljs-keyword">in</span> result[<span class="hljs-string">&quot;records&quot;</span>]}
+    result[<span class="hljs-string">&quot;records&quot;</span>].extend(
+        record
+        <span class="hljs-keyword">for</span> record <span class="hljs-keyword">in</span> greedy[<span class="hljs-string">&quot;records&quot;</span>]
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">tuple</span>(record[<span class="hljs-string">&quot;parent&quot;</span>]) <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> recorded_paths
+    )
+    result[<span class="hljs-string">&quot;greedy&quot;</span>] = greedy
+    result[<span class="hljs-string">&quot;beam_width&quot;</span>] = BEAM_WIDTH
+    top_score: <span class="hljs-built_in">float</span> = result[<span class="hljs-string">&quot;beam&quot;</span>][<span class="hljs-number">0</span>][<span class="hljs-string">&quot;score&quot;</span>]
+    second_score: <span class="hljs-built_in">float</span> = result[<span class="hljs-string">&quot;beam&quot;</span>][<span class="hljs-number">1</span>][<span class="hljs-string">&quot;score&quot;</span>]
+    result[<span class="hljs-string">&quot;separation_ratio&quot;</span>] = top_score / <span class="hljs-built_in">max</span>(second_score, EPSILON)
+    <span class="hljs-keyword">return</span> result</code></pre></div>
+<h2 id="compare-the-methods">对比两种方法</h2>
+<p>在四个标注样本上分别运行两种策略，把它们的叶节点与期望分类做对比，并可视化它们探索过的路径。</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-built_in">len</span>(HIERARCHIES)) <span class="hljs-keyword">as</span> executor:
+    results = <span class="hljs-built_in">list</span>(executor.<span class="hljs-built_in">map</span>(compare_searches, HIERARCHIES))
+
+rows: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span> | <span class="hljs-built_in">int</span> | <span class="hljs-built_in">bool</span>]] = []
+<span class="hljs-keyword">for</span> hierarchy, result <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(HIERARCHIES, results, strict=<span class="hljs-literal">True</span>):
+    svg_path: Path = Path(<span class="hljs-string">f&quot;<span class="hljs-subst">{hierarchy.slug}</span>_tree.svg&quot;</span>)
+    render_svg(hierarchy, result, svg_path)
+    beam_path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...] = <span class="hljs-built_in">tuple</span>(result[<span class="hljs-string">&quot;beam&quot;</span>][<span class="hljs-number">0</span>][<span class="hljs-string">&quot;path&quot;</span>])
+    greedy_path: <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, ...] = <span class="hljs-built_in">tuple</span>(result[<span class="hljs-string">&quot;greedy&quot;</span>][<span class="hljs-string">&quot;path&quot;</span>])
+    beam_leaf: <span class="hljs-built_in">str</span> = beam_path[-<span class="hljs-number">1</span>]
+    greedy_leaf: <span class="hljs-built_in">str</span> = greedy_path[-<span class="hljs-number">1</span>]
+    rows.append(
+        {
+            <span class="hljs-string">&quot;hierarchy&quot;</span>: hierarchy.name,
+            <span class="hljs-string">&quot;nodes&quot;</span>: hierarchy.node_count,
+            <span class="hljs-string">&quot;expected leaf&quot;</span>: hierarchy.expected_leaf,
+            <span class="hljs-string">&quot;greedy leaf&quot;</span>: greedy_leaf,
+            <span class="hljs-string">&quot;beam K=3 leaf&quot;</span>: beam_leaf,
+            <span class="hljs-string">&quot;greedy correct&quot;</span>: greedy_leaf == hierarchy.expected_leaf,
+            <span class="hljs-string">&quot;beam correct&quot;</span>: beam_leaf == hierarchy.expected_leaf,
+            <span class="hljs-string">&quot;mean p&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{result[<span class="hljs-string">&#x27;beam&#x27;</span>][<span class="hljs-number">0</span>][<span class="hljs-string">&#x27;score&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>&quot;</span>,
+            <span class="hljs-string">&quot;top/second&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{result[<span class="hljs-string">&#x27;separation_ratio&#x27;</span>]:<span class="hljs-number">.2</span>f}</span>×&quot;</span>,
+        }
+    )
+
+greedy_correct_count: <span class="hljs-built_in">int</span> = <span class="hljs-built_in">sum</span>(<span class="hljs-built_in">bool</span>(row[<span class="hljs-string">&quot;greedy correct&quot;</span>]) <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> rows)
+beam_correct_count: <span class="hljs-built_in">int</span> = <span class="hljs-built_in">sum</span>(<span class="hljs-built_in">bool</span>(row[<span class="hljs-string">&quot;beam correct&quot;</span>]) <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> rows)
+recovered_names: <span class="hljs-built_in">str</span> = <span class="hljs-string">&quot;, &quot;</span>.join(
+    <span class="hljs-built_in">str</span>(row[<span class="hljs-string">&quot;hierarchy&quot;</span>])
+    <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> rows
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> row[<span class="hljs-string">&quot;greedy correct&quot;</span>] <span class="hljs-keyword">and</span> row[<span class="hljs-string">&quot;beam correct&quot;</span>]
+)
+table_lines: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>] = [
+    <span class="hljs-string">&quot;| Hierarchy | Expected leaf | Greedy leaf | Beam K=3 leaf | Greedy correct | Beam correct |&quot;</span>,
+    <span class="hljs-string">&quot;| --- | --- | --- | --- | --- | --- |&quot;</span>,
+]
+table_lines.extend(
+    <span class="hljs-string">&quot;| &quot;</span>
+    + <span class="hljs-string">&quot; | &quot;</span>.join(
+        (
+            <span class="hljs-built_in">str</span>(row[<span class="hljs-string">&quot;hierarchy&quot;</span>]),
+            <span class="hljs-built_in">str</span>(row[<span class="hljs-string">&quot;expected leaf&quot;</span>]),
+            <span class="hljs-built_in">str</span>(row[<span class="hljs-string">&quot;greedy leaf&quot;</span>]),
+            <span class="hljs-built_in">str</span>(row[<span class="hljs-string">&quot;beam K=3 leaf&quot;</span>]),
+            <span class="hljs-string">&quot;yes&quot;</span> <span class="hljs-keyword">if</span> row[<span class="hljs-string">&quot;greedy correct&quot;</span>] <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;no&quot;</span>,
+            <span class="hljs-string">&quot;yes&quot;</span> <span class="hljs-keyword">if</span> row[<span class="hljs-string">&quot;beam correct&quot;</span>] <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;no&quot;</span>,
+        )
+    )
+    + <span class="hljs-string">&quot; |&quot;</span>
+    <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> rows
+)
+display(
+    Markdown(
+        <span class="hljs-string">&quot;## Results\n\n&quot;</span>
+        <span class="hljs-string">&quot;Each example has a known expected leaf. &quot;</span>
+        <span class="hljs-string">f&quot;Beam search matched <span class="hljs-subst">{beam_correct_count}</span> of <span class="hljs-subst">{<span class="hljs-built_in">len</span>(rows)}</span> expected leaves; &quot;</span>
+        <span class="hljs-string">f&quot;greedy search matched <span class="hljs-subst">{greedy_correct_count}</span> of <span class="hljs-subst">{<span class="hljs-built_in">len</span>(rows)}</span>. &quot;</span>
+        <span class="hljs-string">f&quot;Keeping three paths recovered the expected classification for <span class="hljs-subst">{recovered_names}</span>.\n\n&quot;</span>
+        + <span class="hljs-string">&quot;\n&quot;</span>.join(table_lines)
+        + <span class="hljs-string">&quot;\n\nThe diagrams show why the methods differ. Orange marks the greedy route, &quot;</span>
+        <span class="hljs-string">&quot;green marks the winning beam route, purple marks other retained paths, and &quot;</span>
+        <span class="hljs-string">&quot;dashed edges were pruned.\n\n&quot;</span>
+        + <span class="hljs-string">&quot;\n\n&quot;</span>.join(
+            <span class="hljs-string">f&quot;### <span class="hljs-subst">{hierarchy.name}</span>\n\n![](<span class="hljs-subst">{hierarchy.slug}</span>_tree.svg)&quot;</span>
+            <span class="hljs-keyword">for</span> hierarchy <span class="hljs-keyword">in</span> HIERARCHIES
+        )
+    )
+)</code></pre></div>
+<h2 id="results">结果</h2>
+<p>每个样本都有一个已知的期望叶节点。束搜索在 4 个期望叶节点中命中 4 个；贪心搜索命中 2 个。将保留路径数设为三条后，在 CPC patents、Shopify products 这两个样本上恢复了期望分类。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>期望叶节点</th>
+<th>贪心叶节点</th>
+<th>束搜索 K=3 叶节点</th>
+<th>贪心正确</th>
+<th>束搜索正确</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CPC patents</td>
+<td>A01K31/12 Perches for poultry or birds, e.g. roosts</td>
+<td>E99Z99/00 Subject matter not otherwise provided for in this section</td>
+<td>A01K31/12 Perches for poultry or birds, e.g. roosts</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Shopify products</td>
+<td>Cat Window Beds &amp; Perches</td>
+<td>Pet Chairs</td>
+<td>Cat Window Beds &amp; Perches</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>MeSH biomedical subjects</td>
+<td>C06.405.469.432.500 Crohn Disease</td>
+<td>C06.405.469.432.500 Crohn Disease</td>
+<td>C06.405.469.432.500 Crohn Disease</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>CookSafe files</td>
+<td>retrievers.py</td>
+<td>retrievers.py</td>
+<td>retrievers.py</td>
+<td>是</td>
+<td>是</td>
+</tr>
+</tbody></table></div>
+<p>这些图示展示了两种方法差异的原因：橙色标记贪心搜索路径，绿色标记胜出的束搜索路径，紫色标记其他保留的路径，虚线表示被剪枝的边。</p>
+<h3 id="cpc-patents">CPC patents</h3>
+<img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/hierarchical_classification/cpc_tree.svg?fit=max&auto=format&n=2NirYCl-v96cw05F&q=85&s=e2e78c257ef946e0e40f49ed0aadddf4" alt="" width="2876" height="2322" data-path="cookbooks/hierarchical_classification/cpc_tree.svg" />
+
+<h3 id="shopify-products">Shopify products</h3>
+<img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/hierarchical_classification/shopify_tree.svg?fit=max&auto=format&n=2NirYCl-v96cw05F&q=85&s=eaeffcf7e76e389ffbe3397a1b6c5d8e" alt="" width="2156" height="2272" data-path="cookbooks/hierarchical_classification/shopify_tree.svg" />
+
+<h3 id="mesh-biomedical-subjects">MeSH biomedical subjects</h3>
+<img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/hierarchical_classification/mesh_tree.svg?fit=max&auto=format&n=2NirYCl-v96cw05F&q=85&s=a71b2ce23a81fd3165a67abd09d5e26f" alt="" width="2516" height="2693" data-path="cookbooks/hierarchical_classification/mesh_tree.svg" />
+
+<h3 id="cooksafe-files">CookSafe files</h3>
+<img src="https://mintcdn.com/ts-docs/2NirYCl-v96cw05F/cookbooks/hierarchical_classification/codebase_tree.svg?fit=max&auto=format&n=2NirYCl-v96cw05F&q=85&s=052f2001a9e5f53a2647eb179ebdafd9" alt="" width="2156" height="1072" data-path="cookbooks/hierarchical_classification/codebase_tree.svg" />
+
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建并托管，Mintlify 是一个开发者文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/cookbook-basic-memory/"><span>上一篇</span><strong>简单记忆系统</strong></a>
+    <a class="pager-link is-next" href="/docs/cookbook-classification-using-confidence/"><span>下一篇</span><strong>使用置信度进行分类</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-3" href="#hierarchies-used-in-this-cookbook">本实战示例用到的层次结构</a><a class="toc-link depth-3" href="#methods">方法</a><a class="toc-link depth-2" href="#load-and-visualize-the-example-hierarchies">加载并可视化示例层次结构</a><a class="toc-link depth-2" href="#compare-the-methods">对比两种方法</a><a class="toc-link depth-2" href="#results">结果</a><a class="toc-link depth-3" href="#cpc-patents">CPC patents</a><a class="toc-link depth-3" href="#shopify-products">Shopify products</a><a class="toc-link depth-3" href="#mesh-biomedical-subjects">MeSH biomedical subjects</a><a class="toc-link depth-3" href="#cooksafe-files">CookSafe files</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>题型总览 · JevLand</title>
+<meta name="description" content="TypeSafe 的题型、它们返回的带类型答案、如何在它们之间选择，以及如何一次性提出多个问题。">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+<link rel="canonical" href="https://jevland.com/docs/primitives/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="题型总览">
+<meta property="og:description" content="TypeSafe 的题型、它们返回的带类型答案、如何在它们之间选择，以及如何一次性提出多个问题。">
+<meta property="og:url" content="https://jevland.com/docs/primitives/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="题型总览">
+<meta name="twitter:description" content="TypeSafe 的题型、它们返回的带类型答案、如何在它们之间选择，以及如何一次性提出多个问题。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"题型总览","url":"https://jevland.com/docs/primitives/","inLanguage":"zh-CN","description":"TypeSafe 的题型、它们返回的带类型答案、如何在它们之间选择，以及如何一次性提出多个问题。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="docs-shell">
+      <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link is-current" href="/docs/primitives/" aria-current="page">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+      <article class="docs-main">
+        <details class="docs-mobile">
+    <summary>文档目录</summary>
+    <nav class="docs-side" aria-label="文档目录"><div class="side-group">
+    <p class="side-label">入门</p>
+    <a class="side-link" href="/docs/introduction/">简介</a><a class="side-link" href="/docs/quickstart/">快速开始</a><a class="side-link" href="/docs/coding-agents/">Jev 与编程智能体</a><a class="side-link" href="/docs/use-cases/">用例地图</a>
+  </div><div class="side-group">
+    <p class="side-label">核心概念</p>
+    <a class="side-link" href="/docs/system-one/">System One</a><a class="side-link" href="/docs/state/">State（上下文状态）</a><a class="side-link" href="/docs/how-to-build/">怎样用 TypeSafe 构建</a><a class="side-link" href="/docs/ai-primer/">AI 入门</a><a class="side-link" href="/docs/confidence/">置信度</a>
+  </div><div class="side-group">
+    <p class="side-label">题型</p>
+    <a class="side-link is-current" href="/docs/primitives/" aria-current="page">题型总览</a><a class="side-link" href="/docs/choice/">Choice（选择题）</a><a class="side-link" href="/docs/score/">Score（打分题）</a><a class="side-link" href="/docs/noul/">Noul（是非题）</a><a class="side-link" href="/docs/box/">Box（框选题）</a><a class="side-link" href="/docs/advanced-structure/">进阶：结构化写法</a><a class="side-link" href="/docs/images/">图片</a>
+  </div><div class="side-group">
+    <p class="side-label">设计模式</p>
+    <a class="side-link" href="/docs/patterns/">设计模式</a><a class="side-link" href="/docs/fan-out/">推测式扇出</a><a class="side-link" href="/docs/confidence-routing/">置信度分流</a><a class="side-link" href="/docs/composite-scoring/">组合打分</a><a class="side-link" href="/docs/intent-routing/">意图路由</a>
+  </div><div class="side-group">
+    <p class="side-label">参考</p>
+    <a class="side-link" href="/docs/models/">模型</a><a class="side-link" href="/docs/api/">API 参考</a><a class="side-link" href="/docs/jev-1-13-jaggedness/">Jev 1.13 能力短板</a><a class="side-link" href="/docs/sdk/">客户端 SDK</a><a class="side-link" href="/docs/sdk-python/">Python SDK</a>
+  </div><div class="side-group">
+    <p class="side-label">实战示例</p>
+    <a class="side-link" href="/docs/cookbooks/">实战示例</a><a class="side-link" href="/docs/cookbook-function-calling/">函数调用</a><a class="side-link" href="/docs/cookbook-skill-suggestion/">技能建议</a><a class="side-link" href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a><a class="side-link" href="/docs/cookbook-citation-check/">二次核对引用</a><a class="side-link" href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a><a class="side-link" href="/docs/cookbook-basic-memory/">简单记忆系统</a><a class="side-link" href="/docs/cookbook-hierarchical-classification/">层次分类</a><a class="side-link" href="/docs/cookbook-classification-using-confidence/">使用置信度进行分类</a><a class="side-link" href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a><a class="side-link" href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a><a class="side-link" href="/docs/cookbook-date-extraction/">日期提取</a><a class="side-link" href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a><a class="side-link" href="/docs/cookbook-autoformat/">结构恢复</a><a class="side-link" href="/docs/cookbook-rerank-typesafe/">重排序</a><a class="side-link" href="/docs/cookbook-semantic-find/">逐行搜索</a><a class="side-link" href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a><a class="side-link" href="/docs/cookbook-consistency-choice/">自一致性：Choice</a><a class="side-link" href="/docs/cookbook-consistency-noul/">自一致性：Noul</a><a class="side-link" href="/docs/cookbook-parallel-questions/">并行提问</a><a class="side-link" href="/docs/cookbook-autoresearch-feature-discovery/">自动研究：特征发现</a>
+  </div></nav>
+  </details>
+        <p class="breadcrumb"><a href="/docs/">文档</a> / 题型</p>
+        <h1>题型总览</h1>
+        <p class="lead">TypeSafe 的题型、它们返回的带类型答案、如何在它们之间选择，以及如何一次性提出多个问题。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/primitives" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <div class="prose"><p>TypeSafe 的题型是你在代码中组合使用的小型、带类型的积木。它们成对出现：一个**问题（question）**定义了一个由 System One 模型针对某个 **state（上下文状态）<strong>做出的判断，而它的</strong>答案（answer）**就是返回的那个带类型的值。你在代码中组合这些答案来做出决策。每种题型返回不同形态的答案。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>它回答的问题</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="../choice/">Choice（选择题）</a></td>
+<td>这些选项中哪一个？</td>
+<td><code>choice</code>、<code>probabilities</code>、<code>confidence</code></td>
+</tr>
+<tr>
+<td><a href="../score/">Score（打分题）</a></td>
+<td>处于哪一档？</td>
+<td><code>score</code>、<code>legend</code>、<code>probabilities</code>、<code>confidence</code></td>
+</tr>
+<tr>
+<td><a href="../noul/">Noul（是非题）</a></td>
+<td>这是真的吗？</td>
+<td><code>noul</code>（取值 0 到 1）</td>
+</tr>
+</tbody></table></div>
+<p>你可以一次提一个问题，也可以一次性发送多个。同一请求中的每个问题看到的 state 相同，互相独立地评估，并按你选择的 ID 返回带类型的答案。</p>
+<h2 id="ask-for-one-snap-judgment-per-question">一次提问一个问题，获得单一快速判断</h2>
+<p>System One 模型专为快速、聚焦的判断而设计。请让它做出的判断，应当是「具备合适上下文的内行人花一秒钟就能给出」的那种。「这条消息是否传达了紧迫感？」是一个好问题。「分析这条消息并确定最佳行动方案」就不是。那需要慢速推理，这也是一个把任务拆分成小问题并在代码中组合答案的信号。</p>
+<p>如果你想要的判断依赖于若干独立因素，那就分别针对每个因素提问，然后用你自己的逻辑组合答案。不要问「给这个创业路演打分」，而是分别就市场规模、技术可行性和差异化提问，然后根据它们的相对重要性在代码中加权。当优先级变化时，调整权重值，而不是重写提示词。<a href="#ask-multiple-questions-together">一次性提出多个问题</a> 展示了如何做到这一点。</p>
+<h2 id="define-a-question">定义一个问题</h2>
+<p>每个问题都有一个 ID、一个 <code>type</code> 和 <code>instructions</code>。Choice 和 Score 类型的问题还需要 <code>criteria</code>，它定义了 Choice 问题的选项或 Score 问题的档位。Noul 类型的问题接受 <code>criteria</code> 作为对 yes 与 no 含义的可选澄清。</p>
+<ul>
+<li><strong>ID。</strong> 你选择的键，比如 <code>refund_requested</code>。它在响应中标识该答案。</li>
+<li><strong><code>type</code>。</strong> <code>choice</code>、<code>score</code> 或 <code>noul</code> 之一。</li>
+<li><strong><code>instructions</code>。</strong> 你就 state 提出的问题。这是放置你的评估逻辑的地方。把它写成一个清晰、具体的问题，或者写成一个供模型判断的陈述。对于大多数问题来说，一个字符串就够了。它也可以是一个对象或数组，把问题放在一个字段中，把它所引用的数据放在其他字段中；参见<a href="../how-to-build/#use-structure-in-the-questions">在问题中使用结构</a>。</li>
+<li><strong><code>criteria</code>。</strong> 可能的答案：Choice 问题的选项 map，Score 问题的有序档位列表，以及 Noul 问题的 yes 和 no 的可选描述。每个题型的页面都会介绍其形态。</li>
+</ul>
+<p>这个问题询问客户是否请求了退款：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Noul
+
+questions = {
+    <span class="hljs-string">&quot;refund_requested&quot;</span>: Noul(
+        instructions=<span class="hljs-string">&quot;Does the customer request a refund?&quot;</span>,
+    ),
+}</code></pre></div>
+<aside class="callout callout-tip"><p><strong>提示：</strong> 问题 ID 是给你自己的代码使用的，并不会发送给模型。即使 ID 看起来不言自明，也要把完整的问题写在 <code>instructions</code> 中。</p>
+</aside>
+<h2 id="choose-a-question-type">选择问题类型</h2>
+<p>选择与所需答案形态匹配的类型。</p>
+<ul>
+<li><p><strong>Choice（选择题）</strong> 适合答案是一组已知选项、且彼此之间没有顺序关系的情况：把工单路由到一个部门、对文档类型进行分类、检测编程语言。给出完整的选项列表，并在列表可能无法覆盖所有输入时添加一个 <code>other</code> 或 <code>none of the above</code> 选项。</p>
+</li>
+<li><p><strong>Score（打分题）</strong> 适合答案落在一个连续谱上、并且你能描述该连续谱上每个点含义的情况：缺陷严重度、客户挫败感、技能水平。档位由你定义，模型返回沿档位的一个位置。</p>
+</li>
+<li><p><strong>Noul（是非题）</strong> 适合一个干净的 yes/no 问题，并且概率本身就是有用的信号：这条消息是否包含个人可识别信息，客户是否在请求退款，这份简历是否提到分布式系统。</p>
+</li>
+</ul>
+<aside class="callout callout-tip"><p><strong>提示：</strong> 用 Noul 做 yes/no 判断，用 Score 衡量一个连续谱上的位置。「这个候选人是否精通 Python？」需要对「精通」有一个清晰的定义。Noul 值为 0.5 表示模型给 yes 和 no 赋予了相同的概率。它并不意味着候选人的技能水平是中等。含糊的定义会让这个概率难以解读。</p>
+<p>如果你想衡量技能水平，请使用带有明确定义档位的 Score，例如「无经验、有一定了解、日常使用、深入专精」。如果你需要 yes/no 决策，请清晰地定义条件，例如「简历是否陈述候选人曾在工作中使用过 Python？」</p>
+</aside>
+<p>如果两种类型看起来都合适，选择你的代码可以直接采取行动的那一种。<code>refund</code>、<code>rebook</code>、<code>information</code> 之间的 Choice 直接对应三条代码路径。客户挫败感的 Score 对应一个阈值。Noul 对应一个 <code>if</code>。</p>
+<h2 id="what-comes-back">返回结果</h2>
+<p>答案也是题型。每个问题类型返回一个带类型的值，你的代码可以比较、设置阈值、排序、传入进一步的逻辑，或放入后续请求的 state 中（参见<a href="#when-one-question-depends-on-another">一个问题依赖于另一个问题时</a>）。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>答案字段</th>
+<th>如何解读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Choice</td>
+<td><code>choice</code>、<code>probabilities</code>、<code>confidence</code></td>
+<td><code>choice</code> 是所选选项。<code>probabilities</code> 是跨所有选项的分布。<code>confidence</code> 概括了该分布的尖锐程度。</td>
+</tr>
+<tr>
+<td>Score</td>
+<td><code>score</code>、<code>legend</code>、<code>probabilities</code>、<code>confidence</code></td>
+<td><code>score</code> 是沿你的档位上的一个位置，可以落在两档之间。<code>legend</code> 按编号重复档位。<code>probabilities</code> 是跨档位的分布。</td>
+</tr>
+<tr>
+<td>Noul</td>
+<td><code>noul</code></td>
+<td>答案为 yes 的概率。接近 1 是强烈的 yes，接近 0 是强烈的 no，接近 0.5 表示不确定。Noul 没有独立的 <code>confidence</code>。</td>
+</tr>
+</tbody></table></div>
+<p>这些答案有两个使其可组合的特性：</p>
+<ul>
+<li><strong>每个答案都被约束在你提供的选项内。</strong> 模型返回的是你的选项或档位上的概率分布，绝不会返回超出它们的值。你的代码永远不需要从生成的散文中恢复一个值。</li>
+<li><strong>每个答案都是独立的。</strong> 一个问题的答案不会成为另一个问题的隐藏上下文。你可以添加或删除问题，而不会改变其他问题的结果。</li>
+</ul>
+<p>某些题型还会返回 <code>confidence</code>；每个题型的页面会说明其答案是否包含它。<a href="../confidence/">置信度</a> 一节解释了如何用它来决定何时自动执行、何时升级到人工处理。</p>
+<h2 id="reference-specific-fields">引用具体字段</h2>
+<p>被评估的内容——也就是 <a href="../state/">state</a> ——通常是一个包含多个部分的 JSON 对象：一次对话、一条记录、一份策略。当问题针对的是其中某一部分时，用点-索引路径在 <code>instructions</code> 中指明它的键，包括反引号。模型于是就知道要判断 state 的哪一部分。</p>
+<p>拿 State 页面中的支持对话为例：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;ticket&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;subject&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Duplicate charge&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;messages&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+      <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;from&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;customer&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;text&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;I was charged twice for order A-104. Please refund the duplicate.&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;from&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;support&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;text&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;We are checking the charges.&quot;</span><span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;order&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;A-104&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;charges&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+      <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;amount_usd&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">49</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;captured&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;amount_usd&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">49</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;captured&quot;</span><span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;refund_policy&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Duplicate charges are eligible for a refund.&quot;</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>下面这两个问题按路径指向客户的消息、策略以及收费记录：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">questions = {
+    <span class="hljs-string">&quot;refund_requested&quot;</span>: {
+        <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;noul&quot;</span>,
+        <span class="hljs-string">&quot;instructions&quot;</span>: <span class="hljs-string">&quot;Does `ticket.messages[0].text` request a refund?&quot;</span>,
+    },
+    <span class="hljs-string">&quot;policy_supports_refund&quot;</span>: {
+        <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;noul&quot;</span>,
+        <span class="hljs-string">&quot;instructions&quot;</span>: (
+            <span class="hljs-string">&quot;Does `refund_policy` support the refund requested &quot;</span>
+            <span class="hljs-string">&quot;in `ticket.messages[0].text`, given `order.charges`?&quot;</span>
+        ),
+    },
+}</code></pre></div>
+<p>显式的路径能清楚地表明结构化 state 中的哪些部分应当影响每次判断。参见 <a href="../state/">State</a> 以了解如何组织输入。</p>
+<h2 id="ask-multiple-questions-together">一次性提出多个问题</h2>
+<p>把所有使用同一个 state 的问题放在一个请求中发送。你可以自由地混合题型。System One 模型并行评估同一请求中的所有问题。增加问题几乎不会改变响应时间，也只会增加少量额外问题的 token 成本，而这些成本是很低的。问一个你可能不需要的问题几乎是不花钱的。</p>
+<p>这个请求一次性完成了客户消息的分类、紧迫性的判断以及挫败感的打分：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-latest&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Our API integration started returning 500 errors on every request about 20 minutes ago, and we can&#x27;t process any customer orders until this is fixed.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;questions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Which team should handle this&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;billing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Payment or subscription issues&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;technical&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Bugs or integration problems&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;sales&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Pricing or account questions&quot;</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;is_urgent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;The message conveys urgency or time-sensitivity&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;frustration&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;How frustrated the customer appears&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;criteria&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">&quot;Calm, just stating facts&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Frustrated but civil&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">&quot;Very angry, strong language&quot;</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>我们的<a href="../sdk/">客户端 SDK</a> 提供了带类型的问题和答案。在 Python 中，把 <code>Choice</code>、<code>Noul</code> 和 <code>Score</code> 对象的 <code>questions</code> 字典传递给 <code>client.system_one(...)</code>。下面的请求发送一张工单和一条退款策略一次，并为每个问题获得一个带类型的答案：</p>
+<div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">from</span> typesafe_sdk <span class="hljs-keyword">import</span> Choice, Noul, Score, TypeSafeClient
+
+state = {
+    <span class="hljs-string">&quot;ticket_message&quot;</span>: <span class="hljs-string">&quot;My flight was cancelled. Can I get a refund?&quot;</span>,
+    <span class="hljs-string">&quot;refund_policy&quot;</span>: <span class="hljs-string">&quot;Cancelled flights are eligible for a full refund.&quot;</span>,
+}
+
+<span class="hljs-keyword">with</span> TypeSafeClient() <span class="hljs-keyword">as</span> client:
+    response = client.system_one(
+        state=state,
+        questions={
+            <span class="hljs-string">&quot;refund_requested&quot;</span>: Noul(
+                instructions=<span class="hljs-string">&quot;Does `ticket_message` request a refund?&quot;</span>,
+            ),
+            <span class="hljs-string">&quot;request_type&quot;</span>: Choice(
+                instructions=<span class="hljs-string">&quot;What is the main request in `ticket_message`?&quot;</span>,
+                criteria={
+                    <span class="hljs-string">&quot;refund&quot;</span>: <span class="hljs-string">&quot;The customer wants money returned.&quot;</span>,
+                    <span class="hljs-string">&quot;rebooking&quot;</span>: <span class="hljs-string">&quot;The customer wants a replacement flight.&quot;</span>,
+                    <span class="hljs-string">&quot;information&quot;</span>: <span class="hljs-string">&quot;The customer is asking for information only.&quot;</span>,
+                },
+            ),
+            <span class="hljs-string">&quot;frustration&quot;</span>: Score(
+                instructions=<span class="hljs-string">&quot;How frustrated does the customer appear in `ticket_message`?&quot;</span>,
+                criteria=[
+                    <span class="hljs-string">&quot;Calm and neutral.&quot;</span>,
+                    <span class="hljs-string">&quot;Concerned but civil.&quot;</span>,
+                    <span class="hljs-string">&quot;Very angry or using strong language.&quot;</span>,
+                ],
+            ),
+        },
+    )
+
+<span class="hljs-built_in">print</span>(response.answers[<span class="hljs-string">&quot;refund_requested&quot;</span>].noul)
+<span class="hljs-built_in">print</span>(response.answers[<span class="hljs-string">&quot;request_type&quot;</span>].choice)
+<span class="hljs-built_in">print</span>(response.answers[<span class="hljs-string">&quot;frustration&quot;</span>].score)</code></pre></div>
+<p>参见<a href="../sdk/">客户端 SDK</a> 以获取你所使用语言的安装和使用方法。</p>
+<h3 id="ask-speculative-questions">提出推测式问题</h3>
+<p>把所有你的代码可能需要的问题都问出来，包括那些答案只对部分输入才有意义的问题，然后让代码决定使用哪些答案。如果一张工单最终不是缺陷报告，那就忽略严重度答案。我们称其为<a href="../fan-out/">推测式扇出（speculative fan-out）</a> 设计模式。<a href="../cookbook-parallel-questions/">并行问题实战示例</a> 展示了把 13 个问题批量放入一次调用比 13 次单独调用便宜 11.5 倍、快 9.6 倍，而答案没有任何变化。</p>
+<aside class="callout callout-tip"><p><strong>提示：</strong> 编程智能体比人更容易养成「一次调用一个问题」的习惯。<a href="https://docs.typesafe.ai/agent-skill#installation" target="_blank" rel="noopener noreferrer">TypeSafe agent skill</a> 会指导你的智能体在每次调用中放入多个问题，包括那些只对部分输入才有意义的问题。</p>
+</aside>
+<h3 id="how-many-questions-you-can-ask">你可以问多少个问题</h3>
+<p>请求中的问题数量没有限制。真正限制请求的是其大小：它必须适配模型的<a href="../models/#context-length">单次请求上下文和单题上下文</a>。</p>
+<p>与 <code>state</code> 相比，问题通常较短，因此 <code>state</code> 占据了这两者的大部分。如果你的问题无法全部放进一个请求，一种做法是把它们拆分到几个共享同一个 <code>state</code> 的请求中。</p>
+<h3 id="split-a-complex-judgment-into-several-questions">把一个复杂判断拆成多个问题</h3>
+<p>依赖于多件事的判断最好按「一件事一个问题」的方式拆开。在你的代码中组合这些答案，按相对重要性给每个加权。这些权重由你决定。当组合结果与你团队的判断不一致时，在代码中调整它们并重新运行。由于问题在同一个请求内并行运行，增加问题几乎不会改变响应时间。这种拆分只会多花少量问题的 token。</p>
+<p>例如，工单优先级可以由三个 Score 问题构建：缺陷有多严重、客户有多挫败、以及这份报告为工程师提供了多少可操作的信息。Score 页面通过<a href="../score/#splitting-a-complex-judgment-into-several-score-questions">把一个复杂判断拆成多个 Score 问题</a> 一节详细介绍了这个请求及其对答案进行归一化和加权的代码。这种技巧被称为<a href="../composite-scoring/">组合打分</a> 设计模式。</p>
+<h3 id="when-one-question-depends-on-another">一个问题依赖于另一个问题时</h3>
+<p>同一请求中的问题是相互独立的：一个问题的答案不会成为另一个问题的上下文。如果后续的判断依赖于前面的答案，就在代码中发起第二次请求。只有当你的代码在拿到第一个答案之前无法构建第二次请求时，这种依赖才是真实的：它需要该答案来为 state 获取更多数据、决定 state 由什么组成，或者挑选下一个问题的选项。否则，就把这些问题一起提出，并在代码中组合它们的答案。</p>
+<p>两次请求是例外，而非通则。如果第二次请求中的问题原本就可以针对原始 state 提出，就把它们放进第一次请求中，让代码忽略它不需要的部分。三个实战示例出于真实的原因发出了第二次请求。<a href="../cookbook-skill-suggestion/">技能推荐</a> 在一次请求中排序 182 个技能，然后获取前三名的完整内容，并针对这些更好的证据再次进行判断。<a href="../cookbook-autoformat/">结构恢复</a> 询问每个换行是否分隔了句子，根据这些答案把行合并成块，然后对这些块进行分类——而这些块直到第一次请求回答后才存在。<a href="../cookbook-hierarchical-classification/">层次化分类</a> 用每个 Choice 答案来决定下一次请求提供哪些选项。</p>
+<p>参见<a href="../how-to-build/">如何使用 TypeSafe 构建</a> 以获取关于把工作流拆解为聚焦判断的指导。</p>
+<h2 id="next-steps">下一步</h2>
+<ul>
+<li><a href="../choice/">Choice（选择题）</a>：从固定列表中选择一个选项。</li>
+<li><a href="../score/">Score（打分题）</a>：按有序档位对 state（上下文状态）进行打分。</li>
+<li><a href="../noul/">Noul（是非题）</a>：获取某条陈述为真的概率。</li>
+</ul>
+<p>要看这些题型如何组合成系统架构，可以前往 <a href="../patterns/">设计模式（Patterns）</a>。</p>
+<p>本文档由 <a href="https://mintlify.com" target="_blank" rel="noopener noreferrer">Mintlify</a> 构建和托管，Mintlify 是一个面向开发者的文档平台。</p>
+</div>
+        <nav class="pager" aria-label="相邻文章">
+    <a class="pager-link" href="/docs/confidence/"><span>上一篇</span><strong>置信度</strong></a>
+    <a class="pager-link is-next" href="/docs/choice/"><span>下一篇</span><strong>Choice（选择题）</strong></a>
+  </nav>
+        <aside class="author-card">
+    <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
+    <div>
+      <strong>杰哥</strong>
+      <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+    </div>
+  </aside>
+      </article>
+      <nav class="toc" data-toc aria-label="本页目录"><p class="side-label">本页目录</p><a class="toc-link depth-2" href="#ask-for-one-snap-judgment-per-question">一次提问一个问题，获得单一快速判断</a><a class="toc-link depth-2" href="#define-a-question">定义一个问题</a><a class="toc-link depth-2" href="#choose-a-question-type">选择问题类型</a><a class="toc-link depth-2" href="#what-comes-back">返回结果</a><a class="toc-link depth-2" href="#reference-specific-fields">引用具体字段</a><a class="toc-link depth-2" href="#ask-multiple-questions-together">一次性提出多个问题</a><a class="toc-link depth-3" href="#ask-speculative-questions">提出推测式问题</a><a class="toc-link depth-3" href="#how-many-questions-you-can-ask">你可以问多少个问题</a><a class="toc-link depth-3" href="#split-a-complex-judgment-into-several-questions">把一个复杂判断拆成多个问题</a><a class="toc-link depth-3" href="#when-one-question-depends-on-another">一个问题依赖于另一个问题时</a><a class="toc-link depth-2" href="#next-steps">下一步</a></nav>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/showcase/">案例</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>
