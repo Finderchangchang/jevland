@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>你和 Jev，谁更懂人话 · 小游戏 · JevLand</title>
+<meta name="description" content="10 段真实中文聊天。你先猜对方最后那句话的意思，再看 Jev 给出的概率和置信度。答案来自真实调用，不是标准答案。">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/play/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="你和 Jev，谁更懂人话 · 小游戏 · JevLand">
+<meta property="og:description" content="10 段真实中文聊天。你先猜对方最后那句话的意思，再看 Jev 给出的概率和置信度。答案来自真实调用，不是标准答案。">
+<meta property="og:url" content="https://jevland.com/play/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="你和 Jev，谁更懂人话 · 小游戏 · JevLand">
+<meta name="twitter:description" content="10 段真实中文聊天。你先猜对方最后那句话的意思，再看 Jev 给出的概率和置信度。答案来自真实调用，不是标准答案。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"WebPage","name":"你和 Jev，谁更懂人话","url":"https://jevland.com/play/","inLanguage":"zh-CN","description":"10 段真实中文聊天。你先猜对方最后那句话的意思，再看 Jev 给出的概率和置信度。答案来自真实调用，不是标准答案。","isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"小游戏","item":"https://jevland.com/play/"}]}]}</script>
+<script defer src="/assets/play.js"></script>
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/showcase/">案例</a><a href="/play/" aria-current="page">小游戏</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block play-page">
+    <div class="play-shell" data-play>
+      <script type="application/json" id="play-data">{"recordedAt":"2026-10-16T07:55:00+00:00","endpoint":"POST https://api.typesafe.ai/v1/systemone","note":"每题都是一次真实的 Jev 调用，题目用英文写，聊天内容保留中文原文。","rounds":[{"id":"r01","scene":"情侣","messages":[{"from":"我","text":"这件裙子好看不？"},{"from":"对方","text":"挺有想法的"},{"from":"我","text":"那我去买了？"},{"from":"对方","text":"你自己看吧"}],"question":"对方最后这句真正的意思是？","options":[{"key":"your_choice","label":"你决定就好","p":0.39},{"key":"looks_okay","label":"觉得还行没意见","p":0.01},{"key":"actually_dislike","label":"其实觉得不好看","p":0.6},{"key":"waste_of_money","label":"觉得花钱不值","p":0}],"jevChoice":"actually_dislike","confidence":0.47,"explain":"「你自己看吧」可能是放手让你决定，也可能藏着不认同。","model":"jev-1.13.0","ms":1213},{"id":"r02","scene":"朋友","messages":[{"from":"我","text":"你看我剪的新发型"},{"from":"对方","text":"挺有个性的"}],"question":"对方最后这句真正的意思是？","options":[{"key":"truly_unique","label":"真有特色","p":0.04},{"key":"cant_comment","label":"不知道怎么评价","p":0.12},{"key":"looks_weird","label":"觉得有点奇怪","p":0.34},{"key":"actually_ugly","label":"委婉觉得不好看","p":0.5}],"jevChoice":"actually_ugly","confidence":0.33,"explain":"「有个性」可褒可贬，单看这句真假难分。","model":"jev-1.13.0","ms":1157},{"id":"r03","scene":"同事","messages":[{"from":"我","text":"方案明天能交吗？"},{"from":"对方","text":"你自己看着办吧"}],"question":"对方最后这句真正的意思是？","options":[{"key":"trust_your_judgment","label":"相信你判断","p":0.01},{"key":"refuse_to_commit","label":"不想明确表态","p":0.19},{"key":"deflect_pressure","label":"把压力推给你","p":0.8},{"key":"too_busy_to_care","label":"忙到顾不上这事","p":0}],"jevChoice":"deflect_pressure","confidence":0.73,"explain":"「自己看着办」听着像信任，实则可能是在推责。","model":"jev-1.13.0","ms":1014},{"id":"r04","scene":"老板","messages":[{"from":"我","text":"报告写好了"},{"from":"我","text":"您有空看下吗"},{"from":"对方","text":"放我桌上吧"}],"question":"对方最后这句真正的意思是？","options":[{"key":"will_review_later","label":"稍后会看","p":0.53},{"key":"leave_it_for_now","label":"现在顾不上看","p":0.46},{"key":"not_priority","label":"不太着急的事","p":0.01},{"key":"too_busy_today","label":"今天忙得不行","p":0}],"jevChoice":"will_review_later","confidence":0.37,"explain":"「放桌上」可能真的会看，也可能根本不会看。","model":"jev-1.13.0","ms":1060},{"id":"r05","scene":"家人","messages":[{"from":"我","text":"妈，我今晚加班"},{"from":"对方","text":"嗯嗯，你忙吧"}],"question":"对方最后这句真正的意思是？","options":[{"key":"focus_on_work","label":"让你专心工作","p":0.58},{"key":"worried_silently","label":"担心但不想多说","p":0.39},{"key":"want_you_home","label":"其实希望你早点回","p":0.03},{"key":"tired_of_excuses","label":"不太信你老加班","p":0}],"jevChoice":"focus_on_work","confidence":0.44,"explain":"家人说「你忙吧」既像体贴也像冷淡，语气难揣摩。","model":"jev-1.13.0","ms":1118},{"id":"r06","scene":"网购客服","messages":[{"from":"我","text":"在吗 这个衣服有色差"},{"from":"对方","text":"亲 请问什么问题呢"},{"from":"我","text":"跟图片完全不一样 想退掉"},{"from":"对方","text":"嗯嗯好的 我帮您看一下"}],"question":"对方最后这句真正的意思是？","options":[{"key":"literal_help","label":"正在帮你处理","p":0.94},{"key":"stall_you","label":"在敷衍别催了","p":0.02},{"key":"no_refund","label":"不打算真退","p":0},{"key":"cant_decide","label":"其实她做不了主","p":0.04}],"jevChoice":"literal_help","confidence":0.92,"explain":"客服话术太套路化，正话反话难以从字面判断","model":"jev-1.13.0","ms":1081},{"id":"r07","scene":"客户","messages":[{"from":"我","text":"李总 那个方案您看了吗"},{"from":"对方","text":"看了 挺好的"},{"from":"我","text":"那什么时候能推进呢"},{"from":"对方","text":"改天请你吃饭"}],"question":"对方最后这句真正的意思是？","options":[{"key":"literal_thanks","label":"真的要感谢你","p":0},{"key":"polite_refuse","label":"委婉拒绝不想推进","p":0.86},{"key":"keep_relation","label":"想拉关系不办事","p":0.13},{"key":"not_interested","label":"对你的方案没兴趣","p":0.01}],"jevChoice":"polite_refuse","confidence":0.81,"explain":"请吃饭在职场可能是真心也可能是客套话","model":"jev-1.13.0","ms":1175},{"id":"r08","scene":"租房","messages":[{"from":"我","text":"房东 空调坏了能修一下吗"},{"from":"对方","text":"好的 我看看"},{"from":"我","text":"太热了 能今晚来吗"},{"from":"对方","text":"改天再说吧"}],"question":"对方最后这句真正的意思是？","options":[{"key":"literal_later","label":"等有时间再来","p":0.37},{"key":"wont_fix","label":"不想给你修","p":0.11},{"key":"you_handle","label":"想让你自己处理","p":0},{"key":"no_urgency","label":"觉得不是急事","p":0.52}],"jevChoice":"no_urgency","confidence":0.36,"explain":"改天再说在房东嘴里既可能真忙也可能是不想管","model":"jev-1.13.0","ms":1045},{"id":"r09","scene":"相亲","messages":[{"from":"我","text":"今天见面挺开心的"},{"from":"对方","text":"嗯嗯"},{"from":"我","text":"那下次什么时候再约"},{"from":"对方","text":"再说吧 最近有点忙"}],"question":"对方最后这句真正的意思是？","options":[{"key":"literal_busy","label":"最近确实比较忙","p":0.01},{"key":"polite_no","label":"委婉拒绝不想再见","p":0.79},{"key":"test_you","label":"想看你接下来态度","p":0.01},{"key":"keep_distance","label":"想保持距离再观察","p":0.19}],"jevChoice":"polite_no","confidence":0.72,"explain":"忙可能是事实，也可能是不想见的委婉说法","model":"jev-1.13.0","ms":1318},{"id":"r10","scene":"群聊","messages":[{"from":"我","text":"周末去爬山 谁一起"},{"from":"对方","text":"我可能去不了"},{"from":"我","text":"没事来嘛 不累的"},{"from":"对方","text":"嗯嗯好的"}],"question":"对方最后这句真正的意思是？","options":[{"key":"literal_yes","label":"那就答应去了","p":0.66},{"key":"still_no","label":"还是会找借口不去","p":0.02},{"key":"end_topic","label":"想结束这话题","p":0},{"key":"save_face","label":"只是给你面子","p":0.32}],"jevChoice":"literal_yes","confidence":0.55,"explain":"群里简短回复真假难辨，分不清真去还是应付","model":"jev-1.13.0","ms":1117}]}</script>
+      <section class="play-start" data-play-screen="start">
+        <p class="kicker">Play</p>
+        <h1>你和 Jev，谁更懂人话</h1>
+        <p class="lead">10 段真实的中文聊天。你先猜对方最后那句话的真实意思，再看 Jev 怎么判断。</p>
+        <p class="play-note">题目由 AI 编写；答案是 2026 年 10 月 16 日 用 Jev（jev-1.13.0）真实调用录下来的，不是标准答案，只是 Jev 的判断。</p>
+        <p><button type="button" class="btn" data-play-start data-umami-event="play-start">开始</button></p>
+      </section>
+      <section class="play-round" data-play-screen="round" hidden>
+        <div class="play-top">
+          <span class="play-progress" data-play-progress></span>
+          <span class="chip" data-play-scene></span>
+        </div>
+        <div class="play-chat" data-play-chat></div>
+        <p class="play-q" data-play-question hidden></p>
+        <div class="play-options" data-play-options></div>
+        <div class="play-reveal" data-play-reveal hidden>
+          <div data-play-confidence></div>
+          <p data-play-explain></p>
+          <p class="play-ms" data-play-ms></p>
+          <p><button type="button" class="btn" data-play-next>下一题</button></p>
+        </div>
+      </section>
+      <section class="play-result" data-play-screen="result" hidden>
+        <p class="play-score" data-play-score tabindex="-1"></p>
+        <p class="play-blurb" data-play-blurb></p>
+        <p class="play-high" data-play-high></p>
+        <div class="play-review-list" data-play-review></div>
+        <div class="play-result-actions">
+          <button type="button" class="btn" data-play-again>再玩一次</button>
+          <button type="button" class="btn btn-ghost" data-play-copy>复制分享文案</button>
+          <a class="btn btn-ghost" data-play-x href="https://x.com/intent/post" target="_blank" rel="noopener noreferrer">分享到 X</a>
+        </div>
+        <div class="play-more">
+          <a href="/docs/choice/">Jev 是怎么做这种判断的 →</a>
+          <a href="/showcase/">看看大家用 Jev 做了什么 →</a>
+        </div>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </section>
+    </div>
+  </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>
