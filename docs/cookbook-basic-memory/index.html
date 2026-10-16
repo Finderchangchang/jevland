@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>简单记忆系统 · JevLand</title>
-<meta name="description" content="让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。">
+<title>简单记忆系统 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="让 Jev 决定哪些请求和答案值得记住，再把调用包进小函数，在后续判断里带上这些记忆，做成最简单可用的会话记忆系统示例。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-basic-memory/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="简单记忆系统">
-<meta property="og:description" content="让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。">
+<meta property="og:title" content="简单记忆系统 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="让 Jev 决定哪些请求和答案值得记住，再把调用包进小函数，在后续判断里带上这些记忆，做成最简单可用的会话记忆系统示例。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-basic-memory/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="简单记忆系统">
-<meta name="twitter:description" content="让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="简单记忆系统 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="让 Jev 决定哪些请求和答案值得记住，再把调用包进小函数，在后续判断里带上这些记忆，做成最简单可用的会话记忆系统示例。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"简单记忆系统","url":"https://jevland.com/docs/cookbook-basic-memory/","inLanguage":"zh-CN","description":"让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"简单记忆系统","name":"简单记忆系统","url":"https://jevland.com/docs/cookbook-basic-memory/","inLanguage":"zh-CN","description":"让 Jev 决定哪些请求和答案值得记住，再把调用包进小函数，在后续判断里带上这些记忆，做成最简单可用的会话记忆系统示例。","isBasedOn":"https://docs.typesafe.ai/cookbooks/basic_memory","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"简单记忆系统","item":"https://jevland.com/docs/cookbook-basic-memory/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>简单记忆系统</h1>
-        <p class="lead">让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/basic_memory" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">让 Jev 决定哪些请求和答案值得记住，再把调用包进小函数，在后续判断里带上这些记忆，做成最简单可用的会话记忆系统示例。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/basic_memory" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-basic-memory">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>每次 Jev 请求只看得到你发给它的 state（上下文状态）。客户上个月告诉过你应用的事——比如他们的 edition 或 plan——不会出现在他们的下一次请求里，除非你的代码把它放进去。这里的记忆系统就是这么做的：每次调用多发一条 Jev 请求，外加一个 Python dict。</p>
 <p>我们的示例是把 support 工单路由到相应团队。8 月，一位客户说他们在 Windows Server 上自托管。9 月，他们发来消息「Dashboards have been really slow since this morning」。没有记忆时，Jev 会把这张工单派给 cloud 团队，而不是 self-hosted 团队。在下面的例子里，加上记忆后，6 张后续工单全部派到了预期的团队；而单独路由每张工单，6 张里只能对 2 张。</p>
 <p>这个简单记忆系统由两部分组成：</p>
@@ -513,6 +520,10 @@ display(Markdown(
     <a class="pager-link" href="/docs/cookbook-classifying-rag-passages/"><span>上一篇</span><strong>为 RAG 段落分类</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-hierarchical-classification/"><span>下一篇</span><strong>层次分类</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-citation-check/">二次核对引用</a></li><li><a href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a></li><li><a href="/docs/cookbook-skill-suggestion/">技能建议</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -531,9 +542,9 @@ display(Markdown(
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

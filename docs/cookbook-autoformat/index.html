@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>结构恢复 · JevLand</title>
-<meta name="description" content="用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。">
+<title>结构恢复 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="用两次 Jev 请求从丢失格式的纯文本重建 Markdown：一次把硬换行拼回段落，一次给每个块分类成标题、列表、代码或提示框。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-autoformat/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="结构恢复">
-<meta property="og:description" content="用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。">
+<meta property="og:title" content="结构恢复 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="用两次 Jev 请求从丢失格式的纯文本重建 Markdown：一次把硬换行拼回段落，一次给每个块分类成标题、列表、代码或提示框。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-autoformat/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="结构恢复">
-<meta name="twitter:description" content="用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="结构恢复 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="用两次 Jev 请求从丢失格式的纯文本重建 Markdown：一次把硬换行拼回段落，一次给每个块分类成标题、列表、代码或提示框。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"结构恢复","url":"https://jevland.com/docs/cookbook-autoformat/","inLanguage":"zh-CN","description":"用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"结构恢复","name":"结构恢复","url":"https://jevland.com/docs/cookbook-autoformat/","inLanguage":"zh-CN","description":"用两次 Jev 请求从丢失格式的纯文本重建 Markdown：一次把硬换行拼回段落，一次给每个块分类成标题、列表、代码或提示框。","isBasedOn":"https://docs.typesafe.ai/cookbooks/autoformat","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"结构恢复","item":"https://jevland.com/docs/cookbook-autoformat/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>结构恢复</h1>
-        <p class="lead">用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/autoformat" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">用两次 Jev 请求从丢失格式的纯文本重建 Markdown：一次把硬换行拼回段落，一次给每个块分类成标题、列表、代码或提示框。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/autoformat" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-autoformat">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>本实战示例接收的输入是一份标记被剥除的纯文本（行在句子中间硬换行切断，没有标题标记、没有列表项目符号），并把它的结构重建为 Markdown：标题、段落、列表、引用、代码块、提示框。输入是一份恰好处于这种状态的团队备忘录。</p>
 <p>文本生成模型可以把文本改写成 Markdown，但改写也会改动措辞。这里的模型从不生成文本：它只回答关于文档的窄义问题（<em>这一行是不是接着上一句？这个块是什么类型的内容？</em>），渲染由代码完成，因此输出中的每一个字符都来自输入，每一次判断都带有一个概率。</p>
 <p>整个流水线对每个文档执行两轮 API 请求，按顺序进行：</p>
@@ -563,6 +570,10 @@ confidence 0.43: paragraph 0.53, list_item 0.24, callout 0.19</code></pre></div>
     <a class="pager-link" href="/docs/cookbook-pre-parsed-value-extraction/"><span>上一篇</span><strong>预先解析的值抽取</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-rerank-typesafe/"><span>下一篇</span><strong>重排序</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-date-extraction/">日期提取</a></li><li><a href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a></li><li><a href="/docs/cookbook-twitch-chat-filter/">Twitch 聊天过滤器</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -581,9 +592,9 @@ confidence 0.43: paragraph 0.53, list_item 0.24, callout 0.19</code></pre></div>
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

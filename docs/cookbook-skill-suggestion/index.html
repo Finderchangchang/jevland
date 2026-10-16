@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>技能建议 · JevLand</title>
-<meta name="description" content="每次智能体回合从 Nous Research 的 Hermes 目录中 182 个技能里至多选出一个技能，使用两次 TypeSafe 请求对排名靠前的候选进行排序和复检。">
+<title>技能建议 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="每个智能体回合用两次 Jev 请求，从技能目录里至多选出一个技能：先排序再复检，把技能建议做成带置信度的结构化判断步骤。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-skill-suggestion/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="技能建议">
-<meta property="og:description" content="每次智能体回合从 Nous Research 的 Hermes 目录中 182 个技能里至多选出一个技能，使用两次 TypeSafe 请求对排名靠前的候选进行排序和复检。">
+<meta property="og:title" content="技能建议 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="每个智能体回合用两次 Jev 请求，从技能目录里至多选出一个技能：先排序再复检，把技能建议做成带置信度的结构化判断步骤。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-skill-suggestion/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="技能建议">
-<meta name="twitter:description" content="每次智能体回合从 Nous Research 的 Hermes 目录中 182 个技能里至多选出一个技能，使用两次 TypeSafe 请求对排名靠前的候选进行排序和复检。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="技能建议 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="每个智能体回合用两次 Jev 请求，从技能目录里至多选出一个技能：先排序再复检，把技能建议做成带置信度的结构化判断步骤。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"技能建议","url":"https://jevland.com/docs/cookbook-skill-suggestion/","inLanguage":"zh-CN","description":"每次智能体回合从 Nous Research 的 Hermes 目录中 182 个技能里至多选出一个技能，使用两次 TypeSafe 请求对排名靠前的候选进行排序和复检。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"技能建议","name":"技能建议","url":"https://jevland.com/docs/cookbook-skill-suggestion/","inLanguage":"zh-CN","description":"每个智能体回合用两次 Jev 请求，从技能目录里至多选出一个技能：先排序再复检，把技能建议做成带置信度的结构化判断步骤。","isBasedOn":"https://docs.typesafe.ai/cookbooks/skill_suggestion","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"技能建议","item":"https://jevland.com/docs/cookbook-skill-suggestion/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>技能建议</h1>
-        <p class="lead">每次智能体回合从 Nous Research 的 Hermes 目录中 182 个技能里至多选出一个技能，使用两次 TypeSafe 请求对排名靠前的候选进行排序和复检。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/skill_suggestion" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">每个智能体回合用两次 Jev 请求，从技能目录里至多选出一个技能：先排序再复检，把技能建议做成带置信度的结构化判断步骤。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/skill_suggestion" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-skill-suggestion">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p><em>智能体通常的做法是把所有技能截断后全部塞进系统消息，这会增加成本、降低技能选择效果，并导致后续会话的上下文污染。我们用每次回合两次 TypeSafe 请求来解决这个问题：一次用于技能排序，一次用于复检选择，把错误加载技能的比例减少了一半以上。</em></p>
 <p>拥有大型技能清单的智能体几乎是在没有信息的情况下做选择的。清单以索引形式送达：每个技能一行，描述被截断，避免完整文本挤占对话。这里使用的智能体框架 Hermes 默认截到 60 个字符。例如，在这样的宽度下，<em>编辑</em> <code>.pptx</code> 文件的技能读起来和<em>撰写</em>它的技能几乎一样。请智能体做一份演示稿，它可能加载错的那一个。在完全没有合适技能的一回合里，它可能仍然加载一个，因为一串名字会诱使它去猜一个。</p>
 <p>这个实战示例保持描述不变，改用渐进披露：先廉价地读完全部 182 个技能，再详细读其中三个。在决定加载哪个技能（如果有的话）之前先发两次 TypeSafe 请求。第一次把清单里的每个技能针对当前回合排序，并回答这一回合是否需要技能。第二次只重新读取前三名，这次带着每个技能的完整描述和指令开头，并可以全部否决。</p>
@@ -857,6 +864,10 @@ display(
     <a class="pager-link" href="/docs/cookbook-function-calling/"><span>上一篇</span><strong>函数调用</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-llm-guardrails/"><span>下一篇</span><strong>大语言模型的安全护栏</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbooks/">实战示例</a></li><li><a href="/docs/cookbook-citation-check/">二次核对引用</a></li><li><a href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -875,9 +886,9 @@ display(
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

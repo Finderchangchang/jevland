@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Box（框选题） · JevLand</title>
-<meta name="description" content="Box（框选题）是 System One 的一种题型，用于识别某物在图像中的位置。答案是包住目标的矩形的四条边，以图像宽高的比例表示。">
+<title>Box（框选题） · Jev 中文文档 · JevLand</title>
+<meta name="description" content="Jev 的 Box 框选题在图片里标出目标位置，答案是相对宽高的矩形四边。适合截图里找按钮、头像、消息气泡等视觉定位任务。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/box/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="Box（框选题）">
-<meta property="og:description" content="Box（框选题）是 System One 的一种题型，用于识别某物在图像中的位置。答案是包住目标的矩形的四条边，以图像宽高的比例表示。">
+<meta property="og:title" content="Box（框选题） · Jev 中文文档 · JevLand">
+<meta property="og:description" content="Jev 的 Box 框选题在图片里标出目标位置，答案是相对宽高的矩形四边。适合截图里找按钮、头像、消息气泡等视觉定位任务。">
 <meta property="og:url" content="https://jevland.com/docs/box/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Box（框选题）">
-<meta name="twitter:description" content="Box（框选题）是 System One 的一种题型，用于识别某物在图像中的位置。答案是包住目标的矩形的四条边，以图像宽高的比例表示。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="Box（框选题） · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="Jev 的 Box 框选题在图片里标出目标位置，答案是相对宽高的矩形四边。适合截图里找按钮、头像、消息气泡等视觉定位任务。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"Box（框选题）","url":"https://jevland.com/docs/box/","inLanguage":"zh-CN","description":"Box（框选题）是 System One 的一种题型，用于识别某物在图像中的位置。答案是包住目标的矩形的四条边，以图像宽高的比例表示。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"Box（框选题）","name":"Box（框选题）","url":"https://jevland.com/docs/box/","inLanguage":"zh-CN","description":"Jev 的 Box 框选题在图片里标出目标位置，答案是相对宽高的矩形四边。适合截图里找按钮、头像、消息气泡等视觉定位任务。","isBasedOn":"https://docs.typesafe.ai/primitives/box","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"Box（框选题）","item":"https://jevland.com/docs/box/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 题型</p>
         <h1>Box（框选题）</h1>
-        <p class="lead">Box（框选题）是 System One 的一种题型，用于识别某物在图像中的位置。答案是包住目标的矩形的四条边，以图像宽高的比例表示。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/primitives/box" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">Jev 的 Box 框选题在图片里标出目标位置，答案是相对宽高的矩形四边。适合截图里找按钮、头像、消息气泡等视觉定位任务。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/primitives/box" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="box">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><aside class="callout callout-tip"><p><strong>提示：</strong> 面向探路者。图像与 Box 题型的成熟度尚未达到我们对生产可用的标准，但我们很期待探路者和构建者们先上手试用。用它们搭原型、试想法都可以。本页所述的请求格式、答案与限制在各版本之间可能变动，模型更新也会影响准确率。你开发了什么、踩了哪些坑，欢迎到 <a href="https://discord.gg/typesafe" target="_blank" rel="noopener noreferrer">Discord</a> 告诉我们。</p>
 <p>若要使用图像或 Box 题型，请在每个包含图像或 Box 题型的请求里带上请求头 <code>TypeSafe-Danger-Zone-Images: true</code>。详见 <a href="../images/#turning-on-images">Turning on images</a>。</p>
 </aside>
@@ -207,6 +214,10 @@ MIN_CONFIDENCE = <span class="hljs-number">0.6</span>  <span class="hljs-comment
     <a class="pager-link" href="/docs/noul/"><span>上一篇</span><strong>Noul（是非题）</strong></a>
     <a class="pager-link is-next" href="/docs/advanced-structure/"><span>下一篇</span><strong>进阶：结构化写法</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/score/">Score（打分题）</a></li><li><a href="/docs/choice/">Choice（选择题）</a></li><li><a href="/docs/primitives/">题型总览</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -225,9 +236,9 @@ MIN_CONFIDENCE = <span class="hljs-number">0.6</span>  <span class="hljs-comment
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

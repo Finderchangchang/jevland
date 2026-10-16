@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>大语言模型的安全护栏 · JevLand</title>
-<meta name="description" content="用一次 TypeSafe 请求对进出大语言模型（LLM）应用的每一条消息进行筛查，按各风险成立的概率（probability）和严重程度做阈值（threshold）判断，决定是放行、复核、拦截，还是路由。">
+<title>大语言模型的安全护栏 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="用一次 Jev 请求筛查进出大语言模型的消息，按风险概率和严重程度设阈值，决定放行、复核、拦截还是改路由给人工处理坐席。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-llm-guardrails/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="大语言模型的安全护栏">
-<meta property="og:description" content="用一次 TypeSafe 请求对进出大语言模型（LLM）应用的每一条消息进行筛查，按各风险成立的概率（probability）和严重程度做阈值（threshold）判断，决定是放行、复核、拦截，还是路由。">
+<meta property="og:title" content="大语言模型的安全护栏 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="用一次 Jev 请求筛查进出大语言模型的消息，按风险概率和严重程度设阈值，决定放行、复核、拦截还是改路由给人工处理坐席。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-llm-guardrails/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="大语言模型的安全护栏">
-<meta name="twitter:description" content="用一次 TypeSafe 请求对进出大语言模型（LLM）应用的每一条消息进行筛查，按各风险成立的概率（probability）和严重程度做阈值（threshold）判断，决定是放行、复核、拦截，还是路由。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="大语言模型的安全护栏 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="用一次 Jev 请求筛查进出大语言模型的消息，按风险概率和严重程度设阈值，决定放行、复核、拦截还是改路由给人工处理坐席。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"大语言模型的安全护栏","url":"https://jevland.com/docs/cookbook-llm-guardrails/","inLanguage":"zh-CN","description":"用一次 TypeSafe 请求对进出大语言模型（LLM）应用的每一条消息进行筛查，按各风险成立的概率（probability）和严重程度做阈值（threshold）判断，决定是放行、复核、拦截，还是路由。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"大语言模型的安全护栏","name":"大语言模型的安全护栏","url":"https://jevland.com/docs/cookbook-llm-guardrails/","inLanguage":"zh-CN","description":"用一次 Jev 请求筛查进出大语言模型的消息，按风险概率和严重程度设阈值，决定放行、复核、拦截还是改路由给人工处理坐席。","isBasedOn":"https://docs.typesafe.ai/cookbooks/llm_guardrails","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"大语言模型的安全护栏","item":"https://jevland.com/docs/cookbook-llm-guardrails/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>大语言模型的安全护栏</h1>
-        <p class="lead">用一次 TypeSafe 请求对进出大语言模型（LLM）应用的每一条消息进行筛查，按各风险成立的概率（probability）和严重程度做阈值（threshold）判断，决定是放行、复核、拦截，还是路由。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/llm_guardrails" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">用一次 Jev 请求筛查进出大语言模型的消息，按风险概率和严重程度设阈值，决定放行、复核、拦截还是改路由给人工处理坐席。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/llm_guardrails" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-llm-guardrails">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>大多数实验室会教自家的 LLM 拒绝一组不安全的请求，但每家实验室划线的方式不同，模型的每次更新又会重新画这条线。你大概也想把这条线画在别处——某些地方更严格，并写在一个你能读到的地方，而不是埋在模型权重里。</p>
 <p>你写一段系统提示词，规则也就被放在了越狱（jailbreak）能够说服模型绕过的地方。在第一个模型前面再放一个 LLM，每一轮都要为此付出一次调用的延迟和费用，而且攻击者照样可以说服它绕过规则。</p>
 <p>改用一次 TypeSafe 请求来筛查每一条消息。一组 <code>Noul</code>（是非题）问题给出每项风险成立的概率，一个 <code>Score</code>（打分题）问题为按消息回复所带来的危害打分。&quot;忽略你的 instructions（指令）&quot;这样的消息会被判定为越狱攻击，而不是真的得逞。然后你设定阈值，决定消息是放行、进入复核、还是被拦截或转给人工支持。</p>
@@ -447,6 +454,10 @@ display(Markdown(<span class="hljs-string">f&quot;🔗 [Open the prompt + guardr
     <a class="pager-link" href="/docs/cookbook-skill-suggestion/"><span>上一篇</span><strong>技能建议</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-citation-check/"><span>下一篇</span><strong>二次核对引用</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-function-calling/">函数调用</a></li><li><a href="/docs/cookbooks/">实战示例</a></li><li><a href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -465,9 +476,9 @@ display(Markdown(<span class="hljs-string">f&quot;🔗 [Open the prompt + guardr
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

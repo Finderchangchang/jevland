@@ -1,7 +1,7 @@
 [
   {
     "title": "简介",
-    "description": "Jev 是 TypeSafe 的旗舰模型，也是首个 System One 模型。传入 state（上下文状态）和类型化的 question（问题），即可获得代码可直接使用的结构化 answer（答案）。",
+    "description": "Jev 是 TypeSafe 的旗舰判断模型，也是首个 System One 模型。传入 state 和类型化问题，直接返回代码可用的结构化答案，不生成文字。",
     "section": "入门",
     "url": "/docs/introduction/",
     "headings": [
@@ -12,7 +12,7 @@
   },
   {
     "title": "快速开始",
-    "description": "5 分钟内上手 Jev。",
+    "description": "用 Jev 跑通第一个判断请求：申请 API key，选 SDK、HTTP API、agent skill 或 Playground 四条路之一，五分钟内看到带概率和置信度的答案。",
     "section": "入门",
     "url": "/docs/quickstart/",
     "headings": [
@@ -33,7 +33,7 @@
   },
   {
     "title": "Jev 与编程智能体",
-    "description": "在使用编程智能体时，Jev 是什么（以及不是什么）。",
+    "description": "在编程智能体里，Jev 负责结构化判断而不是写代码。本页说明 Jev 适合做什么、不适合做什么，以及怎样接到 agent 工作流。",
     "section": "入门",
     "url": "/docs/coding-agents/",
     "headings": [
@@ -45,7 +45,7 @@
   },
   {
     "title": "用例地图",
-    "description": "按行业探索 TypeSafe 的用例，把有潜力的想法转化为软件工作流。",
+    "description": "按行业看 Jev 能接进哪些软件工作流：客服分流、审核、检索重排、抽取与对齐。把有潜力的判断想法落到可执行的代码路径里。",
     "section": "入门",
     "url": "/docs/use-cases/",
     "headings": [
@@ -56,7 +56,7 @@
   },
   {
     "title": "System One",
-    "description": "System One 模型为软件做快速、结构化的判断。Jev 是 TypeSafe 的旗舰模型，也是第一个 System One 模型。",
+    "description": "System One 是为软件做快速、结构化判断的模型系列。Jev 是 TypeSafe 的旗舰 System One 模型，给 state 出题，返回带类型的答案。",
     "section": "核心概念",
     "url": "/docs/system-one/",
     "headings": [
@@ -67,7 +67,7 @@
   },
   {
     "title": "State（上下文状态）",
-    "description": "state 是什么、如何组织它，以及如何为 System One 模型提供所需的上下文。",
+    "description": "Jev 的 state 是判断所依据的上下文：字符串、对象或图片。本页说明如何组织 state，以及怎样给 System One 提供足够信息。",
     "section": "核心概念",
     "url": "/docs/state/",
     "headings": [
@@ -77,7 +77,7 @@
   },
   {
     "title": "怎样用 TypeSafe 构建",
-    "description": "通过让代码掌握控制权，并交给 System One 做出窄而结构化的判断，来设计 AI 驱动的软件。",
+    "description": "怎样用 Jev 构建 AI 软件：让代码掌握控制权，把窄而结构化的判断交给 System One，避免把生成式模型硬拧成决策引擎。",
     "section": "核心概念",
     "url": "/docs/how-to-build/",
     "headings": [
@@ -89,7 +89,7 @@
   },
   {
     "title": "AI 入门",
-    "description": "介绍 TypeSafe 为何训练决策模型时使用校准过的概率，而非针对生成文本做优化。",
+    "description": "介绍 TypeSafe 为何训练 Jev 这类决策模型时使用校准过的概率，而不是针对生成文本做优化，方便代码直接消费判断结果。",
     "section": "核心概念",
     "url": "/docs/ai-primer/",
     "headings": [
@@ -101,7 +101,7 @@
   },
   {
     "title": "置信度",
-    "description": "TypeSafe 如何报告确定性、与概率的区别，以及如何用它来控制系统行为。",
+    "description": "Jev 的置信度衡量这次判断能不能直接行动，和选项概率不是一回事。本页说明 TypeSafe 如何报告确定性，以及代码该怎么用它分流。",
     "section": "核心概念",
     "url": "/docs/confidence/",
     "headings": [
@@ -117,7 +117,7 @@
   },
   {
     "title": "题型总览",
-    "description": "TypeSafe 的题型、它们返回的带类型答案、如何在它们之间选择，以及如何一次性提出多个问题。",
+    "description": "Jev 四种题型总览：Choice 选择题、Score 打分题、Noul 是非题、Box 框选题。说明返回值形态、如何选题，以及一次请求提多个问题。",
     "section": "题型",
     "url": "/docs/primitives/",
     "headings": [
@@ -136,7 +136,7 @@
   },
   {
     "title": "Choice（选择题）",
-    "description": "Choice 是 System One 的题型（question type），用于从一组预定义选项中选出一个。答案包含所选选项、每个选项的概率以及置信度。",
+    "description": "Jev 的 Choice 选择题从固定选项里选出一个，返回所选选项、每个选项的概率和置信度，适合意图分类、动作选择等路由场景。",
     "section": "题型",
     "url": "/docs/choice/",
     "headings": [
@@ -148,7 +148,7 @@
   },
   {
     "title": "Score（打分题）",
-    "description": "Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。",
+    "description": "Jev 的 Score 打分题按你给的有序档位评分，返回加权分数、各档概率和置信度，适合风险、紧急程度、质量这类量表判断。",
     "section": "题型",
     "url": "/docs/score/",
     "headings": [
@@ -163,7 +163,7 @@
   },
   {
     "title": "Noul（是非题）",
-    "description": "Noul（是非题）问题要求 TypeSafe 模型对一个是非问题进行判断，并返回答案为\"是\"的概率。",
+    "description": "Jev 的 Noul 是非题判断一个命题是否成立，返回答案为「是」的概率。适合催促、投诉、是否需要人工这类二元门槛判断。",
     "section": "题型",
     "url": "/docs/noul/",
     "headings": [
@@ -179,7 +179,7 @@
   },
   {
     "title": "Box（框选题）",
-    "description": "Box（框选题）是 System One 的一种题型，用于识别某物在图像中的位置。答案是包住目标的矩形的四条边，以图像宽高的比例表示。",
+    "description": "Jev 的 Box 框选题在图片里标出目标位置，答案是相对宽高的矩形四边。适合截图里找按钮、头像、消息气泡等视觉定位任务。",
     "section": "题型",
     "url": "/docs/box/",
     "headings": [
@@ -193,7 +193,7 @@
   },
   {
     "title": "进阶：结构化写法",
-    "description": "instructions（指令）字段、Choice（选择题）选项、Score（打分题）档位以及 Noul（是非题）的 criteria（判定标准）字段，都接受 JSON 结构。",
+    "description": "Jev 题目的进阶结构化写法：instructions、Choice 选项、Score 档位和 Noul 的 criteria 都可以是 JSON，方便代码生成题目。",
     "section": "题型",
     "url": "/docs/advanced-structure/",
     "headings": [
@@ -208,7 +208,7 @@
   },
   {
     "title": "图片",
-    "description": "在 System One 请求中发送图片：放在 state 中、问题的 instructions 里，或者作为评判该问题的 criteria。",
+    "description": "在 Jev 请求里发送图片：放到 state、写进问题 instructions，或当作判定 criteria。本页说明看图请求怎么组、注意哪些限制。",
     "section": "题型",
     "url": "/docs/images/",
     "headings": [
@@ -232,7 +232,7 @@
   },
   {
     "title": "设计模式",
-    "description": "使用 TypeSafe 构建系统的架构设计模式。",
+    "description": "用 Jev 构建系统的架构设计模式：意图路由、置信度分流、组合打分、扇出与护栏。把题型组合成可维护的判断流水线，而不是堆提示词。",
     "section": "设计模式",
     "url": "/docs/patterns/",
     "headings": [
@@ -241,7 +241,7 @@
   },
   {
     "title": "推测式扇出",
-    "description": "一次调用发送多个问题，包括推测式问题，再由代码决定哪些相关。",
+    "description": "Jev 的推测式扇出：一次调用发出多个问题，包括暂时不一定相关的题，再由代码根据答案决定哪些真正用得上，避免来回补问浪费。",
     "section": "设计模式",
     "url": "/docs/fan-out/",
     "headings": [
@@ -252,7 +252,7 @@
   },
   {
     "title": "置信度分流",
-    "description": "把置信度作为第二条判断轴。答案告诉你「是什么」，置信度告诉你「能不能直接行动」。",
+    "description": "把 Jev 置信度当作第二条判断轴：答案告诉你是什么，置信度告诉你能不能自动执行。高置信走代码，低置信交给人或大模型复核。",
     "section": "设计模式",
     "url": "/docs/confidence-routing/",
     "headings": [
@@ -263,7 +263,7 @@
   },
   {
     "title": "组合打分",
-    "description": "把一个复杂的判断拆成若干独立的子项打分，再用你在代码里指定的权重组合起来。",
+    "description": "把复杂判断拆成若干 Jev 子项打分，再用代码里指定的权重合成总分。适合多因素风险、质量评估和需要可解释权重的场景接入。",
     "section": "设计模式",
     "url": "/docs/composite-scoring/",
     "headings": [
@@ -274,7 +274,7 @@
   },
   {
     "title": "意图路由",
-    "description": "对传入的请求进行分类，并将每条请求路由到最优处理方：确定性的逻辑、专业的大语言模型（LLM），或人工。",
+    "description": "用 Jev 对传入请求做分类，再路由到确定性逻辑、专业大语言模型或人工。意图路由是把判断模型和代码控制权接起来的常用模式。",
     "section": "设计模式",
     "url": "/docs/intent-routing/",
     "headings": [
@@ -285,7 +285,7 @@
   },
   {
     "title": "模型",
-    "description": "当前可用的 Jev 模型、价格、上下文长度和限流说明。",
+    "description": "当前可用的 Jev 模型、价格、上下文长度和限流。Jev 1.14 与 1.13 都走同一 systemone 接口，用 model 字段选择版本。",
     "section": "参考",
     "url": "/docs/models/",
     "headings": [
@@ -302,7 +302,7 @@
   },
   {
     "title": "API 参考",
-    "description": "TypeSafe 评估接口的完整 HTTP API 参考。",
+    "description": "Jev 评估接口的完整 HTTP API 参考：请求字段、题型参数、返回的概率与置信度，以及调用 TypeSafe /v1/systemone 的细节。",
     "section": "参考",
     "url": "/docs/api/",
     "headings": [
@@ -325,7 +325,7 @@
   },
   {
     "title": "Jev 1.13 能力短板",
-    "description": "Jev 并不完美。以下是我们已知的 `jev-1.13` 能力短板，其中很多会在后续版本中修复。",
+    "description": "Jev 并不完美。本页汇总已知的 jev-1.13 能力短板，方便接入前避开坑；其中不少会在后续版本修复，不要当完成品。",
     "section": "参考",
     "url": "/docs/jev-1-13-jaggedness/",
     "headings": [
@@ -346,14 +346,14 @@
   },
   {
     "title": "客户端 SDK",
-    "description": "安装 TypeSafe 客户端 SDK，在应用中使用带类型的问答。",
+    "description": "安装 TypeSafe 客户端 SDK，在应用里用带类型的方式向 Jev 提问并接收结构化答案，减少手写 HTTP 和解析样板。",
     "section": "参考",
     "url": "/docs/sdk/",
     "headings": []
   },
   {
     "title": "Python SDK",
-    "description": "安装 TypeSafe Python SDK，开始用异步或同步方式调用 API。",
+    "description": "安装 TypeSafe Python SDK，用同步或异步方式调用 Jev API，把 state 和 questions 写成普通函数参数。",
     "section": "参考",
     "url": "/docs/sdk-python/",
     "headings": [
@@ -363,7 +363,7 @@
   },
   {
     "title": "实战示例",
-    "description": "从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。",
+    "description": "Jev 实战示例合集：从几个问题到完整流水线，覆盖分类、抽取、护栏、重排序和记忆。按真实问题演示 TypeSafe 怎么接到代码里。",
     "section": "实战示例",
     "url": "/docs/cookbooks/",
     "headings": [
@@ -376,7 +376,7 @@
   },
   {
     "title": "函数调用",
-    "description": "通过把函数名和闭合取值集合的参数映射到带置信度的 TypeSafe 问题，把自然语言的交易请求转为对普通带类型函数的调用。",
+    "description": "把自然语言交易请求映射成带置信度的 Jev 问题，函数名和闭合取值集合由代码执行，相当于用判断模型做受控的函数调用网关。",
     "section": "实战示例",
     "url": "/docs/cookbook-function-calling/",
     "headings": [
@@ -391,7 +391,7 @@
   },
   {
     "title": "技能建议",
-    "description": "每次智能体回合从 Nous Research 的 Hermes 目录中 182 个技能里至多选出一个技能，使用两次 TypeSafe 请求对排名靠前的候选进行排序和复检。",
+    "description": "每个智能体回合用两次 Jev 请求，从技能目录里至多选出一个技能：先排序再复检，把技能建议做成带置信度的结构化判断步骤。",
     "section": "实战示例",
     "url": "/docs/cookbook-skill-suggestion/",
     "headings": [
@@ -409,7 +409,7 @@
   },
   {
     "title": "大语言模型的安全护栏",
-    "description": "用一次 TypeSafe 请求对进出大语言模型（LLM）应用的每一条消息进行筛查，按各风险成立的概率（probability）和严重程度做阈值（threshold）判断，决定是放行、复核、拦截，还是路由。",
+    "description": "用一次 Jev 请求筛查进出大语言模型的消息，按风险概率和严重程度设阈值，决定放行、复核、拦截还是改路由给人工处理坐席。",
     "section": "实战示例",
     "url": "/docs/cookbook-llm-guardrails/",
     "headings": [
@@ -425,7 +425,7 @@
   },
   {
     "title": "二次核对引用",
-    "description": "通过与源文档比对，找出错误或虚构的引用。一道 Choice（选择题）问题决定引文的上下文是否支撑该声明。",
+    "description": "用 Jev 的 Choice 题把声明和源文档比对，找出错误或虚构的引用：判断引文上下文是否支撑该声明，再交给代码处理。",
     "section": "实战示例",
     "url": "/docs/cookbook-citation-check/",
     "headings": [
@@ -439,7 +439,7 @@
   },
   {
     "title": "为 RAG 段落分类",
-    "description": "用一次 TypeSafe 请求为每条检索到的段落打分，再用代码决定哪些段落最终进入生成答案的模型。",
+    "description": "用一次 Jev 请求给每条检索段落打分，再用代码决定哪些段落进入生成答案的模型，把判断从 RAG 生成流程里彻底拆出来。",
     "section": "实战示例",
     "url": "/docs/cookbook-classifying-rag-passages/",
     "headings": [
@@ -455,7 +455,7 @@
   },
   {
     "title": "简单记忆系统",
-    "description": "让 Jev 决定哪些请求和答案值得被记住，然后把 Jev 的调用包进一个小函数，在后续调用里加上这些记忆。",
+    "description": "让 Jev 决定哪些请求和答案值得记住，再把调用包进小函数，在后续判断里带上这些记忆，做成最简单可用的会话记忆系统示例。",
     "section": "实战示例",
     "url": "/docs/cookbook-basic-memory/",
     "headings": [
@@ -474,7 +474,7 @@
   },
   {
     "title": "层次分类",
-    "description": "通过基于 TypeSafe Choice（选择题）概率的并行束搜索，跨越专利、零售商品、生物医学和源代码等深层次结构对文档进行分类。",
+    "description": "用 Jev Choice 概率做并行束搜索，在专利、商品、生物医学和源代码等深层次结构上给文档做层次分类，而不是一次猜到底。",
     "section": "实战示例",
     "url": "/docs/cookbook-hierarchical-classification/",
     "headings": [
@@ -491,7 +491,7 @@
   },
   {
     "title": "使用置信度进行分类",
-    "description": "用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。",
+    "description": "用一道 Jev Choice 把 SEC 年报分进 75 个行业组，再按置信度决定是报该组，还是上收到更宽的行业门类，避免硬切。",
     "section": "实战示例",
     "url": "/docs/cookbook-classification-using-confidence/",
     "headings": [
@@ -506,7 +506,7 @@
   },
   {
     "title": "Twitch 聊天过滤器",
-    "description": "在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。",
+    "description": "用 Jev 过滤 Twitch 聊天：隐藏侮辱和垃圾信息、模糊剧透、高亮提问。每条消息一次多问题请求，规则全由代码定义。",
     "section": "实战示例",
     "url": "/docs/cookbook-twitch-chat-filter/",
     "headings": [
@@ -523,7 +523,7 @@
   },
   {
     "title": "SDE（结构化数据抽取）级联",
-    "description": "用一个 2 阶段的结构化数据抽取级联（mini → verify → reasoning），以小成本获得接近大型推理模型的质量。",
+    "description": "用两阶段结构化数据抽取级联（mini 到 verify 再到 reasoning）接 Jev，小成本逼近大型推理模型的抽取质量。",
     "section": "实战示例",
     "url": "/docs/cookbook-sde-cascade/",
     "headings": [
@@ -540,7 +540,7 @@
   },
   {
     "title": "日期提取",
-    "description": "从文档中提取绝对日期和相对日期：先用 TypeSafe 读取被点名的日期片段，再在代码里完成解析和校验，并按置信度触发复核。",
+    "description": "用 Jev 从文档里提取绝对日期和相对日期：模型先读被点名的日期片段，代码再解析校验，并按置信度决定要不要交给人工复核。",
     "section": "实战示例",
     "url": "/docs/cookbook-date-extraction/",
     "headings": [
@@ -554,7 +554,7 @@
   },
   {
     "title": "预先解析的值抽取",
-    "description": "用正则找出候选的电子邮箱、电话号码和金额，再让 TypeSafe 选出问题所问的那段文本，让代码能规范化一个原样的值。",
+    "description": "先用正则找出邮箱、电话和金额候选，再让 Jev 选出题目要的那段文本，由代码规范化原样值，避免模型凭空编造数字或格式串。",
     "section": "实战示例",
     "url": "/docs/cookbook-pre-parsed-value-extraction/",
     "headings": [
@@ -569,7 +569,7 @@
   },
   {
     "title": "结构恢复",
-    "description": "用两次请求从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼回，一次给每个块分类（标题、列表、代码块、提示框）。",
+    "description": "用两次 Jev 请求从丢失格式的纯文本重建 Markdown：一次把硬换行拼回段落，一次给每个块分类成标题、列表、代码或提示框。",
     "section": "实战示例",
     "url": "/docs/cookbook-autoformat/",
     "headings": [
@@ -586,7 +586,7 @@
   },
   {
     "title": "重排序",
-    "description": "为 40 条 CLERC 法律查询各构建 30 篇文档的 BM25 候选短列表，再为每个「查询-候选」对使用一个 TypeSafe 问题（question），将 top-1 准确率从 5% 提升到 18%，top-10 准确率从 38% 提升到 62%。",
+    "description": "用 Jev 给 BM25 短列表重排序：法律查询实验里 top-1 和 top-10 准确率都明显提升，展示判断模型做重排的接法。",
     "section": "实战示例",
     "url": "/docs/cookbook-rerank-typesafe/",
     "headings": [
@@ -607,7 +607,7 @@
   },
   {
     "title": "逐行搜索",
-    "description": "为 GitHub 服务条款构建语义搜索。在一次请求中，用 `Choice`（选择题）给 218 个行 ID 评分，再用 `Noul`（是非题）检查文档是否包含答案。",
+    "description": "用 Jev 做逐行语义搜索：一次请求里 Choice 给行 ID 打分，Noul 检查文档是否包含答案，示例基于 GitHub 服务条款。",
     "section": "实战示例",
     "url": "/docs/cookbook-semantic-find/",
     "headings": [
@@ -627,7 +627,7 @@
   },
   {
     "title": "知识图谱实体对齐",
-    "description": "用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。",
+    "description": "用一个 Jev Score 加三道 Noul，从两份啤酒目录的候选配对里判断是否同一产品，并标出名称、酒精度等哪些字段存在分歧。",
     "section": "实战示例",
     "url": "/docs/cookbook-entity-alignment/",
     "headings": [
@@ -640,7 +640,7 @@
   },
   {
     "title": "自一致性：Choice",
-    "description": "为内容审核决策引入不确定结果（uncertain outcome），并比较标签一致性与自动处理占比。",
+    "description": "为内容审核的 Jev Choice 引入不确定结果，比较标签一致性和自动处理占比，看自一致性如何影响可自动放行的业务比例。",
     "section": "实战示例",
     "url": "/docs/cookbook-consistency-choice/",
     "headings": [
@@ -659,7 +659,7 @@
   },
   {
     "title": "自一致性：Noul",
-    "description": "将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。",
+    "description": "把 Jev Noul 的不确定概率分去人工复核，同时保留底层 noul 值可见，用来在自动处理和人工之间找可运营的平衡。",
     "section": "实战示例",
     "url": "/docs/cookbook-consistency-noul/",
     "headings": [
@@ -677,7 +677,7 @@
   },
   {
     "title": "并行提问",
-    "description": "基于 Wikipedia 上的 GDPR 词条运行一个 13 问题的合规简报，结果显示把所有问题批量放进一次 TypeSafe 调用既便宜 12.2 倍又快 10.0 倍，且答案完全一致。",
+    "description": "一次 Jev 调用批量提出多个问题：以 Wikipedia GDPR 词条的 13 问合规简报为例，比逐条调用更便宜也更快，答案一致。",
     "section": "实战示例",
     "url": "/docs/cookbook-parallel-questions/",
     "headings": [
@@ -692,7 +692,7 @@
   },
   {
     "title": "自动研究：特征发现",
-    "description": "运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。",
+    "description": "跑一个 autoresearch 循环，让 Jev 提出问题，把自由文本转成数值特征，并用模型误差改进有监督的 CatBoost 回归器。",
     "section": "实战示例",
     "url": "/docs/cookbook-autoresearch-feature-discovery/",
     "headings": [
@@ -709,7 +709,7 @@
   },
   {
     "title": "跑通第一个 Jev 请求：两条路都能走",
-    "description": "只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。",
+    "description": "跑通第一个 Jev 请求：只做文字判断时官方接口和 OpenRouter 都行；要看图只能走 TypeSafe 官方接口。带可复制的 curl 示例。",
     "section": "入门",
     "url": "/guides/first-request/",
     "headings": [
@@ -723,7 +723,7 @@
   },
   {
     "title": "用 OpenRouter 调 Jev 看图，图片根本没送到模型那里",
-    "description": "OpenRouter 的 alpha/decisions 接口不转发图片，要测 Jev 看图请走 TypeSafe 官方接口。",
+    "description": "OpenRouter 的 alpha/decisions 不转发图片，Jev 实际没看到图。要测 Jev 看图请走 TypeSafe 官方接口，避免误判模型能力。",
     "section": "实测",
     "url": "/guides/openrouter-images/",
     "headings": [
@@ -737,7 +737,7 @@
   },
   {
     "title": "Jev 1.14 看图实测：判断可以直接用，框选要看置信度",
-    "description": "看截图做判断，结果和读文字几乎一致；Box 框选用置信度兜底。",
+    "description": "Jev 1.14 看图实测：判断类问题和读文字几乎一致，可直接用截图；Box 框选在中文截图上会框偏，必须看置信度兜底。",
     "section": "实测",
     "url": "/guides/vision-test/",
     "headings": [
@@ -750,7 +750,7 @@
   },
   {
     "title": "Jev 处理中文：题目用英文，state 保留中文",
-    "description": "中文内容能判断。题目英文写、state 留原文，上线前用 20–30 条真实数据校准。",
+    "description": "Jev 能判断中文内容。题目用英文写、state 保留中文原文，上线前用 20 到 30 条真实数据校准置信度和准确率。",
     "section": "实测",
     "url": "/guides/chinese-prompts/",
     "headings": [

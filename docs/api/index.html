@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>API 参考 · JevLand</title>
-<meta name="description" content="TypeSafe 评估接口的完整 HTTP API 参考。">
+<title>API 参考 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="Jev 评估接口的完整 HTTP API 参考：请求字段、题型参数、返回的概率与置信度，以及调用 TypeSafe /v1/systemone 的细节。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/api/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="API 参考">
-<meta property="og:description" content="TypeSafe 评估接口的完整 HTTP API 参考。">
+<meta property="og:title" content="API 参考 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="Jev 评估接口的完整 HTTP API 参考：请求字段、题型参数、返回的概率与置信度，以及调用 TypeSafe /v1/systemone 的细节。">
 <meta property="og:url" content="https://jevland.com/docs/api/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="API 参考">
-<meta name="twitter:description" content="TypeSafe 评估接口的完整 HTTP API 参考。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="API 参考 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="Jev 评估接口的完整 HTTP API 参考：请求字段、题型参数、返回的概率与置信度，以及调用 TypeSafe /v1/systemone 的细节。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"API 参考","url":"https://jevland.com/docs/api/","inLanguage":"zh-CN","description":"TypeSafe 评估接口的完整 HTTP API 参考。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"API 参考","name":"API 参考","url":"https://jevland.com/docs/api/","inLanguage":"zh-CN","description":"Jev 评估接口的完整 HTTP API 参考：请求字段、题型参数、返回的概率与置信度，以及调用 TypeSafe /v1/systemone 的细节。","isBasedOn":"https://docs.typesafe.ai/api","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"API 参考","item":"https://jevland.com/docs/api/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 参考</p>
         <h1>API 参考</h1>
-        <p class="lead">TypeSafe 评估接口的完整 HTTP API 参考。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/api" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">Jev 评估接口的完整 HTTP API 参考：请求字段、题型参数、返回的概率与置信度，以及调用 TypeSafe /v1/systemone 的细节。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/api" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="api">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>针对一份 state 对一组带类型的 questions 进行评估，并按题目返回结构化的 answers，每个 question 对应一个 answer。入门介绍请从 primitives 开始。</p>
 <h2 id="evaluation-endpoint">评估接口</h2>
 <div class="code-block"><div class="code-bar"><span class="code-lang">http</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">POST https://api.typesafe.ai/v1/systemone
@@ -390,6 +397,10 @@
     <a class="pager-link" href="/docs/models/"><span>上一篇</span><strong>模型</strong></a>
     <a class="pager-link is-next" href="/docs/jev-1-13-jaggedness/"><span>下一篇</span><strong>Jev 1.13 能力短板</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/sdk/">客户端 SDK</a></li><li><a href="/docs/sdk-python/">Python SDK</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -408,9 +419,9 @@
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

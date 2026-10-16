@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>jev-trader · Jev 案例 · JevLand</title>
+<meta name="description" content="Monad 上的做市实验：每个区块问 Jev 买还是卖，代码去挂 post-only 限价单。。每个区块用 Choice 在买 / 卖之间做一次判断">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/showcase/jev-trader/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="jev-trader · Jev 案例 · JevLand">
+<meta property="og:description" content="Monad 上的做市实验：每个区块问 Jev 买还是卖，代码去挂 post-only 限价单。。每个区块用 Choice 在买 / 卖之间做一次判断">
+<meta property="og:url" content="https://jevland.com/showcase/jev-trader/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta property="article:published_time" content="2026-09-16">
+<meta property="article:modified_time" content="2026-09-16">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="jev-trader · Jev 案例 · JevLand">
+<meta name="twitter:description" content="Monad 上的做市实验：每个区块问 Jev 买还是卖，代码去挂 post-only 限价单。。每个区块用 Choice 在买 / 卖之间做一次判断">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"SoftwareSourceCode","name":"jev-trader","headline":"jev-trader","url":"https://jevland.com/showcase/jev-trader/","inLanguage":"zh-CN","description":"Monad 上的做市实验：每个区块问 Jev 买还是卖，代码去挂 post-only 限价单。。每个区块用 Choice 在买 / 卖之间做一次判断","datePublished":"2026-09-16","author":{"@type":"Person","name":"jarrodwatts","url":"https://github.com/jarrodwatts"},"isPartOf":{"@id":"https://jevland.com/#website"},"codeRepository":"https://github.com/jarrodwatts/jev-trader"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"案例","item":"https://jevland.com/showcase/"},{"@type":"ListItem","position":3,"name":"jev-trader","item":"https://jevland.com/showcase/jev-trader/"}]}]}</script>
+
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/showcase/" aria-current="page">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block case-page">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/">首页</a> / <a href="/showcase/">案例</a></p>
+        <h1>jev-trader</h1>
+        <div class="case-meta">
+          <span>作者 <a href="https://github.com/jarrodwatts" target="_blank" rel="noopener noreferrer">jarrodwatts</a></span>
+          <time datetime="2026-09-16">2026-09-16</time>
+          <span class="chip">开源项目</span>
+          
+          <span class="chip">开源</span><span class="chip">交易</span><span class="chip">Monad</span><span class="chip">演示</span>
+        </div>
+        <aside class="jev-callout"><p class="kicker">Jev 在里面判断什么</p><p>每个区块用 Choice 在买 / 卖之间做一次判断</p></aside>
+        <div class="prose"><h2 id="它是什么">它是什么</h2>
+<p>jev-trader 在 Monad 上盯 Kuru 的 MON-USDC 订单簿，大约每 300 毫秒一个区块做一次方向判断，并挂 post-only 限价单。没有私钥时走 dry-run：真实盘口、真实判断、模拟成交。</p>
+<p>仓库 2026-09-16 创建。README 写明成交取决于 taker 是否撞上挂单，模型给出方向和实际成交是两件事。</p>
+<h2 id="Jev-在里面做什么判断">Jev 在里面做什么判断</h2>
+<p>每个区块把盘口状态交给 Jev，用 Choice（选择题）在 buy / sell 之间选边，并带概率。代码再决定价格、数量和是否因延迟跳过下单。默认 <code>MODEL=mock</code> 是动量启发式，设 <code>MODEL=jev</code> 并提供 <code>TYPESAFE_AI_API_KEY</code> 才走 Jev。</p>
+<h2 id="怎么试">怎么试</h2>
+<p>仓库：<a href="https://github.com/jarrodwatts/jev-trader" target="_blank" rel="noopener noreferrer">jarrodwatts/jev-trader</a>。公开 dry-run 面板：<a href="https://jev-trader.vercel.app" target="_blank" rel="noopener noreferrer">jev-trader.vercel.app</a>。</p>
+</div>
+        <div class="case-actions">
+          <a class="btn" href="https://github.com/jarrodwatts/jev-trader" target="_blank" rel="noopener noreferrer" data-umami-event="case-source" data-umami-event-slug="jev-trader">查看原帖 / 来源 ↗</a>
+          <a class="btn btn-ghost" href="https://jev-trader.vercel.app" target="_blank" rel="noopener noreferrer" data-umami-event="case-project" data-umami-event-slug="jev-trader">项目主页 ↗</a>
+          <a class="btn btn-ghost" href="https://github.com/jarrodwatts/jev-trader" target="_blank" rel="noopener noreferrer" data-umami-event="github-star" data-umami-event-slug="jev-trader" data-umami-event-repo="jarrodwatts/jev-trader">GitHub ↗</a><p class="stars" hidden>★ <span data-stars data-repo="jarrodwatts/jev-trader"></span></p>
+        </div>
+        <nav class="pager" aria-label="相邻案例">
+    <a class="pager-link" href="/showcase/kill-my-idea/"><span>上一个</span><strong>Kill My Idea</strong></a>
+    <a class="pager-link is-next" href="/showcase/typesafe-mario/"><span>下一个</span><strong>TypeSafe Mario</strong></a>
+  </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/quickstart/">快速开始</a></li><li><a href="/docs/primitives/">题型总览</a></li></ul>
+  </section>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

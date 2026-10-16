@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unsiloed 文档复核 · Jev 案例 · JevLand</title>
+<meta name="description" content="文档抽取之后，用 Jev 逐行问剂量是否说得通，把不确定的读数和明显不合理的值分开送审。。对每行抽取结果发 Noul：剂量和频次表面上是否合理">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/showcase/unsiloed-document-review/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="Unsiloed 文档复核 · Jev 案例 · JevLand">
+<meta property="og:description" content="文档抽取之后，用 Jev 逐行问剂量是否说得通，把不确定的读数和明显不合理的值分开送审。。对每行抽取结果发 Noul：剂量和频次表面上是否合理">
+<meta property="og:url" content="https://jevland.com/showcase/unsiloed-document-review/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta property="article:published_time" content="2026-10-01">
+<meta property="article:modified_time" content="2026-10-01">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="Unsiloed 文档复核 · Jev 案例 · JevLand">
+<meta name="twitter:description" content="文档抽取之后，用 Jev 逐行问剂量是否说得通，把不确定的读数和明显不合理的值分开送审。。对每行抽取结果发 Noul：剂量和频次表面上是否合理">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"CreativeWork","name":"Unsiloed 文档复核","headline":"Unsiloed 文档复核","url":"https://jevland.com/showcase/unsiloed-document-review/","inLanguage":"zh-CN","description":"文档抽取之后，用 Jev 逐行问剂量是否说得通，把不确定的读数和明显不合理的值分开送审。。对每行抽取结果发 Noul：剂量和频次表面上是否合理","datePublished":"2026-10-01","author":{"@type":"Person","name":"Unsiloed AI","url":"https://www.unsiloed.ai/"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"案例","item":"https://jevland.com/showcase/"},{"@type":"ListItem","position":3,"name":"Unsiloed 文档复核","item":"https://jevland.com/showcase/unsiloed-document-review/"}]}]}</script>
+
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/showcase/" aria-current="page">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block case-page">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/">首页</a> / <a href="/showcase/">案例</a></p>
+        <h1>Unsiloed 文档复核</h1>
+        <div class="case-meta">
+          <span>作者 <a href="https://www.unsiloed.ai/" target="_blank" rel="noopener noreferrer">Unsiloed AI</a></span>
+          <time datetime="2026-10-01">2026-10-01</time>
+          <span class="chip">产品</span>
+          
+          <span class="chip">产品</span><span class="chip">文档</span><span class="chip">OCR</span><span class="chip">医疗</span>
+        </div>
+        <aside class="jev-callout"><p class="kicker">Jev 在里面判断什么</p><p>对每行抽取结果发 Noul：剂量和频次表面上是否合理</p></aside>
+        <div class="prose"><h2 id="它是什么">它是什么</h2>
+<p>Unsiloed 做文档结构化抽取。这篇工程博文给出一条复核流水线：Unsiloed 抽出字段并定位到页面，Jev 只看抽出的文字做合理性判断，应用代码再决定哪一行要人工看。</p>
+<p>文章日期 2026-10-01。示例是一份 6 行用药清单：一行被咖啡渍挡住，一行印得很清楚但剂量不合理。两条会被不同的检查抓住。</p>
+<h2 id="Jev-在里面做什么判断">Jev 在里面做什么判断</h2>
+<p>一次请求里对每行发一道 Noul（是非题）：抽出的剂量和频次，在成年门诊语境下表面上是否说得通。Jev 看不到原图和 OCR 分数。示例中被污渍挡住的一行 noul 为 0.94，印成「10 tablets three times daily」的布洛芬一行为 0.04。</p>
+<h2 id="怎么试">怎么试</h2>
+<p>读原文：<a href="https://www.unsiloed.ai/blog/document-review-unsiloed-typesafe-jev" target="_blank" rel="noopener noreferrer">Document Review With Unsiloed and TypeSafe Jev</a>。文中附有记录下来的请求和收据 JSON。</p>
+</div>
+        <div class="case-actions">
+          <a class="btn" href="https://www.unsiloed.ai/blog/document-review-unsiloed-typesafe-jev" target="_blank" rel="noopener noreferrer" data-umami-event="case-source" data-umami-event-slug="unsiloed-document-review">查看原帖 / 来源 ↗</a>
+          <a class="btn btn-ghost" href="https://www.unsiloed.ai/" target="_blank" rel="noopener noreferrer" data-umami-event="case-project" data-umami-event-slug="unsiloed-document-review">项目主页 ↗</a>
+          
+        </div>
+        <nav class="pager" aria-label="相邻案例">
+    <a class="pager-link" href="/showcase/jurl/"><span>上一个</span><strong>jurl</strong></a>
+    <a class="pager-link is-next" href="/showcase/onesie/"><span>下一个</span><strong>onesie</strong></a>
+  </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/quickstart/">快速开始</a></li><li><a href="/docs/primitives/">题型总览</a></li></ul>
+  </section>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

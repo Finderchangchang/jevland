@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>二次核对引用 · JevLand</title>
-<meta name="description" content="通过与源文档比对，找出错误或虚构的引用。一道 Choice（选择题）问题决定引文的上下文是否支撑该声明。">
+<title>二次核对引用 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="用 Jev 的 Choice 题把声明和源文档比对，找出错误或虚构的引用：判断引文上下文是否支撑该声明，再交给代码处理。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-citation-check/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="二次核对引用">
-<meta property="og:description" content="通过与源文档比对，找出错误或虚构的引用。一道 Choice（选择题）问题决定引文的上下文是否支撑该声明。">
+<meta property="og:title" content="二次核对引用 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="用 Jev 的 Choice 题把声明和源文档比对，找出错误或虚构的引用：判断引文上下文是否支撑该声明，再交给代码处理。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-citation-check/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="二次核对引用">
-<meta name="twitter:description" content="通过与源文档比对，找出错误或虚构的引用。一道 Choice（选择题）问题决定引文的上下文是否支撑该声明。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="二次核对引用 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="用 Jev 的 Choice 题把声明和源文档比对，找出错误或虚构的引用：判断引文上下文是否支撑该声明，再交给代码处理。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"二次核对引用","url":"https://jevland.com/docs/cookbook-citation-check/","inLanguage":"zh-CN","description":"通过与源文档比对，找出错误或虚构的引用。一道 Choice（选择题）问题决定引文的上下文是否支撑该声明。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"二次核对引用","name":"二次核对引用","url":"https://jevland.com/docs/cookbook-citation-check/","inLanguage":"zh-CN","description":"用 Jev 的 Choice 题把声明和源文档比对，找出错误或虚构的引用：判断引文上下文是否支撑该声明，再交给代码处理。","isBasedOn":"https://docs.typesafe.ai/cookbooks/citation_check","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"二次核对引用","item":"https://jevland.com/docs/cookbook-citation-check/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>二次核对引用</h1>
-        <p class="lead">通过与源文档比对，找出错误或虚构的引用。一道 Choice（选择题）问题决定引文的上下文是否支撑该声明。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/citation_check" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">用 Jev 的 Choice 题把声明和源文档比对，找出错误或虚构的引用：判断引文上下文是否支撑该声明，再交给代码处理。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/citation_check" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-citation-check">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>大语言模型（LLM）在回答一个问题时会附上引用：对每一条声明，给出一段源文档以及其所依据的引文。其中部分引用是错误的或虚构的：引文可能完全不在源文档里，也可能原原本本躺在源文档中，但其上下文却表达了与该声明相反的意思。</p>
 <p>人工逐一核查很慢：先找到文档，再到文档里找到引文，然后读足够多的上下文才能判断它是否支撑该声明。</p>
 <p>为了让这一核查自动化，我们先用普通的字符串匹配找出缺失的引文，然后对每一条幸存的引文使用一道 <code>Choice</code> 问题来读取其上下文，并判断它是否支撑该声明。</p>
@@ -354,6 +361,10 @@ display(Markdown(<span class="hljs-string">f&quot;🔗 [Open one citation&#x27;s
     <a class="pager-link" href="/docs/cookbook-llm-guardrails/"><span>上一篇</span><strong>大语言模型的安全护栏</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-classifying-rag-passages/"><span>下一篇</span><strong>为 RAG 段落分类</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-skill-suggestion/">技能建议</a></li><li><a href="/docs/cookbook-function-calling/">函数调用</a></li><li><a href="/docs/cookbooks/">实战示例</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -372,9 +383,9 @@ display(Markdown(<span class="hljs-string">f&quot;🔗 [Open one citation&#x27;s
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Twitch 聊天过滤器 · JevLand</title>
-<meta name="description" content="在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。">
+<title>Twitch 聊天过滤器 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="用 Jev 过滤 Twitch 聊天：隐藏侮辱和垃圾信息、模糊剧透、高亮提问。每条消息一次多问题请求，规则全由代码定义。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-twitch-chat-filter/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="Twitch 聊天过滤器">
-<meta property="og:description" content="在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。">
+<meta property="og:title" content="Twitch 聊天过滤器 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="用 Jev 过滤 Twitch 聊天：隐藏侮辱和垃圾信息、模糊剧透、高亮提问。每条消息一次多问题请求，规则全由代码定义。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-twitch-chat-filter/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Twitch 聊天过滤器">
-<meta name="twitter:description" content="在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="Twitch 聊天过滤器 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="用 Jev 过滤 Twitch 聊天：隐藏侮辱和垃圾信息、模糊剧透、高亮提问。每条消息一次多问题请求，规则全由代码定义。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"Twitch 聊天过滤器","url":"https://jevland.com/docs/cookbook-twitch-chat-filter/","inLanguage":"zh-CN","description":"在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"Twitch 聊天过滤器","name":"Twitch 聊天过滤器","url":"https://jevland.com/docs/cookbook-twitch-chat-filter/","inLanguage":"zh-CN","description":"用 Jev 过滤 Twitch 聊天：隐藏侮辱和垃圾信息、模糊剧透、高亮提问。每条消息一次多问题请求，规则全由代码定义。","isBasedOn":"https://docs.typesafe.ai/cookbooks/twitch_chat_filter","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"Twitch 聊天过滤器","item":"https://jevland.com/docs/cookbook-twitch-chat-filter/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>Twitch 聊天过滤器</h1>
-        <p class="lead">在 Twitch 聊天中隐藏侮辱、垃圾信息和未经请求的游戏攻略，对剧透内容进行模糊处理，并把问题高亮显示。每条消息对应一个包含多个问题的 TypeSafe 请求，最多可并发处理八条消息，规则全部通过代码来定义。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/twitch_chat_filter" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">用 Jev 过滤 Twitch 聊天：隐藏侮辱和垃圾信息、模糊剧透、高亮提问。每条消息一次多问题请求，规则全由代码定义。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/twitch_chat_filter" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-twitch-chat-filter">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>你正在观看一场 Twitch 直播，聊天刷得太快根本看不过来。本实战示例会对每条到达的消息进行分类：把问题高亮显示，把垃圾信息、侮辱和未经请求的游戏攻略隐藏起来，并对剧透内容进行模糊处理。一份关键词列表或许能拦下垃圾链接，但「走左边，那棵树后面有个宝箱」里没有任何违规词，剧情反转发言也一样。</p>
 <p>把每条消息各自放进一次 Jev 请求，连同直播标题和当前游戏一起发送。我们会针对它提出三个问题：消息属于什么类型、是否带攻击性、是否会剧透游戏。少量代码就能把这些答案转化为观众看到的效果。
 下面这段视频演示展示了一个由 Jev 驱动的 Chrome 扩展在实时过滤 Twitch 聊天：</p>
@@ -426,6 +433,10 @@ NightOwl_22: this boss took me 40 tries lol                     show       -&gt;
     <a class="pager-link" href="/docs/cookbook-classification-using-confidence/"><span>上一篇</span><strong>使用置信度进行分类</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-sde-cascade/"><span>下一篇</span><strong>SDE（结构化数据抽取）级联</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-hierarchical-classification/">层次分类</a></li><li><a href="/docs/cookbook-basic-memory/">简单记忆系统</a></li><li><a href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -444,9 +455,9 @@ NightOwl_22: this boss took me 40 tries lol                     show       -&gt;
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

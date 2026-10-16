@@ -3,27 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>实战教程 · JevLand</title>
-<meta name="description" content="用 Jev 做判断的原创实战教程。">
+<title>Jev 实战教程 · JevLand</title>
+<meta name="description" content="Jev 实战教程：从第一个请求、中文出题、OpenRouter 看图限制，到截图判断实测。原创踩坑记录，带可复制的请求示例。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/guides/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="实战教程">
-<meta property="og:description" content="用 Jev 做判断的原创实战教程。">
+<meta property="og:title" content="Jev 实战教程 · JevLand">
+<meta property="og:description" content="Jev 实战教程：从第一个请求、中文出题、OpenRouter 看图限制，到截图判断实测。原创踩坑记录，带可复制的请求示例。">
 <meta property="og:url" content="https://jevland.com/guides/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="实战教程">
-<meta name="twitter:description" content="用 Jev 做判断的原创实战教程。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="Jev 实战教程 · JevLand">
+<meta name="twitter:description" content="Jev 实战教程：从第一个请求、中文出题、OpenRouter 看图限制，到截图判断实测。原创踩坑记录，带可复制的请求示例。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"WebPage","name":"实战教程","url":"https://jevland.com/guides/","inLanguage":"zh-CN","description":"用 Jev 做判断的原创实战教程。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +42,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/guides/" aria-current="page">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/showcase/">案例</a><a href="/guides/" aria-current="page">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -65,25 +71,25 @@
       <label class="search-field"><span class="sr-only">搜索教程</span><input type="search" placeholder="搜索标题、标签、关键词…" data-guide-search></label>
     </div>
     <p class="sr-only" role="status" data-search-status>找到 4 篇教程</p>
-    <div class="guide-grid"><a class="card guide-card" data-guide-card data-category="入门" data-search="跑通第一个 Jev 请求：两条路都能走 只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。 入门 快速开始 OpenRouter API" href="/guides/first-request/">
+    <div class="guide-grid"><a class="card guide-card" data-guide-card data-category="入门" data-search="跑通第一个 Jev 请求：两条路都能走 跑通第一个 Jev 请求：只做文字判断时官方接口和 OpenRouter 都行；要看图只能走 TypeSafe 官方接口。带可复制的 curl 示例。 入门 快速开始 OpenRouter API" href="/guides/first-request/">
     <div class="guide-card-top"><span class="chip">入门</span><span class="muted">6 分钟</span></div>
     <h3>跑通第一个 Jev 请求：两条路都能走</h3>
-    <p>只做文字判断，官方接口和 OpenRouter 都行；要看图只能走官方接口。</p>
+    <p>跑通第一个 Jev 请求：只做文字判断时官方接口和 OpenRouter 都行；要看图只能走 TypeSafe 官方接口。带可复制的 curl 示例。</p>
     <div class="guide-card-meta"><time datetime="2026-10-15">2026-10-15</time></div>
-  </a><a class="card guide-card" data-guide-card data-category="实测" data-search="用 OpenRouter 调 Jev 看图，图片根本没送到模型那里 OpenRouter 的 alpha/decisions 接口不转发图片，要测 Jev 看图请走 TypeSafe 官方接口。 实测 看图 OpenRouter 踩坑" href="/guides/openrouter-images/">
+  </a><a class="card guide-card" data-guide-card data-category="实测" data-search="用 OpenRouter 调 Jev 看图，图片根本没送到模型那里 OpenRouter 的 alpha/decisions 不转发图片，Jev 实际没看到图。要测 Jev 看图请走 TypeSafe 官方接口，避免误判模型能力。 实测 看图 OpenRouter 踩坑" href="/guides/openrouter-images/">
     <div class="guide-card-top"><span class="chip">实测</span><span class="muted">4 分钟</span></div>
     <h3>用 OpenRouter 调 Jev 看图，图片根本没送到模型那里</h3>
-    <p>OpenRouter 的 alpha/decisions 接口不转发图片，要测 Jev 看图请走 TypeSafe 官方接口。</p>
+    <p>OpenRouter 的 alpha/decisions 不转发图片，Jev 实际没看到图。要测 Jev 看图请走 TypeSafe 官方接口，避免误判模型能力。</p>
     <div class="guide-card-meta"><time datetime="2026-10-15">2026-10-15</time></div>
-  </a><a class="card guide-card" data-guide-card data-category="实测" data-search="Jev 1.14 看图实测：判断可以直接用，框选要看置信度 看截图做判断，结果和读文字几乎一致；Box 框选用置信度兜底。 实测 看图 Box Jev 1.14" href="/guides/vision-test/">
+  </a><a class="card guide-card" data-guide-card data-category="实测" data-search="Jev 1.14 看图实测：判断可以直接用，框选要看置信度 Jev 1.14 看图实测：判断类问题和读文字几乎一致，可直接用截图；Box 框选在中文截图上会框偏，必须看置信度兜底。 实测 看图 Box Jev 1.14" href="/guides/vision-test/">
     <div class="guide-card-top"><span class="chip">实测</span><span class="muted">7 分钟</span></div>
     <h3>Jev 1.14 看图实测：判断可以直接用，框选要看置信度</h3>
-    <p>看截图做判断，结果和读文字几乎一致；Box 框选用置信度兜底。</p>
+    <p>Jev 1.14 看图实测：判断类问题和读文字几乎一致，可直接用截图；Box 框选在中文截图上会框偏，必须看置信度兜底。</p>
     <div class="guide-card-meta"><time datetime="2026-10-15">2026-10-15</time></div>
-  </a><a class="card guide-card" data-guide-card data-category="实测" data-search="Jev 处理中文：题目用英文，state 保留中文 中文内容能判断。题目英文写、state 留原文，上线前用 20–30 条真实数据校准。 实测 中文 置信度 标注集" href="/guides/chinese-prompts/">
+  </a><a class="card guide-card" data-guide-card data-category="实测" data-search="Jev 处理中文：题目用英文，state 保留中文 Jev 能判断中文内容。题目用英文写、state 保留中文原文，上线前用 20 到 30 条真实数据校准置信度和准确率。 实测 中文 置信度 标注集" href="/guides/chinese-prompts/">
     <div class="guide-card-top"><span class="chip">实测</span><span class="muted">6 分钟</span></div>
     <h3>Jev 处理中文：题目用英文，state 保留中文</h3>
-    <p>中文内容能判断。题目英文写、state 留原文，上线前用 20–30 条真实数据校准。</p>
+    <p>Jev 能判断中文内容。题目用英文写、state 保留中文原文，上线前用 20 到 30 条真实数据校准置信度和准确率。</p>
     <div class="guide-card-meta"><time datetime="2026-10-15">2026-10-15</time></div>
   </a></div>
     <p class="empty-state" data-search-empty hidden>没有匹配的教程。</p>
@@ -96,9 +102,9 @@
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

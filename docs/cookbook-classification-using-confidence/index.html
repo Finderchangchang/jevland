@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>使用置信度进行分类 · JevLand</title>
-<meta name="description" content="用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。">
+<title>使用置信度进行分类 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="用一道 Jev Choice 把 SEC 年报分进 75 个行业组，再按置信度决定是报该组，还是上收到更宽的行业门类，避免硬切。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-classification-using-confidence/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="使用置信度进行分类">
-<meta property="og:description" content="用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。">
+<meta property="og:title" content="使用置信度进行分类 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="用一道 Jev Choice 把 SEC 年报分进 75 个行业组，再按置信度决定是报该组，还是上收到更宽的行业门类，避免硬切。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-classification-using-confidence/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="使用置信度进行分类">
-<meta name="twitter:description" content="用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="使用置信度进行分类 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="用一道 Jev Choice 把 SEC 年报分进 75 个行业组，再按置信度决定是报该组，还是上收到更宽的行业门类，避免硬切。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"使用置信度进行分类","url":"https://jevland.com/docs/cookbook-classification-using-confidence/","inLanguage":"zh-CN","description":"用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"使用置信度进行分类","name":"使用置信度进行分类","url":"https://jevland.com/docs/cookbook-classification-using-confidence/","inLanguage":"zh-CN","description":"用一道 Jev Choice 把 SEC 年报分进 75 个行业组，再按置信度决定是报该组，还是上收到更宽的行业门类，避免硬切。","isBasedOn":"https://docs.typesafe.ai/cookbooks/classification_using_confidence","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"使用置信度进行分类","item":"https://jevland.com/docs/cookbook-classification-using-confidence/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>使用置信度进行分类</h1>
-        <p class="lead">用一道 Choice（选择题）将 SEC 年报归入 75 个行业组，再根据答案自带的置信度，决定是报出该行业组，还是报出其上一级的更宽泛的行业门类（division）。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/classification_using_confidence" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">用一道 Jev Choice 把 SEC 年报分进 75 个行业组，再按置信度决定是报该组，还是上收到更宽的行业门类，避免硬切。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/classification_using_confidence" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-classification-using-confidence">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>每一家向 SEC 提交年报的公司都会在文件中描述自身业务。我们按照标准行业分类（Standard Industrial Classification）对这些描述进行归类：75 个行业组，每份文件对应一道 Choice 问题。</p>
 <p>大部分申报材料都很容易归类。区域性银行就是区域性银行。但有些则不然：一家公司刚刚出售了两个业务部门中的一个，或者一家初创公司描述的是它计划进入的业务，而非它正在经营的业务。模型无论如何都必须选出一个组，而困难案例的答案与简单案例的答案看起来毫无差别。区分这两类案例通常正是产生成本的环节：第二个模型、额外的调用、人工复核。</p>
 <p>Choice 已经自带这些信息。除了胜出的选项之外，它还会返回 <code>confidence</code>（置信度）：当几乎所有概率都集中到同一个选项上时置信度较高，而当概率分散在多个选项上时置信度较低。仅凭这一个数字，就能把可以信任的答案与不能信任的答案区分开。</p>
@@ -389,6 +396,10 @@ display(
     <a class="pager-link" href="/docs/cookbook-hierarchical-classification/"><span>上一篇</span><strong>层次分类</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-twitch-chat-filter/"><span>下一篇</span><strong>Twitch 聊天过滤器</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-basic-memory/">简单记忆系统</a></li><li><a href="/docs/cookbook-classifying-rag-passages/">为 RAG 段落分类</a></li><li><a href="/docs/cookbook-citation-check/">二次核对引用</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -407,9 +418,9 @@ display(
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

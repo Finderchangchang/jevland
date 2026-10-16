@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>推测式扇出 · JevLand</title>
-<meta name="description" content="一次调用发送多个问题，包括推测式问题，再由代码决定哪些相关。">
+<title>推测式扇出 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="Jev 的推测式扇出：一次调用发出多个问题，包括暂时不一定相关的题，再由代码根据答案决定哪些真正用得上，避免来回补问浪费。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/fan-out/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="推测式扇出">
-<meta property="og:description" content="一次调用发送多个问题，包括推测式问题，再由代码决定哪些相关。">
+<meta property="og:title" content="推测式扇出 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="Jev 的推测式扇出：一次调用发出多个问题，包括暂时不一定相关的题，再由代码根据答案决定哪些真正用得上，避免来回补问浪费。">
 <meta property="og:url" content="https://jevland.com/docs/fan-out/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="推测式扇出">
-<meta name="twitter:description" content="一次调用发送多个问题，包括推测式问题，再由代码决定哪些相关。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="推测式扇出 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="Jev 的推测式扇出：一次调用发出多个问题，包括暂时不一定相关的题，再由代码根据答案决定哪些真正用得上，避免来回补问浪费。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"推测式扇出","url":"https://jevland.com/docs/fan-out/","inLanguage":"zh-CN","description":"一次调用发送多个问题，包括推测式问题，再由代码决定哪些相关。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"推测式扇出","name":"推测式扇出","url":"https://jevland.com/docs/fan-out/","inLanguage":"zh-CN","description":"Jev 的推测式扇出：一次调用发出多个问题，包括暂时不一定相关的题，再由代码根据答案决定哪些真正用得上，避免来回补问浪费。","isBasedOn":"https://docs.typesafe.ai/patterns/fan-out","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"推测式扇出","item":"https://jevland.com/docs/fan-out/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 设计模式</p>
         <h1>推测式扇出</h1>
-        <p class="lead">一次调用发送多个问题，包括推测式问题，再由代码决定哪些相关。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/patterns/fan-out" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">Jev 的推测式扇出：一次调用发出多个问题，包括暂时不一定相关的题，再由代码根据答案决定哪些真正用得上，避免来回补问浪费。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/patterns/fan-out" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="fan-out">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>由于 TypeSafe 支持在一次 API 调用中发送多个问题，我们建议把系统所需的全部问题放进同一次请求，再事后用代码判定哪些相关。所有问题都是并行评估的，因此增加问题对响应时间的影响通常很小。</p>
 <h2 id="example-support-ticket-triage">示例：客服工单分流</h2>
 <p>假设你正在构建一个客服系统，需要对客服工单进行分流。你需要把工单归入一个类别。如果是 Bug 报告，还需要判断 Bug 的严重程度。</p>
@@ -208,6 +215,10 @@ frustration = response.answers[<span class="hljs-string">&quot;frustration&quot;
     <a class="pager-link" href="/docs/patterns/"><span>上一篇</span><strong>设计模式</strong></a>
     <a class="pager-link is-next" href="/docs/confidence-routing/"><span>下一篇</span><strong>置信度分流</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/composite-scoring/">组合打分</a></li><li><a href="/docs/intent-routing/">意图路由</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -226,9 +237,9 @@ frustration = response.answers[<span class="hljs-string">&quot;frustration&quot;
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

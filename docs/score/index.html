@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Score（打分题） · JevLand</title>
-<meta name="description" content="Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。">
+<title>Score（打分题） · Jev 中文文档 · JevLand</title>
+<meta name="description" content="Jev 的 Score 打分题按你给的有序档位评分，返回加权分数、各档概率和置信度，适合风险、紧急程度、质量这类量表判断。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/score/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="Score（打分题）">
-<meta property="og:description" content="Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。">
+<meta property="og:title" content="Score（打分题） · Jev 中文文档 · JevLand">
+<meta property="og:description" content="Jev 的 Score 打分题按你给的有序档位评分，返回加权分数、各档概率和置信度，适合风险、紧急程度、质量这类量表判断。">
 <meta property="og:url" content="https://jevland.com/docs/score/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Score（打分题）">
-<meta name="twitter:description" content="Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="Score（打分题） · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="Jev 的 Score 打分题按你给的有序档位评分，返回加权分数、各档概率和置信度，适合风险、紧急程度、质量这类量表判断。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"Score（打分题）","url":"https://jevland.com/docs/score/","inLanguage":"zh-CN","description":"Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"Score（打分题）","name":"Score（打分题）","url":"https://jevland.com/docs/score/","inLanguage":"zh-CN","description":"Jev 的 Score 打分题按你给的有序档位评分，返回加权分数、各档概率和置信度，适合风险、紧急程度、质量这类量表判断。","isBasedOn":"https://docs.typesafe.ai/primitives/score","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"Score（打分题）","item":"https://jevland.com/docs/score/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 题型</p>
         <h1>Score（打分题）</h1>
-        <p class="lead">Score（打分题）是 System One 的一种题型，用于按有序的描述性档位对内容进行评分。答案包括一个分数（score）、每个档位的概率（probability），以及置信度（confidence）。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/primitives/score" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">Jev 的 Score 打分题按你给的有序档位评分，返回加权分数、各档概率和置信度，适合风险、紧急程度、质量这类量表判断。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/primitives/score" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="score">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>当答案是一个可以用若干步骤描述的谱系上的位置时，可以使用 Score（打分题）。例如，一个 bug 的严重程度、一个客户有多满意，或者一位候选人有多少 Python 经验。如果答案是一组固定选项且选项之间没有顺序，请使用 <a href="../choice/">Choice（选择题）</a>。如果只是「是」或「否」，请使用 <a href="../noul/">Noul（是非题）</a>。<a href="../primitives/#choose-a-question-type">选择题型</a> 一节对三者进行了比较。</p>
 <p>Score 的答案是一个沿着档位排列的位置，写在 <code>score</code> 中，可以落在两个档位之间。模型还会返回每个档位在 <code>probabilities</code> 中的概率，以及答案的 <code>confidence</code>（置信度）值。</p>
 <p>The numbers in front of each step are positions, explained under <a href="#levels">档位（level）</a>。</p>
@@ -525,6 +532,10 @@ TRIAGE_QUESTIONS = {
     <a class="pager-link" href="/docs/choice/"><span>上一篇</span><strong>Choice（选择题）</strong></a>
     <a class="pager-link is-next" href="/docs/noul/"><span>下一篇</span><strong>Noul（是非题）</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/primitives/">题型总览</a></li><li><a href="/docs/box/">Box（框选题）</a></li><li><a href="/docs/advanced-structure/">进阶：结构化写法</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -543,9 +554,9 @@ TRIAGE_QUESTIONS = {
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

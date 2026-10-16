@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>自一致性：Noul · JevLand</title>
-<meta name="description" content="将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。">
+<title>自一致性：Noul · Jev 中文文档 · JevLand</title>
+<meta name="description" content="把 Jev Noul 的不确定概率分去人工复核，同时保留底层 noul 值可见，用来在自动处理和人工之间找可运营的平衡。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-consistency-noul/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="自一致性：Noul">
-<meta property="og:description" content="将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。">
+<meta property="og:title" content="自一致性：Noul · Jev 中文文档 · JevLand">
+<meta property="og:description" content="把 Jev Noul 的不确定概率分去人工复核，同时保留底层 noul 值可见，用来在自动处理和人工之间找可运营的平衡。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-consistency-noul/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="自一致性：Noul">
-<meta name="twitter:description" content="将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="自一致性：Noul · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="把 Jev Noul 的不确定概率分去人工复核，同时保留底层 noul 值可见，用来在自动处理和人工之间找可运营的平衡。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"自一致性：Noul","url":"https://jevland.com/docs/cookbook-consistency-noul/","inLanguage":"zh-CN","description":"将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"自一致性：Noul","name":"自一致性：Noul","url":"https://jevland.com/docs/cookbook-consistency-noul/","inLanguage":"zh-CN","description":"把 Jev Noul 的不确定概率分去人工复核，同时保留底层 noul 值可见，用来在自动处理和人工之间找可运营的平衡。","isBasedOn":"https://docs.typesafe.ai/cookbooks/consistency_noul_cookbook","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"自一致性：Noul","item":"https://jevland.com/docs/cookbook-consistency-noul/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>自一致性：Noul</h1>
-        <p class="lead">将不确定概率分流到人工复核，同时保留底层 noul 值的可见性。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/consistency_noul_cookbook" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">把 Jev Noul 的不确定概率分去人工复核，同时保留底层 noul 值可见，用来在自动处理和人工之间找可运营的平衡。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/consistency_noul_cookbook" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-consistency-noul">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>本实战示例针对一份车险理赔，用包含 14 道题的评分标准重复运行 15 次，检查每个答案在反复运行中是否保持稳定。每一次检查都是一个 <code>Noul</code>（是非题），所以每个答案就是一道 True/False 题的 P(true)。在理赔分流流程（将进来的理赔分到赔付、拒赔或转人工）中，概率决定下一步动作。阈值附近的小幅变化可能改变最终采取的动作。</p>
 <p>评分标准由 14 道 Noul 题组成，每次运行是一次调用同时回答全部 14 题。我们对每个条件重复 <code>NUM_SAMPLES</code> = 15 次（条件指一个模型加一种设置），并展示返回的全部概率。</p>
 <p>条件包括：</p>
@@ -725,6 +732,10 @@ display(
     <a class="pager-link" href="/docs/cookbook-consistency-choice/"><span>上一篇</span><strong>自一致性：Choice</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-parallel-questions/"><span>下一篇</span><strong>并行提问</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a></li><li><a href="/docs/cookbook-semantic-find/">逐行搜索</a></li><li><a href="/docs/cookbook-rerank-typesafe/">重排序</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -743,9 +754,9 @@ display(
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

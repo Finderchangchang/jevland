@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>重排序 · JevLand</title>
-<meta name="description" content="为 40 条 CLERC 法律查询各构建 30 篇文档的 BM25 候选短列表，再为每个「查询-候选」对使用一个 TypeSafe 问题（question），将 top-1 准确率从 5% 提升到 18%，top-10 准确率从 38% 提升到 62%。">
+<title>重排序 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="用 Jev 给 BM25 短列表重排序：法律查询实验里 top-1 和 top-10 准确率都明显提升，展示判断模型做重排的接法。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-rerank-typesafe/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="重排序">
-<meta property="og:description" content="为 40 条 CLERC 法律查询各构建 30 篇文档的 BM25 候选短列表，再为每个「查询-候选」对使用一个 TypeSafe 问题（question），将 top-1 准确率从 5% 提升到 18%，top-10 准确率从 38% 提升到 62%。">
+<meta property="og:title" content="重排序 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="用 Jev 给 BM25 短列表重排序：法律查询实验里 top-1 和 top-10 准确率都明显提升，展示判断模型做重排的接法。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-rerank-typesafe/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="重排序">
-<meta name="twitter:description" content="为 40 条 CLERC 法律查询各构建 30 篇文档的 BM25 候选短列表，再为每个「查询-候选」对使用一个 TypeSafe 问题（question），将 top-1 准确率从 5% 提升到 18%，top-10 准确率从 38% 提升到 62%。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="重排序 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="用 Jev 给 BM25 短列表重排序：法律查询实验里 top-1 和 top-10 准确率都明显提升，展示判断模型做重排的接法。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"重排序","url":"https://jevland.com/docs/cookbook-rerank-typesafe/","inLanguage":"zh-CN","description":"为 40 条 CLERC 法律查询各构建 30 篇文档的 BM25 候选短列表，再为每个「查询-候选」对使用一个 TypeSafe 问题（question），将 top-1 准确率从 5% 提升到 18%，top-10 准确率从 38% 提升到 62%。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"重排序","name":"重排序","url":"https://jevland.com/docs/cookbook-rerank-typesafe/","inLanguage":"zh-CN","description":"用 Jev 给 BM25 短列表重排序：法律查询实验里 top-1 和 top-10 准确率都明显提升，展示判断模型做重排的接法。","isBasedOn":"https://docs.typesafe.ai/cookbooks/rerank_typesafe","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"重排序","item":"https://jevland.com/docs/cookbook-rerank-typesafe/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>重排序</h1>
-        <p class="lead">为 40 条 CLERC 法律查询各构建 30 篇文档的 BM25 候选短列表，再为每个「查询-候选」对使用一个 TypeSafe 问题（question），将 top-1 准确率从 5% 提升到 18%，top-10 准确率从 38% 提升到 62%。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/rerank_typesafe" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">用 Jev 给 BM25 短列表重排序：法律查询实验里 top-1 和 top-10 准确率都明显提升，展示判断模型做重排的接法。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/rerank_typesafe" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-rerank-typesafe">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>你有成千上万份文档，需要从中找出能回答某个特定问题的那一份。那么该怎么找？</p>
 <p>第一步，使用一种足够快的方法（例如关键词匹配）把成千上万的候选缩减到一个看起来有可能的候选短列表。我们把这一步称为 fast search（快速检索）。</p>
 <p>Fast search 在这一步很有效，但它无法告诉你短列表中哪一个候选才是正确答案。这正是 re-ranking（重排序）的用武之地：它针对查询逐一为短列表上的每个候选打分，并把得分最高的那一个排到最前面。</p>
@@ -525,6 +532,10 @@ cost = input_tokens / <span class="hljs-number">1_000_000</span> * PRICE[<span c
     <a class="pager-link" href="/docs/cookbook-autoformat/"><span>上一篇</span><strong>结构恢复</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-semantic-find/"><span>下一篇</span><strong>逐行搜索</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a></li><li><a href="/docs/cookbook-date-extraction/">日期提取</a></li><li><a href="/docs/cookbook-sde-cascade/">SDE（结构化数据抽取）级联</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -543,9 +554,9 @@ cost = input_tokens / <span class="hljs-number">1_000_000</span> * PRICE[<span c
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SniffSlop · Jev 案例 · JevLand</title>
+<meta name="description" content="浏览器扩展：划一段网页文字，用 Jev 判断像不像 AI 写的，也可以改成自己的问题。。对选中文本提问，默认判断是否像 AI 生成">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/showcase/sniffslop/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="SniffSlop · Jev 案例 · JevLand">
+<meta property="og:description" content="浏览器扩展：划一段网页文字，用 Jev 判断像不像 AI 写的，也可以改成自己的问题。。对选中文本提问，默认判断是否像 AI 生成">
+<meta property="og:url" content="https://jevland.com/showcase/sniffslop/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta property="article:published_time" content="2026-09-23">
+<meta property="article:modified_time" content="2026-09-23">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="SniffSlop · Jev 案例 · JevLand">
+<meta name="twitter:description" content="浏览器扩展：划一段网页文字，用 Jev 判断像不像 AI 写的，也可以改成自己的问题。。对选中文本提问，默认判断是否像 AI 生成">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"SoftwareSourceCode","name":"SniffSlop","headline":"SniffSlop","url":"https://jevland.com/showcase/sniffslop/","inLanguage":"zh-CN","description":"浏览器扩展：划一段网页文字，用 Jev 判断像不像 AI 写的，也可以改成自己的问题。。对选中文本提问，默认判断是否像 AI 生成","datePublished":"2026-09-23","author":{"@type":"Person","name":"kmcheung12","url":"https://github.com/kmcheung12"},"isPartOf":{"@id":"https://jevland.com/#website"},"codeRepository":"https://github.com/kmcheung12/sniffslop"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"案例","item":"https://jevland.com/showcase/"},{"@type":"ListItem","position":3,"name":"SniffSlop","item":"https://jevland.com/showcase/sniffslop/"}]}]}</script>
+
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/showcase/" aria-current="page">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block case-page">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/">首页</a> / <a href="/showcase/">案例</a></p>
+        <h1>SniffSlop</h1>
+        <div class="case-meta">
+          <span>作者 <a href="https://github.com/kmcheung12" target="_blank" rel="noopener noreferrer">kmcheung12</a></span>
+          <time datetime="2026-09-23">2026-09-23</time>
+          <span class="chip">开源项目</span>
+          
+          <span class="chip">开源</span><span class="chip">浏览器扩展</span><span class="chip">检测</span>
+        </div>
+        <aside class="jev-callout"><p class="kicker">Jev 在里面判断什么</p><p>对选中文本提问，默认判断是否像 AI 生成</p></aside>
+        <div class="prose"><h2 id="它是什么">它是什么</h2>
+<p>SniffSlop 是 Chrome / Firefox 扩展：悬停或划选段落，看这段文字有多像 AI 写的，也可以改成任意问题。纯前端加载，无构建步骤。</p>
+<p>仓库 2026-09-23 创建，当天登上 Show HN。密钥只存在本机 <code>storage.local</code>，内容脚本看不到密钥；权限里唯一可访问的主机是 <code>api.typesafe.ai</code>。</p>
+<h2 id="Jev-在里面做什么判断">Jev 在里面做什么判断</h2>
+<p>后台脚本把选中文本发到 TypeSafe。默认问题是这段像不像 AI 生成；README 说可以换成自己的问题。原作者没有在首页写死题型字段名。</p>
+<h2 id="怎么试">怎么试</h2>
+<p>克隆 <a href="https://github.com/kmcheung12/sniffslop" target="_blank" rel="noopener noreferrer">kmcheung12/sniffslop</a>，在浏览器里加载未打包扩展，把 TypeSafe 密钥贴进扩展弹窗。Show HN：2026-09-23。</p>
+</div>
+        <div class="case-actions">
+          <a class="btn" href="https://github.com/kmcheung12/sniffslop" target="_blank" rel="noopener noreferrer" data-umami-event="case-source" data-umami-event-slug="sniffslop">查看原帖 / 来源 ↗</a>
+          
+          <a class="btn btn-ghost" href="https://github.com/kmcheung12/sniffslop" target="_blank" rel="noopener noreferrer" data-umami-event="github-star" data-umami-event-slug="sniffslop" data-umami-event-repo="kmcheung12/sniffslop">GitHub ↗</a><p class="stars" hidden>★ <span data-stars data-repo="kmcheung12/sniffslop"></span></p>
+        </div>
+        <nav class="pager" aria-label="相邻案例">
+    <a class="pager-link" href="/showcase/gif-decider/"><span>上一个</span><strong>GIF Decider</strong></a>
+    <a class="pager-link is-next" href="/showcase/jev-vs-agentic-loop/"><span>下一个</span><strong>用 Jev 换掉智能体分类环</strong></a>
+  </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/quickstart/">快速开始</a></li><li><a href="/docs/primitives/">题型总览</a></li></ul>
+  </section>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

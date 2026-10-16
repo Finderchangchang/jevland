@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>实战示例 · JevLand</title>
-<meta name="description" content="从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。">
+<title>实战示例 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="Jev 实战示例合集：从几个问题到完整流水线，覆盖分类、抽取、护栏、重排序和记忆。按真实问题演示 TypeSafe 怎么接到代码里。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbooks/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="实战示例">
-<meta property="og:description" content="从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。">
+<meta property="og:title" content="实战示例 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="Jev 实战示例合集：从几个问题到完整流水线，覆盖分类、抽取、护栏、重排序和记忆。按真实问题演示 TypeSafe 怎么接到代码里。">
 <meta property="og:url" content="https://jevland.com/docs/cookbooks/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="实战示例">
-<meta name="twitter:description" content="从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="实战示例 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="Jev 实战示例合集：从几个问题到完整流水线，覆盖分类、抽取、护栏、重排序和记忆。按真实问题演示 TypeSafe 怎么接到代码里。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"实战示例","url":"https://jevland.com/docs/cookbooks/","inLanguage":"zh-CN","description":"从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"实战示例","name":"实战示例","url":"https://jevland.com/docs/cookbooks/","inLanguage":"zh-CN","description":"Jev 实战示例合集：从几个问题到完整流水线，覆盖分类、抽取、护栏、重排序和记忆。按真实问题演示 TypeSafe 怎么接到代码里。","isBasedOn":"https://docs.typesafe.ai/cookbooks","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"实战示例","item":"https://jevland.com/docs/cookbooks/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>实战示例</h1>
-        <p class="lead">从几个问题到完整流水线，端到端地展示了 TypeSafe 在真实问题上的应用。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">Jev 实战示例合集：从几个问题到完整流水线，覆盖分类、抽取、护栏、重排序和记忆。按真实问题演示 TypeSafe 怎么接到代码里。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbooks">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p>每篇实战示例都包含一份真实数据集、针对它的 TypeSafe 决策问题，以及把这些决策转化为可运行系统的代码。当你想要了解 <a href="../primitives/">primitives</a> 和 <a href="../patterns/">patterns</a> 如何在一个具体问题上协同工作时，就阅读其中一篇；或者直接复制一篇，作为你自己的起点。</p>
 <p>本节假设你已经了解 <a href="../primitives/">TypeSafe primitives</a>，并理解 <a href="../confidence/">confidence 如何运作</a>。如果还没有，请先阅读这两部分。</p>
 <p>每篇实战示例都按其所解决的问题归类，且只列一次；其中很多还用到了其他章节的技巧。</p>
@@ -267,6 +274,10 @@
     <a class="pager-link" href="/docs/sdk-python/"><span>上一篇</span><strong>Python SDK</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-function-calling/"><span>下一篇</span><strong>函数调用</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-skill-suggestion/">技能建议</a></li><li><a href="/docs/cookbook-llm-guardrails/">大语言模型的安全护栏</a></li><li><a href="/docs/cookbook-citation-check/">二次核对引用</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -285,9 +296,9 @@
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

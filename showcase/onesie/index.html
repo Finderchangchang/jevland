@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>onesie · Jev 案例 · JevLand</title>
+<meta name="description" content="Unix 管道 CLI：把文本和问题交给 Jev，得到可脚本化的是非、选择或阈值门。。对 stdin 或 --state 提问，用概率和退出码做门禁">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/showcase/onesie/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="onesie · Jev 案例 · JevLand">
+<meta property="og:description" content="Unix 管道 CLI：把文本和问题交给 Jev，得到可脚本化的是非、选择或阈值门。。对 stdin 或 --state 提问，用概率和退出码做门禁">
+<meta property="og:url" content="https://jevland.com/showcase/onesie/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta property="article:published_time" content="2026-09-28">
+<meta property="article:modified_time" content="2026-09-28">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="onesie · Jev 案例 · JevLand">
+<meta name="twitter:description" content="Unix 管道 CLI：把文本和问题交给 Jev，得到可脚本化的是非、选择或阈值门。。对 stdin 或 --state 提问，用概率和退出码做门禁">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"SoftwareSourceCode","name":"onesie","headline":"onesie","url":"https://jevland.com/showcase/onesie/","inLanguage":"zh-CN","description":"Unix 管道 CLI：把文本和问题交给 Jev，得到可脚本化的是非、选择或阈值门。。对 stdin 或 --state 提问，用概率和退出码做门禁","datePublished":"2026-09-28","author":{"@type":"Person","name":"frodi-karlsson","url":"https://github.com/frodi-karlsson"},"isPartOf":{"@id":"https://jevland.com/#website"},"codeRepository":"https://github.com/frodi-karlsson/onesie"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"案例","item":"https://jevland.com/showcase/"},{"@type":"ListItem","position":3,"name":"onesie","item":"https://jevland.com/showcase/onesie/"}]}]}</script>
+
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/showcase/" aria-current="page">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <a class="header-about" href="/about/">关于</a>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block case-page">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/">首页</a> / <a href="/showcase/">案例</a></p>
+        <h1>onesie</h1>
+        <div class="case-meta">
+          <span>作者 <a href="https://github.com/frodi-karlsson" target="_blank" rel="noopener noreferrer">frodi-karlsson</a></span>
+          <time datetime="2026-09-28">2026-09-28</time>
+          <span class="chip">开源项目</span>
+          
+          <span class="chip">开源</span><span class="chip">CLI</span><span class="chip">管道</span>
+        </div>
+        <aside class="jev-callout"><p class="kicker">Jev 在里面判断什么</p><p>对 stdin 或 --state 提问，用概率和退出码做门禁</p></aside>
+        <div class="prose"><h2 id="它是什么">它是什么</h2>
+<p>onesie 是一个可进管道的命令行：喂一段文本、问一个问题，拿到能写进脚本的数字或退出码。也可以当 Claude Code 插件。</p>
+<p>Show HN 日期 2026-09-28。除 TypeSafe Jev 外，还可以走 OpenRouter、Berget 的 System One 或 Levanto Sage。带 <code>onesie calibrate</code>，用已标注样本看阈值。</p>
+<h2 id="Jev-在里面做什么判断">Jev 在里面做什么判断</h2>
+<p>可以把「这段是否紧急」做成是非概率，或用内置 <code>shell-safety</code> 判断一条命令该跑、该拦还是该问人。退出码区分这三种结果。默认后端是 Jev。</p>
+<h2 id="怎么试">怎么试</h2>
+<p><code>brew install frodi-karlsson/tap/onesie</code> 或 <code>go install github.com/frodi-karlsson/onesie/cmd/onesie@latest</code>，再 <code>onesie auth set</code>。仓库：<a href="https://github.com/frodi-karlsson/onesie" target="_blank" rel="noopener noreferrer">frodi-karlsson/onesie</a>。</p>
+</div>
+        <div class="case-actions">
+          <a class="btn" href="https://github.com/frodi-karlsson/onesie" target="_blank" rel="noopener noreferrer" data-umami-event="case-source" data-umami-event-slug="onesie">查看原帖 / 来源 ↗</a>
+          
+          <a class="btn btn-ghost" href="https://github.com/frodi-karlsson/onesie" target="_blank" rel="noopener noreferrer" data-umami-event="github-star" data-umami-event-slug="onesie" data-umami-event-repo="frodi-karlsson/onesie">GitHub ↗</a><p class="stars" hidden>★ <span data-stars data-repo="frodi-karlsson/onesie"></span></p>
+        </div>
+        <nav class="pager" aria-label="相邻案例">
+    <a class="pager-link" href="/showcase/unsiloed-document-review/"><span>上一个</span><strong>Unsiloed 文档复核</strong></a>
+    <a class="pager-link is-next" href="/showcase/gif-decider/"><span>下一个</span><strong>GIF Decider</strong></a>
+  </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/quickstart/">快速开始</a></li><li><a href="/docs/primitives/">题型总览</a></li></ul>
+  </section>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
+      <a href="/guides/">教程</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -212,11 +212,40 @@ for (const filter of guideFilters) {
   });
 }
 
-document.querySelectorAll('[data-stars][data-repo]').forEach(async el => {
-  try {
-    const res = await fetch(`https://api.github.com/repos/${el.dataset.repo}`);
-    if (!res.ok) return;
-    const data = await res.json();
-    if (data.stargazers_count != null) el.textContent = data.stargazers_count;
-  } catch { /* keep build-time value */ }
-});
+const starNodes = [...document.querySelectorAll('[data-stars][data-repo]')];
+const starCache = new Map();
+for (const el of starNodes) {
+  const repo = el.dataset.repo;
+  if (!repo) continue;
+  if (!starCache.has(repo)) {
+    starCache.set(repo, fetch(`https://api.github.com/repos/${repo}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => data && data.stargazers_count != null ? data.stargazers_count : null)
+      .catch(() => null));
+  }
+  starCache.get(repo).then(count => {
+    if (count == null) return;
+    el.textContent = count;
+    const box = el.closest('.stars');
+    if (box) box.hidden = false;
+  });
+}
+
+const kindFilters = [...document.querySelectorAll('[data-kind-filter]')];
+const caseItems = [...document.querySelectorAll('[data-case-item]')];
+function filterCases(kind) {
+  for (const item of caseItems) {
+    item.hidden = kind !== '全部' && item.dataset.kind !== kind;
+  }
+  document.querySelectorAll('[data-month-group]').forEach(group => {
+    const visible = [...group.querySelectorAll('[data-case-item]')].some(item => !item.hidden);
+    group.hidden = !visible;
+  });
+}
+for (const filter of kindFilters) {
+  filter.addEventListener('click', () => {
+    const kind = filter.dataset.kindFilter;
+    for (const item of kindFilters) item.setAttribute('aria-pressed', String(item === filter));
+    filterCases(kind);
+  });
+}

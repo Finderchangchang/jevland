@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>自动研究：特征发现 · JevLand</title>
-<meta name="description" content="运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。">
+<title>自动研究：特征发现 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="跑一个 autoresearch 循环，让 Jev 提出问题，把自由文本转成数值特征，并用模型误差改进有监督的 CatBoost 回归器。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-autoresearch-feature-discovery/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="自动研究：特征发现">
-<meta property="og:description" content="运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。">
+<meta property="og:title" content="自动研究：特征发现 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="跑一个 autoresearch 循环，让 Jev 提出问题，把自由文本转成数值特征，并用模型误差改进有监督的 CatBoost 回归器。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-autoresearch-feature-discovery/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="自动研究：特征发现">
-<meta name="twitter:description" content="运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="自动研究：特征发现 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="跑一个 autoresearch 循环，让 Jev 提出问题，把自由文本转成数值特征，并用模型误差改进有监督的 CatBoost 回归器。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"自动研究：特征发现","url":"https://jevland.com/docs/cookbook-autoresearch-feature-discovery/","inLanguage":"zh-CN","description":"运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"自动研究：特征发现","name":"自动研究：特征发现","url":"https://jevland.com/docs/cookbook-autoresearch-feature-discovery/","inLanguage":"zh-CN","description":"跑一个 autoresearch 循环，让 Jev 提出问题，把自由文本转成数值特征，并用模型误差改进有监督的 CatBoost 回归器。","isBasedOn":"https://docs.typesafe.ai/cookbooks/autoresearch_feature_discovery","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"自动研究：特征发现","item":"https://jevland.com/docs/cookbook-autoresearch-feature-discovery/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>自动研究：特征发现</h1>
-        <p class="lead">运行一个 autoresearch 循环，提出 TypeSafe 问题，把自由文本转换成数值特征，并利用模型误差来改进一个有监督的 CatBoost 回归器。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/autoresearch_feature_discovery" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">跑一个 autoresearch 循环，让 Jev 提出问题，把自由文本转成数值特征，并用模型误差改进有监督的 CatBoost 回归器。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/autoresearch_feature_discovery" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-autoresearch-feature-discovery">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p><em>TypeSafe 问题把自由文本转换成有监督 CatBoost 模型的数值特征；用 autoresearch 循环去发现它们。</em></p>
 <p>CatBoost 需要一张数字表，而一份品鉴笔记并不算。这份实战示例把表搭成围绕笔记的一系列问题，且没有一道是手写的。一个 LLM 负责提出这些问题，TypeSafe 对每一行作答，CatBoost 用这些回答来训练。接下来就是 autoresearch 部分：CatBoost 报告它用了哪些问题、哪些行仍然答错，下一次的提议调用读取这份报告，循环再次启动。</p>
 <p>到最后你会得到一个可以指向你自己带标签文本的循环、一条每轮的留置误差曲线，以及一张最终模型最常用问题的表格。</p>
@@ -1405,6 +1412,10 @@ display(
     <a class="pager-link" href="/docs/cookbook-parallel-questions/"><span>上一篇</span><strong>并行提问</strong></a>
     <span></span>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-consistency-noul/">自一致性：Noul</a></li><li><a href="/docs/cookbook-consistency-choice/">自一致性：Choice</a></li><li><a href="/docs/cookbook-entity-alignment/">知识图谱实体对齐</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -1423,9 +1434,9 @@ display(
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>

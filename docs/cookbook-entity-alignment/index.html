@@ -3,27 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>知识图谱实体对齐 · JevLand</title>
-<meta name="description" content="用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。">
+<title>知识图谱实体对齐 · Jev 中文文档 · JevLand</title>
+<meta name="description" content="用一个 Jev Score 加三道 Noul，从两份啤酒目录的候选配对里判断是否同一产品，并标出名称、酒精度等哪些字段存在分歧。">
+<meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
+
 
 <link rel="canonical" href="https://jevland.com/docs/cookbook-entity-alignment/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="知识图谱实体对齐">
-<meta property="og:description" content="用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。">
+<meta property="og:title" content="知识图谱实体对齐 · Jev 中文文档 · JevLand">
+<meta property="og:description" content="用一个 Jev Score 加三道 Noul，从两份啤酒目录的候选配对里判断是否同一产品，并标出名称、酒精度等哪些字段存在分歧。">
 <meta property="og:url" content="https://jevland.com/docs/cookbook-entity-alignment/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="知识图谱实体对齐">
-<meta name="twitter:description" content="用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="知识图谱实体对齐 · Jev 中文文档 · JevLand">
+<meta name="twitter:description" content="用一个 Jev Score 加三道 Noul，从两份啤酒目录的候选配对里判断是否同一产品，并标出名称、酒精度等哪些字段存在分歧。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。"},{"@type":"Article","name":"知识图谱实体对齐","url":"https://jevland.com/docs/cookbook-entity-alignment/","inLanguage":"zh-CN","description":"用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。","isPartOf":{"@id":"https://jevland.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"知识图谱实体对齐","name":"知识图谱实体对齐","url":"https://jevland.com/docs/cookbook-entity-alignment/","inLanguage":"zh-CN","description":"用一个 Jev Score 加三道 Noul，从两份啤酒目录的候选配对里判断是否同一产品，并标出名称、酒精度等哪些字段存在分歧。","isBasedOn":"https://docs.typesafe.ai/cookbooks/entity_alignment","dateModified":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"文档","item":"https://jevland.com/docs/"},{"@type":"ListItem","position":3,"name":"知识图谱实体对齐","item":"https://jevland.com/docs/cookbook-entity-alignment/"}]}]}</script>
 
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
@@ -36,7 +43,7 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/showcase/">案例</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/" aria-current="page">文档</a><a href="/showcase/">案例</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
@@ -99,8 +106,8 @@
   </details>
         <p class="breadcrumb"><a href="/docs/">文档</a> / 实战示例</p>
         <h1>知识图谱实体对齐</h1>
-        <p class="lead">用一个 Score 题型加上三个配套 Noul 题型，从两份啤酒目录的 450 对候选配对中判断哪些描述的是同一件产品，同时指出哪些字段存在分歧。</p>
-        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/entity_alignment" target="_blank" rel="noopener noreferrer">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
+        <p class="lead">用一个 Jev Score 加三道 Noul，从两份啤酒目录的候选配对里判断是否同一产品，并标出名称、酒精度等哪些字段存在分歧。</p>
+        <p class="translate-note">非官方中文翻译 · 内容以 <a href="https://docs.typesafe.ai/cookbooks/entity_alignment" target="_blank" rel="noopener noreferrer" data-umami-event="docs-original" data-umami-event-slug="cookbook-entity-alignment">英文原文 ↗</a> 为准 · 同步于 2026-10-15</p>
         <div class="prose"><p><em>知识图谱中的一个核心问题是判断一个待接入的实体（entity）是否与现有实体重复，尤其是在只能拿到来自不同来源的自然语言描述时。给定一批疑似重复的实体对后，单次 TypeSafe <code>Score</code> 调用就能判定每对是真正的重复，还是值得交由复核员（curator）仔细审查。</em></p>
 <p>假设两份数据源各自描述了一组相互重叠的事物，你需要知道一侧的哪条记录与另一侧的哪条记录是同一个事物。在知识图谱中，这些记录被称为<em>实体</em>，每条记录各自保存着与之相关的事实。一轮粗略但廉价的初筛已经比对了两个来源，并挑出了 450 对值得进一步查看的配对。剩下要做的，就是对每一对做出判断。</p>
 <p>错误地合并两个实体是代价更高的错误，因为原本属于任一实体的每一条事实现在都会变成合并后实体的描述，与之关联的任何内容也会一并带过来。之后再想拆开，就得重新梳理每条事实原本来自哪一侧。漏掉一对匹配只会留下一个重复项，因此判断需要一个第三选项——既不适合放心合并、也不适合放心丢弃的那类配对。</p>
@@ -365,6 +372,10 @@ display(
     <a class="pager-link" href="/docs/cookbook-semantic-find/"><span>上一篇</span><strong>逐行搜索</strong></a>
     <a class="pager-link is-next" href="/docs/cookbook-consistency-choice/"><span>下一篇</span><strong>自一致性：Choice</strong></a>
   </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/cookbook-rerank-typesafe/">重排序</a></li><li><a href="/docs/cookbook-autoformat/">结构恢复</a></li><li><a href="/docs/cookbook-pre-parsed-value-extraction/">预先解析的值抽取</a></li></ul>
+  </section>
         <aside class="author-card">
     <img class="author-avatar" src="/assets/favicon.svg" width="40" height="40" alt="">
     <div>
@@ -383,9 +394,9 @@ display(
     </div>
     <nav class="footer-links" aria-label="页脚导航">
       <a href="/docs/">文档</a>
+      <a href="/showcase/">案例</a>
       <a href="/guides/">教程</a>
       <a href="/news/">更新</a>
-      <a href="/showcase/">案例</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
     </nav>
