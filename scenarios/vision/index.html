@@ -1,13 +1,14 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="utf-8">
+<meta name="theme-color" content="#FEFEFE">
+<script>(function(){try{var t=localStorage.getItem('jevland-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#07080B':'#FEFEFE');}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>看图判断 · Jev 场景 · JevLand</title>
 <meta name="description" content="看图判断：截图、照片里的信息要先转成文字才能判断，多一道工序就多一份成本和延迟 本页附一次真实调用，jev-1.14.0，1700 毫秒，3540 个输入 token。">
 <meta name="author" content="杰哥">
-<meta name="theme-color" content="#07080B">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="light dark">
 
 
 <link rel="canonical" href="https://jevland.com/scenarios/vision/">
@@ -48,6 +49,10 @@
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
         <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <button class="theme-toggle" type="button" data-theme-toggle data-umami-event="theme-toggle" data-umami-event-to="dark" aria-label="切换深色模式">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4.4A8.2 8.2 0 1 0 20.2 14 6.7 6.7 0 0 1 16 4.4z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 3v1.8M12 19.2V21M4.9 4.9l1.3 1.3M17.8 17.8l1.3 1.3M3 12h1.8M19.2 12H21M4.9 19.1l1.3-1.3M17.8 6.2l1.3-1.3"/></svg>
       </button>
       <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
     </div>
@@ -193,7 +198,7 @@ req = urllib.request.Request(
   </figure>
         </section>
         <section class="related-cases"><h2>相关案例</h2><div class="masonry masonry-sm"><article class="card masonry-card" data-case-item data-kind="实验文章" data-scenes="vision">
-    <a class="case-cover" href="https://x.com/verysmallwoods/status/2111254762062540967" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jev-box-eval">
+    <a class="case-cover" href="https://x.com/verysmallwoods/status/2111254762062540967" target="_blank" rel="noopener noreferrer" style="--scene:#C3B5F5" data-umami-event="case-video" data-umami-event-slug="jev-box-eval">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>Box 框选实测</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>
@@ -211,7 +216,7 @@ req = urllib.request.Request(
     </a>
     <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a></div></div>
   </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision rag-filter">
-    <a class="case-cover" href="https://x.com/techemmyleke/status/2111256290013896949" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="scene-finder">
+    <a class="case-cover" href="https://x.com/techemmyleke/status/2111256290013896949" target="_blank" rel="noopener noreferrer" style="--scene:#C3B5F5" data-umami-event="case-video" data-umami-event-slug="scene-finder">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>Scene Finder</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>
@@ -229,7 +234,7 @@ req = urllib.request.Request(
     </a>
     <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a></div></div>
   </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision extraction-check">
-    <a class="case-cover" href="https://x.com/dfinke/status/2111184997457788960" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jev-table-extract">
+    <a class="case-cover" href="https://x.com/dfinke/status/2111184997457788960" target="_blank" rel="noopener noreferrer" style="--scene:#C3B5F5" data-umami-event="case-video" data-umami-event-slug="jev-table-extract">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>截图出表</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>
@@ -247,7 +252,7 @@ req = urllib.request.Request(
     </a>
     <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/extraction-check/">数据抽取校验</a></div></div>
   </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision">
-    <a class="case-cover" href="https://x.com/nikhil0360/status/2111179477342622102" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="box-zoo">
+    <a class="case-cover" href="https://x.com/nikhil0360/status/2111179477342622102" target="_blank" rel="noopener noreferrer" style="--scene:#C3B5F5" data-umami-event="case-video" data-umami-event-slug="box-zoo">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>卡通动物园 Box 演示</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>
@@ -265,7 +270,7 @@ req = urllib.request.Request(
     </a>
     <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a></div></div>
   </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision game-npc">
-    <a class="case-cover" href="https://x.com/dotpem/status/2111171388405137714" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jevanimata">
+    <a class="case-cover" href="https://x.com/dotpem/status/2111171388405137714" target="_blank" rel="noopener noreferrer" style="--scene:#C3B5F5" data-umami-event="case-video" data-umami-event-slug="jevanimata">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>jevanimata</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>
@@ -283,7 +288,7 @@ req = urllib.request.Request(
     </a>
     <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
   </article><article class="card masonry-card" data-case-item data-kind="官方示例" data-scenes="rag-filter vision">
-    <a class="case-cover" href="https://x.com/typesafeai/status/2111204284058726801" target="_blank" rel="noopener noreferrer" style="--scene:#FFB547" data-umami-event="case-video" data-umami-event-slug="typesafe-cmd-f">
+    <a class="case-cover" href="https://x.com/typesafeai/status/2111204284058726801" target="_blank" rel="noopener noreferrer" style="--scene:#F7A8C4" data-umami-event="case-video" data-umami-event-slug="typesafe-cmd-f">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>JevDay：满世界 cmd-f</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>

@@ -1,13 +1,14 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="utf-8">
+<meta name="theme-color" content="#FEFEFE">
+<script>(function(){try{var t=localStorage.getItem('jevland-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#07080B':'#FEFEFE');}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>游戏与机器人决策 · Jev 场景 · JevLand</title>
 <meta name="description" content="游戏与机器人决策：NPC 和机器人每一步都要做决定，用大模型太慢，写死规则又太僵 本页附一次真实调用，jev-1.14.0，1047 毫秒，433 个输入 token。">
 <meta name="author" content="杰哥">
-<meta name="theme-color" content="#07080B">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="light dark">
 
 
 <link rel="canonical" href="https://jevland.com/scenarios/game-npc/">
@@ -48,6 +49,10 @@
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
         <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <button class="theme-toggle" type="button" data-theme-toggle data-umami-event="theme-toggle" data-umami-event-to="dark" aria-label="切换深色模式">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4.4A8.2 8.2 0 1 0 20.2 14 6.7 6.7 0 0 1 16 4.4z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 3v1.8M12 19.2V21M4.9 4.9l1.3 1.3M17.8 17.8l1.3 1.3M3 12h1.8M19.2 12H21M4.9 19.1l1.3-1.3M17.8 6.2l1.3-1.3"/></svg>
       </button>
       <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
     </div>
@@ -172,7 +177,7 @@ req = urllib.request.Request(
           
         </section>
         <section class="related-cases"><h2>相关案例</h2><div class="masonry masonry-sm"><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="game-npc">
-    <a class="case-cover" href="https://x.com/lillyguisnet/status/2111247553509437579" target="_blank" rel="noopener noreferrer" style="--scene:#F472B6" data-umami-event="case-video" data-umami-event-slug="jev-office-nav">
+    <a class="case-cover" href="https://x.com/lillyguisnet/status/2111247553509437579" target="_blank" rel="noopener noreferrer" style="--scene:#F7A8C4" data-umami-event="case-video" data-umami-event-slug="jev-office-nav">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>Jev 开到 TypeSafe 办公室</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>
@@ -190,7 +195,7 @@ req = urllib.request.Request(
     </a>
     <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
   </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision game-npc">
-    <a class="case-cover" href="https://x.com/dotpem/status/2111171388405137714" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jevanimata">
+    <a class="case-cover" href="https://x.com/dotpem/status/2111171388405137714" target="_blank" rel="noopener noreferrer" style="--scene:#C3B5F5" data-umami-event="case-video" data-umami-event-slug="jevanimata">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>jevanimata</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>
@@ -208,7 +213,7 @@ req = urllib.request.Request(
     </a>
     <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
   </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="game-npc">
-    <a class="case-cover" href="https://x.com/arithmoquine/status/2110879067323183239" target="_blank" rel="noopener noreferrer" style="--scene:#F472B6" data-umami-event="case-video" data-umami-event-slug="cannonball-run">
+    <a class="case-cover" href="https://x.com/arithmoquine/status/2110879067323183239" target="_blank" rel="noopener noreferrer" style="--scene:#F7A8C4" data-umami-event="case-video" data-umami-event-slug="cannonball-run">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>Jev 街牌闯美</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>
@@ -226,7 +231,7 @@ req = urllib.request.Request(
     </a>
     <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
   </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="vision game-npc">
-    <a class="case-cover" href="https://x.com/twid/status/2110871526547587148" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jev-dronecam">
+    <a class="case-cover" href="https://x.com/twid/status/2110871526547587148" target="_blank" rel="noopener noreferrer" style="--scene:#C3B5F5" data-umami-event="case-video" data-umami-event-slug="jev-dronecam">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>jev drone cam</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>

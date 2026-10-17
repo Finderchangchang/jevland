@@ -1,13 +1,14 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="utf-8">
+<meta name="theme-color" content="#FEFEFE">
+<script>(function(){try{var t=localStorage.getItem('jevland-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#07080B':'#FEFEFE');}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>智能体护栏 · Jev 场景 · JevLand</title>
 <meta name="description" content="智能体护栏：智能体自己调工具，一条越权命令就可能删掉数据，每一步都让大模型复查又太慢 本页附一次真实调用，jev-1.14.0，1086 毫秒，467 个输入 token。">
 <meta name="author" content="杰哥">
-<meta name="theme-color" content="#07080B">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="light dark">
 
 
 <link rel="canonical" href="https://jevland.com/scenarios/agent-guardrail/">
@@ -48,6 +49,10 @@
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
         <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <button class="theme-toggle" type="button" data-theme-toggle data-umami-event="theme-toggle" data-umami-event-to="dark" aria-label="切换深色模式">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4.4A8.2 8.2 0 1 0 20.2 14 6.7 6.7 0 0 1 16 4.4z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 3v1.8M12 19.2V21M4.9 4.9l1.3 1.3M17.8 17.8l1.3 1.3M3 12h1.8M19.2 12H21M4.9 19.1l1.3-1.3M17.8 6.2l1.3-1.3"/></svg>
       </button>
       <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
     </div>
@@ -197,7 +202,7 @@ req = urllib.request.Request(
           
         </section>
         <section class="related-cases"><h2>相关案例</h2><div class="masonry masonry-sm"><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="agent-guardrail">
-    <a class="case-cover" href="https://x.com/alara_martin_/status/2110875781819928838" target="_blank" rel="noopener noreferrer" style="--scene:#C084FC" data-umami-event="case-video" data-umami-event-slug="tab">
+    <a class="case-cover" href="https://x.com/alara_martin_/status/2110875781819928838" target="_blank" rel="noopener noreferrer" style="--scene:#C3B5F5" data-umami-event="case-video" data-umami-event-slug="tab">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>Tab</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>
@@ -215,7 +220,7 @@ req = urllib.request.Request(
     </a>
     <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/agent-guardrail/">智能体护栏</a></div></div>
   </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="agent-guardrail">
-    <a class="case-cover" href="https://x.com/bboym0dE/status/2110906484783809023" target="_blank" rel="noopener noreferrer" style="--scene:#C084FC" data-umami-event="case-video" data-umami-event-slug="noa">
+    <a class="case-cover" href="https://x.com/bboym0dE/status/2110906484783809023" target="_blank" rel="noopener noreferrer" style="--scene:#C3B5F5" data-umami-event="case-video" data-umami-event-slug="noa">
     <span class="case-cover-play" aria-hidden="true">▶</span>
     <strong>Noa</strong>
     <span class="case-cover-label">▶ 视频在 X 上</span>

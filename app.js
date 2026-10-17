@@ -1,3 +1,26 @@
+const THEME_KEY = 'jevland-theme';
+function currentTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+}
+function applyTheme(theme) {
+  const next = theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', next === 'dark' ? '#07080B' : '#FEFEFE');
+  const btn = document.querySelector('[data-theme-toggle]');
+  if (btn) {
+    const toDark = next === 'light';
+    btn.setAttribute('aria-label', toDark ? '切换深色模式' : '切换浅色模式');
+    btn.setAttribute('data-umami-event-to', toDark ? 'dark' : 'light');
+  }
+}
+applyTheme(currentTheme());
+document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+  const next = currentTheme() === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem(THEME_KEY, next); } catch { /* ignore */ }
+  applyTheme(next);
+});
+
 const menuButton = document.querySelector('[data-menu-button]');
 const navigation = document.querySelector('[data-navigation]');
 menuButton?.addEventListener('click', () => {
