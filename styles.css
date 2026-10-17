@@ -970,3 +970,5 @@ blockquote {
 .compare-note { margin: 0; padding: 8px 10px 0; font-size: 12px; line-height: 1.6; color: var(--dim); border-top: 1px solid var(--line); }
 .compare-links { margin: 0; padding: 4px 10px 10px; font-size: 12px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
 @media (max-width: 520px) { .compare-head, .compare-row { grid-template-columns: minmax(0, 1fr) 4.2em 5.2em; } .compare-bar, .compare-head span:first-child { display: none; }  }
+
+.brand-tag { display: inline-block; margin-left: 6px; padding: 1px 6px; font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: .04em; vertical-align: 2px; border: 1px solid var(--line-strong); color: var(--dim); }

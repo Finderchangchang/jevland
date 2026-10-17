@@ -83,7 +83,7 @@ if (playRoot) {
   }
 
   function shareText(score) {
-    return `我在 JevLand 和 Jev 比谁更懂人话，一致 ${score}/${pool.length || ROUND_COUNT}。你也来试试：https://jevland.com/play/`;
+    return `我和 Jev 比了比谁更懂人话，一致 ${score}/${pool.length || ROUND_COUNT}。你也来试试：https://jevland.com/play/`;
   }
 
   function searchOpen() {

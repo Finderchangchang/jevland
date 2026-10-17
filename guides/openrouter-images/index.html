@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#FEFEFE">
 <script>(function(){try{var t=localStorage.getItem('jevland-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#07080B':'#FEFEFE');}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>用 OpenRouter 调 Jev 看图，图片根本没送到模型那里 · Jev 教程 · JevLand</title>
+<title>用 OpenRouter 调 Jev 看图，图片根本没送到模型那里 · Jev 教程</title>
 <meta name="description" content="OpenRouter 的 alpha/decisions 不转发图片，Jev 实际没看到图。要测 Jev 看图请走 TypeSafe 官方接口，避免误判模型能力。">
 <meta name="author" content="杰哥">
 <meta name="color-scheme" content="light dark">
@@ -15,8 +15,8 @@
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
-<meta property="og:title" content="用 OpenRouter 调 Jev 看图，图片根本没送到模型那里 · Jev 教程 · JevLand">
+<meta property="og:site_name" content="Jev 中文社区（非官方）">
+<meta property="og:title" content="用 OpenRouter 调 Jev 看图，图片根本没送到模型那里 · Jev 教程">
 <meta property="og:description" content="OpenRouter 的 alpha/decisions 不转发图片，Jev 实际没看到图。要测 Jev 看图请走 TypeSafe 官方接口，避免误判模型能力。">
 <meta property="og:url" content="https://jevland.com/guides/openrouter-images/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
@@ -24,12 +24,12 @@
 <meta property="article:modified_time" content="2026-10-15">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@jev_chat">
-<meta name="twitter:title" content="用 OpenRouter 调 Jev 看图，图片根本没送到模型那里 · Jev 教程 · JevLand">
+<meta name="twitter:title" content="用 OpenRouter 调 Jev 看图，图片根本没送到模型那里 · Jev 教程">
 <meta name="twitter:description" content="OpenRouter 的 alpha/decisions 不转发图片，Jev 实际没看到图。要测 Jev 看图请走 TypeSafe 官方接口，避免误判模型能力。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
-<link rel="stylesheet" href="/styles.css?v=d796c27c">
+<link rel="stylesheet" href="/styles.css?v=14e27cce">
 <script defer src="/app.js?v=0b45214f"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"Article","headline":"用 OpenRouter 调 Jev 看图，图片根本没送到模型那里","name":"用 OpenRouter 调 Jev 看图，图片根本没送到模型那里","url":"https://jevland.com/guides/openrouter-images/","inLanguage":"zh-CN","description":"OpenRouter 的 alpha/decisions 不转发图片，Jev 实际没看到图。要测 Jev 看图请走 TypeSafe 官方接口，避免误判模型能力。","datePublished":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://jevland.com/guides/"},{"@type":"ListItem","position":3,"name":"用 OpenRouter 调 Jev 看图，图片根本没送到模型那里","item":"https://jevland.com/guides/openrouter-images/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"Jev 中文社区","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"Jev 中文社区","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"Article","headline":"用 OpenRouter 调 Jev 看图，图片根本没送到模型那里","name":"用 OpenRouter 调 Jev 看图，图片根本没送到模型那里","url":"https://jevland.com/guides/openrouter-images/","inLanguage":"zh-CN","description":"OpenRouter 的 alpha/decisions 不转发图片，Jev 实际没看到图。要测 Jev 看图请走 TypeSafe 官方接口，避免误判模型能力。","datePublished":"2026-10-15","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://jevland.com/guides/"},{"@type":"ListItem","position":3,"name":"用 OpenRouter 调 Jev 看图，图片根本没送到模型那里","item":"https://jevland.com/guides/openrouter-images/"}]}]}</script>
 
 <script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
 </head>
@@ -37,11 +37,10 @@
 <a class="skip-link" href="#main">跳到正文</a>
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="/" aria-label="JevLand 首页">
+    <a class="brand" href="/" aria-label="Jev 中文社区首页">
       <img src="/assets/favicon.svg" width="36" height="36" alt="">
       <span>
-        <span class="brand-name">JevLand</span>
-        <span class="brand-note">非官方中文社区</span>
+        <span class="brand-name">Jev 中文社区<span class="brand-tag">非官方</span></span>
       </span>
     </a>
     <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/scenarios/">场景</a><a href="/showcase/">案例</a><a href="/topics/llm-slm/">串联</a><a href="/docs/">文档</a><a href="/guides/" aria-current="page">教程</a><a href="/play/">小游戏</a><a class="nav-more" href="/news/">更新</a><a class="nav-more" href="/community/">社区</a><a class="nav-more" href="/about/">关于</a></nav>
@@ -128,7 +127,7 @@
 <footer class="site-footer">
   <div class="container footer-inner">
     <div>
-      <a class="footer-brand" href="/">JevLand</a>
+      <a class="footer-brand" href="/">Jev 中文社区</a>
       <p>Jev 判断模型的非官方中文社区。</p>
     </div>
     <nav class="footer-links" aria-label="页脚导航">
@@ -144,7 +143,7 @@
     </nav>
   </div>
   <div class="container footer-legal">
-    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+    <p>Jev 中文社区是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
   </div>
 </footer>
 </body>

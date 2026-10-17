@@ -1,4 +1,4 @@
-# JevLand · Jev 非官方中文社区
+# Jev 中文社区（非官方）· JevLand
 
 TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。
 
