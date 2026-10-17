@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>智能体护栏 · Jev 场景 · JevLand</title>
+<meta name="description" content="智能体护栏：智能体自己调工具，一条越权命令就可能删掉数据，每一步都让大模型复查又太慢 本页附一次真实调用，jev-1.14.0，1086 毫秒，467 个输入 token。">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/scenarios/agent-guardrail/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="智能体护栏 · Jev 场景 · JevLand">
+<meta property="og:description" content="智能体护栏：智能体自己调工具，一条越权命令就可能删掉数据，每一步都让大模型复查又太慢 本页附一次真实调用，jev-1.14.0，1086 毫秒，467 个输入 token。">
+<meta property="og:url" content="https://jevland.com/scenarios/agent-guardrail/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-17">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="智能体护栏 · Jev 场景 · JevLand">
+<meta name="twitter:description" content="智能体护栏：智能体自己调工具，一条越权命令就可能删掉数据，每一步都让大模型复查又太慢 本页附一次真实调用，jev-1.14.0，1086 毫秒，467 个输入 token。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"智能体护栏","name":"智能体护栏","url":"https://jevland.com/scenarios/agent-guardrail/","inLanguage":"zh-CN","description":"智能体护栏：智能体自己调工具，一条越权命令就可能删掉数据，每一步都让大模型复查又太慢 本页附一次真实调用，jev-1.14.0，1086 毫秒，467 个输入 token。","dateModified":"2026-10-17","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"场景","item":"https://jevland.com/scenarios/"},{"@type":"ListItem","position":3,"name":"智能体护栏","item":"https://jevland.com/scenarios/agent-guardrail/"}]}]}</script>
+
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/scenarios/" aria-current="page">场景</a><a href="/showcase/">案例</a><a href="/topics/llm-slm/">串联</a><a href="/docs/">文档</a><a href="/guides/">教程</a><a href="/play/">小游戏</a><a class="nav-more" href="/news/">更新</a><a class="nav-more" href="/community/">社区</a><a class="nav-more" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block scenario-page">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/">首页</a> / <a href="/scenarios/">场景</a> / 智能体护栏</p>
+        <h1>智能体护栏</h1>
+        <p class="lead">用 Jev 在智能体动工具前快速判断是否越权，挡住删库一类的高危操作。</p>
+        <dl class="data-bar" data-scenario-stats data-model="jev-1.14.0" data-ms="1086" data-input-tokens="467" data-cost-usd="0.00001961" data-cost-per-1000="0.0196">
+    <div><dt>模型</dt><dd>jev-1.14.0</dd></div>
+    <div><dt>耗时</dt><dd>1086 ms</dd></div>
+    <div><dt>token</dt><dd>467</dd></div>
+    <div><dt>单次花费</dt><dd>$0.00001961</dd></div>
+    <div><dt>每千次</dt><dd>$0.020</dd></div>
+  </dl>
+        <div class="prose"><h2 id="痛点">痛点</h2>
+<p>智能体（agent）能自己调 shell、读写文件，一条越权命令就会把数据清掉。每一工具调用前都让大语言模型（LLM）再审一遍，又慢又贵，多数情况下也没必要。</p>
+<h2 id="Jev-判断什么">Jev 判断什么</h2>
+<p>state（上下文状态）是 <code>{&quot;task&quot;: &quot;帮用户清理项目里的临时文件&quot;, &quot;proposed_action&quot;: {&quot;tool&quot;: &quot;shell&quot;, &quot;command&quot;: &quot;rm -rf ~/projects&quot;}}</code>。让 Jev 看的是「这条命令该不该执行」，不是「这条命令怎么写」。</p>
+<p><strong>risk（Score，打分题）</strong>：问「How risky is the proposed action for the user&#39;s files?」，档位（level）[&quot;Read-only or harmless&quot;, &quot;Changes a few files inside the intended folder&quot;, &quot;Deletes or overwrites data outside the intended scope&quot;]。这次分数 1.97（档位序号从 0 开始），各档概率（probability）<code>档位 0 为 0%、档位 1 为 2%、档位 2 为 98%</code>，置信度（confidence）0.97。读法：最高档概率 0.98，说明几乎确定这条命令会删掉预期范围之外的数据，直接当高危处理。</p>
+<p><strong>within_scope（Noul，是非题）</strong>：问「Is the proposed action within the scope of the task?」。这次「是」的概率只有 0.29，多数判断认为这条命令超出了任务范围。读法：低于 0.5 就该停下。</p>
+<p><strong>next_step（Choice，选择题）</strong>：问「What should the agent do next?」，选项 <code>{&quot;run&quot;: &quot;Run the action as proposed&quot;, &quot;ask_user&quot;: &quot;Pause and ask the user to confirm&quot;, &quot;narrow&quot;: &quot;Rewrite the command to a narrower, safer one&quot;}</code>。这次选了 ask_user，概率 <code>run=0.0, ask_user=0.6, narrow=0.4</code>，置信度 0.4。读法：置信度只有 0.4，说明这道题分歧大，按 ask_user 走的同时准备好 narrow 兜底。</p>
+<p>代码侧按这个顺序用：<code>risk</code> 触顶就拒；<code>within_scope</code> 概率低于阈值就拒；<code>next_step</code> 取返回值对应的分支即可。</p>
+<h2 id="和大模型怎么配合">和大模型怎么配合</h2>
+<p>Jev 先判断。代码按三道题的结果走规则：<code>risk</code> 命中最高档直接拒绝，不调大语言模型；<code>within_scope</code> 概率低于自己定的阈值（如 0.5）也直接拒绝；<code>next_step</code> 是 <code>ask_user</code> 就弹确认框，是 <code>narrow</code> 就改命令，是 <code>run</code> 才放行。只在 <code>next_step</code> 给出歧义答案、或置信度低于阈值、或风险档位落在中间档时，把 state 交给大语言模型或人工复核（human review）。</p>
+<p>这次调用 jev-1.14.0 耗时 1086 毫秒、输入 467 个 token，单次约 0.00002 美元，按这次输入规模算每 1000 次约 0.0196 美元。</p>
+<h2 id="上线前注意">上线前注意</h2>
+<ul>
+<li>题型（primitives）里的题目保持英文写；state 里 <code>task</code>、<code>command</code> 等字段保留调用方原始语言，示例是中文就传中文。</li>
+<li>阈值要先用自己 20–30 条真实数据校准过再上线，不要直接套默认值。</li>
+<li>置信度低、或是非题概率落在 0.5 附近时，交给人或大语言模型复核，不要硬走规则。</li>
+<li><code>rm -rf</code>、<code>mkfs</code>、<code>chmod -R</code>、<code>dd</code> 这类命令建议在 Jev 之外再加一层关键字拦截，不只靠打分题。</li>
+</ul>
+</div>
+        <section class="real-call" id="real-call" data-real-call>
+          <h2>真实调用</h2>
+          <h3>请求</h3>
+          <div class="code-tabs" data-tabs>
+    <div class="demo-tabs" role="tablist">
+      <button type="button" class="demo-tab is-active" data-tab aria-selected="true">curl</button>
+      <button type="button" class="demo-tab" data-tab aria-selected="false">Python</button>
+    </div>
+    <div data-tab-panel><div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">curl https://api.typesafe.ai/v1/systemone \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$TYPESAFE_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  -d <span class="hljs-string">&#x27;{
+  &quot;model&quot;: &quot;jev-1.14.0&quot;,
+  &quot;state&quot;: {
+    &quot;task&quot;: &quot;帮用户清理项目里的临时文件&quot;,
+    &quot;proposed_action&quot;: {
+      &quot;tool&quot;: &quot;shell&quot;,
+      &quot;command&quot;: &quot;rm -rf ~/projects&quot;
+    }
+  },
+  &quot;questions&quot;: {
+    &quot;risk&quot;: {
+      &quot;type&quot;: &quot;score&quot;,
+      &quot;instructions&quot;: &quot;How risky is the proposed action for the user&#x27;</span>s files?<span class="hljs-string">&quot;,
+      &quot;</span>criteria<span class="hljs-string">&quot;: [
+        &quot;</span>Read-only or harmless<span class="hljs-string">&quot;,
+        &quot;</span>Changes a few files inside the intended folder<span class="hljs-string">&quot;,
+        &quot;</span>Deletes or overwrites data outside the intended scope<span class="hljs-string">&quot;
+      ]
+    },
+    &quot;</span>within_scope<span class="hljs-string">&quot;: {
+      &quot;</span><span class="hljs-built_in">type</span><span class="hljs-string">&quot;: &quot;</span>noul<span class="hljs-string">&quot;,
+      &quot;</span>instructions<span class="hljs-string">&quot;: &quot;</span>Is the proposed action within the scope of the task?<span class="hljs-string">&quot;
+    },
+    &quot;</span>next_step<span class="hljs-string">&quot;: {
+      &quot;</span><span class="hljs-built_in">type</span><span class="hljs-string">&quot;: &quot;</span>choice<span class="hljs-string">&quot;,
+      &quot;</span>instructions<span class="hljs-string">&quot;: &quot;</span>What should the agent <span class="hljs-keyword">do</span> next?<span class="hljs-string">&quot;,
+      &quot;</span>criteria<span class="hljs-string">&quot;: {
+        &quot;</span>run<span class="hljs-string">&quot;: &quot;</span>Run the action as proposed<span class="hljs-string">&quot;,
+        &quot;</span>ask_user<span class="hljs-string">&quot;: &quot;</span>Pause and ask the user to confirm<span class="hljs-string">&quot;,
+        &quot;</span>narrow<span class="hljs-string">&quot;: &quot;</span>Rewrite the <span class="hljs-built_in">command</span> to a narrower, safer one<span class="hljs-string">&quot;
+      }
+    }
+  }
+}&#x27;</span></code></pre></div></div>
+    <div data-tab-panel hidden><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> json, os, urllib.request
+
+payload = json.loads(<span class="hljs-string">&quot;{\n  \&quot;model\&quot;: \&quot;jev-1.14.0\&quot;,\n  \&quot;state\&quot;: {\n    \&quot;task\&quot;: \&quot;帮用户清理项目里的临时文件\&quot;,\n    \&quot;proposed_action\&quot;: {\n      \&quot;tool\&quot;: \&quot;shell\&quot;,\n      \&quot;command\&quot;: \&quot;rm -rf ~/projects\&quot;\n    }\n  },\n  \&quot;questions\&quot;: {\n    \&quot;risk\&quot;: {\n      \&quot;type\&quot;: \&quot;score\&quot;,\n      \&quot;instructions\&quot;: \&quot;How risky is the proposed action for the user&#x27;s files?\&quot;,\n      \&quot;criteria\&quot;: [\n        \&quot;Read-only or harmless\&quot;,\n        \&quot;Changes a few files inside the intended folder\&quot;,\n        \&quot;Deletes or overwrites data outside the intended scope\&quot;\n      ]\n    },\n    \&quot;within_scope\&quot;: {\n      \&quot;type\&quot;: \&quot;noul\&quot;,\n      \&quot;instructions\&quot;: \&quot;Is the proposed action within the scope of the task?\&quot;\n    },\n    \&quot;next_step\&quot;: {\n      \&quot;type\&quot;: \&quot;choice\&quot;,\n      \&quot;instructions\&quot;: \&quot;What should the agent do next?\&quot;,\n      \&quot;criteria\&quot;: {\n        \&quot;run\&quot;: \&quot;Run the action as proposed\&quot;,\n        \&quot;ask_user\&quot;: \&quot;Pause and ask the user to confirm\&quot;,\n        \&quot;narrow\&quot;: \&quot;Rewrite the command to a narrower, safer one\&quot;\n      }\n    }\n  }\n}&quot;</span>)
+
+headers = {
+    <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">&quot;Bearer &quot;</span> + os.environ[<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>],
+    <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
+}
+req = urllib.request.Request(
+    <span class="hljs-string">&quot;https://api.typesafe.ai/v1/systemone&quot;</span>,
+    data=json.dumps(payload).encode(<span class="hljs-string">&quot;utf-8&quot;</span>),
+    headers=headers,
+    method=<span class="hljs-string">&quot;POST&quot;</span>,
+)
+<span class="hljs-built_in">print</span>(urllib.request.urlopen(req).read().decode(<span class="hljs-string">&quot;utf-8&quot;</span>))
+</code></pre></div></div>
+  </div>
+          <h3>返回</h3>
+          <div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.14.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;risk&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.97</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.97</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;legend&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Read-only or harmless&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Changes a few files inside the intended folder&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deletes or overwrites data outside the intended scope&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.02</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.98</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;within_scope&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.29</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;next_step&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ask_user&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.4</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;run&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;ask_user&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.6</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;narrow&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.4</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">467</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">72</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+          <h3>人话解读</h3>
+          <ul class="answer-plain"><li>Score：档位 2（Deletes or overwrites data outside the intended scope），分数 1.97，置信度 0.97</li><li>Noul：「是」的概率 0.29</li><li>Choice：选了 ask_user，置信度 0.40</li></ul>
+          
+        </section>
+        <section class="related-cases"><h2>相关案例</h2><div class="masonry masonry-sm"><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="agent-guardrail">
+    <a class="case-cover" href="https://x.com/alara_martin_/status/2110875781819928838" target="_blank" rel="noopener noreferrer" style="--scene:#C084FC" data-umami-event="case-video" data-umami-event-slug="tab">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Tab</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/tab/">
+      <div class="case-item-head">
+        <time datetime="2026-10-15">2026-10-15</time>
+        <span class="chip">开源项目</span>
+        
+      </div>
+      <h3>Tab</h3>
+      <p class="showcase-by">by Alara M</p>
+      <p>黑客松原型：在 Mac 上预测你的下一步操作，显示灰色幽灵，按 Tab 执行。</p>
+      <p class="jev-usage">Jev 判断：预测下一步操作；仓库未写出具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/agent-guardrail/">智能体护栏</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="agent-guardrail">
+    <a class="case-cover" href="https://x.com/bboym0dE/status/2110906484783809023" target="_blank" rel="noopener noreferrer" style="--scene:#C084FC" data-umami-event="case-video" data-umami-event-slug="noa">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Noa</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/noa/">
+      <div class="case-item-head">
+        <time datetime="2026-10-12">2026-10-12</time>
+        <span class="chip">开源项目</span>
+        
+      </div>
+      <h3>Noa</h3>
+      <p class="showcase-by">by m0dE</p>
+      <p>开源 Chrome 扩展：Claude 规划任务，Jev 每一步选出要点击或输入的页面元素。</p>
+      <p class="jev-usage">Jev 判断：每一步选出要点击或输入的页面元素</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/agent-guardrail/">智能体护栏</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="agent-guardrail">
+    
+    <a class="masonry-body" href="/showcase/jev-browser-wingman/">
+      <div class="case-item-head">
+        <time datetime="2026-10-06">2026-10-06</time>
+        <span class="chip">开源项目</span>
+        
+      </div>
+      <h3>jev-browser-wingman</h3>
+      <p class="showcase-by">by coderexpert123</p>
+      <p>MCP 代理：把智能体的点击和输入交给 Jev 选 DOM 元素，不确定就交回给智能体。</p>
+      <p class="jev-usage">Jev 判断：每一步用 Jev 选择要点击或输入的页面元素</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/agent-guardrail/">智能体护栏</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="agent-guardrail">
+    
+    <a class="masonry-body" href="/showcase/onesie/">
+      <div class="case-item-head">
+        <time datetime="2026-09-28">2026-09-28</time>
+        <span class="chip">开源项目</span>
+        
+      </div>
+      <h3>onesie</h3>
+      <p class="showcase-by">by frodi-karlsson</p>
+      <p>Unix 管道 CLI：把文本和问题交给 Jev，得到可脚本化的是非、选择或阈值门。</p>
+      <p class="jev-usage">Jev 判断：对 stdin 或 --state 提问，用概率和退出码做门禁</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/agent-guardrail/">智能体护栏</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="agent-guardrail">
+    
+    <a class="masonry-body" href="/showcase/decide-cli/">
+      <div class="case-item-head">
+        <time datetime="2026-09-20">2026-09-20</time>
+        <span class="chip">开源项目</span>
+        
+      </div>
+      <h3>decide</h3>
+      <p class="showcase-by">by vsekhar</p>
+      <p>命令行决策工具：在脚本和智能体技能里直接问是非、选择和分档题，默认走 TypeSafe Jev。</p>
+      <p class="jev-usage">Jev 判断：把命令行问题映射成 Noul、Choice 或 Score</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/agent-guardrail/">智能体护栏</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="agent-guardrail">
+    
+    <a class="masonry-body" href="/showcase/agent-chaperone/">
+      <div class="case-item-head">
+        <time datetime="2026-09-18">2026-09-18</time>
+        <span class="chip">开源项目</span>
+        
+      </div>
+      <h3>agent-chaperone</h3>
+      <p class="showcase-by">by agent-chaperone</p>
+      <p>编程智能体运行时防火墙：工具调用前和结果读入前用 Jev 筛一遍，对照你写的阈值。</p>
+      <p class="jev-usage">Jev 判断：对工具调用和工具结果做安全筛查，评测用的是 jev-1.13.0</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/agent-guardrail/">智能体护栏</a></div></div>
+  </article></div></section>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/score/">Score（打分题）</a></li><li><a href="/docs/noul/">Noul（是非题）</a></li><li><a href="/docs/choice/">Choice（选择题）</a></li><li><a href="/docs/confidence/">置信度</a></li><li><a href="/docs/quickstart/">快速开始</a></li></ul>
+  </section>
+        <nav class="pager" aria-label="相邻场景">
+    <a class="pager-link" href="/scenarios/rag-filter/"><span>上一个</span><strong>检索结果过滤</strong></a>
+    <a class="pager-link is-next" href="/scenarios/extraction-check/"><span>下一个</span><strong>数据抽取校验</strong></a>
+  </nav>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/scenarios/">场景</a>
+      <a href="/showcase/">案例</a>
+      <a href="/topics/llm-slm/">串联</a>
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/play/">小游戏</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

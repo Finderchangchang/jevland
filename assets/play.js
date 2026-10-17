@@ -5,6 +5,7 @@ if (playRoot) {
   try { payload = JSON.parse(dataNode?.textContent || '{}'); }
   catch { payload = {rounds: []}; }
   const rounds = Array.isArray(payload.rounds) ? payload.rounds : [];
+  const ROUND_COUNT = Math.max(1, Number(payload.roundCount) || 5);
   const screens = {
     start: playRoot.querySelector('[data-play-screen="start"]'),
     round: playRoot.querySelector('[data-play-screen="round"]'),
@@ -31,6 +32,7 @@ if (playRoot) {
   let index = 0;
   let shuffled = [];
   let answers = [];
+  let pool = [];
   let revealed = false;
   let token = 0;
   let screen = 'start';
@@ -81,7 +83,7 @@ if (playRoot) {
   }
 
   function shareText(score) {
-    return `我在 JevLand 和 Jev 比谁更懂人话，一致 ${score}/${rounds.length}。你也来试试：https://jevland.com/play/`;
+    return `我在 JevLand 和 Jev 比谁更懂人话，一致 ${score}/${pool.length || ROUND_COUNT}。你也来试试：https://jevland.com/play/`;
   }
 
   function searchOpen() {
@@ -120,11 +122,11 @@ if (playRoot) {
 
   async function showRound() {
     const myToken = ++token;
-    const round = rounds[index];
+    const round = pool[index];
     if (!round) return;
     revealed = false;
     showScreen('round');
-    progressEl.textContent = `${index + 1} / ${rounds.length}`;
+    progressEl.textContent = `${index + 1} / ${pool.length}`;
     sceneEl.textContent = round.scene || '';
     questionEl.hidden = true;
     optionsEl.innerHTML = '';
@@ -140,7 +142,7 @@ if (playRoot) {
 
   function choose(key) {
     if (screen !== 'round' || revealed) return;
-    const round = rounds[index];
+    const round = pool[index];
     if (!round) return;
     const valid = (shuffled[index] || round.options).some(item => item.key === key);
     if (!valid) return;
@@ -182,27 +184,27 @@ if (playRoot) {
     confidenceEl.innerHTML = `<span class="conf ${conf.tone}">${escapeHtml(conf.label)}</span>${lowNote}`;
     explainEl.textContent = `为什么难判断：${round.explain || ''}`;
     msEl.textContent = `这次调用 ${round.ms} 毫秒`;
-    nextBtn.textContent = index === rounds.length - 1 ? '看结果' : '下一题';
+    nextBtn.textContent = index === pool.length - 1 ? '看结果' : '下一题';
     revealEl.hidden = false;
     nextBtn.focus();
   }
 
   function resultBlurb(score) {
-    if (score >= 8) return '你和 Jev 的判断很接近。';
-    if (score >= 5) return '一半以上一致。';
-    return '你们的看法差得比较多。可以看看 Jev 自己都拿不准的那几题。';
+    if (score >= 4) return '很接近。';
+    if (score >= 2) return '一半左右。';
+    return '差得比较多。';
   }
 
   function showResult() {
     const score = answers.filter(item => item?.match).length;
-    const highRounds = rounds.filter(item => Number(item.confidence) >= 0.75);
-    const highMatch = rounds.filter((item, i) => Number(item.confidence) >= 0.75 && answers[i]?.match).length;
+    const highRounds = pool.filter(item => Number(item.confidence) >= 0.75);
+    const highMatch = pool.filter((item, i) => Number(item.confidence) >= 0.75 && answers[i]?.match).length;
     track('play-finish', {score: String(score)});
     showScreen('result');
-    scoreEl.textContent = `你和 Jev 判断一致 ${score} / ${rounds.length}`;
+    scoreEl.textContent = `你和 Jev 判断一致 ${score} / ${pool.length}`;
     blurbEl.textContent = resultBlurb(score);
     highEl.textContent = `Jev 很有把握的 ${highRounds.length} 题里，你和它一致 ${highMatch} 题。`;
-    reviewEl.innerHTML = rounds.map((round, i) => {
+    reviewEl.innerHTML = pool.map((round, i) => {
       const yours = optionByKey(round, answers[i]?.key);
       const jev = optionByKey(round, round.jevChoice);
       const conf = Number(round.confidence) || 0;
@@ -228,7 +230,8 @@ if (playRoot) {
     if (!rounds.length) return;
     index = 0;
     answers = [];
-    shuffled = rounds.map(round => shuffle(round.options || []));
+    pool = shuffle(rounds).slice(0, Math.min(ROUND_COUNT, rounds.length));
+    shuffled = pool.map(round => shuffle(round.options || []));
     showRound();
   }
 
@@ -236,7 +239,7 @@ if (playRoot) {
   playRoot.querySelector('[data-play-again]')?.addEventListener('click', begin);
   nextBtn?.addEventListener('click', () => {
     if (!revealed) return;
-    if (index >= rounds.length - 1) showResult();
+    if (index >= pool.length - 1) showResult();
     else {
       index += 1;
       showRound();

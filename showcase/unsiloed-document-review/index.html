@@ -43,13 +43,12 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/showcase/" aria-current="page">案例</a><a href="/play/">小游戏</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/scenarios/">场景</a><a href="/showcase/" aria-current="page">案例</a><a href="/topics/llm-slm/">串联</a><a href="/docs/">文档</a><a href="/guides/">教程</a><a href="/play/">小游戏</a><a class="nav-more" href="/news/">更新</a><a class="nav-more" href="/community/">社区</a><a class="nav-more" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
         <kbd data-search-hotkey>Ctrl K</kbd>
       </button>
-      <a class="header-about" href="/about/">关于</a>
       <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -72,6 +71,7 @@
           
           <span class="chip">产品</span><span class="chip">文档</span><span class="chip">OCR</span><span class="chip">医疗</span>
         </div>
+        <div class="tag-row case-scenes"><a class="chip scene-chip" href="/scenarios/extraction-check/">数据抽取校验</a></div>
         <aside class="jev-callout"><p class="kicker">Jev 在里面判断什么</p><p>对每行抽取结果发 Noul：剂量和频次表面上是否合理</p></aside>
         <div class="prose"><h2 id="它是什么">它是什么</h2>
 <p>Unsiloed 做文档结构化抽取。这篇工程博文给出一条复核流水线：Unsiloed 抽出字段并定位到页面，Jev 只看抽出的文字做合理性判断，应用代码再决定哪一行要人工看。</p>
@@ -82,6 +82,7 @@
 <p>读原文：<a href="https://www.unsiloed.ai/blog/document-review-unsiloed-typesafe-jev" target="_blank" rel="noopener noreferrer">Document Review With Unsiloed and TypeSafe Jev</a>。文中附有记录下来的请求和收据 JSON。</p>
 </div>
         <div class="case-actions">
+          
           <a class="btn" href="https://www.unsiloed.ai/blog/document-review-unsiloed-typesafe-jev" target="_blank" rel="noopener noreferrer" data-umami-event="case-source" data-umami-event-slug="unsiloed-document-review">查看原帖 / 来源 ↗</a>
           <a class="btn btn-ghost" href="https://www.unsiloed.ai/" target="_blank" rel="noopener noreferrer" data-umami-event="case-project" data-umami-event-slug="unsiloed-document-review">项目主页 ↗</a>
           
@@ -119,9 +120,12 @@
       <p>Jev 判断模型的非官方中文社区。</p>
     </div>
     <nav class="footer-links" aria-label="页脚导航">
-      <a href="/docs/">文档</a>
+      <a href="/scenarios/">场景</a>
       <a href="/showcase/">案例</a>
+      <a href="/topics/llm-slm/">串联</a>
+      <a href="/docs/">文档</a>
       <a href="/guides/">教程</a>
+      <a href="/play/">小游戏</a>
       <a href="/news/">更新</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>

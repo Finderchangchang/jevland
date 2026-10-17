@@ -4,6 +4,19 @@ TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程�
 
 文档翻译自 TypeSafe 官方文档，以英文原文为准。
 
+## 场景
+- [客服分流](https://jevland.com/scenarios/support-routing/): 每条咨询都丢给大模型或人工，慢、贵，还容易分错组
+- [内容审核](https://jevland.com/scenarios/moderation/): 评论、弹幕、帖子量大，全靠人看看不过来，全交给大模型又太贵
+- [聊天副驾](https://jevland.com/scenarios/chat-copilot/): 大模型会写回复，但看不准对方真实意思，也不知道这时候该不该回
+- [检索结果过滤](https://jevland.com/scenarios/rag-filter/): 检索回来的段落一半不相关，全塞给大模型既费 token，又容易答偏
+- [智能体护栏](https://jevland.com/scenarios/agent-guardrail/): 智能体自己调工具，一条越权命令就可能删掉数据，每一步都让大模型复查又太慢
+- [数据抽取校验](https://jevland.com/scenarios/extraction-check/): 让大模型从单据里抽字段，偶尔会编数字，人工逐条核对成本高
+- [游戏与机器人决策](https://jevland.com/scenarios/game-npc/): NPC 和机器人每一步都要做决定，用大模型太慢，写死规则又太僵
+- [看图判断](https://jevland.com/scenarios/vision/): 截图、照片里的信息要先转成文字才能判断，多一道工序就多一份成本和延迟
+
+## 专题
+- [大模型和小模型怎么串联](https://jevland.com/topics/llm-slm/): Jev 做判断分流，大模型做生成，多数请求不用再走大模型。
+
 ## 文档
 - [简介](https://jevland.com/docs/introduction/): Jev 是 TypeSafe 的旗舰判断模型，也是首个 System One 模型。传入 state 和类型化问题，直接返回代码可用的结构化答案，不生成文字。
 - [快速开始](https://jevland.com/docs/quickstart/): 用 Jev 跑通第一个判断请求：申请 API key，选 SDK、HTTP API、agent skill 或 Playground 四条路之一，五分钟内看到带概率和置信度的答案。
@@ -60,7 +73,17 @@ TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程�
 - [Jev 处理中文：题目用英文，state 保留中文](https://jevland.com/guides/chinese-prompts/): Jev 能判断中文内容。题目用英文写、state 保留中文原文，上线前用 20 到 30 条真实数据校准置信度和准确率。
 
 ## 案例
+- [Box 框选实测](https://jevland.com/showcase/jev-box-eval/): 实验：同一张自然照片连测三次 Box，再加一张几何控制图，把返回坐标画回原图。
+- [Jev 开到 TypeSafe 办公室](https://jevland.com/showcase/jev-office-nav/): 演示：让 Jev 在只有局部路口信息时选路，看能不能开到 TypeSafe 办公室。
+- [Scene Finder](https://jevland.com/showcase/scene-finder/): 开源演示：用自然语言描述电影镜头，Jev 在片子里找出对应时间点。
+- [截图出表](https://jevland.com/showcase/jev-table-extract/): 演示：Jev 在截图里找出表格、跳过图表，再交给生成式模型抽出行列。
+- [卡通动物园 Box 演示](https://jevland.com/showcase/box-zoo/): 演示：对着一张卡通动物园图用自然语言提问，Jev 用 Box 标出目标位置。
+- [jevanimata](https://jevland.com/showcase/jevanimata/): 演示游戏：把图贴进去，Jev 据此生成地形和生物，再按你的指令让它们动起来。
+- [JevDay：满世界 cmd-f](https://jevland.com/showcase/typesafe-cmd-f/): 官方演示回放：不建索引，用 Jev 在文件和画面里找你要的东西。
 - [Jev 街牌闯美](https://jevland.com/showcase/cannonball-run/): 演示：只给目的地和当前街道名，Jev 在每个路口选方向，用街牌完成纽约到洛杉矶。
+- [jev drone cam](https://jevland.com/showcase/jev-dronecam/): 网页演示：给一张目标照片，无人机逐帧问 Jev 看见没、框在哪，再飞过去。
+- [Tab](https://jevland.com/showcase/tab/): 黑客松原型：在 Mac 上预测你的下一步操作，显示灰色幽灵，按 Tab 执行。
+- [Noa](https://jevland.com/showcase/noa/): 开源 Chrome 扩展：Claude 规划任务，Jev 每一步选出要点击或输入的页面元素。
 - [jev-browser-wingman](https://jevland.com/showcase/jev-browser-wingman/): MCP 代理：把智能体的点击和输入交给 Jev 选 DOM 元素，不确定就交回给智能体。
 - [Vals 对 Jev 的独立评测](https://jevland.com/showcase/vals-jev-eval/): Vals.ai 发布的独立评测：在自有任务集上测 TypeSafe Jev，并公开方法与结果。
 - [jev-bisect](https://jevland.com/showcase/jev-bisect/): Python 库：在上下界里反复问 Jev 更高、更低还是正好，用二分找出数字答案。
@@ -92,6 +115,8 @@ TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程�
 - [TypeSafe Playground](https://jevland.com/showcase/typesafe-playground/): 官方网页：把文本贴进 state，加几道类型化问题，直接看 Jev 的概率和置信度。
 
 ## 入口
+- [场景](https://jevland.com/scenarios/)
+- [串联专题](https://jevland.com/topics/llm-slm/)
 - [文档首页](https://jevland.com/docs/)
 - [案例](https://jevland.com/showcase/)
 - [社区](https://jevland.com/community/)

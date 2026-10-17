@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>客服分流 · Jev 场景 · JevLand</title>
+<meta name="description" content="客服分流：每条咨询都丢给大模型或人工，慢、贵，还容易分错组 本页附一次真实调用，jev-1.14.0，1098 毫秒，504 个输入 token。">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/scenarios/support-routing/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="客服分流 · Jev 场景 · JevLand">
+<meta property="og:description" content="客服分流：每条咨询都丢给大模型或人工，慢、贵，还容易分错组 本页附一次真实调用，jev-1.14.0，1098 毫秒，504 个输入 token。">
+<meta property="og:url" content="https://jevland.com/scenarios/support-routing/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-17">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="客服分流 · Jev 场景 · JevLand">
+<meta name="twitter:description" content="客服分流：每条咨询都丢给大模型或人工，慢、贵，还容易分错组 本页附一次真实调用，jev-1.14.0，1098 毫秒，504 个输入 token。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"客服分流","name":"客服分流","url":"https://jevland.com/scenarios/support-routing/","inLanguage":"zh-CN","description":"客服分流：每条咨询都丢给大模型或人工，慢、贵，还容易分错组 本页附一次真实调用，jev-1.14.0，1098 毫秒，504 个输入 token。","dateModified":"2026-10-17","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"场景","item":"https://jevland.com/scenarios/"},{"@type":"ListItem","position":3,"name":"客服分流","item":"https://jevland.com/scenarios/support-routing/"}]}]}</script>
+
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/scenarios/" aria-current="page">场景</a><a href="/showcase/">案例</a><a href="/topics/llm-slm/">串联</a><a href="/docs/">文档</a><a href="/guides/">教程</a><a href="/play/">小游戏</a><a class="nav-more" href="/news/">更新</a><a class="nav-more" href="/community/">社区</a><a class="nav-more" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block scenario-page">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/">首页</a> / <a href="/scenarios/">场景</a> / 客服分流</p>
+        <h1>客服分流</h1>
+        <p class="lead">Jev 三题做客服路由：分部门、判紧急、看要不要立刻转人工</p>
+        <dl class="data-bar" data-scenario-stats data-model="jev-1.14.0" data-ms="1098" data-input-tokens="504" data-cost-usd="0.00002117" data-cost-per-1000="0.0212">
+    <div><dt>模型</dt><dd>jev-1.14.0</dd></div>
+    <div><dt>耗时</dt><dd>1098 ms</dd></div>
+    <div><dt>token</dt><dd>504</dd></div>
+    <div><dt>单次花费</dt><dd>$0.00002117</dd></div>
+    <div><dt>每千次</dt><dd>$0.021</dd></div>
+  </dl>
+        <div class="prose"><h2 id="痛点">痛点</h2>
+<p>客服最常见的浪费：用户问「发货」「退款」「产品功能」「其他」，全部扔给一个通用的大模型再让大模型判断分给谁，又慢又贵，还容易分错组——分错了还要人工再转一道。</p>
+<h2 id="Jev-判断什么">Jev 判断什么</h2>
+<p>我用三道题覆盖一次分流决策。</p>
+<p><strong>department（Choice（选择题））</strong>
+问「Which team should handle this message?」，选项 shipping、refund、product、other。这次返回选了 shipping，概率 shipping=0.97、refund=0.03、product=0.0、other=0.0，置信度 0.96。代码直接按选中的选项走派单规则，不用复核。</p>
+<p><strong>needs_human（Noul（是非题））</strong>
+问「Should this conversation be handed to a human agent right away?」。这次答案为「是」的概率 0.48，正好在 0.5 附近。这种题本身就不该硬判，建议把消息转给人工或让大模型复核。</p>
+<p><strong>urgency（Score（打分题））</strong>
+问「How urgent is the customer&#39;s request?」，档位 0=可以等几天、1=今天处理、2=一小时内处理。这次分数 1.16（档位从 0 开始），各档概率 档位 0 为 0%、档位 1 为 84%、档位 2 为 16%，置信度 0.76。基本判断为「今天处理」，档位 2 也有 16% 概率要兜底。代码可以按 score 向下取整选档位，也可以用最高概率档位派单。</p>
+<h2 id="和大模型怎么配合">和大模型怎么配合</h2>
+<p>流程：先把消息塞进 state（上下文状态），调一次 Jev 同时跑这三道题；拿到结果后，代码按 department 派到对应组，按 urgency 决定处理时限，按 needs_human 决定是否转人工。</p>
+<p>置信度高的题目（比如这次 department 的 0.96）直接走规则，不调大模型；置信度低的题目，或 needs_human 这类在 0.5 附近不好判的，把消息连同 Jev 的判断一起交给大模型复核。</p>
+<p>这次调用 jev-1.14.0 耗时 1098 毫秒，输入 504 个 token，单次 0.000021 美元，每 1000 次约 0.0212 美元。</p>
+<h2 id="上线前注意">上线前注意</h2>
+<ul>
+<li>题目用英文写，state 里的中文用户原文保留原样，channel 这种结构化字段直接用。</li>
+<li>阈值（什么时候算紧急、什么时候转人工）要拿自己 20–30 条真实数据校准，不要直接抄这次的结果当阈值。</li>
+<li>needs_human 概率在 0.5 附近（这次 0.48 就是典型），或 department 置信度低于 0.7，建议交给人工或让大模型复核，不要硬走规则。</li>
+<li>Jev 输出不收费，主要成本是输入 token 长度，state 里 messages 只保留判断需要的几条，不要塞无关历史。</li>
+</ul>
+</div>
+        <section class="real-call" id="real-call" data-real-call>
+          <h2>真实调用</h2>
+          <h3>请求</h3>
+          <div class="code-tabs" data-tabs>
+    <div class="demo-tabs" role="tablist">
+      <button type="button" class="demo-tab is-active" data-tab aria-selected="true">curl</button>
+      <button type="button" class="demo-tab" data-tab aria-selected="false">Python</button>
+    </div>
+    <div data-tab-panel><div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">curl https://api.typesafe.ai/v1/systemone \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$TYPESAFE_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  -d <span class="hljs-string">&#x27;{
+  &quot;model&quot;: &quot;jev-1.14.0&quot;,
+  &quot;state&quot;: {
+    &quot;channel&quot;: &quot;在线客服&quot;,
+    &quot;messages&quot;: [
+      {
+        &quot;from&quot;: &quot;用户&quot;,
+        &quot;text&quot;: &quot;我昨天买的耳机今天还没发货，明天就要出差了，能不能加急？不行就退款吧&quot;
+      }
+    ]
+  },
+  &quot;questions&quot;: {
+    &quot;department&quot;: {
+      &quot;type&quot;: &quot;choice&quot;,
+      &quot;instructions&quot;: &quot;Which team should handle this message?&quot;,
+      &quot;criteria&quot;: {
+        &quot;shipping&quot;: &quot;Delivery status, delays, or speeding up a shipment&quot;,
+        &quot;refund&quot;: &quot;Refunds, returns, or cancelling an order&quot;,
+        &quot;product&quot;: &quot;Product features, usage, or quality questions&quot;,
+        &quot;other&quot;: &quot;Anything else&quot;
+      }
+    },
+    &quot;needs_human&quot;: {
+      &quot;type&quot;: &quot;noul&quot;,
+      &quot;instructions&quot;: &quot;Should this conversation be handed to a human agent right away?&quot;
+    },
+    &quot;urgency&quot;: {
+      &quot;type&quot;: &quot;score&quot;,
+      &quot;instructions&quot;: &quot;How urgent is the customer&#x27;</span>s request?<span class="hljs-string">&quot;,
+      &quot;</span>criteria<span class="hljs-string">&quot;: [
+        &quot;</span>It can <span class="hljs-built_in">wait</span> several days without upsetting the customer<span class="hljs-string">&quot;,
+        &quot;</span>It should be handled today<span class="hljs-string">&quot;,
+        &quot;</span>It must be handled within the hour or the customer will leave<span class="hljs-string">&quot;
+      ]
+    }
+  }
+}&#x27;</span></code></pre></div></div>
+    <div data-tab-panel hidden><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> json, os, urllib.request
+
+payload = json.loads(<span class="hljs-string">&quot;{\n  \&quot;model\&quot;: \&quot;jev-1.14.0\&quot;,\n  \&quot;state\&quot;: {\n    \&quot;channel\&quot;: \&quot;在线客服\&quot;,\n    \&quot;messages\&quot;: [\n      {\n        \&quot;from\&quot;: \&quot;用户\&quot;,\n        \&quot;text\&quot;: \&quot;我昨天买的耳机今天还没发货，明天就要出差了，能不能加急？不行就退款吧\&quot;\n      }\n    ]\n  },\n  \&quot;questions\&quot;: {\n    \&quot;department\&quot;: {\n      \&quot;type\&quot;: \&quot;choice\&quot;,\n      \&quot;instructions\&quot;: \&quot;Which team should handle this message?\&quot;,\n      \&quot;criteria\&quot;: {\n        \&quot;shipping\&quot;: \&quot;Delivery status, delays, or speeding up a shipment\&quot;,\n        \&quot;refund\&quot;: \&quot;Refunds, returns, or cancelling an order\&quot;,\n        \&quot;product\&quot;: \&quot;Product features, usage, or quality questions\&quot;,\n        \&quot;other\&quot;: \&quot;Anything else\&quot;\n      }\n    },\n    \&quot;needs_human\&quot;: {\n      \&quot;type\&quot;: \&quot;noul\&quot;,\n      \&quot;instructions\&quot;: \&quot;Should this conversation be handed to a human agent right away?\&quot;\n    },\n    \&quot;urgency\&quot;: {\n      \&quot;type\&quot;: \&quot;score\&quot;,\n      \&quot;instructions\&quot;: \&quot;How urgent is the customer&#x27;s request?\&quot;,\n      \&quot;criteria\&quot;: [\n        \&quot;It can wait several days without upsetting the customer\&quot;,\n        \&quot;It should be handled today\&quot;,\n        \&quot;It must be handled within the hour or the customer will leave\&quot;\n      ]\n    }\n  }\n}&quot;</span>)
+
+headers = {
+    <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">&quot;Bearer &quot;</span> + os.environ[<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>],
+    <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
+}
+req = urllib.request.Request(
+    <span class="hljs-string">&quot;https://api.typesafe.ai/v1/systemone&quot;</span>,
+    data=json.dumps(payload).encode(<span class="hljs-string">&quot;utf-8&quot;</span>),
+    headers=headers,
+    method=<span class="hljs-string">&quot;POST&quot;</span>,
+)
+<span class="hljs-built_in">print</span>(urllib.request.urlopen(req).read().decode(<span class="hljs-string">&quot;utf-8&quot;</span>))
+</code></pre></div></div>
+  </div>
+          <h3>返回</h3>
+          <div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.14.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;shipping&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.96</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;shipping&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.97</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;refund&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.03</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;product&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;other&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;needs_human&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.48</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;urgency&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.16</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.76</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;legend&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;It can wait several days without upsetting the customer&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;It should be handled today&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;It must be handled within the hour or the customer will leave&quot;</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.84</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.16</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">504</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">78</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+          <h3>人话解读</h3>
+          <ul class="answer-plain"><li>Choice：选了 shipping，置信度 0.96</li><li>Noul：「是」的概率 0.48</li><li>Score：档位 1（It should be handled today），分数 1.16，置信度 0.76</li></ul>
+          
+        </section>
+        
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/choice/">Choice（选择题）</a></li><li><a href="/docs/noul/">Noul（是非题）</a></li><li><a href="/docs/score/">Score（打分题）</a></li><li><a href="/docs/confidence/">置信度</a></li><li><a href="/docs/quickstart/">快速开始</a></li></ul>
+  </section>
+        <nav class="pager" aria-label="相邻场景">
+    <span></span>
+    <a class="pager-link is-next" href="/scenarios/moderation/"><span>下一个</span><strong>内容审核</strong></a>
+  </nav>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/scenarios/">场景</a>
+      <a href="/showcase/">案例</a>
+      <a href="/topics/llm-slm/">串联</a>
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/play/">小游戏</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

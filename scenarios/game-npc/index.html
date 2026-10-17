@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>游戏与机器人决策 · Jev 场景 · JevLand</title>
+<meta name="description" content="游戏与机器人决策：NPC 和机器人每一步都要做决定，用大模型太慢，写死规则又太僵 本页附一次真实调用，jev-1.14.0，1047 毫秒，433 个输入 token。">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/scenarios/game-npc/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="游戏与机器人决策 · Jev 场景 · JevLand">
+<meta property="og:description" content="游戏与机器人决策：NPC 和机器人每一步都要做决定，用大模型太慢，写死规则又太僵 本页附一次真实调用，jev-1.14.0，1047 毫秒，433 个输入 token。">
+<meta property="og:url" content="https://jevland.com/scenarios/game-npc/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-17">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="游戏与机器人决策 · Jev 场景 · JevLand">
+<meta name="twitter:description" content="游戏与机器人决策：NPC 和机器人每一步都要做决定，用大模型太慢，写死规则又太僵 本页附一次真实调用，jev-1.14.0，1047 毫秒，433 个输入 token。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"游戏与机器人决策","name":"游戏与机器人决策","url":"https://jevland.com/scenarios/game-npc/","inLanguage":"zh-CN","description":"游戏与机器人决策：NPC 和机器人每一步都要做决定，用大模型太慢，写死规则又太僵 本页附一次真实调用，jev-1.14.0，1047 毫秒，433 个输入 token。","dateModified":"2026-10-17","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"场景","item":"https://jevland.com/scenarios/"},{"@type":"ListItem","position":3,"name":"游戏与机器人决策","item":"https://jevland.com/scenarios/game-npc/"}]}]}</script>
+
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/scenarios/" aria-current="page">场景</a><a href="/showcase/">案例</a><a href="/topics/llm-slm/">串联</a><a href="/docs/">文档</a><a href="/guides/">教程</a><a href="/play/">小游戏</a><a class="nav-more" href="/news/">更新</a><a class="nav-more" href="/community/">社区</a><a class="nav-more" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block scenario-page">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/">首页</a> / <a href="/scenarios/">场景</a> / 游戏与机器人决策</p>
+        <h1>游戏与机器人决策</h1>
+        <p class="lead">把 Jev 当 NPC 和机器人每一步的决策开关，约 1 秒返回概率，后面接规则或大模型。</p>
+        <dl class="data-bar" data-scenario-stats data-model="jev-1.14.0" data-ms="1047" data-input-tokens="433" data-cost-usd="0.00001819" data-cost-per-1000="0.0182">
+    <div><dt>模型</dt><dd>jev-1.14.0</dd></div>
+    <div><dt>耗时</dt><dd>1047 ms</dd></div>
+    <div><dt>token</dt><dd>433</dd></div>
+    <div><dt>单次花费</dt><dd>$0.00001819</dd></div>
+    <div><dt>每千次</dt><dd>$0.018</dd></div>
+  </dl>
+        <div class="prose"><h2 id="痛点">痛点</h2>
+<p>NPC 和机器人每一步都要做决定。调大模型一次几百毫秒到几秒，玩家等不了。写成 if/else 又太僵，遇到新打法就崩。需要一个又快又能处理复杂 state 的判断层。</p>
+<h2 id="Jev-判断什么">Jev 判断什么</h2>
+<p>这次我跑的是一个像素冒险游戏的城门守卫场景。state（上下文状态）里写了游戏名、NPC 名、NPC 心情、玩家动作。两条题一起问。</p>
+<p>第一题 next_move 是 Choice（选择题），问 NPC 下一步怎么做。四个选项摆在面前：warn（再警告一次，继续挡门）、fight（直接动手）、call_guards（叫其他守卫来）、let_in（放行）。返回选了 call_guards，概率分别是 warn=0.27、fight=0.32、call_guards=0.41、let_in=0.0。置信度只有 0.21，说明模型自己也没太拿准，但 let_in 已经 0.0，可以直接排除。代码里拿到这个结果，概率最高的不是 let_in 就走对应分支；如果几个选项概率很接近，就走兜底逻辑。</p>
+<p>第二题 hostile 是 Noul（是非题），问玩家行为是否带敌意。返回「是」的概率 0.87，这次 0.87 离 0.5 很远，可以直接视为敌意行为触发。代码里用这个判断要不要走警告流程或战斗预备。</p>
+<h2 id="和大模型怎么配合">和大模型怎么配合</h2>
+<p>流程是 Jev 先判断，代码按返回的概率走规则。先看置信度或概率分布是不是够确定，确定就直接走规则，不调大模型。这次 call_guards 置信度只有 0.21，接近需要复核的边界，可以交给大模型或人工再确认一次。如果 hostile 那种 Noul 题直接给出 0.87 高置信度，后面规则就够了，不用再调大模型。</p>
+<p>耗时方面，模型 jev-1.14.0 这条调用 1047 毫秒，输入 433 个 token，花费 0.000018 美元，按这个算每 1000 次约 0.0182 美元。Jev 输出不收钱，只有输入 token 算钱。</p>
+<h2 id="上线前注意">上线前注意</h2>
+<ul>
+<li>题目用英文写，state 保留中文原文。Jev 对英文 question 训练过，混中文会拉低判断质量。</li>
+<li>阈值要用自己 20–30 条真实数据校准，文档里的 0.5、0.8 只是起点，不是默认值。</li>
+<li>置信度低（比如这次的 0.21），或者 Noul 题答案概率在 0.5 附近时，交给人或大模型复核，别让规则硬走。</li>
+<li>state 里要带上上下文的关键信号，比如玩家已经第三次闯门、手里拿着剑，这些直接决定了 hostile 和 next_move 的走向，少了关键信号判断会偏。</li>
+</ul>
+</div>
+        <section class="real-call" id="real-call" data-real-call>
+          <h2>真实调用</h2>
+          <h3>请求</h3>
+          <div class="code-tabs" data-tabs>
+    <div class="demo-tabs" role="tablist">
+      <button type="button" class="demo-tab is-active" data-tab aria-selected="true">curl</button>
+      <button type="button" class="demo-tab" data-tab aria-selected="false">Python</button>
+    </div>
+    <div data-tab-panel><div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">curl https://api.typesafe.ai/v1/systemone \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$TYPESAFE_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  -d <span class="hljs-string">&#x27;{
+  &quot;model&quot;: &quot;jev-1.14.0&quot;,
+  &quot;state&quot;: {
+    &quot;game&quot;: &quot;像素冒险游戏&quot;,
+    &quot;npc&quot;: &quot;城门守卫&quot;,
+    &quot;npc_mood&quot;: &quot;警惕&quot;,
+    &quot;player_action&quot;: &quot;玩家第三次试图不付钱直接闯进城门，手里拿着剑&quot;
+  },
+  &quot;questions&quot;: {
+    &quot;next_move&quot;: {
+      &quot;type&quot;: &quot;choice&quot;,
+      &quot;instructions&quot;: &quot;What should the NPC do next?&quot;,
+      &quot;criteria&quot;: {
+        &quot;warn&quot;: &quot;Give a final warning and keep blocking the gate&quot;,
+        &quot;fight&quot;: &quot;Attack the player&quot;,
+        &quot;call_guards&quot;: &quot;Call other guards for help&quot;,
+        &quot;let_in&quot;: &quot;Let the player in&quot;
+      }
+    },
+    &quot;hostile&quot;: {
+      &quot;type&quot;: &quot;noul&quot;,
+      &quot;instructions&quot;: &quot;Is the player behaving in a hostile way?&quot;
+    }
+  }
+}&#x27;</span></code></pre></div></div>
+    <div data-tab-panel hidden><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> json, os, urllib.request
+
+payload = json.loads(<span class="hljs-string">&quot;{\n  \&quot;model\&quot;: \&quot;jev-1.14.0\&quot;,\n  \&quot;state\&quot;: {\n    \&quot;game\&quot;: \&quot;像素冒险游戏\&quot;,\n    \&quot;npc\&quot;: \&quot;城门守卫\&quot;,\n    \&quot;npc_mood\&quot;: \&quot;警惕\&quot;,\n    \&quot;player_action\&quot;: \&quot;玩家第三次试图不付钱直接闯进城门，手里拿着剑\&quot;\n  },\n  \&quot;questions\&quot;: {\n    \&quot;next_move\&quot;: {\n      \&quot;type\&quot;: \&quot;choice\&quot;,\n      \&quot;instructions\&quot;: \&quot;What should the NPC do next?\&quot;,\n      \&quot;criteria\&quot;: {\n        \&quot;warn\&quot;: \&quot;Give a final warning and keep blocking the gate\&quot;,\n        \&quot;fight\&quot;: \&quot;Attack the player\&quot;,\n        \&quot;call_guards\&quot;: \&quot;Call other guards for help\&quot;,\n        \&quot;let_in\&quot;: \&quot;Let the player in\&quot;\n      }\n    },\n    \&quot;hostile\&quot;: {\n      \&quot;type\&quot;: \&quot;noul\&quot;,\n      \&quot;instructions\&quot;: \&quot;Is the player behaving in a hostile way?\&quot;\n    }\n  }\n}&quot;</span>)
+
+headers = {
+    <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">&quot;Bearer &quot;</span> + os.environ[<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>],
+    <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
+}
+req = urllib.request.Request(
+    <span class="hljs-string">&quot;https://api.typesafe.ai/v1/systemone&quot;</span>,
+    data=json.dumps(payload).encode(<span class="hljs-string">&quot;utf-8&quot;</span>),
+    headers=headers,
+    method=<span class="hljs-string">&quot;POST&quot;</span>,
+)
+<span class="hljs-built_in">print</span>(urllib.request.urlopen(req).read().decode(<span class="hljs-string">&quot;utf-8&quot;</span>))
+</code></pre></div></div>
+  </div>
+          <h3>返回</h3>
+          <div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.14.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;next_move&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;call_guards&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.21</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;warn&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.27</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;fight&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.32</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;call_guards&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.41</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;let_in&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;hostile&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.87</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">433</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">69</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+          <h3>人话解读</h3>
+          <ul class="answer-plain"><li>Choice：选了 call_guards，置信度 0.21</li><li>Noul：「是」的概率 0.87</li></ul>
+          
+        </section>
+        <section class="related-cases"><h2>相关案例</h2><div class="masonry masonry-sm"><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="game-npc">
+    <a class="case-cover" href="https://x.com/lillyguisnet/status/2111247553509437579" target="_blank" rel="noopener noreferrer" style="--scene:#F472B6" data-umami-event="case-video" data-umami-event-slug="jev-office-nav">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Jev 开到 TypeSafe 办公室</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jev-office-nav/">
+      <div class="case-item-head">
+        <time datetime="2026-10-17">2026-10-17</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>Jev 开到 TypeSafe 办公室</h3>
+      <p class="showcase-by">by lillyguisnet</p>
+      <p>演示：让 Jev 在只有局部路口信息时选路，看能不能开到 TypeSafe 办公室。</p>
+      <p class="jev-usage">Jev 判断：在局部路网里选择下一分支；原作者没有公开具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision game-npc">
+    <a class="case-cover" href="https://x.com/dotpem/status/2111171388405137714" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jevanimata">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>jevanimata</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jevanimata/">
+      <div class="case-item-head">
+        <time datetime="2026-10-16">2026-10-16</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>jevanimata</h3>
+      <p class="showcase-by">by Nathan LeClaire</p>
+      <p>演示游戏：把图贴进去，Jev 据此生成地形和生物，再按你的指令让它们动起来。</p>
+      <p class="jev-usage">Jev 判断：根据粘贴的图片生成地形和生物；原作者没有公开具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="game-npc">
+    <a class="case-cover" href="https://x.com/arithmoquine/status/2110879067323183239" target="_blank" rel="noopener noreferrer" style="--scene:#F472B6" data-umami-event="case-video" data-umami-event-slug="cannonball-run">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Jev 街牌闯美</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/cannonball-run/">
+      <div class="case-item-head">
+        <time datetime="2026-10-15">2026-10-15</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>Jev 街牌闯美</h3>
+      <p class="showcase-by">by henry</p>
+      <p>演示：只给目的地和当前街道名，Jev 在每个路口选方向，用街牌完成纽约到洛杉矶。</p>
+      <p class="jev-usage">Jev 判断：每个路口根据街牌和目的地选择行驶方向</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="vision game-npc">
+    <a class="case-cover" href="https://x.com/twid/status/2110871526547587148" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jev-dronecam">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>jev drone cam</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jev-dronecam/">
+      <div class="case-item-head">
+        <time datetime="2026-10-15">2026-10-15</time>
+        <span class="chip">开源项目</span>
+        
+      </div>
+      <h3>jev drone cam</h3>
+      <p class="showcase-by">by Todd Dailey</p>
+      <p>网页演示：给一张目标照片，无人机逐帧问 Jev 看见没、框在哪，再飞过去。</p>
+      <p class="jev-usage">Jev 判断：每帧并行一道 Box 框选目标和一道 Noul 判断目标是否在画面里</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="game-npc">
+    
+    <a class="masonry-body" href="/showcase/jev-fly-moon/">
+      <div class="case-item-head">
+        <time datetime="2026-09-19">2026-09-19</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>Jev, Fly Me to the Moon</h3>
+      <p class="showcase-by">by rahman yoonus</p>
+      <p>三维演示：Jev 控制火箭导航，页面上实时显示决策和置信度。</p>
+      <p class="jev-usage">Jev 判断：控制火箭导航决策，并展示置信度</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="实验文章" data-scenes="game-npc">
+    
+    <a class="masonry-body" href="/showcase/jev-poker/">
+      <div class="case-item-head">
+        <time datetime="2026-09-17">2026-09-17</time>
+        <span class="chip">实验文章</span>
+        
+      </div>
+      <h3>Jev 上牌桌</h3>
+      <p class="showcase-by">by backnotprop</p>
+      <p>实验文章：把德州扑克做成类型化问题，看 Jev 在牌桌上怎么选动作。</p>
+      <p class="jev-usage">Jev 判断：在扑克动作空间里做类型化决策</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article></div></section>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/choice/">Choice（选择题）</a></li><li><a href="/docs/noul/">Noul（是非题）</a></li><li><a href="/docs/confidence/">置信度</a></li><li><a href="/docs/quickstart/">快速开始</a></li></ul>
+  </section>
+        <nav class="pager" aria-label="相邻场景">
+    <a class="pager-link" href="/scenarios/extraction-check/"><span>上一个</span><strong>数据抽取校验</strong></a>
+    <a class="pager-link is-next" href="/scenarios/vision/"><span>下一个</span><strong>看图判断</strong></a>
+  </nav>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/scenarios/">场景</a>
+      <a href="/showcase/">案例</a>
+      <a href="/topics/llm-slm/">串联</a>
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/play/">小游戏</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

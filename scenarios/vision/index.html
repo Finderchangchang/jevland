@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>看图判断 · Jev 场景 · JevLand</title>
+<meta name="description" content="看图判断：截图、照片里的信息要先转成文字才能判断，多一道工序就多一份成本和延迟 本页附一次真实调用，jev-1.14.0，1700 毫秒，3540 个输入 token。">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/scenarios/vision/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="看图判断 · Jev 场景 · JevLand">
+<meta property="og:description" content="看图判断：截图、照片里的信息要先转成文字才能判断，多一道工序就多一份成本和延迟 本页附一次真实调用，jev-1.14.0，1700 毫秒，3540 个输入 token。">
+<meta property="og:url" content="https://jevland.com/scenarios/vision/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-17">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="看图判断 · Jev 场景 · JevLand">
+<meta name="twitter:description" content="看图判断：截图、照片里的信息要先转成文字才能判断，多一道工序就多一份成本和延迟 本页附一次真实调用，jev-1.14.0，1700 毫秒，3540 个输入 token。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"看图判断","name":"看图判断","url":"https://jevland.com/scenarios/vision/","inLanguage":"zh-CN","description":"看图判断：截图、照片里的信息要先转成文字才能判断，多一道工序就多一份成本和延迟 本页附一次真实调用，jev-1.14.0，1700 毫秒，3540 个输入 token。","dateModified":"2026-10-17","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"场景","item":"https://jevland.com/scenarios/"},{"@type":"ListItem","position":3,"name":"看图判断","item":"https://jevland.com/scenarios/vision/"}]}]}</script>
+
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/scenarios/" aria-current="page">场景</a><a href="/showcase/">案例</a><a href="/topics/llm-slm/">串联</a><a href="/docs/">文档</a><a href="/guides/">教程</a><a href="/play/">小游戏</a><a class="nav-more" href="/news/">更新</a><a class="nav-more" href="/community/">社区</a><a class="nav-more" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block scenario-page">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/">首页</a> / <a href="/scenarios/">场景</a> / 看图判断</p>
+        <h1>看图判断</h1>
+        <p class="lead">截图交给 Jev 直接判，省掉先识别再判断两步。</p>
+        <dl class="data-bar" data-scenario-stats data-model="jev-1.14.0" data-ms="1700" data-input-tokens="3540" data-cost-usd="0.00014868" data-cost-per-1000="0.1487">
+    <div><dt>模型</dt><dd>jev-1.14.0</dd></div>
+    <div><dt>耗时</dt><dd>1700 ms</dd></div>
+    <div><dt>token</dt><dd>3540</dd></div>
+    <div><dt>单次花费</dt><dd>$0.00014868</dd></div>
+    <div><dt>每千次</dt><dd>$0.149</dd></div>
+  </dl>
+        <div class="prose"><h2 id="痛点">痛点</h2>
+<p>截图、照片要做判断时，原来要先识别成文字才能处理，这中间多了一道工序、多了一份成本和延迟，文字识别这一步本身又会引入新的幻觉。截图本来就够看明白的事，硬是被拆成两步。</p>
+<h2 id="Jev-判断什么">Jev 判断什么</h2>
+<p>这次给 Jev 的 state 是 {&quot;app&quot;: &quot;聊天软件截图&quot;, &quot;screenshot&quot;: &quot;chat-shot&quot;}，screenshot 是图片资源，三道题并行判。</p>
+<p>题目 last_sender 是 Choice 题型，问 <code>screenshot</code> 里最底下那条消息是谁发的，选项 {&quot;them&quot;: &quot;对方（左侧气泡）&quot;, &quot;me&quot;: &quot;我（右侧气泡）&quot;}。这次返回 choice 是 them，对应概率 them=1.0、me=0.0，置信度 1.0。代码侧直接读 choice 拿到 &quot;them&quot;，对应概率在置信度不够时做兜底。</p>
+<p>题目 upset 是 Noul 题型，问 <code>screenshot</code> 里的对方是不是对我不满。这次返回「是」的概率 0.95；Noul 题型返回的是「是」这一侧的概率，越接近 1 越倾向「是」。代码侧按这个概率跟自己设的阈值比。</p>
+<p>题目 input_box 是 Box 题型，问 <code>screenshot</code> 底部那条消息输入框的位置。这次返回框的坐标 上边 0.92、下边 0.98、左边 0.04、右边 0.83，都是占图片宽高的比例，置信度 0.89。代码侧拿这四个值就能换算成像素坐标，做裁图、蒙版都行。Box 题型现在只有 Jev 1.14 有。</p>
+<h2 id="和大模型怎么配合">和大模型怎么配合</h2>
+<p>Jev 先判，代码按结果再分流。last_sender 这种结论明确、置信度又高的（这次 1.0），走规则不用调大模型。upset 这种主观题，置信度高且远超自己阈值的（这次 0.95），按 Noul 的概率直接走处置（比如自动标情绪警示）；靠近阈值或置信度不够的，把 state 和 Jev 的判断一起给 LLM 复核，或者直接推给人工。input_box 拿到坐标后，下游的贴表情、读屏这些动作可以直接对图片区域做，比把整张图丢给大模型省。</p>
+<p>这次调用耗时 1700 毫秒，花费 0.00014868 美元，按这个算每 1000 次约 0.1487 美元。Jev 按输入 token 计，每百万输入 0.042 美元，输出不收钱。</p>
+<h2 id="上线前注意">上线前注意</h2>
+<ul>
+<li>题目用英文写，state 里的中文原文保留；state 的字段名就是题目里 Jev 引用上下文时用的变量名。</li>
+<li>阈值要用自己 20–30 条真实数据校准，别照搬默认。</li>
+<li>置信度低或 Noul 概率落在 0.5 附近的题，交给人或大模型复核，不要硬切分支。</li>
+<li>这次要看图，请求头要加 TypeSafe-Danger-Zone-Images: true，图片宽高都要在 256–1568 像素之间，超出会直接报错；Box 题型现在只在 Jev 1.14 上有，模型升级前确认下还在不在。</li>
+</ul>
+</div>
+        <section class="real-call" id="real-call" data-real-call>
+          <h2>真实调用</h2>
+          <h3>请求</h3>
+          <div class="code-tabs" data-tabs>
+    <div class="demo-tabs" role="tablist">
+      <button type="button" class="demo-tab is-active" data-tab aria-selected="true">curl</button>
+      <button type="button" class="demo-tab" data-tab aria-selected="false">Python</button>
+    </div>
+    <div data-tab-panel><div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">curl https://api.typesafe.ai/v1/systemone \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$TYPESAFE_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  -H <span class="hljs-string">&quot;TypeSafe-Danger-Zone-Images: true&quot;</span> \
+  -d <span class="hljs-string">&#x27;{
+  &quot;model&quot;: &quot;jev-1.14.0&quot;,
+  &quot;state&quot;: {
+    &quot;app&quot;: &quot;聊天软件截图&quot;,
+    &quot;screenshot&quot;: &quot;chat-shot&quot;
+  },
+  &quot;questions&quot;: {
+    &quot;last_sender&quot;: {
+      &quot;type&quot;: &quot;choice&quot;,
+      &quot;instructions&quot;: &quot;Who sent the latest (bottom-most) message in `screenshot`?&quot;,
+      &quot;criteria&quot;: {
+        &quot;them&quot;: &quot;The other person (bubbles on the left)&quot;,
+        &quot;me&quot;: &quot;Me (bubbles on the right)&quot;
+      }
+    },
+    &quot;upset&quot;: {
+      &quot;type&quot;: &quot;noul&quot;,
+      &quot;instructions&quot;: &quot;Is the other person in `screenshot` upset with me?&quot;
+    },
+    &quot;input_box&quot;: {
+      &quot;type&quot;: &quot;box&quot;,
+      &quot;instructions&quot;: &quot;the message input box at the bottom of `screenshot`&quot;
+    }
+  },
+  &quot;assets&quot;: {
+    &quot;chat-shot&quot;: {
+      &quot;type&quot;: &quot;image&quot;,
+      &quot;format&quot;: &quot;png&quot;,
+      &quot;data_base64&quot;: &quot;&lt;图片的 base64&gt;&quot;
+    }
+  }
+}&#x27;</span></code></pre></div></div>
+    <div data-tab-panel hidden><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> json, os, urllib.request
+
+payload = json.loads(<span class="hljs-string">&quot;{\n  \&quot;model\&quot;: \&quot;jev-1.14.0\&quot;,\n  \&quot;state\&quot;: {\n    \&quot;app\&quot;: \&quot;聊天软件截图\&quot;,\n    \&quot;screenshot\&quot;: \&quot;chat-shot\&quot;\n  },\n  \&quot;questions\&quot;: {\n    \&quot;last_sender\&quot;: {\n      \&quot;type\&quot;: \&quot;choice\&quot;,\n      \&quot;instructions\&quot;: \&quot;Who sent the latest (bottom-most) message in `screenshot`?\&quot;,\n      \&quot;criteria\&quot;: {\n        \&quot;them\&quot;: \&quot;The other person (bubbles on the left)\&quot;,\n        \&quot;me\&quot;: \&quot;Me (bubbles on the right)\&quot;\n      }\n    },\n    \&quot;upset\&quot;: {\n      \&quot;type\&quot;: \&quot;noul\&quot;,\n      \&quot;instructions\&quot;: \&quot;Is the other person in `screenshot` upset with me?\&quot;\n    },\n    \&quot;input_box\&quot;: {\n      \&quot;type\&quot;: \&quot;box\&quot;,\n      \&quot;instructions\&quot;: \&quot;the message input box at the bottom of `screenshot`\&quot;\n    }\n  },\n  \&quot;assets\&quot;: {\n    \&quot;chat-shot\&quot;: {\n      \&quot;type\&quot;: \&quot;image\&quot;,\n      \&quot;format\&quot;: \&quot;png\&quot;,\n      \&quot;data_base64\&quot;: \&quot;&lt;图片的 base64&gt;\&quot;\n    }\n  }\n}&quot;</span>)
+
+headers = {
+    <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">&quot;Bearer &quot;</span> + os.environ[<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>],
+    <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
+    <span class="hljs-string">&quot;TypeSafe-Danger-Zone-Images&quot;</span>: <span class="hljs-string">&quot;true&quot;</span>,
+}
+req = urllib.request.Request(
+    <span class="hljs-string">&quot;https://api.typesafe.ai/v1/systemone&quot;</span>,
+    data=json.dumps(payload).encode(<span class="hljs-string">&quot;utf-8&quot;</span>),
+    headers=headers,
+    method=<span class="hljs-string">&quot;POST&quot;</span>,
+)
+<span class="hljs-built_in">print</span>(urllib.request.urlopen(req).read().decode(<span class="hljs-string">&quot;utf-8&quot;</span>))
+</code></pre></div></div>
+  </div>
+          <h3>返回</h3>
+          <div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.14.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;last_sender&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;them&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;them&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;me&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span>
+      <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;upset&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.95</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;input_box&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;box&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;box&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;top&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.92</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;bottom&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.98</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;left&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.04</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;right&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.83</span>
+      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.89</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3540</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">67</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+          <h3>人话解读</h3>
+          <ul class="answer-plain"><li>Choice：选了 them，置信度 1.00</li><li>Noul：「是」的概率 0.95</li><li>Box：已框出，置信度 0.89</li></ul>
+          <figure class="vision-shot">
+    <img src="/assets/scenarios/vision-chat.png" alt="看图判断 截图">
+    <span class="vision-box" style="top:92.00%;left:4.00%;width:79.00%;height:6.00%"></span>
+  </figure>
+        </section>
+        <section class="related-cases"><h2>相关案例</h2><div class="masonry masonry-sm"><article class="card masonry-card" data-case-item data-kind="实验文章" data-scenes="vision">
+    <a class="case-cover" href="https://x.com/verysmallwoods/status/2111254762062540967" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jev-box-eval">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Box 框选实测</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jev-box-eval/">
+      <div class="case-item-head">
+        <time datetime="2026-10-17">2026-10-17</time>
+        <span class="chip">实验文章</span>
+        
+      </div>
+      <h3>Box 框选实测</h3>
+      <p class="showcase-by">by VerySmallWoods</p>
+      <p>实验：同一张自然照片连测三次 Box，再加一张几何控制图，把返回坐标画回原图。</p>
+      <p class="jev-usage">Jev 判断：用 Box 标出图中目标位置，并观察目标不存在时仍会返回坐标</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision rag-filter">
+    <a class="case-cover" href="https://x.com/techemmyleke/status/2111256290013896949" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="scene-finder">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Scene Finder</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/scene-finder/">
+      <div class="case-item-head">
+        <time datetime="2026-10-17">2026-10-17</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>Scene Finder</h3>
+      <p class="showcase-by">by Emmy</p>
+      <p>开源演示：用自然语言描述电影镜头，Jev 在片子里找出对应时间点。</p>
+      <p class="jev-usage">Jev 判断：按文字描述判断片段是否匹配目标镜头；原作者没有公开具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision extraction-check">
+    <a class="case-cover" href="https://x.com/dfinke/status/2111184997457788960" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jev-table-extract">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>截图出表</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jev-table-extract/">
+      <div class="case-item-head">
+        <time datetime="2026-10-16">2026-10-16</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>截图出表</h3>
+      <p class="showcase-by">by Doug Finke</p>
+      <p>演示：Jev 在截图里找出表格、跳过图表，再交给生成式模型抽出行列。</p>
+      <p class="jev-usage">Jev 判断：在截图里找出表格区域并跳过图表；原作者没有公开具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/extraction-check/">数据抽取校验</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision">
+    <a class="case-cover" href="https://x.com/nikhil0360/status/2111179477342622102" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="box-zoo">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>卡通动物园 Box 演示</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/box-zoo/">
+      <div class="case-item-head">
+        <time datetime="2026-10-16">2026-10-16</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>卡通动物园 Box 演示</h3>
+      <p class="showcase-by">by nikhil0360</p>
+      <p>演示：对着一张卡通动物园图用自然语言提问，Jev 用 Box 标出目标位置。</p>
+      <p class="jev-usage">Jev 判断：用 Box 在图片上标出查询目标的位置</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision game-npc">
+    <a class="case-cover" href="https://x.com/dotpem/status/2111171388405137714" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jevanimata">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>jevanimata</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jevanimata/">
+      <div class="case-item-head">
+        <time datetime="2026-10-16">2026-10-16</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>jevanimata</h3>
+      <p class="showcase-by">by Nathan LeClaire</p>
+      <p>演示游戏：把图贴进去，Jev 据此生成地形和生物，再按你的指令让它们动起来。</p>
+      <p class="jev-usage">Jev 判断：根据粘贴的图片生成地形和生物；原作者没有公开具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="官方示例" data-scenes="rag-filter vision">
+    <a class="case-cover" href="https://x.com/typesafeai/status/2111204284058726801" target="_blank" rel="noopener noreferrer" style="--scene:#FFB547" data-umami-event="case-video" data-umami-event-slug="typesafe-cmd-f">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>JevDay：满世界 cmd-f</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/typesafe-cmd-f/">
+      <div class="case-item-head">
+        <time datetime="2026-10-16">2026-10-16</time>
+        <span class="chip">官方示例</span>
+        
+      </div>
+      <h3>JevDay：满世界 cmd-f</h3>
+      <p class="showcase-by">by TypeSafe</p>
+      <p>官方演示回放：不建索引，用 Jev 在文件和画面里找你要的东西。</p>
+      <p class="jev-usage">Jev 判断：在未建索引的内容里判断哪一段或哪一处是你要找的</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a></div></div>
+  </article></div></section>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/choice/">Choice（选择题）</a></li><li><a href="/docs/noul/">Noul（是非题）</a></li><li><a href="/docs/box/">Box（框选题）</a></li><li><a href="/docs/images/">图片</a></li><li><a href="/docs/confidence/">置信度</a></li><li><a href="/docs/quickstart/">快速开始</a></li></ul>
+  </section>
+        <nav class="pager" aria-label="相邻场景">
+    <a class="pager-link" href="/scenarios/game-npc/"><span>上一个</span><strong>游戏与机器人决策</strong></a>
+    <span></span>
+  </nav>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/scenarios/">场景</a>
+      <a href="/showcase/">案例</a>
+      <a href="/topics/llm-slm/">串联</a>
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/play/">小游戏</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

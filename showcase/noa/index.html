@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noa · Jev 案例 · JevLand</title>
+<meta name="description" content="开源 Chrome 扩展：Claude 规划任务，Jev 每一步选出要点击或输入的页面元素。。每一步选出要点击或输入的页面元素">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/showcase/noa/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="Noa · Jev 案例 · JevLand">
+<meta property="og:description" content="开源 Chrome 扩展：Claude 规划任务，Jev 每一步选出要点击或输入的页面元素。。每一步选出要点击或输入的页面元素">
+<meta property="og:url" content="https://jevland.com/showcase/noa/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+<meta property="article:published_time" content="2026-10-12">
+<meta property="article:modified_time" content="2026-10-12">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="Noa · Jev 案例 · JevLand">
+<meta name="twitter:description" content="开源 Chrome 扩展：Claude 规划任务，Jev 每一步选出要点击或输入的页面元素。。每一步选出要点击或输入的页面元素">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"SoftwareSourceCode","name":"Noa","headline":"Noa","url":"https://jevland.com/showcase/noa/","inLanguage":"zh-CN","description":"开源 Chrome 扩展：Claude 规划任务，Jev 每一步选出要点击或输入的页面元素。。每一步选出要点击或输入的页面元素","datePublished":"2026-10-12","author":{"@type":"Person","name":"m0dE","url":"https://x.com/bboym0dE"},"isPartOf":{"@id":"https://jevland.com/#website"},"codeRepository":"https://github.com/m0dE/noa"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"案例","item":"https://jevland.com/showcase/"},{"@type":"ListItem","position":3,"name":"Noa","item":"https://jevland.com/showcase/noa/"}]}]}</script>
+
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/scenarios/">场景</a><a href="/showcase/" aria-current="page">案例</a><a href="/topics/llm-slm/">串联</a><a href="/docs/">文档</a><a href="/guides/">教程</a><a href="/play/">小游戏</a><a class="nav-more" href="/news/">更新</a><a class="nav-more" href="/community/">社区</a><a class="nav-more" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block case-page">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/">首页</a> / <a href="/showcase/">案例</a></p>
+        <h1>Noa</h1>
+        <div class="case-meta">
+          <span>作者 <a href="https://x.com/bboym0dE" target="_blank" rel="noopener noreferrer">m0dE</a></span>
+          <time datetime="2026-10-12">2026-10-12</time>
+          <span class="chip">开源项目</span>
+          
+          <span class="chip">开源</span><span class="chip">浏览器</span><span class="chip">Chrome</span><span class="chip">Agent</span>
+        </div>
+        <div class="tag-row case-scenes"><a class="chip scene-chip" href="/scenarios/agent-guardrail/">智能体护栏</a></div>
+        <aside class="jev-callout"><p class="kicker">Jev 在里面判断什么</p><p>每一步选出要点击或输入的页面元素</p></aside>
+        <div class="prose"><h2 id="它是什么">它是什么</h2>
+<p>Noa 是一个开源 Chrome 扩展：你在自己的浏览器里下任务，Claude 负责规划，Jev 负责每一步点哪里、往哪填。站点是 <a href="https://noa.bot" target="_blank" rel="noopener noreferrer">noa.bot</a>，源码 MIT，也上了 Chrome 网上应用店。作者 m0dE 在 2026-10-16 发了约 70 秒的演示视频，称比 Claude in Chrome 大约快一倍。</p>
+<p>仓库创建于 2026-10-12。没有 Jev 密钥时，登录后的付费额度会走托管 Jev；否则每一步退回给 Claude。</p>
+<h2 id="Jev-在里面做什么判断">Jev 在里面做什么判断</h2>
+<p>站点写：Claude 描述这一步（例如「点击 Post」），Jev 在零点几秒内选出元素。侧栏会显示这次挑选、置信度和耗时。原作者没有公开 Choice / Noul 字段名，从「选出要点击的元素」对应 Choice（选择题）。</p>
+<h2 id="怎么试">怎么试</h2>
+<p>官网：<a href="https://noa.bot" target="_blank" rel="noopener noreferrer">noa.bot</a>。源码：<a href="https://github.com/m0dE/noa" target="_blank" rel="noopener noreferrer">github.com/m0dE/noa</a>。演示视频：<a href="https://x.com/bboym0dE/status/2110906484783809023" target="_blank" rel="noopener noreferrer">X @bboym0dE</a>。</p>
+</div>
+        <div class="case-actions">
+          <a class="btn" href="https://x.com/bboym0dE/status/2110906484783809023" target="_blank" rel="noopener noreferrer" data-umami-event="case-video" data-umami-event-slug="noa">▶ 在 X 上看演示视频</a>
+          <a class="btn btn-ghost" href="https://github.com/m0dE/noa" target="_blank" rel="noopener noreferrer" data-umami-event="case-source" data-umami-event-slug="noa">查看原帖 / 来源 ↗</a>
+          <a class="btn btn-ghost" href="https://noa.bot" target="_blank" rel="noopener noreferrer" data-umami-event="case-project" data-umami-event-slug="noa">项目主页 ↗</a>
+          <a class="btn btn-ghost" href="https://github.com/m0dE/noa" target="_blank" rel="noopener noreferrer" data-umami-event="github-star" data-umami-event-slug="noa" data-umami-event-repo="m0dE/noa">GitHub ↗</a><p class="stars" hidden>★ <span data-stars data-repo="m0dE/noa"></span></p>
+        </div>
+        <nav class="pager" aria-label="相邻案例">
+    <a class="pager-link" href="/showcase/tab/"><span>上一个</span><strong>Tab</strong></a>
+    <a class="pager-link is-next" href="/showcase/jev-browser-wingman/"><span>下一个</span><strong>jev-browser-wingman</strong></a>
+  </nav>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/confidence/">置信度</a></li><li><a href="/docs/quickstart/">快速开始</a></li><li><a href="/docs/primitives/">题型总览</a></li></ul>
+  </section>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/scenarios/">场景</a>
+      <a href="/showcase/">案例</a>
+      <a href="/topics/llm-slm/">串联</a>
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/play/">小游戏</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

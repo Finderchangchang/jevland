@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>检索结果过滤 · Jev 场景 · JevLand</title>
+<meta name="description" content="检索结果过滤：检索回来的段落一半不相关，全塞给大模型既费 token，又容易答偏 本页附一次真实调用，jev-1.14.0，1113 毫秒，444 个输入 token。">
+<meta name="author" content="杰哥">
+<meta name="theme-color" content="#07080B">
+<meta name="color-scheme" content="dark">
+
+
+<link rel="canonical" href="https://jevland.com/scenarios/rag-filter/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
+<meta property="og:title" content="检索结果过滤 · Jev 场景 · JevLand">
+<meta property="og:description" content="检索结果过滤：检索回来的段落一半不相关，全塞给大模型既费 token，又容易答偏 本页附一次真实调用，jev-1.14.0，1113 毫秒，444 个输入 token。">
+<meta property="og:url" content="https://jevland.com/scenarios/rag-filter/">
+<meta property="og:image" content="https://jevland.com/assets/og.png">
+
+<meta property="article:modified_time" content="2026-10-17">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jev_chat">
+<meta name="twitter:title" content="检索结果过滤 · Jev 场景 · JevLand">
+<meta name="twitter:description" content="检索结果过滤：检索回来的段落一半不相关，全塞给大模型既费 token，又容易答偏 本页附一次真实调用，jev-1.14.0，1113 毫秒，444 个输入 token。">
+<meta name="twitter:image" content="https://jevland.com/assets/og.png">
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jevland.com/#website","name":"JevLand","url":"https://jevland.com/","inLanguage":"zh-CN","description":"TypeSafe Jev 判断模型的非官方中文社区：中文文档、实战教程、版本更新速递。","publisher":{"@id":"https://jevland.com/#publisher"}},{"@type":"Organization","@id":"https://jevland.com/#publisher","name":"JevLand","url":"https://jevland.com/"},{"@type":"Person","@id":"https://jevland.com/#author","name":"杰哥","url":"https://x.com/jev_chat","description":"jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。","sameAs":["https://x.com/jev_chat","https://github.com/Finderchangchang"]},{"@type":"TechArticle","headline":"检索结果过滤","name":"检索结果过滤","url":"https://jevland.com/scenarios/rag-filter/","inLanguage":"zh-CN","description":"检索结果过滤：检索回来的段落一半不相关，全塞给大模型既费 token，又容易答偏 本页附一次真实调用，jev-1.14.0，1113 毫秒，444 个输入 token。","dateModified":"2026-10-17","author":{"@id":"https://jevland.com/#author"},"publisher":{"@id":"https://jevland.com/#publisher"},"isPartOf":{"@id":"https://jevland.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://jevland.com/"},{"@type":"ListItem","position":2,"name":"场景","item":"https://jevland.com/scenarios/"},{"@type":"ListItem","position":3,"name":"检索结果过滤","item":"https://jevland.com/scenarios/rag-filter/"}]}]}</script>
+
+<script defer src="https://umami.jisikeji.cn/script.js" data-website-id="011c7f7c-2508-4efe-88f3-433ad9b18ca1" data-domains="jevland.com"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="JevLand 首页">
+      <img src="/assets/favicon.svg" width="36" height="36" alt="">
+      <span>
+        <span class="brand-name">JevLand</span>
+        <span class="brand-note">非官方中文社区</span>
+      </span>
+    </a>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/scenarios/" aria-current="page">场景</a><a href="/showcase/">案例</a><a href="/topics/llm-slm/">串联</a><a href="/docs/">文档</a><a href="/guides/">教程</a><a href="/play/">小游戏</a><a class="nav-more" href="/news/">更新</a><a class="nav-more" href="/community/">社区</a><a class="nav-more" href="/about/">关于</a></nav>
+    <div class="header-actions">
+      <button class="search-btn" type="button" data-search-open>
+        <span class="search-label">搜索</span>
+        <kbd data-search-hotkey>Ctrl K</kbd>
+      </button>
+      <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="search-overlay" data-search-modal hidden>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="搜索">
+    <input type="search" data-search-input placeholder="搜索文档和教程…" autocomplete="off">
+    <ul class="search-results" data-search-results></ul>
+    <p class="search-hint">输入关键词即时过滤 · ↑↓ 选择 · Enter 跳转 · Esc 关闭</p>
+  </div>
+</div>
+<main id="main"><div class="container page-block scenario-page">
+      <article class="docs-main">
+        <p class="breadcrumb"><a href="/">首页</a> / <a href="/scenarios/">场景</a> / 检索结果过滤</p>
+        <h1>检索结果过滤</h1>
+        <p class="lead">让 Jev 先筛一遍，省 token 也防答偏</p>
+        <dl class="data-bar" data-scenario-stats data-model="jev-1.14.0" data-ms="1113" data-input-tokens="444" data-cost-usd="0.00001865" data-cost-per-1000="0.0186">
+    <div><dt>模型</dt><dd>jev-1.14.0</dd></div>
+    <div><dt>耗时</dt><dd>1113 ms</dd></div>
+    <div><dt>token</dt><dd>444</dd></div>
+    <div><dt>单次花费</dt><dd>$0.00001865</dd></div>
+    <div><dt>每千次</dt><dd>$0.019</dd></div>
+  </dl>
+        <div class="prose"><h2 id="痛点">痛点</h2>
+<p>检索回来的段落常常一半都不相关，全塞给大模型既费 token，又容易让答案跑偏。在做 RAG 这类功能时，过滤这一步直接决定后续成本和质量。</p>
+<h2 id="Jev-判断什么">Jev 判断什么</h2>
+<p>这次我用 Noul（是非题）题型，针对 query 和每个 passage 单独出一道题，让 Jev 判定这段内容对回答 query 是否有帮助。</p>
+<p><strong>p1_answers</strong>：问「Does passage <code>passages.p1</code> help answer the query?」。返回「是」的概率（probability）为 0.97。p1 直接写了 Jev 的计费方式，是回答价格问题的关键段落，应当保留。</p>
+<p><strong>p2_answers</strong>：问「Does passage <code>passages.p2</code> help answer the query?」。返回「是」的概率为 0.07。p2 只解释 Jev 是什么，跟价格无关，应当过滤掉。</p>
+<p><strong>p3_answers</strong>：问「Does passage <code>passages.p3</code> help answer the query?」。返回「是」的概率为 0.09。p3 只给了一个模型名，跟价格无关，应当过滤掉。</p>
+<p>代码侧拿到这三个结果，按阈值（比如 0.5）切一刀：高于阈值的保留，低于的丢弃。</p>
+<h2 id="和大模型怎么配合">和大模型怎么配合</h2>
+<p>流程是 Jev 先判断，代码再按结果分流。概率高的段落拼成上下文发给大模型，让它基于这些材料生成最终答案；概率低的直接丢掉，不进上下文。</p>
+<p>还有两种情况可以完全跳过调用大模型：一是所有段落都被判否，直接返回「无法回答」之类的兜底；二是只剩一两条高置信段落、且用户问题很明确，可以把段落原文直接当作答案。</p>
+<p>这批 3 段判断在 jev-1.14.0 上跑了 1113 毫秒，输入 444 个 token，花费 0.000019 美元，按这个折算每 1000 次约 0.0186 美元，比把全量段落塞给大模型便宜得多。</p>
+<h2 id="上线前注意">上线前注意</h2>
+<ul>
+<li>题目用英文写，state（上下文状态）里的 query 和 passages 保留中文原文，Jev 对中英混合 state 都能处理。</li>
+<li>阈值要用自己 20–30 条真实数据校准，先看分布再定，不要拍脑袋用 0.5。</li>
+<li>概率落在 0.5 附近、置信度低，或者 Noul 结果本身分歧大时，不要硬走规则，交给人或大模型复核。</li>
+<li>题目里写明字段路径，比如 <code>passages.p1</code>，让 Jev 知道评的是哪一段，避免它自作主张去评整段。</li>
+</ul>
+</div>
+        <section class="real-call" id="real-call" data-real-call>
+          <h2>真实调用</h2>
+          <h3>请求</h3>
+          <div class="code-tabs" data-tabs>
+    <div class="demo-tabs" role="tablist">
+      <button type="button" class="demo-tab is-active" data-tab aria-selected="true">curl</button>
+      <button type="button" class="demo-tab" data-tab aria-selected="false">Python</button>
+    </div>
+    <div data-tab-panel><div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">curl https://api.typesafe.ai/v1/systemone \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$TYPESAFE_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  -d <span class="hljs-string">&#x27;{
+  &quot;model&quot;: &quot;jev-1.14.0&quot;,
+  &quot;state&quot;: {
+    &quot;query&quot;: &quot;Jev 的价格是多少？&quot;,
+    &quot;passages&quot;: {
+      &quot;p1&quot;: &quot;Jev 按输入 token 计费，每百万 token 0.042 美元，输出不收费。&quot;,
+      &quot;p2&quot;: &quot;Jev 是 TypeSafe 推出的判断模型，不生成文字。&quot;,
+      &quot;p3&quot;: &quot;OpenRouter 上的模型名是 typesafe/jev-1.14。&quot;
+    }
+  },
+  &quot;questions&quot;: {
+    &quot;p1_answers&quot;: {
+      &quot;type&quot;: &quot;noul&quot;,
+      &quot;instructions&quot;: &quot;Does passage `passages.p1` help answer the query?&quot;
+    },
+    &quot;p2_answers&quot;: {
+      &quot;type&quot;: &quot;noul&quot;,
+      &quot;instructions&quot;: &quot;Does passage `passages.p2` help answer the query?&quot;
+    },
+    &quot;p3_answers&quot;: {
+      &quot;type&quot;: &quot;noul&quot;,
+      &quot;instructions&quot;: &quot;Does passage `passages.p3` help answer the query?&quot;
+    }
+  }
+}&#x27;</span></code></pre></div></div>
+    <div data-tab-panel hidden><div class="code-block"><div class="code-bar"><span class="code-lang">python</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-keyword">import</span> json, os, urllib.request
+
+payload = json.loads(<span class="hljs-string">&quot;{\n  \&quot;model\&quot;: \&quot;jev-1.14.0\&quot;,\n  \&quot;state\&quot;: {\n    \&quot;query\&quot;: \&quot;Jev 的价格是多少？\&quot;,\n    \&quot;passages\&quot;: {\n      \&quot;p1\&quot;: \&quot;Jev 按输入 token 计费，每百万 token 0.042 美元，输出不收费。\&quot;,\n      \&quot;p2\&quot;: \&quot;Jev 是 TypeSafe 推出的判断模型，不生成文字。\&quot;,\n      \&quot;p3\&quot;: \&quot;OpenRouter 上的模型名是 typesafe/jev-1.14。\&quot;\n    }\n  },\n  \&quot;questions\&quot;: {\n    \&quot;p1_answers\&quot;: {\n      \&quot;type\&quot;: \&quot;noul\&quot;,\n      \&quot;instructions\&quot;: \&quot;Does passage `passages.p1` help answer the query?\&quot;\n    },\n    \&quot;p2_answers\&quot;: {\n      \&quot;type\&quot;: \&quot;noul\&quot;,\n      \&quot;instructions\&quot;: \&quot;Does passage `passages.p2` help answer the query?\&quot;\n    },\n    \&quot;p3_answers\&quot;: {\n      \&quot;type\&quot;: \&quot;noul\&quot;,\n      \&quot;instructions\&quot;: \&quot;Does passage `passages.p3` help answer the query?\&quot;\n    }\n  }\n}&quot;</span>)
+
+headers = {
+    <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">&quot;Bearer &quot;</span> + os.environ[<span class="hljs-string">&quot;TYPESAFE_API_KEY&quot;</span>],
+    <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
+}
+req = urllib.request.Request(
+    <span class="hljs-string">&quot;https://api.typesafe.ai/v1/systemone&quot;</span>,
+    data=json.dumps(payload).encode(<span class="hljs-string">&quot;utf-8&quot;</span>),
+    headers=headers,
+    method=<span class="hljs-string">&quot;POST&quot;</span>,
+)
+<span class="hljs-built_in">print</span>(urllib.request.urlopen(req).read().decode(<span class="hljs-string">&quot;utf-8&quot;</span>))
+</code></pre></div></div>
+  </div>
+          <h3>返回</h3>
+          <div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jev-1.14.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;p1_answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.97</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;p2_answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.07</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;p3_answers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.09</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;usage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;input_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">444</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;output_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">58</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+          <h3>人话解读</h3>
+          <ul class="answer-plain"><li>Noul：「是」的概率 0.97</li><li>Noul：「是」的概率 0.07</li><li>Noul：「是」的概率 0.09</li></ul>
+          
+        </section>
+        <section class="related-cases"><h2>相关案例</h2><div class="masonry masonry-sm"><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision rag-filter">
+    <a class="case-cover" href="https://x.com/techemmyleke/status/2111256290013896949" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="scene-finder">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Scene Finder</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/scene-finder/">
+      <div class="case-item-head">
+        <time datetime="2026-10-17">2026-10-17</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>Scene Finder</h3>
+      <p class="showcase-by">by Emmy</p>
+      <p>开源演示：用自然语言描述电影镜头，Jev 在片子里找出对应时间点。</p>
+      <p class="jev-usage">Jev 判断：按文字描述判断片段是否匹配目标镜头；原作者没有公开具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="官方示例" data-scenes="rag-filter vision">
+    <a class="case-cover" href="https://x.com/typesafeai/status/2111204284058726801" target="_blank" rel="noopener noreferrer" style="--scene:#FFB547" data-umami-event="case-video" data-umami-event-slug="typesafe-cmd-f">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>JevDay：满世界 cmd-f</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/typesafe-cmd-f/">
+      <div class="case-item-head">
+        <time datetime="2026-10-16">2026-10-16</time>
+        <span class="chip">官方示例</span>
+        
+      </div>
+      <h3>JevDay：满世界 cmd-f</h3>
+      <p class="showcase-by">by TypeSafe</p>
+      <p>官方演示回放：不建索引，用 Jev 在文件和画面里找你要的东西。</p>
+      <p class="jev-usage">Jev 判断：在未建索引的内容里判断哪一段或哪一处是你要找的</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="rag-filter">
+    <a class="case-cover" href="https://x.com/rayoplateado/status/2107122315905355988" target="_blank" rel="noopener noreferrer" style="--scene:#FFB547" data-umami-event="case-video" data-umami-event-slug="jurl">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>jurl</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jurl/">
+      <div class="case-item-head">
+        <time datetime="2026-10-05">2026-10-05</time>
+        <span class="chip">开源项目</span>
+        
+      </div>
+      <h3>jurl</h3>
+      <p class="showcase-by">by Ray García</p>
+      <p>像 curl 的网页读取器：Jev 给段落、链接和图片打「是不是你要的」概率，原文照印。</p>
+      <p class="jev-usage">Jev 判断：对页面块、链接和图片做是非相关性判断，过阈值的原文输出</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="rag-filter">
+    
+    <a class="masonry-body" href="/showcase/mysql-ailike/">
+      <div class="case-item-head">
+        <time datetime="2026-09-20">2026-09-20</time>
+        <span class="chip">开源项目</span>
+        
+      </div>
+      <h3>MySQL AILIKE</h3>
+      <p class="showcase-by">by maayanlevy</p>
+      <p>MySQL 插件：用自然语言条件过滤行、比较两列是否在说同一类东西，判断交给 Jev。</p>
+      <p class="jev-usage">Jev 判断：把每行文本做成是非判断：是否满足自然语言条件</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="实验文章" data-scenes="rag-filter">
+    
+    <a class="masonry-body" href="/showcase/screpy-internal-links/">
+      <div class="case-item-head">
+        <time datetime="2026-09-20">2026-09-20</time>
+        <span class="chip">实验文章</span>
+        
+      </div>
+      <h3>Screpy 内链机会</h3>
+      <p class="showcase-by">by Screpy</p>
+      <p>Screpy 博文：用 Jev 在已抓取的页面里判断哪些内链值得加。</p>
+      <p class="jev-usage">Jev 判断：判断页面之间是否构成值得添加的内链机会</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="rag-filter">
+    
+    <a class="masonry-body" href="/showcase/jegrep/">
+      <div class="case-item-head">
+        <time datetime="2026-09-19">2026-09-19</time>
+        <span class="chip">开源项目</span>
+        
+      </div>
+      <h3>jegrep</h3>
+      <p class="showcase-by">by can1357</p>
+      <p>语义 grep：用自然语言描述要找的代码，Jev 给路径和片段打是非概率，不建索引。</p>
+      <p class="jev-usage">Jev 判断：对目录、文件和代码片段做 Noul 相关性判断，返回行号范围</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a></div></div>
+  </article></div></section>
+        <section class="related-docs">
+    <h2>相关文档</h2>
+    <ul><li><a href="/docs/noul/">Noul（是非题）</a></li><li><a href="/docs/confidence/">置信度</a></li><li><a href="/docs/quickstart/">快速开始</a></li></ul>
+  </section>
+        <nav class="pager" aria-label="相邻场景">
+    <a class="pager-link" href="/scenarios/chat-copilot/"><span>上一个</span><strong>聊天副驾</strong></a>
+    <a class="pager-link is-next" href="/scenarios/agent-guardrail/"><span>下一个</span><strong>智能体护栏</strong></a>
+  </nav>
+        <aside class="author-card author-card-lg">
+      <div class="author-main">
+        <img class="author-avatar" src="/assets/favicon.svg" width="48" height="48" alt="">
+        <div>
+          <strong>杰哥</strong>
+          <p>jev-chat 作者。用 Jev 做聊天副驾，把踩过的坑写成教程。</p>
+        </div>
+      </div>
+      <div class="author-aside">
+        <figure class="qr-block" data-umami-event="wechat-qr">
+    <img src="/assets/wechat-mp-qr.webp" width="120" height="120" alt="公众号二维码">
+    <figcaption>微信扫码关注公众号「杰哥的AI踩坑日记」</figcaption>
+  </figure>
+        <a class="btn btn-ghost" href="https://x.com/jev_chat" target="_blank" rel="noopener noreferrer" data-umami-event="x-follow">在 X 关注 @jev_chat</a>
+      </div>
+    </aside>
+      </article>
+    </div></main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a class="footer-brand" href="/">JevLand</a>
+      <p>Jev 判断模型的非官方中文社区。</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="/scenarios/">场景</a>
+      <a href="/showcase/">案例</a>
+      <a href="/topics/llm-slm/">串联</a>
+      <a href="/docs/">文档</a>
+      <a href="/guides/">教程</a>
+      <a href="/play/">小游戏</a>
+      <a href="/news/">更新</a>
+      <a href="/community/">社区</a>
+      <a href="/about/">关于</a>
+    </nav>
+  </div>
+  <div class="container footer-legal">
+    <p>JevLand 是非官方社区，与 TypeSafe 无隶属关系。Jev、TypeSafe 是其各自所有者的商标。文档翻译以英文原文为准。</p>
+  </div>
+</footer>
+</body>
+</html>

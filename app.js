@@ -148,6 +148,79 @@ function initDemo() {
 }
 initDemo();
 
+function initTabs() {
+  document.querySelectorAll('[data-tabs]').forEach(root => {
+    const tabs = [...root.querySelectorAll('[data-tab]')];
+    const panels = [...root.querySelectorAll('[data-tab-panel]')];
+    if (!tabs.length || !panels.length) return;
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((item, j) => {
+          item.classList.toggle('is-active', j === i);
+          item.setAttribute('aria-selected', String(j === i));
+        });
+        panels.forEach((panel, j) => { panel.hidden = j !== i; });
+      });
+    });
+  });
+}
+initTabs();
+
+function initCalc() {
+  const root = document.querySelector('[data-cost-calculator]');
+  if (!root) return;
+  const daily = root.querySelector('[data-calc-daily]');
+  const tokens = root.querySelector('[data-calc-tokens]');
+  const llm = root.querySelector('[data-calc-llm]');
+  const ratio = root.querySelector('[data-calc-ratio]');
+  const ratioLabel = root.querySelector('[data-calc-ratio-label]');
+  const out = root.querySelector('[data-calc-out]');
+  const jevPrice = Number(root.dataset.jevPrice);
+  let tracked = false;
+  function money(value) {
+    return Math.round(Number(value) * 100) / 100;
+  }
+  function fmt(value) {
+    return money(value).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  }
+  function render() {
+    const d = Math.max(0, Number(daily?.value) || 0);
+    const t = Math.max(0, Number(tokens?.value) || 0);
+    const r = Math.min(100, Math.max(0, Number(ratio?.value) || 0)) / 100;
+    if (ratioLabel) ratioLabel.textContent = `${Math.round(r * 100)}%`;
+    const monthlyTokens = d * 30 * t;
+    const jevCost = monthlyTokens * r * jevPrice / 1e6;
+    const llmRaw = llm?.value;
+    const llmPrice = llmRaw === '' || llmRaw == null ? null : Number(llmRaw);
+    if (llmPrice == null || !Number.isFinite(llmPrice)) {
+      if (out) out.innerHTML = `<p>Jev 每月花费 <strong>$${fmt(jevCost)}</strong>。填大模型价格后会算出能省多少。</p>`;
+      return;
+    }
+    const current = monthlyTokens * llmPrice / 1e6;
+    const newLlm = monthlyTokens * (1 - r) * llmPrice / 1e6;
+    const after = newLlm + jevCost;
+    const save = current - after;
+    const pct = current > 0 ? Math.round((save / current) * 1000) / 10 : 0;
+    if (out) {
+      out.innerHTML = `<ul class="calc-result">
+        <li>现在每月大模型花费 <strong>$${fmt(current)}</strong></li>
+        <li>接入 Jev 后每月大模型 <strong>$${fmt(newLlm)}</strong> + Jev <strong>$${fmt(jevCost)}</strong> = <strong>$${fmt(after)}</strong></li>
+        <li>每月省 <strong>$${fmt(save)}</strong>，约 ${pct}%</li>
+      </ul>`;
+    }
+  }
+  function onInput() {
+    if (!tracked) {
+      tracked = true;
+      if (window.umami && typeof window.umami.track === 'function') window.umami.track('calc-use');
+    }
+    render();
+  }
+  [daily, tokens, llm, ratio].forEach(el => el?.addEventListener('input', onInput));
+  render();
+}
+initCalc();
+
 document.addEventListener('click', async event => {
   const btn = event.target.closest('[data-copy]');
   if (!btn) return;
@@ -232,20 +305,32 @@ for (const el of starNodes) {
 }
 
 const kindFilters = [...document.querySelectorAll('[data-kind-filter]')];
+const sceneFilters = [...document.querySelectorAll('[data-scene-filter]')];
 const caseItems = [...document.querySelectorAll('[data-case-item]')];
-function filterCases(kind) {
-  for (const item of caseItems) {
-    item.hidden = kind !== '全部' && item.dataset.kind !== kind;
-  }
-  document.querySelectorAll('[data-month-group]').forEach(group => {
-    const visible = [...group.querySelectorAll('[data-case-item]')].some(item => !item.hidden);
-    group.hidden = !visible;
-  });
+let selectedKind = '全部';
+let selectedScene = '全部';
+function caseVisible(el) {
+  const kindOk = selectedKind === '全部' || el.dataset.kind === selectedKind;
+  const scenes = String(el.dataset.scenes || 'other').split(/\s+/).filter(Boolean);
+  const sceneOk = selectedScene === '全部'
+    || scenes.includes(selectedScene)
+    || (selectedScene === 'other' && (scenes.includes('other') || !scenes.length));
+  return kindOk && sceneOk;
+}
+function filterCases() {
+  for (const item of caseItems) item.hidden = !caseVisible(item);
 }
 for (const filter of kindFilters) {
   filter.addEventListener('click', () => {
-    const kind = filter.dataset.kindFilter;
+    selectedKind = filter.dataset.kindFilter;
     for (const item of kindFilters) item.setAttribute('aria-pressed', String(item === filter));
-    filterCases(kind);
+    filterCases();
+  });
+}
+for (const filter of sceneFilters) {
+  filter.addEventListener('click', () => {
+    selectedScene = filter.dataset.sceneFilter;
+    for (const item of sceneFilters) item.setAttribute('aria-pressed', String(item === filter));
+    filterCases();
   });
 }

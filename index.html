@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>JevLand · Jev 非官方中文社区</title>
-<meta name="description" content="JevLand 是 TypeSafe Jev 判断模型的非官方中文社区。这里有中文文档、实战教程、社区案例和版本更新，帮你把 Choice、Score、Noul、Box 接到真实工作流。">
+<meta name="description" content="Jev 判断模型的非官方中文社区：便宜、约 1 秒、能看图。看真实调用回放、8 个场景、案例瀑布流，以及大模型和 Jev 怎么串联。">
 <meta name="author" content="杰哥">
 <meta name="theme-color" content="#07080B">
 <meta name="color-scheme" content="dark">
@@ -16,14 +16,14 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="JevLand · Jev 非官方中文社区">
 <meta property="og:title" content="JevLand · Jev 非官方中文社区">
-<meta property="og:description" content="JevLand 是 TypeSafe Jev 判断模型的非官方中文社区。这里有中文文档、实战教程、社区案例和版本更新，帮你把 Choice、Score、Noul、Box 接到真实工作流。">
+<meta property="og:description" content="Jev 判断模型的非官方中文社区：便宜、约 1 秒、能看图。看真实调用回放、8 个场景、案例瀑布流，以及大模型和 Jev 怎么串联。">
 <meta property="og:url" content="https://jevland.com/">
 <meta property="og:image" content="https://jevland.com/assets/og.png">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@jev_chat">
 <meta name="twitter:title" content="JevLand · Jev 非官方中文社区">
-<meta name="twitter:description" content="JevLand 是 TypeSafe Jev 判断模型的非官方中文社区。这里有中文文档、实战教程、社区案例和版本更新，帮你把 Choice、Score、Noul、Box 接到真实工作流。">
+<meta name="twitter:description" content="Jev 判断模型的非官方中文社区：便宜、约 1 秒、能看图。看真实调用回放、8 个场景、案例瀑布流，以及大模型和 Jev 怎么串联。">
 <meta name="twitter:image" content="https://jevland.com/assets/og.png">
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
@@ -42,13 +42,12 @@
         <span class="brand-note">非官方中文社区</span>
       </span>
     </a>
-    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/docs/">文档</a><a href="/showcase/">案例</a><a href="/play/">小游戏</a><a href="/guides/">教程</a><a href="/news/">更新</a><a href="/community/">社区</a><a class="nav-about" href="/about/">关于</a></nav>
+    <nav id="navigation" class="site-nav" aria-label="主导航" data-navigation><a href="/scenarios/">场景</a><a href="/showcase/">案例</a><a href="/topics/llm-slm/">串联</a><a href="/docs/">文档</a><a href="/guides/">教程</a><a href="/play/">小游戏</a><a class="nav-more" href="/news/">更新</a><a class="nav-more" href="/community/">社区</a><a class="nav-more" href="/about/">关于</a></nav>
     <div class="header-actions">
       <button class="search-btn" type="button" data-search-open>
         <span class="search-label">搜索</span>
         <kbd data-search-hotkey>Ctrl K</kbd>
       </button>
-      <a class="header-about" href="/about/">关于</a>
       <button class="menu-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="navigation" data-menu-button><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -65,224 +64,504 @@
     <div class="container hero">
       <div class="hero-copy">
         <p class="eyebrow"><i></i>TYPESAFE JEV · 非官方中文社区</p>
-        <h1>Jev 不写字，<br>只做<span class="grad">判断。</span></h1>
-        <p class="hero-lead">TypeSafe 出品的 System One 判断模型。给它上下文和一道题，返回带概率和置信度的结构化答案。JevLand 是它的非官方中文社区：中文文档、实战教程、更新速递。</p>
+        <h1>1 美元，<br>判断 <span class="grad">2 万次</span></h1>
+        <p class="hero-lead">约 1 秒出结果，能看图。给它一段内容和一道题，返回带概率和置信度的答案。</p>
         <div class="hero-actions">
-          <a class="btn" href="/docs/">阅读中文文档 →</a>
-          <a class="btn btn-ghost" href="/docs/quickstart/">3 分钟跑通第一个请求</a>
+          <a class="btn" href="#scenarios">看它能做什么 ↓</a>
+          <a class="btn btn-ghost" href="#start">3 步上手</a>
+          <a class="btn btn-ghost" href="/play/">玩小游戏</a>
         </div>
-        <p class="hero-jump"><a href="#showcase">看看大家用 Jev 做了什么 ↓</a><a href="/play/">玩小游戏 →</a></p>
-        <div class="facts"><div class="fact"><strong class="mono">$0.042</strong><span>每百万输入 token</span></div><div class="fact"><strong class="mono">0</strong><span>输出 token 费用</span></div><div class="fact"><strong class="mono">64k</strong><span>单次请求上下文</span></div><div class="fact"><strong class="mono">4</strong><span>种题型：Choice / Score / Noul / Box</span></div></div>
+        <div class="facts"><div class="fact-card">
+          <span class="fact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v10M9.5 9.2c.6-1 2.6-1.3 3.6-.3.8.8.7 2-.4 2.6l-3.4 1.8c-1.1.6-1.2 1.8-.3 2.6 1 .9 3 .7 3.7-.3"/></svg></span>
+          <strong class="mono">$0.042</strong>
+          <span>每百万输入 token，输出免费</span>
+        </div><div class="fact-card">
+          <span class="fact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m13 3-8 11h7l-1 7 8-11h-7z"/></svg></span>
+          <strong class="mono">约 1 秒</strong>
+          <span>实测 1.0–1.1 秒，看图 1.7 秒，含跨境网络</span>
+        </div><div class="fact-card">
+          <span class="fact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3"/><path d="m8 6 2-3h4l2 3"/></svg></span>
+          <strong class="mono">能看图</strong>
+          <span>1.14 起，还能在图里框出目标</span>
+        </div></div>
+        <p class="hero-footnote">按每次 1000 个输入 token 估算；本站 7 个文字场景实测每次 419–574 个 token。</p>
       </div>
       <div class="demo-wrap">
     <aside class="demo-card" data-demo>
       <div class="demo-chrome">
         <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="demo-path">POST /v1/systemone</span>
+        <span class="demo-path">真实调用回放</span>
       </div>
-      <div class="demo-tabs" role="tablist"><button type="button" class="demo-tab is-active" role="tab" data-demo-tab="0" aria-selected="true">Choice</button><button type="button" class="demo-tab" role="tab" data-demo-tab="1" aria-selected="false">Noul</button><button type="button" class="demo-tab" role="tab" data-demo-tab="2" aria-selected="false">Score</button></div>
-      <div class="demo-panel is-active" data-demo-panel >
-    <div class="demo-bubbles"><div class="bubble"><span class="bubble-from">对方</span><p>你昨天说好要来的，结果呢</p></div><div class="bubble"><span class="bubble-from">对方</span><p>算了，没事</p></div></div>
-    <p class="demo-q">对方现在真正想要的是？</p>
-    <div class="demo-probs"><div class="prob-row">
-      <span class="prob-label">你解释并道歉</span>
-      <div class="prob-bar"><span class="is-top" style="--p:86%"></span></div>
-      <span class="prob-num">86%</span>
+      <div class="demo-tabs" role="tablist"><button type="button" class="demo-tab is-active" role="tab" data-demo-tab="0" aria-selected="true">聊天副驾</button><button type="button" class="demo-tab" role="tab" data-demo-tab="1" aria-selected="false">客服分流</button><button type="button" class="demo-tab" role="tab" data-demo-tab="2" aria-selected="false">看图判断</button></div>
+      <div class="demo-panel is-active" data-demo-panel data-replay-slug="chat-copilot" >
+    <div class="demo-bubbles"><div class="bubble"><span class="bubble-from">对方</span><p>你昨天说好要来的，结果呢</p></div><div class="bubble"><span class="bubble-from">我</span><p>临时加班了，忘了跟你说</p></div><div class="bubble"><span class="bubble-from">对方</span><p>算了，没事</p></div></div>
+    <div class="replay-answer">
+    <p class="replay-q">intent · Choice</p>
+    <div class="prob-row">
+      <span class="prob-label">apology</span>
+      <div class="prob-bar"><span class="is-top" style="--p:89%"></span></div>
+      <span class="prob-num">89%</span>
     </div><div class="prob-row">
-      <span class="prob-label">真的没事了</span>
-      <div class="prob-bar"><span class="" style="--p:7%"></span></div>
-      <span class="prob-num">7%</span>
-    </div><div class="prob-row">
-      <span class="prob-label">想结束对话</span>
-      <div class="prob-bar"><span class="" style="--p:5%"></span></div>
-      <span class="prob-num">5%</span>
-    </div><div class="prob-row">
-      <span class="prob-label">其他</span>
-      <div class="prob-bar"><span class="" style="--p:2%"></span></div>
-      <span class="prob-num">2%</span>
-    </div></div>
-    
-    <div class="demo-foot">
-      <span class="conf is-high">confidence 0.81</span>
-      <span class="route is-high">高置信 · 可以自动执行</span>
-    </div>
-  </div><div class="demo-panel" data-demo-panel hidden>
-    <div class="demo-bubbles"><div class="bubble"><span class="bubble-from">用户</span><p>这个订单能今天发货吗？我明天一早出差。</p></div></div>
-    <p class="demo-q">用户是在催促发货吗？</p>
-    <div class="demo-probs"><div class="prob-row">
-      <span class="prob-label">是</span>
-      <div class="prob-bar"><span class="is-top" style="--p:94%"></span></div>
-      <span class="prob-num">94%</span>
-    </div><div class="prob-row">
-      <span class="prob-label">否</span>
-      <div class="prob-bar"><span class="" style="--p:6%"></span></div>
-      <span class="prob-num">6%</span>
-    </div></div>
-    
-    <div class="demo-foot">
-      <span class="conf is-high">confidence 0.88</span>
-      <span class="route is-high">高置信 · 可以自动执行</span>
-    </div>
-  </div><div class="demo-panel" data-demo-panel hidden>
-    <div class="demo-bubbles"><div class="bubble"><span class="bubble-from">用户</span><p>你们客服再不回，我就去 12315 投诉了</p></div></div>
-    <p class="demo-q">投诉升级风险有多高？</p>
-    <div class="demo-probs"><div class="prob-row">
-      <span class="prob-label">没有风险</span>
+      <span class="prob-label">really_fine</span>
       <div class="prob-bar"><span class="" style="--p:1%"></span></div>
       <span class="prob-num">1%</span>
     </div><div class="prob-row">
-      <span class="prob-label">轻微不满</span>
-      <div class="prob-bar"><span class="" style="--p:4%"></span></div>
-      <span class="prob-num">4%</span>
+      <span class="prob-label">end_chat</span>
+      <div class="prob-bar"><span class="" style="--p:9%"></span></div>
+      <span class="prob-num">9%</span>
     </div><div class="prob-row">
-      <span class="prob-label">明确不满</span>
-      <div class="prob-bar"><span class="" style="--p:17%"></span></div>
-      <span class="prob-num">17%</span>
+      <span class="prob-label">explanation</span>
+      <div class="prob-bar"><span class="" style="--p:1%"></span></div>
+      <span class="prob-num">1%</span>
+    </div><div class="demo-foot"><span class="conf is-high">confidence 0.85</span></div>
+  </div><div class="replay-answer">
+    <p class="replay-q">reply_now · Noul</p>
+    <p class="replay-noul">「是」的概率 <strong>0.73</strong></p>
+      <div class="prob-row"><span class="prob-label">是</span><div class="prob-bar"><span class="is-top" style="--p:73%"></span></div><span class="prob-num">73%</span></div>
+  </div><div class="replay-answer">
+    <p class="replay-q">best_reply · Choice</p>
+    <div class="prob-row">
+      <span class="prob-label">r1</span>
+      <div class="prob-bar"><span class="is-top" style="--p:98%"></span></div>
+      <span class="prob-num">98%</span>
     </div><div class="prob-row">
-      <span class="prob-label">威胁投诉或曝光</span>
-      <div class="prob-bar"><span class="is-top" style="--p:71%"></span></div>
-      <span class="prob-num">71%</span>
+      <span class="prob-label">r2</span>
+      <div class="prob-bar"><span class="" style="--p:2%"></span></div>
+      <span class="prob-num">2%</span>
     </div><div class="prob-row">
-      <span class="prob-label">已经投诉</span>
-      <div class="prob-bar"><span class="" style="--p:7%"></span></div>
-      <span class="prob-num">7%</span>
-    </div></div>
-    <p class="demo-score">加权分数 <strong>0.70</strong></p>
-    <div class="demo-foot">
-      <span class="conf is-mid">confidence 0.64</span>
-      <span class="route is-mid">中置信 · 建议人工确认</span>
-    </div>
+      <span class="prob-label">r3</span>
+      <div class="prob-bar"><span class="" style="--p:0%"></span></div>
+      <span class="prob-num">0%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">r4</span>
+      <div class="prob-bar"><span class="" style="--p:0%"></span></div>
+      <span class="prob-num">0%</span>
+    </div><div class="demo-foot"><span class="conf is-high">confidence 0.97</span></div>
+  </div>
+    <p class="replay-meta">jev-1.14.0 · 1047 ms · 574 tokens · $0.00002411</p>
+    <p class="demo-caption">录于 2026 年 10 月 17 日</p>
+  </div><div class="demo-panel" data-demo-panel data-replay-slug="support-routing" hidden>
+    <div class="kv-list"><div class="kv-row"><span class="kv-key">channel</span><span class="kv-val">在线客服</span></div></div><div class="demo-bubbles"><div class="bubble"><span class="bubble-from">用户</span><p>我昨天买的耳机今天还没发货，明天就要出差了，能不能加急？不行就退款吧</p></div></div>
+    <div class="replay-answer">
+    <p class="replay-q">department · Choice</p>
+    <div class="prob-row">
+      <span class="prob-label">shipping</span>
+      <div class="prob-bar"><span class="is-top" style="--p:97%"></span></div>
+      <span class="prob-num">97%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">refund</span>
+      <div class="prob-bar"><span class="" style="--p:3%"></span></div>
+      <span class="prob-num">3%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">product</span>
+      <div class="prob-bar"><span class="" style="--p:0%"></span></div>
+      <span class="prob-num">0%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">other</span>
+      <div class="prob-bar"><span class="" style="--p:0%"></span></div>
+      <span class="prob-num">0%</span>
+    </div><div class="demo-foot"><span class="conf is-high">confidence 0.96</span></div>
+  </div><div class="replay-answer">
+    <p class="replay-q">needs_human · Noul</p>
+    <p class="replay-noul">「是」的概率 <strong>0.48</strong></p>
+      <div class="prob-row"><span class="prob-label">是</span><div class="prob-bar"><span class="is-top" style="--p:48%"></span></div><span class="prob-num">48%</span></div>
+  </div><div class="replay-answer">
+    <p class="replay-q">urgency · Score</p>
+    <p class="demo-score">档位 1 · It should be handled today · 分数 <strong>1.16</strong></p>
+      <div class="prob-row">
+      <span class="prob-label">0</span>
+      <div class="prob-bar"><span class="" style="--p:0%"></span></div>
+      <span class="prob-num">0%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">1</span>
+      <div class="prob-bar"><span class="is-top" style="--p:84%"></span></div>
+      <span class="prob-num">84%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">2</span>
+      <div class="prob-bar"><span class="" style="--p:16%"></span></div>
+      <span class="prob-num">16%</span>
+    </div><div class="demo-foot"><span class="conf is-high">confidence 0.76</span></div>
+  </div>
+    <p class="replay-meta">jev-1.14.0 · 1098 ms · 504 tokens · $0.00002117</p>
+    <p class="demo-caption">录于 2026 年 10 月 17 日</p>
+  </div><div class="demo-panel" data-demo-panel data-replay-slug="vision" hidden>
+    <figure class="vision-shot is-thumb">
+    <img src="/assets/scenarios/vision-chat.png" alt="看图判断 截图">
+    <span class="vision-box" style="top:92.00%;left:4.00%;width:79.00%;height:6.00%"></span>
+  </figure>
+    <div class="replay-answer">
+    <p class="replay-q">last_sender · Choice</p>
+    <div class="prob-row">
+      <span class="prob-label">them</span>
+      <div class="prob-bar"><span class="is-top" style="--p:100%"></span></div>
+      <span class="prob-num">100%</span>
+    </div><div class="prob-row">
+      <span class="prob-label">me</span>
+      <div class="prob-bar"><span class="" style="--p:0%"></span></div>
+      <span class="prob-num">0%</span>
+    </div><div class="demo-foot"><span class="conf is-high">confidence 1.00</span></div>
+  </div><div class="replay-answer">
+    <p class="replay-q">upset · Noul</p>
+    <p class="replay-noul">「是」的概率 <strong>0.95</strong></p>
+      <div class="prob-row"><span class="prob-label">是</span><div class="prob-bar"><span class="is-top" style="--p:95%"></span></div><span class="prob-num">95%</span></div>
+  </div><div class="replay-answer">
+    <p class="replay-q">input_box · Box</p>
+    <p class="replay-box">已框出</p><div class="demo-foot"><span class="conf is-high">confidence 0.89</span></div>
+  </div>
+    <p class="replay-meta">jev-1.14.0 · 1700 ms · 3540 tokens · $0.00014868</p>
+    <p class="demo-caption">录于 2026 年 10 月 17 日</p>
   </div>
     </aside>
-    <p class="demo-caption">示意数据，演示返回结构，不是真实调用结果</p>
   </div>
     </div>
   </div>
   <div class="container">
+    <section class="section" id="scenarios">
+      <div class="section-heading">
+        <div><p class="kicker">Scenarios</p><h2 class="section-title">能帮你做什么</h2></div>
+        <a class="text-link" href="/scenarios/">全部场景 →</a>
+      </div>
+      <div class="scenario-grid"><a class="card scenario-card" href="/scenarios/support-routing/">
+    <div class="scenario-card-icon"><svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M8.4 11.1 15.6 7.3M8.4 12.9 15.6 16.7"/></svg></div>
+    <h3>客服分流</h3>
+    <p>每条咨询都丢给大模型或人工，慢、贵，还容易分错组</p>
+    <div class="tag-row"><span class="chip">Choice</span><span class="chip">Noul</span><span class="chip">Score</span></div>
+    <p class="scenario-cost mono">每 1000 次约 $0.021</p>
+  </a><a class="card scenario-card" href="/scenarios/moderation/">
+    <div class="scenario-card-icon"><svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 20 7v6c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V7z"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg></div>
+    <h3>内容审核</h3>
+    <p>评论、弹幕、帖子量大，全靠人看看不过来，全交给大模型又太贵</p>
+    <div class="tag-row"><span class="chip">Choice</span><span class="chip">Noul</span></div>
+    <p class="scenario-cost mono">每 1000 次约 $0.018</p>
+  </a><a class="card scenario-card" href="/scenarios/chat-copilot/">
+    <div class="scenario-card-icon"><svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h14v9H8l-3 3z"/></svg></div>
+    <h3>聊天副驾</h3>
+    <p>大模型会写回复，但看不准对方真实意思，也不知道这时候该不该回</p>
+    <div class="tag-row"><span class="chip">Choice</span><span class="chip">Noul</span></div>
+    <p class="scenario-cost mono">每 1000 次约 $0.024</p>
+  </a><a class="card scenario-card" href="/scenarios/rag-filter/">
+    <div class="scenario-card-icon"><svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></svg></div>
+    <h3>检索结果过滤</h3>
+    <p>检索回来的段落一半不相关，全塞给大模型既费 token，又容易答偏</p>
+    <div class="tag-row"><span class="chip">Noul</span></div>
+    <p class="scenario-cost mono">每 1000 次约 $0.019</p>
+  </a><a class="card scenario-card" href="/scenarios/agent-guardrail/">
+    <div class="scenario-card-icon"><svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 20 7v6c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V7z"/></svg></div>
+    <h3>智能体护栏</h3>
+    <p>智能体自己调工具，一条越权命令就可能删掉数据，每一步都让大模型复查又太慢</p>
+    <div class="tag-row"><span class="chip">Score</span><span class="chip">Noul</span><span class="chip">Choice</span></div>
+    <p class="scenario-cost mono">每 1000 次约 $0.020</p>
+  </a><a class="card scenario-card" href="/scenarios/extraction-check/">
+    <div class="scenario-card-icon"><svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8l4 4v12H8z"/><path d="M16 4v4h4M10 13l2 2 4-4"/></svg></div>
+    <h3>数据抽取校验</h3>
+    <p>让大模型从单据里抽字段，偶尔会编数字，人工逐条核对成本高</p>
+    <div class="tag-row"><span class="chip">Choice</span><span class="chip">Noul</span></div>
+    <p class="scenario-cost mono">每 1000 次约 $0.022</p>
+  </a><a class="card scenario-card" href="/scenarios/game-npc/">
+    <div class="scenario-card-icon"><svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="8" width="10" height="10" rx="2"/><path d="M10 12h.01M14 12h.01M10 16h4M9 8V6h6v2"/></svg></div>
+    <h3>游戏与机器人决策</h3>
+    <p>NPC 和机器人每一步都要做决定，用大模型太慢，写死规则又太僵</p>
+    <div class="tag-row"><span class="chip">Choice</span><span class="chip">Noul</span></div>
+    <p class="scenario-cost mono">每 1000 次约 $0.018</p>
+  </a><a class="card scenario-card" href="/scenarios/vision/">
+    <div class="scenario-card-icon"><svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3"/><path d="m8 6 2-3h4l2 3"/></svg></div>
+    <h3>看图判断</h3>
+    <p>截图、照片里的信息要先转成文字才能判断，多一道工序就多一份成本和延迟</p>
+    <div class="tag-row"><span class="chip">Choice</span><span class="chip">Noul</span><span class="chip">Box</span></div>
+    <p class="scenario-cost mono">每 1000 次约 $0.149</p>
+  </a></div>
+    </section>
     <section class="section" id="showcase">
       <div class="section-heading">
         <div><p class="kicker">Showcase</p><h2 class="section-title">大家用 Jev 做了什么</h2></div>
-        <a class="text-link" href="/showcase/">全部 30 个案例 →</a>
+        <a class="text-link" href="/showcase/">全部 40 个案例 →</a>
       </div>
-      <div class="home-showcase-grid"><a class="card showcase-card" href="/showcase/cannonball-run/">
-    <div class="showcase-top">
+      <div class="filters" role="group" aria-label="按场景筛选"><button class="filter" type="button" data-scene-filter="全部" aria-pressed="true">全部</button><button class="filter" type="button" data-scene-filter="moderation" aria-pressed="false">内容审核</button><button class="filter" type="button" data-scene-filter="chat-copilot" aria-pressed="false">聊天副驾</button><button class="filter" type="button" data-scene-filter="rag-filter" aria-pressed="false">检索结果过滤</button><button class="filter" type="button" data-scene-filter="agent-guardrail" aria-pressed="false">智能体护栏</button><button class="filter" type="button" data-scene-filter="extraction-check" aria-pressed="false">数据抽取校验</button><button class="filter" type="button" data-scene-filter="game-npc" aria-pressed="false">游戏与机器人决策</button><button class="filter" type="button" data-scene-filter="vision" aria-pressed="false">看图判断</button><button class="filter" type="button" data-scene-filter="other" aria-pressed="false">其他</button></div><div class="masonry"><article class="card masonry-card" data-case-item data-kind="实验文章" data-scenes="vision">
+    <a class="case-cover" href="https://x.com/verysmallwoods/status/2111254762062540967" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jev-box-eval">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Box 框选实测</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jev-box-eval/">
+      <div class="case-item-head">
+        <time datetime="2026-10-17">2026-10-17</time>
+        <span class="chip">实验文章</span>
+        
+      </div>
+      <h3>Box 框选实测</h3>
+      <p class="showcase-by">by VerySmallWoods</p>
+      <p>实验：同一张自然照片连测三次 Box，再加一张几何控制图，把返回坐标画回原图。</p>
+      <p class="jev-usage">Jev 判断：用 Box 标出图中目标位置，并观察目标不存在时仍会返回坐标</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="game-npc">
+    <a class="case-cover" href="https://x.com/lillyguisnet/status/2111247553509437579" target="_blank" rel="noopener noreferrer" style="--scene:#F472B6" data-umami-event="case-video" data-umami-event-slug="jev-office-nav">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Jev 开到 TypeSafe 办公室</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jev-office-nav/">
+      <div class="case-item-head">
+        <time datetime="2026-10-17">2026-10-17</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>Jev 开到 TypeSafe 办公室</h3>
+      <p class="showcase-by">by lillyguisnet</p>
+      <p>演示：让 Jev 在只有局部路口信息时选路，看能不能开到 TypeSafe 办公室。</p>
+      <p class="jev-usage">Jev 判断：在局部路网里选择下一分支；原作者没有公开具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision rag-filter">
+    <a class="case-cover" href="https://x.com/techemmyleke/status/2111256290013896949" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="scene-finder">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Scene Finder</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/scene-finder/">
+      <div class="case-item-head">
+        <time datetime="2026-10-17">2026-10-17</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>Scene Finder</h3>
+      <p class="showcase-by">by Emmy</p>
+      <p>开源演示：用自然语言描述电影镜头，Jev 在片子里找出对应时间点。</p>
+      <p class="jev-usage">Jev 判断：按文字描述判断片段是否匹配目标镜头；原作者没有公开具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision extraction-check">
+    <a class="case-cover" href="https://x.com/dfinke/status/2111184997457788960" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jev-table-extract">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>截图出表</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jev-table-extract/">
+      <div class="case-item-head">
+        <time datetime="2026-10-16">2026-10-16</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>截图出表</h3>
+      <p class="showcase-by">by Doug Finke</p>
+      <p>演示：Jev 在截图里找出表格、跳过图表，再交给生成式模型抽出行列。</p>
+      <p class="jev-usage">Jev 判断：在截图里找出表格区域并跳过图表；原作者没有公开具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/extraction-check/">数据抽取校验</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision">
+    <a class="case-cover" href="https://x.com/nikhil0360/status/2111179477342622102" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="box-zoo">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>卡通动物园 Box 演示</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/box-zoo/">
+      <div class="case-item-head">
+        <time datetime="2026-10-16">2026-10-16</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>卡通动物园 Box 演示</h3>
+      <p class="showcase-by">by nikhil0360</p>
+      <p>演示：对着一张卡通动物园图用自然语言提问，Jev 用 Box 标出目标位置。</p>
+      <p class="jev-usage">Jev 判断：用 Box 在图片上标出查询目标的位置</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="vision game-npc">
+    <a class="case-cover" href="https://x.com/dotpem/status/2111171388405137714" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jevanimata">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>jevanimata</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jevanimata/">
+      <div class="case-item-head">
+        <time datetime="2026-10-16">2026-10-16</time>
+        <span class="chip">演示</span>
+        
+      </div>
+      <h3>jevanimata</h3>
+      <p class="showcase-by">by Nathan LeClaire</p>
+      <p>演示游戏：把图贴进去，Jev 据此生成地形和生物，再按你的指令让它们动起来。</p>
+      <p class="jev-usage">Jev 判断：根据粘贴的图片生成地形和生物；原作者没有公开具体题型</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="官方示例" data-scenes="rag-filter vision">
+    <a class="case-cover" href="https://x.com/typesafeai/status/2111204284058726801" target="_blank" rel="noopener noreferrer" style="--scene:#FFB547" data-umami-event="case-video" data-umami-event-slug="typesafe-cmd-f">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>JevDay：满世界 cmd-f</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/typesafe-cmd-f/">
+      <div class="case-item-head">
+        <time datetime="2026-10-16">2026-10-16</time>
+        <span class="chip">官方示例</span>
+        
+      </div>
+      <h3>JevDay：满世界 cmd-f</h3>
+      <p class="showcase-by">by TypeSafe</p>
+      <p>官方演示回放：不建索引，用 Jev 在文件和画面里找你要的东西。</p>
+      <p class="jev-usage">Jev 判断：在未建索引的内容里判断哪一段或哪一处是你要找的</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/rag-filter/">检索结果过滤</a><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="演示" data-scenes="game-npc">
+    <a class="case-cover" href="https://x.com/arithmoquine/status/2110879067323183239" target="_blank" rel="noopener noreferrer" style="--scene:#F472B6" data-umami-event="case-video" data-umami-event-slug="cannonball-run">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>Jev 街牌闯美</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/cannonball-run/">
       <div class="case-item-head">
         <time datetime="2026-10-15">2026-10-15</time>
         <span class="chip">演示</span>
         
       </div>
-      
-    </div>
-    <h3>Jev 街牌闯美</h3>
-    <p class="showcase-by">by henry</p>
-    <p>演示：只给目的地和当前街道名，Jev 在每个路口选方向，用街牌完成纽约到洛杉矶。</p>
-    <p class="jev-usage">Jev 判断：每个路口根据街牌和目的地选择行驶方向</p>
-    <div class="tag-row"><span class="chip">演示</span><span class="chip">导航</span><span class="chip">视觉</span></div>
-  </a><a class="card showcase-card" href="/showcase/jev-browser-wingman/">
-    <div class="showcase-top">
+      <h3>Jev 街牌闯美</h3>
+      <p class="showcase-by">by henry</p>
+      <p>演示：只给目的地和当前街道名，Jev 在每个路口选方向，用街牌完成纽约到洛杉矶。</p>
+      <p class="jev-usage">Jev 判断：每个路口根据街牌和目的地选择行驶方向</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article><article class="card masonry-card" data-case-item data-kind="开源项目" data-scenes="vision game-npc">
+    <a class="case-cover" href="https://x.com/twid/status/2110871526547587148" target="_blank" rel="noopener noreferrer" style="--scene:#A3E635" data-umami-event="case-video" data-umami-event-slug="jev-dronecam">
+    <span class="case-cover-play" aria-hidden="true">▶</span>
+    <strong>jev drone cam</strong>
+    <span class="case-cover-label">▶ 视频在 X 上</span>
+  </a>
+    <a class="masonry-body" href="/showcase/jev-dronecam/">
       <div class="case-item-head">
-        <time datetime="2026-10-06">2026-10-06</time>
+        <time datetime="2026-10-15">2026-10-15</time>
         <span class="chip">开源项目</span>
         
       </div>
-      <p class="stars" hidden>★ <span data-stars data-repo="coderexpert123/jev-browser-wingman"></span></p>
-    </div>
-    <h3>jev-browser-wingman</h3>
-    <p class="showcase-by">by coderexpert123</p>
-    <p>MCP 代理：把智能体的点击和输入交给 Jev 选 DOM 元素，不确定就交回给智能体。</p>
-    <p class="jev-usage">Jev 判断：每一步用 Jev 选择要点击或输入的页面元素</p>
-    <div class="tag-row"><span class="chip">开源</span><span class="chip">浏览器</span><span class="chip">MCP</span><span class="chip">Agent</span></div>
-  </a><a class="card showcase-card" href="/showcase/vals-jev-eval/">
-    <div class="showcase-top">
-      <div class="case-item-head">
-        <time datetime="2026-10-06">2026-10-06</time>
-        <span class="chip">实验文章</span>
-        
+      <h3>jev drone cam</h3>
+      <p class="showcase-by">by Todd Dailey</p>
+      <p>网页演示：给一张目标照片，无人机逐帧问 Jev 看见没、框在哪，再飞过去。</p>
+      <p class="jev-usage">Jev 判断：每帧并行一道 Box 框选目标和一道 Noul 判断目标是否在画面里</p>
+    </a>
+    <div class="masonry-foot"><div class="tag-row"><a class="chip scene-chip" href="/scenarios/vision/">看图判断</a><a class="chip scene-chip" href="/scenarios/game-npc/">游戏与机器人决策</a></div></div>
+  </article></div>
+    </section>
+    <section class="section" id="pipeline">
+      <div class="section-heading">
+        <div><p class="kicker">LLM × SLM</p><h2 class="section-title">大模型和小模型怎么串联</h2></div>
       </div>
-      
-    </div>
-    <h3>Vals 对 Jev 的独立评测</h3>
-    <p class="showcase-by">by Vals.ai</p>
-    <p>Vals.ai 发布的独立评测：在自有任务集上测 TypeSafe Jev，并公开方法与结果。</p>
-    <p class="jev-usage">Jev 判断：在评测集上回答与 Jev 题型对应的判断题</p>
-    <div class="tag-row"><span class="chip">评测</span><span class="chip">文章</span><span class="chip">基准</span></div>
-  </a><a class="card showcase-card" href="/showcase/jev-bisect/">
-    <div class="showcase-top">
-      <div class="case-item-head">
-        <time datetime="2026-10-05">2026-10-05</time>
-        <span class="chip">开源项目</span>
-        
-      </div>
-      <p class="stars" hidden>★ <span data-stars data-repo="mkly/jev-bisect"></span></p>
-    </div>
-    <h3>jev-bisect</h3>
-    <p class="showcase-by">by mkly</p>
-    <p>Python 库：在上下界里反复问 Jev 更高、更低还是正好，用二分找出数字答案。</p>
-    <p class="jev-usage">Jev 判断：每轮用 Choice 判断当前猜测是 higher、lower 还是 exactly</p>
-    <div class="tag-row"><span class="chip">开源</span><span class="chip">Python</span><span class="chip">SDK</span></div>
-  </a><a class="card showcase-card" href="/showcase/jurl/">
-    <div class="showcase-top">
-      <div class="case-item-head">
-        <time datetime="2026-10-05">2026-10-05</time>
-        <span class="chip">开源项目</span>
-        
-      </div>
-      <p class="stars" hidden>★ <span data-stars data-repo="rayoplateado/jurl"></span></p>
-    </div>
-    <h3>jurl</h3>
-    <p class="showcase-by">by Ray García</p>
-    <p>像 curl 的网页读取器：Jev 给段落、链接和图片打「是不是你要的」概率，原文照印。</p>
-    <p class="jev-usage">Jev 判断：对页面块、链接和图片做是非相关性判断，过阈值的原文输出</p>
-    <div class="tag-row"><span class="chip">开源</span><span class="chip">CLI</span><span class="chip">抓取</span><span class="chip">搜索</span></div>
-  </a><a class="card showcase-card" href="/showcase/unsiloed-document-review/">
-    <div class="showcase-top">
-      <div class="case-item-head">
-        <time datetime="2026-10-01">2026-10-01</time>
-        <span class="chip">产品</span>
-        
-      </div>
-      
-    </div>
-    <h3>Unsiloed 文档复核</h3>
-    <p class="showcase-by">by Unsiloed AI</p>
-    <p>文档抽取之后，用 Jev 逐行问剂量是否说得通，把不确定的读数和明显不合理的值分开送审。</p>
-    <p class="jev-usage">Jev 判断：对每行抽取结果发 Noul：剂量和频次表面上是否合理</p>
-    <div class="tag-row"><span class="chip">产品</span><span class="chip">文档</span><span class="chip">OCR</span><span class="chip">医疗</span></div>
-  </a></div>
+      <div class="flow-list"><div class="flow-row">
+    <div class="flow-steps"><span class="flow-chip">请求</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-chip">Jev 分流</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-chip">少量进大模型</span></div>
+    <p><strong>小模型先分流</strong> 大部分请求由 Jev 分类或过滤，只有少数再交给大模型。</p>
+  </div><div class="flow-row">
+    <div class="flow-steps"><span class="flow-chip">大模型草稿</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-chip">Jev 把关</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-chip">通过才发出</span></div>
+    <p><strong>大模型写，小模型把关</strong> 生成仍由大模型做，发出前用 Jev 检查风险、范围或质量。</p>
+  </div><div class="flow-row">
+    <div class="flow-steps"><span class="flow-chip">大模型候选</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-chip">Jev 选择</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-chip">采用一条</span></div>
+    <p><strong>大模型出候选，小模型挑</strong> 大模型给出几条回复或动作，Jev 按题把最合适的一条挑出来。</p>
+  </div><div class="flow-row">
+    <div class="flow-steps"><span class="flow-chip">Jev 判断</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-chip">高置信度采用</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-chip">低置信度升级</span></div>
+    <p><strong>按置信度分流</strong> Jev 有把握就直接用；没把握再交给大模型或人。</p>
+  </div></div>
+      <p><a class="btn" href="/topics/llm-slm/">看完整专题和成本计算器 →</a></p>
+    </section>
+    <section class="section" id="start">
+      <p class="kicker">Start</p>
+      <h2 class="section-title">3 步上手</h2>
+      <ol class="start-steps">
+        <li>
+          <h3>拿 key</h3>
+          <p>到 <a href="https://console.typesafe.ai/" target="_blank" rel="noopener noreferrer" data-umami-event="console-link">官方控制台</a> 或 <a href="https://openrouter.ai/" target="_blank" rel="noopener noreferrer" data-umami-event="openrouter-link">OpenRouter</a> 申请。</p>
+        </li>
+        <li>
+          <h3>复制一段代码</h3>
+          <p>客服分流场景的真实请求，可直接改 key 后发出。</p>
+          <div class="code-block"><div class="code-bar"><span class="code-lang">bash</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs">curl https://api.typesafe.ai/v1/systemone \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$TYPESAFE_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  -d <span class="hljs-string">&#x27;{
+  &quot;model&quot;: &quot;jev-1.14.0&quot;,
+  &quot;state&quot;: {
+    &quot;channel&quot;: &quot;在线客服&quot;,
+    &quot;messages&quot;: [
+      {
+        &quot;from&quot;: &quot;用户&quot;,
+        &quot;text&quot;: &quot;我昨天买的耳机今天还没发货，明天就要出差了，能不能加急？不行就退款吧&quot;
+      }
+    ]
+  },
+  &quot;questions&quot;: {
+    &quot;department&quot;: {
+      &quot;type&quot;: &quot;choice&quot;,
+      &quot;instructions&quot;: &quot;Which team should handle this message?&quot;,
+      &quot;criteria&quot;: {
+        &quot;shipping&quot;: &quot;Delivery status, delays, or speeding up a shipment&quot;,
+        &quot;refund&quot;: &quot;Refunds, returns, or cancelling an order&quot;,
+        &quot;product&quot;: &quot;Product features, usage, or quality questions&quot;,
+        &quot;other&quot;: &quot;Anything else&quot;
+      }
+    },
+    &quot;needs_human&quot;: {
+      &quot;type&quot;: &quot;noul&quot;,
+      &quot;instructions&quot;: &quot;Should this conversation be handed to a human agent right away?&quot;
+    },
+    &quot;urgency&quot;: {
+      &quot;type&quot;: &quot;score&quot;,
+      &quot;instructions&quot;: &quot;How urgent is the customer&#x27;</span>s request?<span class="hljs-string">&quot;,
+      &quot;</span>criteria<span class="hljs-string">&quot;: [
+        &quot;</span>It can <span class="hljs-built_in">wait</span> several days without upsetting the customer<span class="hljs-string">&quot;,
+        &quot;</span>It should be handled today<span class="hljs-string">&quot;,
+        &quot;</span>It must be handled within the hour or the customer will leave<span class="hljs-string">&quot;
+      ]
+    }
+  }
+}&#x27;</span></code></pre></div>
+        </li>
+        <li>
+          <h3>看返回的概率和置信度</h3>
+          <p>同一场景的真实返回片段。</p>
+          <div class="code-block"><div class="code-bar"><span class="code-lang">json</span><button type="button" class="copy-btn" data-copy>复制</button></div><pre><code class="hljs"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;department&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;choice&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;choice&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;shipping&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.96</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;shipping&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.97</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;refund&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.03</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;product&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;other&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;needs_human&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;noul&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;noul&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.48</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;urgency&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;score&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.16</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.76</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;legend&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;It can wait several days without upsetting the customer&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;It should be handled today&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;It must be handled within the hour or the customer will leave&quot;</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;probabilities&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;0&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;1&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.84</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;2&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.16</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+        </li>
+      </ol>
+      <p class="start-links"><a class="text-link" href="/docs/quickstart/">完整快速开始</a><a class="text-link" href="/guides/chinese-prompts/">题目怎么写</a></p>
     </section>
     <section class="section" id="play">
       <div class="play-banner">
         <div>
           <p class="kicker">Play</p>
           <h2 class="section-title">玩一局：你和 Jev，谁更懂人话</h2>
-          <p class="play-banner-lead">10 段真实聊天，猜完看 Jev 的概率和置信度</p>
+          <p class="play-banner-lead">5 段真实聊天，猜完看 Jev 的判断</p>
         </div>
         <div class="play-banner-side">
           <div class="play-chat play-chat-preview"><div class="play-bubble is-me"><span class="play-bubble-from">我</span><p>这件裙子好看不？</p></div><div class="play-bubble is-them"><span class="play-bubble-from">对方</span><p>挺有想法的</p></div><div class="play-bubble is-me"><span class="play-bubble-from">我</span><p>那我去买了？</p></div><div class="play-bubble is-them"><span class="play-bubble-from">对方</span><p>你自己看吧</p></div></div>
           <a class="btn" href="/play/">开始 →</a>
         </div>
       </div>
-    </section>
-    <section class="section">
-      <p class="kicker">Primitives</p>
-      <h2 class="section-title">四种题型，一个接口</h2>
-      <div class="type-grid"><a class="card type-card" href="/docs/choice/">
-    <div class="type-head"><h3>Choice</h3></div>
-    <p>从一组固定选项里选出一个，返回每个选项的概率和置信度。</p>
-    <pre class="type-sample">choice · probabilities · confidence</pre>
-  </a><a class="card type-card" href="/docs/score/">
-    <div class="type-head"><h3>Score</h3></div>
-    <p>按你给的量表打分，返回加权分数、各档概率和置信度。</p>
-    <pre class="type-sample">score · probabilities · confidence</pre>
-  </a><a class="card type-card" href="/docs/noul/">
-    <div class="type-head"><h3>Noul</h3></div>
-    <p>判断一个命题是真是假，返回 0–1 的概率和置信度。</p>
-    <pre class="type-sample">noul · confidence</pre>
-  </a><a class="card type-card" href="/docs/box/">
-    <div class="type-head"><h3>Box</h3><span class="badge">1.14 新增</span></div>
-    <p>从选项里勾选多个，返回选中集合、各选项概率和置信度。</p>
-    <pre class="type-sample">selected[] · probabilities · confidence</pre>
-  </a></div>
     </section>
     <section class="section">
       <div class="section-heading">
@@ -382,9 +661,12 @@
       <p>Jev 判断模型的非官方中文社区。</p>
     </div>
     <nav class="footer-links" aria-label="页脚导航">
-      <a href="/docs/">文档</a>
+      <a href="/scenarios/">场景</a>
       <a href="/showcase/">案例</a>
+      <a href="/topics/llm-slm/">串联</a>
+      <a href="/docs/">文档</a>
       <a href="/guides/">教程</a>
+      <a href="/play/">小游戏</a>
       <a href="/news/">更新</a>
       <a href="/community/">社区</a>
       <a href="/about/">关于</a>
